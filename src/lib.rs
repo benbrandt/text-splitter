@@ -81,7 +81,7 @@ impl TextSplitter {
     /// let chunks = splitter.chunks(text);
     /// ```
     pub fn chunks<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
-        // Lowest-level split
+        // Lowest-level split so we always have valid unicode chars
         self.split_chars(text)
     }
 
