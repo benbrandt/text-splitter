@@ -20,6 +20,8 @@
     unused
 )]
 
+use itertools::Itertools;
+
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
@@ -52,8 +54,21 @@ impl TextSplitter {
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunks(text);
     /// ```
-    #[must_use]
-    pub fn chunks<'a>(&self, text: &'a str) -> Vec<&'a str> {
-        vec![text]
+    pub fn chunks<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
+        // Lowest-level split, since we are dealing with chars by default
+        self.split_chars(text)
+    }
+
+    /// Split a given text by chars where each chunk is within the max chunk
+    /// size.
+    fn split_chars<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
+        text.char_indices().batching(|it| {
+            let (start, end) = it
+                .take(self.max_chunk_size)
+                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, c)| {
+                    (start.or(Some(i)), i + c.len_utf8())
+                });
+            start.map(|start| text.get(start..end).unwrap())
+        })
     }
 }
