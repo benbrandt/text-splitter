@@ -1,3 +1,15 @@
+#![warn(
+    clippy::pedantic,
+    future_incompatible,
+    missing_debug_implementations,
+    missing_docs,
+    nonstandard_style,
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    rust_2021_compatibility,
+    unused
+)]
+
 use std::cmp::min;
 
 use fake::{Fake, Faker};
@@ -33,4 +45,15 @@ fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
         text2[(text2.len() - len)..],
         chunks[1][chunks[1].len() - len..]
     );
+
+    assert_eq!(chunks.join(""), text);
+}
+
+#[test]
+fn can_handle_unicode_characters() {
+    let text = "éé"; // Char that is more than one byte
+    let splitter = TextSplitter::new(1);
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    assert_eq!("é", chunks[0]);
+    assert_eq!("é", chunks[1]);
 }
