@@ -54,6 +54,5 @@ fn can_handle_unicode_characters() {
     let text = "éé"; // Char that is more than one byte
     let splitter = TextSplitter::new(1);
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
-    assert_eq!("é", chunks[0]);
-    assert_eq!("é", chunks[1]);
+    assert_eq!(vec!["é", "é"], chunks);
 }
