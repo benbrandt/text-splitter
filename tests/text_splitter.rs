@@ -56,3 +56,11 @@ fn can_handle_unicode_characters() {
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
     assert_eq!(vec!["é", "é"], chunks);
 }
+
+#[test]
+fn custom_len_function() {
+    let text = "éé"; // Char that is two bytes each
+    let splitter = TextSplitter::new(2).with_length_fn(str::len);
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    assert_eq!(vec!["é", "é"], chunks);
+}
