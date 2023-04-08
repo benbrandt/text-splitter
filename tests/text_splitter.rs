@@ -64,3 +64,25 @@ fn custom_len_function() {
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
     assert_eq!(vec!["é", "é"], chunks);
 }
+
+#[test]
+fn chunk_by_graphemes() {
+    let text = "a̐éö̲\r\n";
+    let splitter = TextSplitter::new(3);
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    // \r\n is grouped together not separated
+    assert_eq!(vec!["a̐é", "ö̲", "\r\n"], chunks);
+}
+
+#[test]
+fn graphemes_fallback_to_chars() {
+    let text = "a̐éö̲\r\n";
+    let splitter = TextSplitter::new(1);
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec!["a", "\u{310}", "é", "ö", "\u{332}", "\r", "\n"],
+        chunks
+    );
+}

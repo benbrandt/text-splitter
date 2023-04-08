@@ -20,7 +20,11 @@
     unused
 )]
 
+use std::iter::once;
+
+use either::Either;
 use itertools::Itertools;
+use unicode_segmentation::UnicodeSegmentation;
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -82,29 +86,69 @@ impl TextSplitter {
     /// ```
     pub fn chunks<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
         // Lowest-level split so we always have valid unicode chars
-        self.split_chars(text)
+        self.chunk_by_graphemes(text).map(|(_, t)| t)
     }
 
     /// Is the given text within the chunk size?
-    fn is_within_chunk_size(&self, text: &str) -> bool {
-        (self.length_fn)(text) <= self.max_chunk_size
+    fn is_within_chunk_size(&self, chunk: &str) -> bool {
+        (self.length_fn)(chunk) <= self.max_chunk_size
+    }
+
+    /// Preserve Unicode graphemes where possible. Char iter would break them
+    /// up by default.
+    fn chunk_by_graphemes<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        text.grapheme_indices(true)
+            .flat_map(|(i, grapheme)| {
+                // If grapheme is too large, do char chunking
+                if self.is_within_chunk_size(grapheme) {
+                    Either::Left(once((i, grapheme)))
+                } else {
+                    Either::Right(
+                        self.chunk_by_chars(grapheme)
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            })
+            .peekable()
+            .batching(move |it| {
+                // Otherwise keep grabbing more graphemes
+                let mut peek_start = None;
+                let (start, end) = it
+                    .peeking_take_while(move |(i, g)| {
+                        let chunk = text
+                            .get(*peek_start.get_or_insert(*i)..*i + g.len())
+                            .expect("grapheme should be valid");
+                        if self.is_within_chunk_size(chunk) {
+                            true
+                        } else {
+                            peek_start = None;
+                            false
+                        }
+                    })
+                    .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, g)| {
+                        (start.or(Some(i)), i + g.len())
+                    });
+                start.and_then(|start| text.get(start..end).map(|t| (start, t)))
+            })
     }
 
     /// Split a given text by chars where each chunk is within the max chunk
     /// size.
-    fn split_chars<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
+    fn chunk_by_chars<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
         text.char_indices().peekable().batching(move |it| {
             let mut peek_start = None;
             let (start, end) = it
                 .peeking_take_while(move |(i, c)| {
-                    if peek_start.is_none() {
-                        peek_start = Some(*i);
-                    }
-                    let Some(text) = text.get(peek_start.unwrap_or(*i)..*i + c.len_utf8()) else {
-                        // Continue on, not a valid split
-                        return true;
-                    };
-                    if self.is_within_chunk_size(text) {
+                    let chunk = text
+                        .get(*peek_start.get_or_insert(*i)..*i + c.len_utf8())
+                        .expect("char should be valid");
+                    if self.is_within_chunk_size(chunk) {
                         true
                     } else {
                         peek_start = None;
@@ -114,7 +158,7 @@ impl TextSplitter {
                 .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, c)| {
                     (start.or(Some(i)), i + c.len_utf8())
                 });
-            start.and_then(|start| text.get(start..end))
+            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
         })
     }
 }
