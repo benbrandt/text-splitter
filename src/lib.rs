@@ -79,6 +79,34 @@ impl TextSplitter {
         (self.length_fn)(chunk) <= self.max_chunk_size
     }
 
+    /// Internal method to handle chunk splitting for anything above char level
+    fn generate_chunks<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        it: impl Iterator<Item = (usize, &'b str)> + 'a,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        it.peekable().batching(move |it| {
+            // Otherwise keep grabbing more graphemes
+            let mut peek_start = None;
+            let (start, end) = it
+                .peeking_take_while(move |(i, str)| {
+                    let chunk = text
+                        .get(*peek_start.get_or_insert(*i)..*i + str.len())
+                        .expect("invalid str range");
+                    if self.is_within_chunk_size(chunk) {
+                        true
+                    } else {
+                        peek_start = None;
+                        false
+                    }
+                })
+                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, str)| {
+                    (start.or(Some(i)), i + str.len())
+                });
+            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
+        })
+    }
+
     /// Generate a list of chunks from a given text. Each chunk will be up to
     /// the `max_chunk_size`.
     ///
@@ -110,8 +138,9 @@ impl TextSplitter {
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        text.grapheme_indices(true)
-            .flat_map(|(i, grapheme)| {
+        self.generate_chunks(
+            text,
+            text.grapheme_indices(true).flat_map(|(i, grapheme)| {
                 // If grapheme is too large, do char chunking
                 if self.is_within_chunk_size(grapheme) {
                     Either::Left(once((i, grapheme)))
@@ -121,28 +150,8 @@ impl TextSplitter {
                             .map(move |(ci, c)| (ci + i, c)),
                     )
                 }
-            })
-            .peekable()
-            .batching(move |it| {
-                // Otherwise keep grabbing more graphemes
-                let mut peek_start = None;
-                let (start, end) = it
-                    .peeking_take_while(move |(i, g)| {
-                        let chunk = text
-                            .get(*peek_start.get_or_insert(*i)..*i + g.len())
-                            .expect("grapheme should be valid");
-                        if self.is_within_chunk_size(chunk) {
-                            true
-                        } else {
-                            peek_start = None;
-                            false
-                        }
-                    })
-                    .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, g)| {
-                        (start.or(Some(i)), i + g.len())
-                    });
-                start.and_then(|start| text.get(start..end).map(|t| (start, t)))
-            })
+            }),
+        )
     }
 
     /// Generate a list of chunks from a given text. Each chunk will be up to
