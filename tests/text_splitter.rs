@@ -19,7 +19,7 @@ use text_splitter::TextSplitter;
 fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
     let text = Faker.fake::<String>();
     let splitter = TextSplitter::new(text.chars().count());
-    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_chars(&text).collect::<Vec<_>>();
     assert_eq!(text, chunks[0]);
 }
 
@@ -32,7 +32,7 @@ fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
     let max_chunk_size = text.chars().count() / 2 + 1;
 
     let splitter = TextSplitter::new(max_chunk_size);
-    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_chars(&text).collect::<Vec<_>>();
 
     assert!(chunks.iter().all(|c| c.chars().count() <= max_chunk_size));
 
@@ -53,7 +53,7 @@ fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
 fn can_handle_unicode_characters() {
     let text = "éé"; // Char that is more than one byte
     let splitter = TextSplitter::new(1);
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
     assert_eq!(vec!["é", "é"], chunks);
 }
 
@@ -61,8 +61,17 @@ fn can_handle_unicode_characters() {
 fn custom_len_function() {
     let text = "éé"; // Char that is two bytes each
     let splitter = TextSplitter::new(2).with_length_fn(str::len);
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
     assert_eq!(vec!["é", "é"], chunks);
+}
+
+#[test]
+fn handles_char_bigger_than_len() {
+    let text = "éé"; // Char that is two bytes each
+    let splitter = TextSplitter::new(1).with_length_fn(str::len);
+    let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
+    // Can't squeeze it in
+    assert!(chunks.is_empty());
 }
 
 #[test]
@@ -70,7 +79,7 @@ fn chunk_by_graphemes() {
     let text = "a̐éö̲\r\n";
     let splitter = TextSplitter::new(3);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_graphemes(text).collect::<Vec<_>>();
     // \r\n is grouped together not separated
     assert_eq!(vec!["a̐é", "ö̲", "\r\n"], chunks);
 }
@@ -80,7 +89,7 @@ fn graphemes_fallback_to_chars() {
     let text = "a̐éö̲\r\n";
     let splitter = TextSplitter::new(1);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunk_by_graphemes(text).collect::<Vec<_>>();
     assert_eq!(
         vec!["a", "\u{310}", "é", "ö", "\u{332}", "\r", "\n"],
         chunks
