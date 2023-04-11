@@ -253,4 +253,53 @@ impl TextSplitter {
     ) -> impl Iterator<Item = &'b str> + 'a {
         self.chunk_by_word_indices(text).map(|(_, t)| t)
     }
+
+    /// Preserve Unicode sentences wherever possible. Fallsback to words if
+    /// the word is larger than a chunk
+    fn chunk_by_sentence_indices<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.generate_chunks(
+            text,
+            text.split_sentence_bound_indices()
+                .flat_map(|(i, sentence)| {
+                    // If sentence is too large, do word chunking
+                    if self.is_within_chunk_size(sentence) {
+                        Either::Left(once((i, sentence)))
+                    } else {
+                        Either::Right(
+                            self.chunk_by_word_indices(sentence)
+                                // Offset relative indices back to parent string
+                                .map(move |(wi, w)| (wi + i, w)),
+                        )
+                    }
+                }),
+        )
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// the `max_chunk_size`.
+    ///
+    /// If a text is too large, each chunk will fit as many
+    /// [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// as possible.
+    ///
+    /// If a given sentence is larger than your chunk size, given the length
+    /// function, then it will be passed through
+    /// [`TextSplitter::chunk_by_words`] until it will fit in a chunk.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(100);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_sentences(text);
+    /// ```
+    pub fn chunk_by_sentences<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = &'b str> + 'a {
+        self.chunk_by_sentence_indices(text).map(|(_, t)| t)
+    }
 }

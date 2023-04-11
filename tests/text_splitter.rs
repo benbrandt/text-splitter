@@ -123,3 +123,27 @@ fn words_fallback_to_graphemes() {
     let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();
     assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
 }
+
+#[test]
+fn chunk_by_sentences() {
+    let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+    let splitter = TextSplitter::new(21);
+
+    let chunks = splitter.chunk_by_sentences(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec!["Mr. Fox jumped. ", "[...] ", "The dog was too lazy."],
+        chunks
+    );
+}
+
+#[test]
+fn sentences_falls_back_to_words() {
+    let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+    let splitter = TextSplitter::new(16);
+
+    let chunks = splitter.chunk_by_sentences(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+        chunks
+    );
+}
