@@ -82,6 +82,14 @@ impl TextSplitter {
     /// Generate a list of chunks from a given text. Each chunk will be up to
     /// the `max_chunk_size`.
     ///
+    /// If a text is too large, each chunk will fit as many
+    /// [unicode graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// as possible.
+    ///
+    /// If a given grapheme is larger than your chunk size, given the length
+    /// function, then it will be passed through [`TextSplitter::chunk_by_chars`]
+    /// until it will fit in a chunk.
+    ///
     /// ```
     /// use text_splitter::TextSplitter;
     ///
