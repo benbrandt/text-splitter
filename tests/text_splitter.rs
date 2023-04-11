@@ -50,6 +50,14 @@ fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
 }
 
 #[test]
+fn empty_string() {
+    let text = "";
+    let splitter = TextSplitter::new(100);
+    let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
+    assert!(chunks.is_empty());
+}
+
+#[test]
 fn can_handle_unicode_characters() {
     let text = "éé"; // Char that is more than one byte
     let splitter = TextSplitter::new(1);

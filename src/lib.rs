@@ -80,7 +80,7 @@ impl TextSplitter {
     }
 
     /// Internal method to handle chunk splitting for anything above char level
-    fn generate_chunks<'a, 'b: 'a>(
+    fn generate_chunks_from_str_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
         it: impl Iterator<Item = (usize, &'b str)> + 'a,
@@ -164,7 +164,7 @@ impl TextSplitter {
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks(
+        self.generate_chunks_from_str_indices(
             text,
             text.grapheme_indices(true).flat_map(|(i, grapheme)| {
                 // If grapheme is too large, do char chunking
@@ -212,7 +212,7 @@ impl TextSplitter {
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks(
+        self.generate_chunks_from_str_indices(
             text,
             text.split_word_bound_indices().flat_map(|(i, word)| {
                 // If words is too large, do grapheme chunking
@@ -260,7 +260,7 @@ impl TextSplitter {
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks(
+        self.generate_chunks_from_str_indices(
             text,
             text.split_sentence_bound_indices()
                 .flat_map(|(i, sentence)| {
