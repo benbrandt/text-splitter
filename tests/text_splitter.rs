@@ -20,7 +20,7 @@ fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
     let text = Faker.fake::<String>();
     let splitter = TextSplitter::new(text.chars().count());
     let chunks = splitter.chunk_by_chars(&text).collect::<Vec<_>>();
-    assert_eq!(text, chunks[0]);
+    assert_eq!(vec![&text], chunks);
 }
 
 #[test]
@@ -94,4 +94,32 @@ fn graphemes_fallback_to_chars() {
         vec!["a", "\u{310}", "é", "ö", "\u{332}", "\r", "\n"],
         chunks
     );
+}
+
+#[test]
+fn chunk_by_words() {
+    let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
+    let splitter = TextSplitter::new(10);
+
+    let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec![
+            "The quick ",
+            "(\"brown\") ",
+            "fox can't ",
+            "jump 32.3 ",
+            "feet, ",
+            "right?"
+        ],
+        chunks
+    );
+}
+
+#[test]
+fn words_fallback_to_graphemes() {
+    let text = "Thé quick\r\n";
+    let splitter = TextSplitter::new(2);
+
+    let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();
+    assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
 }

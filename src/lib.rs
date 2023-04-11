@@ -107,51 +107,31 @@ impl TextSplitter {
         })
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
-    /// the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many
-    /// [unicode graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-    /// as possible.
-    ///
-    /// If a given grapheme is larger than your chunk size, given the length
-    /// function, then it will be passed through [`TextSplitter::chunk_by_chars`]
-    /// until it will fit in a chunk.
-    ///
-    /// ```
-    /// use text_splitter::TextSplitter;
-    ///
-    /// let splitter = TextSplitter::new(100);
-    /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_graphemes(text);
-    /// ```
-    pub fn chunk_by_graphemes<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_grapheme_indices(text).map(|(_, t)| t)
-    }
-
-    /// Preserve Unicode graphemes where possible. Char iter would break them
-    /// up by default.
-    fn chunk_by_grapheme_indices<'a, 'b: 'a>(
+    /// Split a given text by chars where each chunk is within the max chunk
+    /// size.
+    fn chunk_by_char_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks(
-            text,
-            text.grapheme_indices(true).flat_map(|(i, grapheme)| {
-                // If grapheme is too large, do char chunking
-                if self.is_within_chunk_size(grapheme) {
-                    Either::Left(once((i, grapheme)))
-                } else {
-                    Either::Right(
-                        self.chunk_by_char_indices(grapheme)
-                            .map(move |(ci, c)| (ci + i, c)),
-                    )
-                }
-            }),
-        )
+        text.char_indices().peekable().batching(move |it| {
+            let mut peek_start = None;
+            let (start, end) = it
+                .peeking_take_while(move |(i, c)| {
+                    let chunk = text
+                        .get(*peek_start.get_or_insert(*i)..*i + c.len_utf8())
+                        .expect("char should be valid");
+                    if self.is_within_chunk_size(chunk) {
+                        true
+                    } else {
+                        peek_start = None;
+                        false
+                    }
+                })
+                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, c)| {
+                    (start.or(Some(i)), i + c.len_utf8())
+                });
+            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
+        })
     }
 
     /// Generate a list of chunks from a given text. Each chunk will be up to
@@ -178,30 +158,99 @@ impl TextSplitter {
         self.chunk_by_char_indices(text).map(|(_, t)| t)
     }
 
-    /// Split a given text by chars where each chunk is within the max chunk
-    /// size.
-    fn chunk_by_char_indices<'a, 'b: 'a>(
+    /// Preserve Unicode graphemes where possible. Char iter would break them
+    /// up by default.
+    fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        text.char_indices().peekable().batching(move |it| {
-            let mut peek_start = None;
-            let (start, end) = it
-                .peeking_take_while(move |(i, c)| {
-                    let chunk = text
-                        .get(*peek_start.get_or_insert(*i)..*i + c.len_utf8())
-                        .expect("char should be valid");
-                    if self.is_within_chunk_size(chunk) {
-                        true
-                    } else {
-                        peek_start = None;
-                        false
-                    }
-                })
-                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, c)| {
-                    (start.or(Some(i)), i + c.len_utf8())
-                });
-            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
-        })
+        self.generate_chunks(
+            text,
+            text.grapheme_indices(true).flat_map(|(i, grapheme)| {
+                // If grapheme is too large, do char chunking
+                if self.is_within_chunk_size(grapheme) {
+                    Either::Left(once((i, grapheme)))
+                } else {
+                    Either::Right(
+                        self.chunk_by_char_indices(grapheme)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// the `max_chunk_size`.
+    ///
+    /// If a text is too large, each chunk will fit as many
+    /// [unicode graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// as possible.
+    ///
+    /// If a given grapheme is larger than your chunk size, given the length
+    /// function, then it will be passed through
+    /// [`TextSplitter::chunk_by_chars`] until it will fit in a chunk.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(100);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_graphemes(text);
+    /// ```
+    pub fn chunk_by_graphemes<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = &'b str> + 'a {
+        self.chunk_by_grapheme_indices(text).map(|(_, t)| t)
+    }
+
+    /// Preserve Unicode words wherever possible. Fallsback to graphemes if
+    /// the word is larger than a chunk
+    fn chunk_by_word_indices<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.generate_chunks(
+            text,
+            text.split_word_bound_indices().flat_map(|(i, word)| {
+                // If words is too large, do grapheme chunking
+                if self.is_within_chunk_size(word) {
+                    Either::Left(once((i, word)))
+                } else {
+                    Either::Right(
+                        self.chunk_by_grapheme_indices(word)
+                            // Offset relative indices back to parent string
+                            .map(move |(gi, g)| (gi + i, g)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// the `max_chunk_size`.
+    ///
+    /// If a text is too large, each chunk will fit as many
+    /// [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// as possible.
+    ///
+    /// If a given word is larger than your chunk size, given the length
+    /// function, then it will be passed through
+    /// [`TextSplitter::chunk_by_graphemes`] until it will fit in a chunk.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(100);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_words(text);
+    /// ```
+    pub fn chunk_by_words<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = &'b str> + 'a {
+        self.chunk_by_word_indices(text).map(|(_, t)| t)
     }
 }
