@@ -155,3 +155,55 @@ fn sentences_falls_back_to_words() {
         chunks
     );
 }
+
+#[test]
+fn chunk_by_paragraphs() {
+    let text = "Mr. Fox jumped.\n[...]\r\n\r\nThe dog was too lazy.";
+    let splitter = TextSplitter::new(21);
+
+    let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec![
+            "Mr. Fox jumped.\n[...]",
+            "\r\n\r\n",
+            "The dog was too lazy."
+        ],
+        chunks
+    );
+}
+
+#[test]
+fn handles_ending_on_newline() {
+    let text = "Mr. Fox jumped.\n[...]\r\n\r\n";
+    let splitter = TextSplitter::new(21);
+
+    let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
+    assert_eq!(vec!["Mr. Fox jumped.\n[...]", "\r\n\r\n"], chunks);
+}
+
+#[test]
+fn regex_handles_empty_string() {
+    let text = "";
+    let splitter = TextSplitter::new(21);
+
+    let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
+    assert!(chunks.is_empty());
+}
+
+#[test]
+fn double_newline_fallsback_to_single_and_sentences() {
+    let text = "Mr. Fox jumped.\n[...]\r\n\r\nThe dog was too lazy. It just sat there.";
+    let splitter = TextSplitter::new(18);
+
+    let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec![
+            "Mr. Fox jumped.\n",
+            "[...]\r\n\r\n",
+            "The dog was too ",
+            "lazy. ",
+            "It just sat there."
+        ],
+        chunks
+    );
+}

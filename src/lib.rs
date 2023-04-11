@@ -24,6 +24,8 @@ use core::{fmt, iter::once};
 
 use either::Either;
 use itertools::Itertools;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
@@ -43,6 +45,12 @@ impl fmt::Debug for TextSplitter {
             .finish()
     }
 }
+
+// Lazy's so that we don't have to compile them more than once
+/// Any sequence of 2 or more newlines
+static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
+/// Fallback for anything else
+static NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 impl TextSplitter {
     /// Creates a new [`TextSplitter`].
@@ -85,26 +93,67 @@ impl TextSplitter {
         text: &'b str,
         it: impl Iterator<Item = (usize, &'b str)> + 'a,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        it.peekable().batching(move |it| {
-            // Otherwise keep grabbing more graphemes
-            let mut peek_start = None;
-            let (start, end) = it
-                .peeking_take_while(move |(i, str)| {
-                    let chunk = text
-                        .get(*peek_start.get_or_insert(*i)..*i + str.len())
-                        .expect("invalid str range");
-                    if self.is_within_chunk_size(chunk) {
-                        true
-                    } else {
-                        peek_start = None;
-                        false
-                    }
-                })
-                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, str)| {
-                    (start.or(Some(i)), i + str.len())
-                });
-            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
-        })
+        it.peekable()
+            .batching(move |it| {
+                // Otherwise keep grabbing more graphemes
+                let mut peek_start = None;
+                let (start, end) = it
+                    .peeking_take_while(move |(i, str)| {
+                        let chunk = text
+                            .get(*peek_start.get_or_insert(*i)..*i + str.len())
+                            .expect("invalid str range");
+                        if self.is_within_chunk_size(chunk) {
+                            true
+                        } else {
+                            peek_start = None;
+                            false
+                        }
+                    })
+                    .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, str)| {
+                        (start.or(Some(i)), i + str.len())
+                    });
+                start.and_then(|start| text.get(start..end).map(|t| (start, t)))
+            })
+            // Filter out any chunks who got through as empty strings
+            .filter(|(_, t)| !t.is_empty())
+    }
+
+    /// Generate iter of str indices from a regex separator. These won't be
+    /// batched yet in case further fallbacks are needed.
+    fn str_indices_from_regex_separator<'a, 'b: 'a>(
+        text: &'b str,
+        separator: &'a Regex,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        let mut cursor = 0;
+        let mut final_match = false;
+        separator
+            .find_iter(text)
+            .batching(move |it| match it.next() {
+                // If we've hit the end, actually return None
+                None if final_match => None,
+                // First time we hit None, return the final section of the text
+                None => {
+                    final_match = true;
+                    text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
+                }
+                // Return text preceding match + the match
+                Some(sep) => {
+                    let sep_range = sep.range();
+                    let prev_word = (
+                        cursor,
+                        text.get(cursor..sep_range.start)
+                            .expect("invalid character sequence in regex"),
+                    );
+                    let separator = (
+                        sep_range.start,
+                        text.get(sep_range.start..sep_range.end)
+                            .expect("invalid character sequence in regex"),
+                    );
+                    cursor = sep_range.end;
+                    Some(Either::Right([prev_word, separator].into_iter()))
+                }
+            })
+            .flatten()
     }
 
     /// Split a given text by chars where each chunk is within the max chunk
@@ -301,5 +350,66 @@ impl TextSplitter {
         text: &'b str,
     ) -> impl Iterator<Item = &'b str> + 'a {
         self.chunk_by_sentence_indices(text).map(|(_, t)| t)
+    }
+
+    /// Preserve Unicode sentences wherever possible. Fallsback to words if
+    /// the word is larger than a chunk
+    fn chunk_by_paragraph_indices<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.generate_chunks_from_str_indices(
+            text,
+            Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE)
+                .flat_map(|(i, paragraph)| {
+                    // If paragraph is too large, do single line
+                    if self.is_within_chunk_size(paragraph) {
+                        Either::Left(once((i, paragraph)))
+                    } else {
+                        Either::Right(
+                            Self::str_indices_from_regex_separator(paragraph, &NEWLINE)
+                                // Offset relative indices back to parent string
+                                .map(move |(pi, p)| (pi + i, p)),
+                        )
+                    }
+                })
+                .flat_map(|(i, paragraph)| {
+                    // If paragraph is still too large, do sentences
+                    if self.is_within_chunk_size(paragraph) {
+                        Either::Left(once((i, paragraph)))
+                    } else {
+                        Either::Right(
+                            self.chunk_by_sentence_indices(paragraph)
+                                // Offset relative indices back to parent string
+                                .map(move |(si, s)| (si + i, s)),
+                        )
+                    }
+                }),
+        )
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// the `max_chunk_size`.
+    ///
+    /// If a text is too large, each chunk will fit as many paragraphs as
+    /// possible, first splitting by two or more newlines (checking for both \r
+    /// and \n), and then by single newlines.
+    ///
+    /// If a given paragraph is larger than your chunk size, given the length
+    /// function, then it will be passed through
+    /// [`TextSplitter::chunk_by_sentences`] until it will fit in a chunk.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(100);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_paragraphs(text);
+    /// ```
+    pub fn chunk_by_paragraphs<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = &'b str> + 'a {
+        self.chunk_by_paragraph_indices(text).map(|(_, t)| t)
     }
 }
