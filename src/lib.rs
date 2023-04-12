@@ -169,9 +169,11 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100);
+    /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_chars(text);
+    ///
+    /// assert_eq!(vec!["Some text ", "from a doc", "ument"], chunks.collect::<Vec<_>>());
     /// ```
     pub fn chunk_by_chars<'a, 'b: 'a>(
         &'a self,
@@ -180,9 +182,19 @@ impl TextSplitter {
         self.chunk_by_char_indices(text).map(|(_, t)| t)
     }
 
-    /// Split a given text by chars where each chunk is within the max chunk
-    /// size.
-    fn chunk_by_char_indices<'a, 'b: 'a>(
+    /// Returns an iterator over the characters of the text and their byte offsets.
+    /// See [`TextSplitter::chunk_by_chars()`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_char_indices(text);
+    ///
+    /// assert_eq!(vec![(0, "Some text "), (10, "from a doc"), (20, "ument")], chunks.collect::<Vec<_>>());
+    /// ```
+    pub fn chunk_by_char_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -221,9 +233,11 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100);
-    /// let text = "Some text from a document";
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text\r\nfrom a document";
     /// let chunks = splitter.chunk_by_graphemes(text);
+    ///
+    /// assert_eq!(vec!["Some text", "\r\nfrom a d", "ocument"], chunks.collect::<Vec<_>>());
     /// ```
     pub fn chunk_by_graphemes<'a, 'b: 'a>(
         &'a self,
@@ -232,9 +246,19 @@ impl TextSplitter {
         self.chunk_by_grapheme_indices(text).map(|(_, t)| t)
     }
 
-    /// Preserve Unicode graphemes where possible. Char iter would break them
-    /// up by default.
-    fn chunk_by_grapheme_indices<'a, 'b: 'a>(
+    /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
+    /// See [`TextSplitter::chunk_by_graphemes()`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text\r\nfrom a document";
+    /// let chunks = splitter.chunk_by_grapheme_indices(text);
+    ///
+    /// assert_eq!(vec![(0, "Some text"), (9, "\r\nfrom a d"), (19, "ocument")], chunks.collect::<Vec<_>>());
+    /// ```
+    pub fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -269,9 +293,11 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100);
+    /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_words(text);
+    ///
+    /// assert_eq!(vec!["Some text ", "from a ", "document"], chunks.collect::<Vec<_>>());
     /// ```
     pub fn chunk_by_words<'a, 'b: 'a>(
         &'a self,
@@ -280,9 +306,19 @@ impl TextSplitter {
         self.chunk_by_word_indices(text).map(|(_, t)| t)
     }
 
-    /// Preserve Unicode words wherever possible. Fallsback to graphemes if
-    /// the word is larger than a chunk
-    fn chunk_by_word_indices<'a, 'b: 'a>(
+    /// Returns an iterator over the words of the text and their byte offsets.
+    /// See [`TextSplitter::chunk_by_words()`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text from a document";
+    /// let chunks = splitter.chunk_by_word_indices(text);
+    ///
+    /// assert_eq!(vec![(0, "Some text "), (10, "from a "), (17, "document")], chunks.collect::<Vec<_>>());
+    /// ```
+    pub fn chunk_by_word_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -317,9 +353,11 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100);
-    /// let text = "Some text from a document";
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text. From a document.";
     /// let chunks = splitter.chunk_by_sentences(text);
+    ///
+    /// assert_eq!(vec!["Some text.", " From a ", "document."], chunks.collect::<Vec<_>>());
     /// ```
     pub fn chunk_by_sentences<'a, 'b: 'a>(
         &'a self,
@@ -327,9 +365,20 @@ impl TextSplitter {
     ) -> impl Iterator<Item = &'b str> + 'a {
         self.chunk_by_sentence_indices(text).map(|(_, t)| t)
     }
-    /// Preserve Unicode sentences wherever possible. Fallsback to words if
-    /// the word is larger than a chunk
-    fn chunk_by_sentence_indices<'a, 'b: 'a>(
+
+    /// Returns an iterator over the unicode sentences of the text and their byte offsets.
+    /// See [`TextSplitter::chunk_by_sentences()`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text. From a document.";
+    /// let chunks = splitter.chunk_by_sentence_indices(text);
+    ///
+    /// assert_eq!(vec![(0, "Some text."), (10, " From a "), (18, "document.")], chunks.collect::<Vec<_>>());
+    /// ```
+    pub fn chunk_by_sentence_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -365,9 +414,11 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100);
-    /// let text = "Some text from a document";
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_by_paragraphs(text);
+    ///
+    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks.collect::<Vec<_>>());
     /// ```
     pub fn chunk_by_paragraphs<'a, 'b: 'a>(
         &'a self,
@@ -375,9 +426,20 @@ impl TextSplitter {
     ) -> impl Iterator<Item = &'b str> + 'a {
         self.chunk_by_paragraph_indices(text).map(|(_, t)| t)
     }
-    /// Preserve Unicode sentences wherever possible. Fallsback to words if
-    /// the word is larger than a chunk
-    fn chunk_by_paragraph_indices<'a, 'b: 'a>(
+
+    /// Returns an iterator over the paragraphs of the text and their byte offsets.
+    /// See [`TextSplitter::chunk_by_paragraphs()`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(10);
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunk_by_paragraph_indices(text);
+    ///
+    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks.collect::<Vec<_>>());
+    /// ```
+    pub fn chunk_by_paragraph_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
