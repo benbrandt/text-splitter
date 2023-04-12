@@ -108,6 +108,11 @@ impl TextSplitter {
 
     /// Is the given text within the chunk size?
     fn is_within_chunk_size(&self, chunk: &str) -> bool {
+        let chunk = if self.trim_chunks {
+            chunk.trim()
+        } else {
+            chunk
+        };
         (self.length_fn)(chunk) <= self.max_chunk_size
     }
 
@@ -119,17 +124,16 @@ impl TextSplitter {
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
         it.peekable()
             .batching(move |it| {
-                // Otherwise keep grabbing more graphemes
-                let mut peek_start = None;
+                let mut cursor = None;
                 let (start, end) = it
                     .peeking_take_while(move |(i, str)| {
                         let chunk = text
-                            .get(*peek_start.get_or_insert(*i)..*i + str.len())
+                            .get(*cursor.get_or_insert(*i)..*i + str.len())
                             .expect("invalid str range");
                         if self.is_within_chunk_size(chunk) {
                             true
                         } else {
-                            peek_start = None;
+                            cursor = None;
                             false
                         }
                     })
