@@ -36,12 +36,17 @@ pub struct TextSplitter {
     length_fn: Box<dyn Fn(&str) -> usize>,
     /// Maximum size of a chunk (measured by length_fn)
     max_chunk_size: usize,
+    /// Whether or not all chunks should have whitespace trimmed.
+    /// If `false`, joining all chunks should return the original string.
+    /// If `true`, all chunks will have whitespace removed from beginning and end.
+    trim_chunks: bool,
 }
 
 impl fmt::Debug for TextSplitter {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("TextSplitter")
             .field("max_chunk_size", &self.max_chunk_size)
+            .field("trim_chunks", &self.trim_chunks)
             .finish()
     }
 }
@@ -63,13 +68,32 @@ impl TextSplitter {
     #[must_use]
     pub fn new(max_chunk_size: usize) -> Self {
         Self {
-            max_chunk_size,
             length_fn: Box::new(|text| text.chars().count()),
+            max_chunk_size,
+            trim_chunks: false,
         }
     }
 
     /// Specify a custom function for calculating the length of a chunk. For
     /// example, using chars instead of bytes.
+    ///
+    /// If `false` (default), joining all chunks should return the original
+    /// string.
+    /// If `true`, all chunks will have whitespace removed from beginning and end.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(100).with_trim_chunks(true);
+    /// ```
+    #[must_use]
+    pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
+        self.trim_chunks = trim_chunks;
+        self
+    }
+
+    /// Specify whether chunks should have whitespace trimmed from the
+    /// beginning and end or not.
     ///
     /// ```
     /// use text_splitter::TextSplitter;
@@ -113,6 +137,16 @@ impl TextSplitter {
                         (start.or(Some(i)), i + str.len())
                     });
                 start.and_then(|start| text.get(start..end).map(|t| (start, t)))
+            })
+            // Trim whitespace if user requested it
+            .map(|(i, t)| {
+                if self.trim_chunks {
+                    // Figure out how many bytes we lose trimming the beginning
+                    let offset = t.len() - t.trim_start().len();
+                    (i + offset, t.trim())
+                } else {
+                    (i, t)
+                }
             })
             // Filter out any chunks who got through as empty strings
             .filter(|(_, t)| !t.is_empty())
@@ -198,25 +232,15 @@ impl TextSplitter {
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        text.char_indices().peekable().batching(move |it| {
-            let mut peek_start = None;
-            let (start, end) = it
-                .peeking_take_while(move |(i, c)| {
-                    let chunk = text
-                        .get(*peek_start.get_or_insert(*i)..*i + c.len_utf8())
-                        .expect("char should be valid");
-                    if self.is_within_chunk_size(chunk) {
-                        true
-                    } else {
-                        peek_start = None;
-                        false
-                    }
-                })
-                .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, c)| {
-                    (start.or(Some(i)), i + c.len_utf8())
-                });
-            start.and_then(|start| text.get(start..end).map(|t| (start, t)))
-        })
+        self.generate_chunks_from_str_indices(
+            text,
+            text.char_indices().map(|(i, c)| {
+                (
+                    i,
+                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
+                )
+            }),
+        )
     }
 
     /// Generate a list of chunks from a given text. Each chunk will be up to

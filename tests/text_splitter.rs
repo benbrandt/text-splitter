@@ -207,3 +207,104 @@ fn double_newline_fallsback_to_single_and_sentences() {
         chunks
     );
 }
+
+#[test]
+fn trim_char_indices() {
+    let text = " a b ";
+    let splitter = TextSplitter::new(1).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_char_indices(text).collect::<Vec<_>>();
+    assert_eq!(vec![(1, "a"), (3, "b")], chunks);
+}
+
+#[test]
+fn trim_chars() {
+    let text = " a b ";
+    let splitter = TextSplitter::new(1).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
+    assert_eq!(vec!["a", "b"], chunks);
+}
+
+#[test]
+fn trim_grapheme_indices() {
+    let text = "\r\na̐éö̲\r\n";
+    let splitter = TextSplitter::new(3).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_grapheme_indices(text).collect::<Vec<_>>();
+    assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
+}
+
+#[test]
+fn trim_graphemes() {
+    let text = "\r\na̐éö̲\r\n";
+    let splitter = TextSplitter::new(3).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_graphemes(text).collect::<Vec<_>>();
+    assert_eq!(vec!["a̐é", "ö̲"], chunks);
+}
+
+#[test]
+fn trim_word_indices() {
+    let text = "Some text from a document";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_word_indices(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec![(0, "Some text"), (10, "from a"), (17, "document")],
+        chunks
+    );
+}
+
+#[test]
+fn trim_words() {
+    let text = "Some text from a document";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();
+    assert_eq!(vec!["Some text", "from a", "document"], chunks);
+}
+
+#[test]
+fn trim_sentence_indices() {
+    let text = "Some text. From a document.";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_sentence_indices(text).collect::<Vec<_>>();
+    assert_eq!(
+        vec![(0, "Some text."), (11, "From a"), (18, "document.")],
+        chunks
+    );
+}
+
+#[test]
+fn trim_sentences() {
+    let text = "Some text. From a document.";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_sentences(text).collect::<Vec<_>>();
+    assert_eq!(vec!["Some text.", "From a", "document."], chunks);
+}
+
+#[test]
+fn trim_paragraph_indices() {
+    let text = "Some text\n\nfrom a\ndocument";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter
+        .chunk_by_paragraph_indices(text)
+        .collect::<Vec<_>>();
+    assert_eq!(
+        vec![(0, "Some text"), (11, "from a"), (18, "document")],
+        chunks
+    );
+}
+
+#[test]
+fn trim_paragraphs() {
+    let text = "Some text\n\nfrom a\ndocument";
+    let splitter = TextSplitter::new(10).with_trim_chunks(true);
+
+    let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
+    assert_eq!(vec!["Some text", "from a", "document"], chunks);
+}
