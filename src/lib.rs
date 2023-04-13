@@ -55,7 +55,7 @@ impl fmt::Debug for TextSplitter {
 /// Any sequence of 2 or more newlines
 static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
 /// Fallback for anything else
-static NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
+static NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r|\n)+").unwrap());
 
 impl TextSplitter {
     /// Creates a new [`TextSplitter`].
