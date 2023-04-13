@@ -23,12 +23,14 @@
 use core::{fmt, iter::once};
 
 use either::Either;
-use itertools::{process_results, Itertools};
+use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
-enum Error {}
+#[derive(Debug)]
+/// Possible errors that can be generated when splitting text
+pub enum Error {}
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -122,12 +124,18 @@ impl TextSplitter {
     fn generate_chunks_from_str_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-        it: impl Iterator<Item = (usize, &'b str)> + 'a,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        it: impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a,
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         it.peekable().batching(move |it| {
             let (mut start, mut end) = (None, 0);
 
-            while let Some((i, str)) = it.peek() {
+            // Bubble up errors
+            if let Some(Err(_)) = it.peek() {
+                return it.next();
+            }
+
+            // Consume as many other chunks as we can
+            while let Some(Ok((i, str))) = it.peek() {
                 let chunk = text
                     .get(*start.get_or_insert(*i)..*i + str.len())
                     .expect("invalid str range");
@@ -152,7 +160,7 @@ impl TextSplitter {
             };
 
             // Filter out any chunks who got through as empty strings
-            (!chunk.is_empty()).then_some((start, chunk))
+            (!chunk.is_empty()).then_some(Ok((start, chunk)))
         })
     }
 
@@ -209,15 +217,15 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_chars(text);
+    /// let chunks = splitter.chunk_by_chars(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec!["Some text ", "from a doc", "ument"], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec!["Some text ", "from a doc", "ument"], chunks);
     /// ```
     pub fn chunk_by_chars<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_char_indices(text).map(|(_, t)| t)
+    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+        self.chunk_by_char_indices(text).map_ok(|(_, t)| t)
     }
 
     /// Returns an iterator over the characters of the text and their byte offsets.
@@ -228,21 +236,21 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_char_indices(text);
+    /// let chunks = splitter.chunk_by_char_indices(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec![(0, "Some text "), (10, "from a doc"), (20, "ument")], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec![(0, "Some text "), (10, "from a doc"), (20, "ument")], chunks);
     /// ```
     pub fn chunk_by_char_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.char_indices().map(|(i, c)| {
-                (
+                Ok((
                     i,
                     text.get(i..i + c.len_utf8()).expect("char should be valid"),
-                )
+                ))
             }),
         )
     }
@@ -263,15 +271,15 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text\r\nfrom a document";
-    /// let chunks = splitter.chunk_by_graphemes(text);
+    /// let chunks = splitter.chunk_by_graphemes(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec!["Some text", "\r\nfrom a d", "ocument"], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec!["Some text", "\r\nfrom a d", "ocument"], chunks);
     /// ```
     pub fn chunk_by_graphemes<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_grapheme_indices(text).map(|(_, t)| t)
+    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+        self.chunk_by_grapheme_indices(text).map_ok(|(_, t)| t)
     }
 
     /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
@@ -282,25 +290,25 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text\r\nfrom a document";
-    /// let chunks = splitter.chunk_by_grapheme_indices(text);
+    /// let chunks = splitter.chunk_by_grapheme_indices(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\r\nfrom a d"), (19, "ocument")], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec![(0, "Some text"), (9, "\r\nfrom a d"), (19, "ocument")], chunks);
     /// ```
     pub fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.grapheme_indices(true).flat_map(|(i, grapheme)| {
                 // If grapheme is too large, do char chunking
                 if self.is_within_chunk_size(grapheme) {
-                    Either::Left(once((i, grapheme)))
+                    Either::Left(once(Ok((i, grapheme))))
                 } else {
                     Either::Right(
                         self.chunk_by_char_indices(grapheme)
                             // Offset relative indices back to parent string
-                            .map(move |(ci, c)| (ci + i, c)),
+                            .map_ok(move |(ci, c)| (ci + i, c)),
                     )
                 }
             }),
@@ -323,15 +331,15 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_words(text);
+    /// let chunks = splitter.chunk_by_words(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec!["Some text ", "from a ", "document"], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec!["Some text ", "from a ", "document"], chunks);
     /// ```
     pub fn chunk_by_words<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_word_indices(text).map(|(_, t)| t)
+    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+        self.chunk_by_word_indices(text).map_ok(|(_, t)| t)
     }
 
     /// Returns an iterator over the words of the text and their byte offsets.
@@ -342,25 +350,25 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_word_indices(text);
+    /// let chunks = splitter.chunk_by_word_indices(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec![(0, "Some text "), (10, "from a "), (17, "document")], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec![(0, "Some text "), (10, "from a "), (17, "document")], chunks);
     /// ```
     pub fn chunk_by_word_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.split_word_bound_indices().flat_map(|(i, word)| {
                 // If words is too large, do grapheme chunking
                 if self.is_within_chunk_size(word) {
-                    Either::Left(once((i, word)))
+                    Either::Left(once(Ok((i, word))))
                 } else {
                     Either::Right(
                         self.chunk_by_grapheme_indices(word)
                             // Offset relative indices back to parent string
-                            .map(move |(gi, g)| (gi + i, g)),
+                            .map_ok(move |(gi, g)| (gi + i, g)),
                     )
                 }
             }),
@@ -383,15 +391,15 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text. From a document.";
-    /// let chunks = splitter.chunk_by_sentences(text);
+    /// let chunks = splitter.chunk_by_sentences(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec!["Some text.", " From a ", "document."], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec!["Some text.", " From a ", "document."], chunks);
     /// ```
     pub fn chunk_by_sentences<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_sentence_indices(text).map(|(_, t)| t)
+    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+        self.chunk_by_sentence_indices(text).map_ok(|(_, t)| t)
     }
 
     /// Returns an iterator over the unicode sentences of the text and their byte offsets.
@@ -402,26 +410,26 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text. From a document.";
-    /// let chunks = splitter.chunk_by_sentence_indices(text);
+    /// let chunks = splitter.chunk_by_sentence_indices(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec![(0, "Some text."), (10, " From a "), (18, "document.")], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec![(0, "Some text."), (10, " From a "), (18, "document.")], chunks);
     /// ```
     pub fn chunk_by_sentence_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.split_sentence_bound_indices()
                 .flat_map(|(i, sentence)| {
                     // If sentence is too large, do word chunking
                     if self.is_within_chunk_size(sentence) {
-                        Either::Left(once((i, sentence)))
+                        Either::Left(once(Ok((i, sentence))))
                     } else {
                         Either::Right(
                             self.chunk_by_word_indices(sentence)
                                 // Offset relative indices back to parent string
-                                .map(move |(wi, w)| (wi + i, w)),
+                                .map_ok(move |(wi, w)| (wi + i, w)),
                         )
                     }
                 }),
@@ -444,15 +452,15 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text\n\nfrom a\ndocument";
-    /// let chunks = splitter.chunk_by_paragraphs(text);
+    /// let chunks = splitter.chunk_by_paragraphs(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
     /// ```
     pub fn chunk_by_paragraphs<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_paragraph_indices(text).map(|(_, t)| t)
+    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+        self.chunk_by_paragraph_indices(text).map_ok(|(_, t)| t)
     }
 
     /// Returns an iterator over the paragraphs of the text and their byte offsets.
@@ -463,39 +471,44 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(10);
     /// let text = "Some text\n\nfrom a\ndocument";
-    /// let chunks = splitter.chunk_by_paragraph_indices(text);
+    /// let chunks = splitter.chunk_by_paragraph_indices(text).collect::<Result<Vec<_>, _>>().unwrap();
     ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks.collect::<Vec<_>>());
+    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
     /// ```
     pub fn chunk_by_paragraph_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE)
                 .flat_map(|(i, paragraph)| {
                     // If paragraph is too large, do single line
                     if self.is_within_chunk_size(paragraph) {
-                        Either::Left(once((i, paragraph)))
+                        Either::Left(once(Ok((i, paragraph))))
                     } else {
                         Either::Right(
                             Self::str_indices_from_regex_separator(paragraph, &NEWLINE)
                                 // Offset relative indices back to parent string
-                                .map(move |(pi, p)| (pi + i, p)),
+                                .map(move |(pi, p)| Ok((pi + i, p))),
                         )
                     }
                 })
-                .flat_map(|(i, paragraph)| {
-                    // If paragraph is still too large, do sentences
-                    if self.is_within_chunk_size(paragraph) {
-                        Either::Left(once((i, paragraph)))
-                    } else {
-                        Either::Right(
-                            self.chunk_by_sentence_indices(paragraph)
-                                // Offset relative indices back to parent string
-                                .map(move |(si, s)| (si + i, s)),
-                        )
+                .flat_map(|result| {
+                    match result {
+                        Ok((i, paragraph)) => Either::Left(
+                            // If paragraph is still too large, do sentences
+                            if self.is_within_chunk_size(paragraph) {
+                                Either::Left(once(Ok((i, paragraph))))
+                            } else {
+                                Either::Right(
+                                    self.chunk_by_sentence_indices(paragraph)
+                                        // Offset relative indices back to parent string
+                                        .map_ok(move |(si, s)| (si + i, s)),
+                                )
+                            },
+                        ),
+                        Err(_) => Either::Right(once(result)),
                     }
                 }),
         )
