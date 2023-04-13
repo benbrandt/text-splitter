@@ -23,10 +23,12 @@
 use core::{fmt, iter::once};
 
 use either::Either;
-use itertools::Itertools;
+use itertools::{process_results, Itertools};
 use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
+
+enum Error {}
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -122,37 +124,36 @@ impl TextSplitter {
         text: &'b str,
         it: impl Iterator<Item = (usize, &'b str)> + 'a,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        it.peekable()
-            .batching(move |it| {
-                let (mut start, mut end) = (None, 0);
+        it.peekable().batching(move |it| {
+            let (mut start, mut end) = (None, 0);
 
-                while let Some((i, str)) = it.peek() {
-                        let chunk = text
-                        .get(*start.get_or_insert(*i)..*i + str.len())
-                            .expect("invalid str range");
-                    // If this is our first one and it can't fit, still call
-                    // next otherwise we'll get stuck.
-                    if !self.is_within_chunk_size(chunk) && end != 0 {
-                        break;
-                        }
-                    end = i + str.len();
-                    it.next();
+            while let Some((i, str)) = it.peek() {
+                let chunk = text
+                    .get(*start.get_or_insert(*i)..*i + str.len())
+                    .expect("invalid str range");
+                // If this is our first one and it can't fit, still call
+                // next otherwise we'll get stuck.
+                if !self.is_within_chunk_size(chunk) && end != 0 {
+                    break;
                 }
+                end = i + str.len();
+                it.next();
+            }
 
-                start.and_then(|start| text.get(start..end).map(|t| (start, t)))
-            })
+            let start = start?;
+            let chunk = text.get(start..end)?;
             // Trim whitespace if user requested it
-            .map(|(i, t)| {
-                if self.trim_chunks {
-                    // Figure out how many bytes we lose trimming the beginning
-                    let offset = t.len() - t.trim_start().len();
-                    (i + offset, t.trim())
-                } else {
-                    (i, t)
-                }
-            })
+            let (start, chunk) = if self.trim_chunks {
+                // Figure out how many bytes we lose trimming the beginning
+                let offset = chunk.len() - chunk.trim_start().len();
+                (start + offset, chunk.trim())
+            } else {
+                (start, chunk)
+            };
+
             // Filter out any chunks who got through as empty strings
-            .filter(|(_, t)| !t.is_empty())
+            (!chunk.is_empty()).then_some((start, chunk))
+        })
     }
 
     /// Generate iter of str indices from a regex separator. These won't be
