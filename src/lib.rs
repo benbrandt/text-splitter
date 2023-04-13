@@ -124,22 +124,21 @@ impl TextSplitter {
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
         it.peekable()
             .batching(move |it| {
-                let mut cursor = None;
-                let (start, end) = it
-                    .peeking_take_while(move |(i, str)| {
+                let (mut start, mut end) = (None, 0);
+
+                while let Some((i, str)) = it.peek() {
                         let chunk = text
-                            .get(*cursor.get_or_insert(*i)..*i + str.len())
+                        .get(*start.get_or_insert(*i)..*i + str.len())
                             .expect("invalid str range");
-                        if self.is_within_chunk_size(chunk) {
-                            true
-                        } else {
-                            cursor = None;
-                            false
+                    // If this is our first one and it can't fit, still call
+                    // next otherwise we'll get stuck.
+                    if !self.is_within_chunk_size(chunk) && end != 0 {
+                        break;
                         }
-                    })
-                    .fold::<(Option<usize>, usize), _>((None, 0), |(start, _), (i, str)| {
-                        (start.or(Some(i)), i + str.len())
-                    });
+                    end = i + str.len();
+                    it.next();
+                }
+
                 start.and_then(|start| text.get(start..end).map(|t| (start, t)))
             })
             // Trim whitespace if user requested it

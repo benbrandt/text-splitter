@@ -78,8 +78,8 @@ fn handles_char_bigger_than_len() {
     let text = "éé"; // Char that is two bytes each
     let splitter = TextSplitter::new(1).with_length_fn(str::len);
     let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();
-    // Can't squeeze it in
-    assert!(chunks.is_empty());
+    // We can only go so small
+    assert_eq!(vec!["é", "é"], chunks);
 }
 
 #[test]
