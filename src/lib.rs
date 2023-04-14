@@ -29,8 +29,11 @@ use regex::Regex;
 use thiserror::Error;
 use unicode_segmentation::UnicodeSegmentation;
 
-#[derive(Debug, Error)]
+#[cfg(feature = "huggingface-tokenizers")]
+mod huggingface_tokenizers;
+
 /// Possible errors that can be generated when splitting text
+#[derive(Debug, Error)]
 pub enum TextSplitterError {
     /// Result of a failed check by the length function. Most likely due to
     /// failed tokenization or something similar.
@@ -91,8 +94,8 @@ impl TextSplitter {
         }
     }
 
-    /// Specify a custom function for calculating the length of a chunk. For
-    /// example, using chars instead of bytes.
+    /// Specify whether chunks should have whitespace trimmed from the
+    /// beginning and end or not.
     ///
     /// If `false` (default), joining all chunks should return the original
     /// string.
@@ -109,8 +112,8 @@ impl TextSplitter {
         self
     }
 
-    /// Specify whether chunks should have whitespace trimmed from the
-    /// beginning and end or not.
+    /// Specify a custom function for calculating the length of a chunk. For
+    /// example, using chars instead of bytes.
     ///
     /// ```
     /// use text_splitter::TextSplitter;
