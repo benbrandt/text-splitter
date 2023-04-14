@@ -26,18 +26,31 @@ use either::Either;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
+use thiserror::Error;
 use unicode_segmentation::UnicodeSegmentation;
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 /// Possible errors that can be generated when splitting text
-pub enum Error {}
+pub enum TextSplitterError {
+    /// Result of a failed check by the length function. Most likely due to
+    /// failed tokenization or something similar.
+    #[error("Failed to check length. Error: {source} for chunk: {chunk}")]
+    LengthCheck {
+        /// The chunk that the length check failed on
+        chunk: String,
+        /// Original error from the legnth function
+        source: anyhow::Error,
+    },
+}
+
+type LengthFn = dyn Fn(&str) -> anyhow::Result<usize>;
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 pub struct TextSplitter {
     /// Method of calculating chunk length. By default done at the character level.
-    length_fn: Box<dyn Fn(&str) -> usize>,
+    length_fn: Box<LengthFn>,
     /// Maximum size of a chunk (measured by length_fn)
     max_chunk_size: usize,
     /// Whether or not all chunks should have whitespace trimmed.
@@ -72,7 +85,7 @@ impl TextSplitter {
     #[must_use]
     pub fn new(max_chunk_size: usize) -> Self {
         Self {
-            length_fn: Box::new(|text| text.chars().count()),
+            length_fn: Box::new(|text| Ok(text.chars().count())),
             max_chunk_size,
             trim_chunks: false,
         }
@@ -102,30 +115,39 @@ impl TextSplitter {
     /// ```
     /// use text_splitter::TextSplitter;
     ///
-    /// let splitter = TextSplitter::new(100).with_length_fn(|text| text.chars().count());
+    /// let splitter = TextSplitter::new(100).with_length_fn(|text| Ok(text.chars().count()));
     /// ```
     #[must_use]
-    pub fn with_length_fn(mut self, length_fn: impl Fn(&str) -> usize + 'static) -> Self {
+    pub fn with_length_fn(
+        mut self,
+        length_fn: impl Fn(&str) -> anyhow::Result<usize> + 'static,
+    ) -> Self {
         self.length_fn = Box::new(length_fn);
         self
     }
 
     /// Is the given text within the chunk size?
-    fn is_within_chunk_size(&self, chunk: &str) -> bool {
+    fn is_within_chunk_size(&self, chunk: &str) -> Result<bool, TextSplitterError> {
         let chunk = if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
         };
-        (self.length_fn)(chunk) <= self.max_chunk_size
+
+        let length = (self.length_fn)(chunk).map_err(|source| TextSplitterError::LengthCheck {
+            chunk: chunk.to_owned(),
+            source,
+        })?;
+
+        Ok(length <= self.max_chunk_size)
     }
 
     /// Internal method to handle chunk splitting for anything above char level
     fn generate_chunks_from_str_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-        it: impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+        it: impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a,
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         it.peekable().batching(move |it| {
             let (mut start, mut end) = (None, 0);
 
@@ -139,10 +161,19 @@ impl TextSplitter {
                 let chunk = text
                     .get(*start.get_or_insert(*i)..*i + str.len())
                     .expect("invalid str range");
-                // If this is our first one and it can't fit, still call
-                // next otherwise we'll get stuck.
-                if !self.is_within_chunk_size(chunk) && end != 0 {
-                    break;
+                match self.is_within_chunk_size(chunk) {
+                    // If this doesn't fit or errors, as long as it isn't our first one,
+                    // end the check here, we have a chunk.
+                    Ok(false) | Err(_) if end != 0 => {
+                        break;
+                    }
+                    // If this is an error, but our first chunk, we can't process it.
+                    // Consume it and bail.
+                    Err(e) => {
+                        it.next();
+                        return Some(Err(e));
+                    }
+                    _ => {}
                 }
                 end = i + str.len();
                 it.next();
@@ -224,7 +255,7 @@ impl TextSplitter {
     pub fn chunk_by_chars<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+    ) -> impl Iterator<Item = Result<&'b str, TextSplitterError>> + 'a {
         self.chunk_by_char_indices(text).map_ok(|(_, t)| t)
     }
 
@@ -243,7 +274,7 @@ impl TextSplitter {
     pub fn chunk_by_char_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.char_indices().map(|(i, c)| {
@@ -278,7 +309,7 @@ impl TextSplitter {
     pub fn chunk_by_graphemes<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+    ) -> impl Iterator<Item = Result<&'b str, TextSplitterError>> + 'a {
         self.chunk_by_grapheme_indices(text).map_ok(|(_, t)| t)
     }
 
@@ -297,19 +328,19 @@ impl TextSplitter {
     pub fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.grapheme_indices(true).flat_map(|(i, grapheme)| {
-                // If grapheme is too large, do char chunking
-                if self.is_within_chunk_size(grapheme) {
-                    Either::Left(once(Ok((i, grapheme))))
-                } else {
-                    Either::Right(
+                match self.is_within_chunk_size(grapheme) {
+                    Ok(true) => Either::Left(once(Ok((i, grapheme)))),
+                    // If grapheme is too large, do char chunking
+                    Ok(false) => Either::Right(
                         self.chunk_by_char_indices(grapheme)
                             // Offset relative indices back to parent string
                             .map_ok(move |(ci, c)| (ci + i, c)),
-                    )
+                    ),
+                    Err(e) => Either::Left(once(Err(e))),
                 }
             }),
         )
@@ -338,7 +369,7 @@ impl TextSplitter {
     pub fn chunk_by_words<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+    ) -> impl Iterator<Item = Result<&'b str, TextSplitterError>> + 'a {
         self.chunk_by_word_indices(text).map_ok(|(_, t)| t)
     }
 
@@ -357,19 +388,19 @@ impl TextSplitter {
     pub fn chunk_by_word_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.split_word_bound_indices().flat_map(|(i, word)| {
-                // If words is too large, do grapheme chunking
-                if self.is_within_chunk_size(word) {
-                    Either::Left(once(Ok((i, word))))
-                } else {
-                    Either::Right(
+                match self.is_within_chunk_size(word) {
+                    Ok(true) => Either::Left(once(Ok((i, word)))),
+                    // If words is too large, do grapheme chunking
+                    Ok(false) => Either::Right(
                         self.chunk_by_grapheme_indices(word)
                             // Offset relative indices back to parent string
                             .map_ok(move |(gi, g)| (gi + i, g)),
-                    )
+                    ),
+                    Err(e) => Either::Left(once(Err(e))),
                 }
             }),
         )
@@ -398,7 +429,7 @@ impl TextSplitter {
     pub fn chunk_by_sentences<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+    ) -> impl Iterator<Item = Result<&'b str, TextSplitterError>> + 'a {
         self.chunk_by_sentence_indices(text).map_ok(|(_, t)| t)
     }
 
@@ -417,20 +448,20 @@ impl TextSplitter {
     pub fn chunk_by_sentence_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             text.split_sentence_bound_indices()
                 .flat_map(|(i, sentence)| {
-                    // If sentence is too large, do word chunking
-                    if self.is_within_chunk_size(sentence) {
-                        Either::Left(once(Ok((i, sentence))))
-                    } else {
-                        Either::Right(
+                    match self.is_within_chunk_size(sentence) {
+                        Ok(true) => Either::Left(once(Ok((i, sentence)))),
+                        // If sentence is too large, do word chunking
+                        Ok(false) => Either::Right(
                             self.chunk_by_word_indices(sentence)
                                 // Offset relative indices back to parent string
                                 .map_ok(move |(wi, w)| (wi + i, w)),
-                        )
+                        ),
+                        Err(e) => Either::Left(once(Err(e))),
                     }
                 }),
         )
@@ -459,7 +490,7 @@ impl TextSplitter {
     pub fn chunk_by_paragraphs<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<&'b str, Error>> + 'a {
+    ) -> impl Iterator<Item = Result<&'b str, TextSplitterError>> + 'a {
         self.chunk_by_paragraph_indices(text).map_ok(|(_, t)| t)
     }
 
@@ -478,36 +509,36 @@ impl TextSplitter {
     pub fn chunk_by_paragraph_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
-    ) -> impl Iterator<Item = Result<(usize, &'b str), Error>> + 'a {
+    ) -> impl Iterator<Item = Result<(usize, &'b str), TextSplitterError>> + 'a {
         self.generate_chunks_from_str_indices(
             text,
             Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE)
                 .flat_map(|(i, paragraph)| {
-                    // If paragraph is too large, do single line
-                    if self.is_within_chunk_size(paragraph) {
-                        Either::Left(once(Ok((i, paragraph))))
-                    } else {
-                        Either::Right(
+                    match self.is_within_chunk_size(paragraph) {
+                        Ok(true) => Either::Left(once(Ok((i, paragraph)))),
+                        // If paragraph is too large, do single line
+                        Ok(false) => Either::Right(
                             Self::str_indices_from_regex_separator(paragraph, &NEWLINE)
                                 // Offset relative indices back to parent string
                                 .map(move |(pi, p)| Ok((pi + i, p))),
-                        )
+                        ),
+                        Err(e) => Either::Left(once(Err(e))),
                     }
                 })
                 .flat_map(|result| {
                     match result {
-                        Ok((i, paragraph)) => Either::Left(
-                            // If paragraph is still too large, do sentences
-                            if self.is_within_chunk_size(paragraph) {
-                                Either::Left(once(Ok((i, paragraph))))
-                            } else {
-                                Either::Right(
+                        Ok((i, paragraph)) => {
+                            Either::Left(match self.is_within_chunk_size(paragraph) {
+                                Ok(true) => Either::Left(once(Ok((i, paragraph)))),
+                                // If paragraph is still too large, do sentences
+                                Ok(false) => Either::Right(
                                     self.chunk_by_sentence_indices(paragraph)
                                         // Offset relative indices back to parent string
                                         .map_ok(move |(si, s)| (si + i, s)),
-                                )
-                            },
-                        ),
+                                ),
+                                Err(e) => Either::Left(once(Err(e))),
+                            })
+                        }
                         Err(_) => Either::Right(once(result)),
                     }
                 }),

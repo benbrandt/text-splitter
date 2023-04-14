@@ -13,7 +13,7 @@
 use std::cmp::min;
 
 use fake::{Fake, Faker};
-use text_splitter::TextSplitter;
+use text_splitter::{TextSplitter, TextSplitterError};
 
 #[test]
 fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
@@ -80,7 +80,7 @@ fn can_handle_unicode_characters() {
 #[test]
 fn custom_len_function() {
     let text = "éé"; // Char that is two bytes each
-    let splitter = TextSplitter::new(2).with_length_fn(str::len);
+    let splitter = TextSplitter::new(2).with_length_fn(|s| Ok(str::len(s)));
     let chunks = splitter
         .chunk_by_chars(text)
         .collect::<Result<Vec<_>, _>>()
@@ -91,7 +91,7 @@ fn custom_len_function() {
 #[test]
 fn handles_char_bigger_than_len() {
     let text = "éé"; // Char that is two bytes each
-    let splitter = TextSplitter::new(1).with_length_fn(str::len);
+    let splitter = TextSplitter::new(1).with_length_fn(|s| Ok(str::len(s)));
     let chunks = splitter
         .chunk_by_chars(text)
         .collect::<Result<Vec<_>, _>>()
@@ -383,4 +383,26 @@ fn trim_paragraphs() {
         .collect::<Result<Vec<_>, _>>()
         .unwrap();
     assert_eq!(vec!["Some text", "from a", "document"], chunks);
+}
+
+#[test]
+fn error_checking_length() {
+    let text = "abc";
+    let splitter = TextSplitter::new(1).with_length_fn(|s| {
+        if s.contains('b') {
+            Err(std::io::Error::new(std::io::ErrorKind::Other, "oh no!").into())
+        } else {
+            Ok(1)
+        }
+    });
+
+    let mut chunks = splitter.chunk_by_chars(text);
+
+    assert_eq!("a", chunks.next().unwrap().unwrap());
+    assert!(matches!(
+        chunks.next().unwrap().unwrap_err(),
+        TextSplitterError::LengthCheck { chunk, .. } if chunk == "b",
+    ));
+    assert_eq!("c", chunks.next().unwrap().unwrap());
+    assert!(chunks.next().is_none());
 }
