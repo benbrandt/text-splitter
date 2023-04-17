@@ -1,5 +1,5 @@
 ---
-source: tests/snapshot_tests.rs
+source: tests/char_length_snapshots.rs
 expression: chunks
 ---
 - "The Project Gutenberg eBook of A Room With A View, by E. M. Forster"

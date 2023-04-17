@@ -1,5 +1,5 @@
 ---
-source: tests/snapshot_tests.rs
+source: tests/token_length_snapshots.rs
 expression: chunks
 ---
 - "The Project Gutenberg eBook of A Room With A View, by E. M. Forster\n\nThis eBook is for the use of anyone anywhere in the United States and most other parts of the world at no cost and with almost no restrictions whatsoever. You may copy it, give it away or re-use it under the terms of the Project Gutenberg License included with this eBook or online at www.gutenberg.org. "

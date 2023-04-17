@@ -1,5 +1,5 @@
 ---
-source: tests/snapshot_tests.rs
+source: tests/char_length_snapshots.rs
 expression: chunks
 ---
 - "The "
