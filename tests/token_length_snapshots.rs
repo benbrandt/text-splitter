@@ -11,10 +11,7 @@ static TOKENIZER: Lazy<Tokenizer> =
 fn huggingface_paragraph_long_chunk() {
     let text = fs::read_to_string("tests/room_with_a_view.txt").unwrap();
     let splitter = TextSplitter::new(1000).with_huggingface_tokenizer(TOKENIZER.clone());
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }
 
@@ -22,10 +19,7 @@ fn huggingface_paragraph_long_chunk() {
 fn huggingface_paragraph_short_chunk() {
     let text = fs::read_to_string("tests/room_with_a_view.txt").unwrap();
     let splitter = TextSplitter::new(100).with_huggingface_tokenizer(TOKENIZER.clone());
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }
 
@@ -33,10 +27,7 @@ fn huggingface_paragraph_short_chunk() {
 fn huggingface_paragraph_tiny_chunk() {
     let text = fs::read_to_string("tests/room_with_a_view.txt").unwrap();
     let splitter = TextSplitter::new(10).with_huggingface_tokenizer(TOKENIZER.clone());
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }
 
@@ -46,10 +37,7 @@ fn huggingface_paragraph_long_chunk_trim() {
     let splitter = TextSplitter::new(1000)
         .with_huggingface_tokenizer(TOKENIZER.clone())
         .with_trim_chunks(true);
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }
 
@@ -59,10 +47,7 @@ fn huggingface_paragraph_short_chunk_trim() {
     let splitter = TextSplitter::new(100)
         .with_huggingface_tokenizer(TOKENIZER.clone())
         .with_trim_chunks(true);
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }
 
@@ -72,9 +57,6 @@ fn huggingface_paragraph_tiny_chunk_trim() {
     let splitter = TextSplitter::new(10)
         .with_huggingface_tokenizer(TOKENIZER.clone())
         .with_trim_chunks(true);
-    let chunks = splitter
-        .chunk_by_paragraphs(&text)
-        .collect::<Result<Vec<_>, _>>()
-        .unwrap();
+    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
     insta::assert_yaml_snapshot!(chunks);
 }

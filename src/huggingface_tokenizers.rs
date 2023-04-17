@@ -15,13 +15,18 @@ impl TextSplitter {
     ///
     /// let splitter = TextSplitter::new(100).with_huggingface_tokenizer(tokenizer);
     /// ```
+    ///
+    /// # Panics
+    ///
+    /// Will panic if you don't have a byte-level tokenizer and the splitter
+    /// encounters text it can't tokenize.
     #[must_use]
     pub fn with_huggingface_tokenizer(self, tokenizer: Tokenizer) -> Self {
         self.with_length_fn(move |str| {
             tokenizer
                 .encode(str, false)
                 .map(|enc| enc.len())
-                .map_err(|e| anyhow::anyhow!(e))
+                .expect("Unable to tokenize the following string {str}")
         })
     }
 }
