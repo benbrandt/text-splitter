@@ -20,7 +20,7 @@
     unused
 )]
 
-use core::{fmt, iter::once};
+use core::iter::once;
 
 use either::Either;
 use itertools::Itertools;
@@ -28,32 +28,35 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
+mod characters;
 #[cfg(feature = "huggingface-tokenizers")]
 mod huggingface_tokenizers;
+mod tokenizer;
 
-type LengthFn = dyn Fn(&str) -> usize;
+pub use characters::Characters;
+pub use tokenizer::{NumTokens, Tokens};
+
+/// Determines if a given piece of text is still a valid chunk.
+pub trait ChunkSize {
+    /// Determine if the given chunk still fits within the specified max chunk
+    /// size.
+    fn valid_chunk(&self, chunk: &str) -> bool;
+}
 
 /// Default plain-text splitter. Recursively splits chunks into the smallest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
-pub struct TextSplitter {
-    /// Method of calculating chunk length. By default done at the character level.
-    length_fn: Box<LengthFn>,
-    /// Maximum size of a chunk (measured by length_fn)
-    max_chunk_size: usize,
+#[derive(Debug)]
+pub struct TextSplitter<C>
+where
+    C: ChunkSize,
+{
+    /// Method of determining chunk sizes.
+    chunk_size: C,
     /// Whether or not all chunks should have whitespace trimmed.
     /// If `false`, joining all chunks should return the original string.
     /// If `true`, all chunks will have whitespace removed from beginning and end.
     trim_chunks: bool,
-}
-
-impl fmt::Debug for TextSplitter {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("TextSplitter")
-            .field("max_chunk_size", &self.max_chunk_size)
-            .field("trim_chunks", &self.trim_chunks)
-            .finish()
-    }
 }
 
 // Lazy's so that we don't have to compile them more than once
@@ -62,19 +65,21 @@ static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}
 /// Fallback for anything else
 static NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r|\n)+").unwrap());
 
-impl TextSplitter {
+impl<C> TextSplitter<C>
+where
+    C: ChunkSize,
+{
     /// Creates a new [`TextSplitter`].
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(100);
+    /// let splitter = TextSplitter::new(Characters::new(100));
     /// ```
     #[must_use]
-    pub fn new(max_chunk_size: usize) -> Self {
+    pub fn new(chunk_size: C) -> Self {
         Self {
-            length_fn: Box::new(|text| text.chars().count()),
-            max_chunk_size,
+            chunk_size,
             trim_chunks: false,
         }
     }
@@ -87,9 +92,9 @@ impl TextSplitter {
     /// If `true`, all chunks will have whitespace removed from beginning and end.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(100).with_trim_chunks(true);
+    /// let splitter = TextSplitter::new(Characters::new(100)).with_trim_chunks(true);
     /// ```
     #[must_use]
     pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
@@ -97,29 +102,13 @@ impl TextSplitter {
         self
     }
 
-    /// Specify a custom function for calculating the length of a chunk. For
-    /// example, using chars instead of bytes.
-    ///
-    /// ```
-    /// use text_splitter::TextSplitter;
-    ///
-    /// let splitter = TextSplitter::new(100).with_length_fn(|text| text.chars().count());
-    /// ```
-    #[must_use]
-    pub fn with_length_fn(mut self, length_fn: impl Fn(&str) -> usize + 'static) -> Self {
-        self.length_fn = Box::new(length_fn);
-        self
-    }
-
     /// Is the given text within the chunk size?
     fn is_within_chunk_size(&self, chunk: &str) -> bool {
-        let chunk = if self.trim_chunks {
+        self.chunk_size.valid_chunk(if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
-        };
-
-        (self.length_fn)(chunk) <= self.max_chunk_size
+        })
     }
 
     /// Internal method to handle chunk splitting for anything above char level
@@ -212,9 +201,9 @@ impl TextSplitter {
     /// that might not be a valid unicode str.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();;
     ///
@@ -231,9 +220,9 @@ impl TextSplitter {
     /// See [`TextSplitter::chunk_by_chars()`] for more information.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_char_indices(text).collect::<Vec<_>>();;
     ///
@@ -266,9 +255,9 @@ impl TextSplitter {
     /// [`TextSplitter::chunk_by_chars`] until it will fit in a chunk.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text\r\nfrom a document";
     /// let chunks = splitter.chunk_by_graphemes(text).collect::<Vec<_>>();;
     ///
@@ -285,9 +274,9 @@ impl TextSplitter {
     /// See [`TextSplitter::chunk_by_graphemes()`] for more information.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text\r\nfrom a document";
     /// let chunks = splitter.chunk_by_grapheme_indices(text).collect::<Vec<_>>();;
     ///
@@ -326,9 +315,9 @@ impl TextSplitter {
     /// [`TextSplitter::chunk_by_graphemes`] until it will fit in a chunk.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();;
     ///
@@ -345,9 +334,9 @@ impl TextSplitter {
     /// See [`TextSplitter::chunk_by_words()`] for more information.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text from a document";
     /// let chunks = splitter.chunk_by_word_indices(text).collect::<Vec<_>>();;
     ///
@@ -386,9 +375,9 @@ impl TextSplitter {
     /// [`TextSplitter::chunk_by_words`] until it will fit in a chunk.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text. From a document.";
     /// let chunks = splitter.chunk_by_sentences(text).collect::<Vec<_>>();;
     ///
@@ -405,9 +394,9 @@ impl TextSplitter {
     /// See [`TextSplitter::chunk_by_sentences()`] for more information.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text. From a document.";
     /// let chunks = splitter.chunk_by_sentence_indices(text).collect::<Vec<_>>();;
     ///
@@ -447,9 +436,9 @@ impl TextSplitter {
     /// [`TextSplitter::chunk_by_sentences`] until it will fit in a chunk.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();;
     ///
@@ -466,9 +455,9 @@ impl TextSplitter {
     /// See [`TextSplitter::chunk_by_paragraphs()`] for more information.
     ///
     /// ```
-    /// use text_splitter::TextSplitter;
+    /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(10);
+    /// let splitter = TextSplitter::new(Characters::new(10));
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_by_paragraph_indices(text).collect::<Vec<_>>();;
     ///
