@@ -11,7 +11,7 @@ pub trait NumTokens {
 /// tokens in each chunk.
 pub struct Tokens<T>
 where
-    T: core::fmt::Debug + NumTokens,
+    T: NumTokens,
 {
     /// Maximum size of a chunk, measured in tokens.
     max_tokens: usize,
@@ -21,7 +21,7 @@ where
 
 impl<T> Tokens<T>
 where
-    T: core::fmt::Debug + NumTokens,
+    T: NumTokens,
 {
     /// Creates a new [`Tokens`]. Chunks will be generated based on the
     /// number of tokens in the chunk.
@@ -46,7 +46,7 @@ where
 
 impl<T> ChunkSize for Tokens<T>
 where
-    T: core::fmt::Debug + NumTokens,
+    T: NumTokens,
 {
     /// Determine if the given chunk still fits within the specified max chunk
     /// size, based on tokens.

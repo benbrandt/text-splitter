@@ -29,8 +29,10 @@ use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
 mod characters;
-#[cfg(feature = "huggingface-tokenizers")]
-mod huggingface_tokenizers;
+#[cfg(feature = "huggingface")]
+mod huggingface;
+#[cfg(feature = "tiktoken")]
+mod tiktoken;
 mod tokenizer;
 
 pub use characters::Characters;
