@@ -17,13 +17,7 @@ fn default() {
             let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
-            insta::assert_yaml_snapshot!(
-                format!(
-                    "{}_chunk_size_{chunk_size}",
-                    path.file_stem().unwrap().to_str().unwrap()
-                ),
-                chunks
-            );
+            insta::assert_yaml_snapshot!(chunks);
         }
     });
 }
@@ -38,13 +32,7 @@ fn trim() {
                 .with_trim_chunks(true);
             let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
 
-            insta::assert_yaml_snapshot!(
-                format!(
-                    "{}_chunk_size_{chunk_size}_trim",
-                    path.file_stem().unwrap().to_str().unwrap()
-                ),
-                chunks
-            );
+            insta::assert_yaml_snapshot!(chunks);
         }
     });
 }
