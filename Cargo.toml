@@ -23,7 +23,7 @@ unicode-segmentation = "1.10.1"
 
 [dev-dependencies]
 fake = "2.5.0"
-insta = { version = "1.29.0", features = ["yaml"] }
+insta = { version = "1.29.0", features = ["glob", "yaml"] }
 
 [features]
 huggingface = ["dep:tokenizers"]

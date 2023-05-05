@@ -1,6 +1,7 @@
 ---
-source: tests/token_length_snapshots.rs
+source: tests/huggingface_snapshot.rs
 expression: chunks
+input_file: tests/texts/room_with_a_view.txt
 ---
 - The Project Gutenberg eBook of A
 - "Room With A View, by E. M."

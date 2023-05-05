@@ -1,6 +1,7 @@
 ---
 source: tests/char_length_snapshots.rs
 expression: chunks
+input_file: tests/texts/room_with_a_view.txt
 ---
 - "The Project Gutenberg eBook of A Room With A View, by E. M. Forster\n\n"
 - "This eBook is for the use of anyone anywhere in the United States and most other parts of the world "

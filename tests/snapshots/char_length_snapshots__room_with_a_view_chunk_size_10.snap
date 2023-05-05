@@ -1,6 +1,7 @@
 ---
 source: tests/char_length_snapshots.rs
 expression: chunks
+input_file: tests/texts/room_with_a_view.txt
 ---
 - "The "
 - "Project "

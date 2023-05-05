@@ -2,9 +2,10 @@ use std::fs;
 
 use once_cell::sync::Lazy;
 use text_splitter::{TextSplitter, Tokens};
-use tiktoken_rs::{cl100k_base, CoreBPE};
+use tokenizers::Tokenizer;
 
-static TOKENIZER: Lazy<CoreBPE> = Lazy::new(|| cl100k_base().unwrap());
+static TOKENIZER: Lazy<Tokenizer> =
+    Lazy::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
 
 #[test]
 fn default() {

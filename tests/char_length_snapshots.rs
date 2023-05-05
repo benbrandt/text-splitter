@@ -3,52 +3,42 @@ use std::fs;
 use text_splitter::{Characters, TextSplitter};
 
 #[test]
-fn paragraph_long_chunk() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(1000));
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    assert_eq!(chunks.join(""), text);
-    insta::assert_yaml_snapshot!(chunks);
+fn default() {
+    insta::glob!("texts/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = TextSplitter::new(Characters::new(chunk_size));
+            let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_chunk_size_{chunk_size}",
+                    path.file_stem().unwrap().to_str().unwrap()
+                ),
+                chunks
+            );
+        }
+    });
 }
 
 #[test]
-fn paragraph_short_chunk() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(100));
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    assert_eq!(chunks.join(""), text);
-    insta::assert_yaml_snapshot!(chunks);
-}
+fn trim() {
+    insta::glob!("texts/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
 
-#[test]
-fn paragraph_tiny_chunk() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(10));
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    assert_eq!(chunks.join(""), text);
-    insta::assert_yaml_snapshot!(chunks);
-}
+        for chunk_size in [10, 100, 1000] {
+            let splitter = TextSplitter::new(Characters::new(chunk_size)).with_trim_chunks(true);
+            let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
 
-#[test]
-fn paragraph_long_chunk_trim() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(1000)).with_trim_chunks(true);
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    insta::assert_yaml_snapshot!(chunks);
-}
-
-#[test]
-fn paragraph_short_chunk_trim() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(100)).with_trim_chunks(true);
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    insta::assert_yaml_snapshot!(chunks);
-}
-
-#[test]
-fn paragraph_tiny_chunk_trim() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
-    let splitter = TextSplitter::new(Characters::new(10)).with_trim_chunks(true);
-    let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
-    insta::assert_yaml_snapshot!(chunks);
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_chunk_size_{chunk_size}_trim",
+                    path.file_stem().unwrap().to_str().unwrap()
+                ),
+                chunks
+            );
+        }
+    });
 }

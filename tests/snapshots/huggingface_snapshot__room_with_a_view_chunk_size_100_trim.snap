@@ -1,6 +1,7 @@
 ---
-source: tests/token_length_snapshots.rs
+source: tests/huggingface_snapshot.rs
 expression: chunks
+input_file: tests/texts/room_with_a_view.txt
 ---
 - "The Project Gutenberg eBook of A Room With A View, by E. M. Forster\n\nThis eBook is for the use of anyone anywhere in the United States and most other parts of the world at no cost and with almost no restrictions whatsoever. You may copy it, give it away or re-use it under the terms of the Project Gutenberg License included with this eBook or online at www.gutenberg.org."
 - "If you are not located in the United States, you will have to check the laws of the country where you are located before using this eBook.\n\nTitle: A Room With A View\n\nAuthor: E. M. Forster\n\nRelease Date: May, 2001 [eBook #2641]\n[Most recently updated: October 8, 2022]\n\nLanguage: English"

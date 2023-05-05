@@ -31,7 +31,7 @@ use tokenizers::Tokenizer;
 
 let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
 let max_tokens = 1000;
-let splitter = TextSplitter::new(Tokens::new(tokenizer), 1000)
+let splitter = TextSplitter::new(Tokens::new(tokenizer, 1000))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
