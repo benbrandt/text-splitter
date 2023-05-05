@@ -10,9 +10,10 @@
     unused
 )]
 
-use std::cmp::min;
+use std::{cmp::min, fs};
 
 use fake::{Fake, Faker};
+use more_asserts::assert_le;
 use text_splitter::{Characters, ChunkSize, TextSplitter};
 
 #[test]
@@ -318,4 +319,20 @@ fn trim_paragraphs() {
 
     let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();
     assert_eq!(vec!["Some text", "from a", "document"], chunks);
+}
+
+#[test]
+fn random_chunk_size() {
+    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
+
+    for _ in 0..100 {
+        let max_characters = Faker.fake();
+        let splitter = TextSplitter::new(Characters::new(max_characters));
+        let chunks = splitter.chunk_by_paragraphs(&text).collect::<Vec<_>>();
+
+        assert_eq!(chunks.join(""), text);
+        for chunk in chunks {
+            assert_le!(chunk.chars().count(), max_characters);
+        }
+    }
 }
