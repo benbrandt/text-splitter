@@ -8,6 +8,7 @@ repository = "https://github.com/benbrandt/text-splitter"
 license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
+exclude = ["/tests/snapshots/**", "/tests/texts/**"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
