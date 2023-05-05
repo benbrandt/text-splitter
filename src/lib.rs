@@ -9,6 +9,7 @@
 //! chunk size, but still splitting at semantic units whenever possible.
 
 #![warn(
+    clippy::cargo,
     clippy::pedantic,
     future_incompatible,
     missing_debug_implementations,
