@@ -8,7 +8,7 @@ This crate attempts to maximize chunk size, while still preserving semantic unit
 
 ### By Number of Characters
 
-```
+```rust
 use text_splitter::{Characters, TextSplitter};
 
 // Maximum number of characters in a chunk
@@ -22,7 +22,7 @@ let chunks = splitter.chunk_by_paragraphs("your document text");
 
 ### By Tokens
 
-```
+```rust
 use text_splitter::{TextSplitter, Tokens};
 // Can also use tiktoken-rs, or anything that implements the NumTokens
 // trait from the text_splitter crate.
