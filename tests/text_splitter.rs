@@ -19,9 +19,9 @@ use text_splitter::{Characters, TextSplitter};
 #[test]
 fn chunk_by_paragraphs() {
     let text = "Mr. Fox jumped.\n[...]\r\n\r\nThe dog was too lazy.";
-    let splitter = TextSplitter::new(Characters::new(21));
+    let splitter = TextSplitter::new(Characters);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text, 21).collect::<Vec<_>>();
     assert_eq!(
         vec![
             "Mr. Fox jumped.\n[...]",
@@ -35,27 +35,27 @@ fn chunk_by_paragraphs() {
 #[test]
 fn handles_ending_on_newline() {
     let text = "Mr. Fox jumped.\n[...]\r\n\r\n";
-    let splitter = TextSplitter::new(Characters::new(21));
+    let splitter = TextSplitter::new(Characters);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text, 21).collect::<Vec<_>>();
     assert_eq!(vec!["Mr. Fox jumped.\n[...]", "\r\n\r\n"], chunks);
 }
 
 #[test]
 fn regex_handles_empty_string() {
     let text = "";
-    let splitter = TextSplitter::new(Characters::new(21));
+    let splitter = TextSplitter::new(Characters);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text, 21).collect::<Vec<_>>();
     assert!(chunks.is_empty());
 }
 
 #[test]
 fn double_newline_fallsback_to_single_and_sentences() {
     let text = "Mr. Fox jumped.\n[...]\r\n\r\nThe dog was too lazy. It just sat there.";
-    let splitter = TextSplitter::new(Characters::new(18));
+    let splitter = TextSplitter::new(Characters);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text, 18).collect::<Vec<_>>();
     assert_eq!(
         vec![
             "Mr. Fox jumped.\n",
@@ -71,9 +71,9 @@ fn double_newline_fallsback_to_single_and_sentences() {
 #[test]
 fn trim_paragraphs() {
     let text = "Some text\n\nfrom a\ndocument";
-    let splitter = TextSplitter::new(Characters::new(10)).with_trim_chunks(true);
+    let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
 
-    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     assert_eq!(vec!["Some text", "from a", "document"], chunks);
 }
 
@@ -83,8 +83,8 @@ fn random_chunk_size() {
 
     for _ in 0..100 {
         let max_characters = Faker.fake();
-        let splitter = TextSplitter::new(Characters::new(max_characters));
-        let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+        let splitter = TextSplitter::new(Characters);
+        let chunks = splitter.chunks(&text, max_characters).collect::<Vec<_>>();
 
         assert_eq!(chunks.join(""), text);
         for chunk in chunks {

@@ -13,6 +13,8 @@ Simplified API for the main use case. `TextSplitter` now only exposes two chunki
 
 The other methods are now private. It was likely that the other methods would have caused confusion since it doesn't return the semantic units themselves, but merged versions.
 
+You also specify chunk size directly in these methods to allow reusing the `TextSplitter` for different chunk sizes.
+
 ## v0.1.0
 
 Initial release

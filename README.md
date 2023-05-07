@@ -13,28 +13,28 @@ use text_splitter::{Characters, TextSplitter};
 
 // Maximum number of characters in a chunk
 let max_characters = 1000;
-let splitter = TextSplitter::new(Characters::new(max_characters))
+let splitter = TextSplitter::new(Characters)
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunks("your document text");
+let chunks = splitter.chunks("your document text", max_characters);
 ```
 
 ### By Tokens
 
 ```rust
 use text_splitter::{TextSplitter, Tokens};
-// Can also use tiktoken-rs, or anything that implements the NumTokens
+// Can also use tiktoken-rs, or anything that implements the TokenCount
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
 let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
 let max_tokens = 1000;
-let splitter = TextSplitter::new(Tokens::new(tokenizer, 1000))
+let splitter = TextSplitter::new(Tokens::new(tokenizer))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunks("your document text");
+let chunks = splitter.chunks("your document text", max_tokens);
 ```
 
 ## Method
