@@ -2,6 +2,10 @@
 
 ## v0.2.0
 
+### Bug Fixes
+
+Better handling of recursive paragraph chunking to handle when both double and single newline splits are used.
+
 ### Breaking Changes
 
 #### Simpler Chunking API

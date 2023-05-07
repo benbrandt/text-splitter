@@ -9769,8 +9769,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "death, but"
 - body’s
 - banishment
-- ".\n\nROMEO."
-- "Ha,"
+- "."
+- "ROMEO.\nHa,"
 - banishment
 - "? Be"
 - "merciful,"

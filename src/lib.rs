@@ -390,13 +390,12 @@ where
     /// Each chunk will be up to the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many paragraphs as
-    /// possible, first splitting by two or more newlines (checking for both \r
-    /// and \n), and then by single newlines.
+    /// possible by single newlines.
     ///
     /// If a given paragraph is larger than your chunk size, given the length
     /// function, then it will be passed through
     /// [`TextSplitter::chunk_by_sentence_indices`] until it will fit in a chunk.
-    fn chunk_by_paragraph_indices<'a, 'b: 'a>(
+    fn chunk_by_newline_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
         chunk_size: usize,
@@ -404,20 +403,8 @@ where
         self.generate_chunks_from_str_indices(
             text,
             chunk_size,
-            Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE)
-                .flat_map(move |(i, paragraph)| {
-                    if self.is_within_chunk_size(paragraph, chunk_size) {
-                        Either::Left(once((i, paragraph)))
-                    } else {
-                        // If paragraph is too large, do single line
-                        Either::Right(
-                            Self::str_indices_from_regex_separator(paragraph, &NEWLINE)
-                                // Offset relative indices back to parent string
-                                .map(move |(pi, p)| (pi + i, p)),
-                        )
-                    }
-                })
-                .flat_map(move |(i, paragraph)| {
+            Self::str_indices_from_regex_separator(text, &NEWLINE).flat_map(
+                move |(i, paragraph)| {
                     if self.is_within_chunk_size(paragraph, chunk_size) {
                         Either::Left(once((i, paragraph)))
                     } else {
@@ -428,7 +415,43 @@ where
                                 .map(move |(si, s)| (si + i, s)),
                         )
                     }
-                }),
+                },
+            ),
+        )
+    }
+
+    /// Returns an iterator over the paragraphs of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
+    ///
+    /// If a text is too large, each chunk will fit as many paragraphs as
+    /// possible, splitting by two or more newlines (checking for both \r
+    /// and \n)/
+    ///
+    /// If a given paragraph is larger than your chunk size, given the length
+    /// function, then it will be passed through
+    /// [`TextSplitter::chunk_by_newline_indices`] until it will fit in a chunk.
+    fn chunk_by_double_newline_indices<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.generate_chunks_from_str_indices(
+            text,
+            chunk_size,
+            Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE).flat_map(
+                move |(i, paragraph)| {
+                    if self.is_within_chunk_size(paragraph, chunk_size) {
+                        Either::Left(once((i, paragraph)))
+                    } else {
+                        // If paragraph is still too large, do single newline
+                        Either::Right(
+                            self.chunk_by_newline_indices(paragraph, chunk_size)
+                                // Offset relative indices back to parent string
+                                .map(move |(si, s)| (si + i, s)),
+                        )
+                    }
+                },
+            ),
         )
     }
 
@@ -491,7 +514,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.chunk_by_paragraph_indices(text, chunk_size)
+        self.chunk_by_double_newline_indices(text, chunk_size)
     }
 }
 
@@ -741,7 +764,7 @@ mod tests {
         let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
 
         let chunks = splitter
-            .chunk_by_paragraph_indices(text, 10)
+            .chunk_by_double_newline_indices(text, 10)
             .collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],

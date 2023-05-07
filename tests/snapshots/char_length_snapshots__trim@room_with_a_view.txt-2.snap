@@ -12,15 +12,16 @@ input_file: tests/texts/room_with_a_view.txt
 - "you are located before using this eBook.\n\nTitle: A Room With A View\n\nAuthor: E. M. Forster"
 - "Release Date: May, 2001 [eBook #2641]\n[Most recently updated: October 8, 2022]\n\nLanguage: English"
 - "*** START OF THE PROJECT GUTENBERG EBOOK A ROOM WITH A VIEW ***\n\n\n\n\n[Illustration]"
-- "A Room With A View\n\nBy E. M. Forster\n\n\n\n\nCONTENTS\n\n Part One.\n Chapter I. The Bertolini"
-- "Chapter II. In Santa Croce with No Baedeker\n Chapter III. Music, Violets, and the Letter “S”"
-- "Chapter IV. Fourth Chapter\n Chapter V. Possibilities of a Pleasant Outing"
+- "A Room With A View\n\nBy E. M. Forster\n\n\n\n\nCONTENTS"
+- "Part One.\n Chapter I. The Bertolini\n Chapter II. In Santa Croce with No Baedeker"
+- "Chapter III. Music, Violets, and the Letter “S”\n Chapter IV. Fourth Chapter"
+- Chapter V. Possibilities of a Pleasant Outing
 - "Chapter VI. The Reverend Arthur Beebe, the Reverend Cuthbert Eager, Mr. Emerson, Mr."
 - "George Emerson, Miss Eleanor Lavish, Miss Charlotte Bartlett, and Miss Lucy Honeychurch Drive Out in"
-- "Carriages to See a View; Italians Drive Them\n Chapter VII. They Return\n\n Part Two."
-- "Chapter VIII. Medieval\n Chapter IX. Lucy As a Work of Art\n Chapter X. Cecil as a Humourist"
-- "Chapter XI. In Mrs. Vyse’s Well-Appointed Flat\n Chapter XII. Twelfth Chapter"
-- Chapter XIII. How Miss Bartlett’s Boiler Was So Tiresome
+- "Carriages to See a View; Italians Drive Them\n Chapter VII. They Return"
+- "Part Two.\n Chapter VIII. Medieval\n Chapter IX. Lucy As a Work of Art"
+- "Chapter X. Cecil as a Humourist\n Chapter XI. In Mrs. Vyse’s Well-Appointed Flat"
+- "Chapter XII. Twelfth Chapter\n Chapter XIII. How Miss Bartlett’s Boiler Was So Tiresome"
 - "Chapter XIV. How Lucy Faced the External Situation Bravely\n Chapter XV. The Disaster Within"
 - "Chapter XVI. Lying to George\n Chapter XVII. Lying to Cecil"
 - "Chapter XVIII. Lying to Mr. Beebe, Mrs. Honeychurch, Freddy, and The Servants"
@@ -2357,8 +2358,9 @@ input_file: tests/texts/room_with_a_view.txt
 - "Her brow was wrinkled, and she still looked furiously cross—the result, he concluded, of too much"
 - moral gymnastics. It was sad to see her thus blind to the beauties of an August wood.
 - "“‘Come down, O maid, from yonder mountain height,’” he quoted, and touched her knee with his own."
-- "She flushed again and said: “What height?”\n\n“‘Come down, O maid, from yonder mountain height,"
-- "What pleasure lives in height (the shepherd sang).\nIn height and in the splendour of the hills?’"
+- "She flushed again and said: “What height?”"
+- "“‘Come down, O maid, from yonder mountain height,\nWhat pleasure lives in height (the shepherd sang)."
+- In height and in the splendour of the hills?’
 - "Let us take Mrs. Honeychurch’s advice and hate clergymen no more.\nWhat’s this place?”"
 - "“Summer Street, of course,” said Lucy, and roused herself."
 - The woods had opened to leave space for a sloping triangular meadow.

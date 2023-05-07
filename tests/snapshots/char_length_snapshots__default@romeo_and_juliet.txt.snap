@@ -437,8 +437,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " swords "
 - "and "
 - bucklers.
-- "\n\nSAMPSON."
-- "\nGregory, "
+- "\n\n"
+- "SAMPSON.\n"
+- "Gregory, "
 - on my word
 - ", we’ll "
 - "not carry "
@@ -448,8 +449,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "then we "
 - "should be "
 - colliers.
-- "\n\nSAMPSON."
-- "\n"
+- "\n\n"
+- "SAMPSON.\n"
 - "I mean, if"
 - " we be in "
 - "choler, "
@@ -479,8 +480,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "of "
 - "Montague "
 - moves me.
-- "\n\nGREGORY."
-- "\n"
+- "\n\n"
+- "GREGORY.\n"
 - To move is
 - " to stir; "
 - "and to be "
@@ -513,8 +514,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "weakest "
 - "goes to "
 - the wall.
-- "\n\nSAMPSON."
-- "\n"
+- "\n\n"
+- "SAMPSON.\n"
 - "True, and "
 - "therefore "
 - "women, "
@@ -534,16 +535,18 @@ input_file: tests/texts/romeo_and_juliet.txt
 - thrust his
 - " maids to "
 - the wall.
-- "\n\nGREGORY."
-- "\nThe "
+- "\n\n"
+- "GREGORY.\n"
+- "The "
 - quarrel is
 - " between "
 - "our "
 - "masters "
 - "and us "
 - their men.
-- "\n\nSAMPSON."
-- "\n’Tis all "
+- "\n\n"
+- "SAMPSON.\n"
+- "’Tis all "
 - "one, I "
 - "will show "
 - "myself a "
@@ -573,8 +576,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " in what "
 - "sense\n"
 - thou wilt.
-- "\n\nGREGORY."
-- "\n"
+- "\n\n"
+- "GREGORY.\n"
 - "They must "
 - take it in
 - " sense "
@@ -609,8 +612,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "\n\n Enter "
 - "Abram and "
 - Balthasar.
-- "\n\nSAMPSON."
-- "\nMy naked "
+- "\n\n"
+- "SAMPSON.\n"
+- "My naked "
 - "weapon is "
 - "out: "
 - "quarrel, I"
@@ -704,13 +708,13 @@ input_file: tests/texts/romeo_and_juliet.txt
 - man as you
 - ".\n\nABRAM.\n"
 - No better.
-- "\n\nSAMPSON."
-- "\n"
+- "\n\n"
+- "SAMPSON.\n"
 - "Well, sir."
 - "\n\n Enter "
 - Benvolio.
-- "\n\nGREGORY."
-- "\n"
+- "\n\n"
+- "GREGORY.\n"
 - Say better
 - "; here "
 - "comes one "
@@ -859,8 +863,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Escalus, "
 - "with "
 - Attendants
-- ".\n\nPRINCE."
-- "\n"
+- ".\n\n"
+- "PRINCE.\n"
 - Rebellious
 - " subjects,"
 - " enemies "
@@ -1776,8 +1780,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " old as we"
 - " to keep "
 - the peace.
-- "\n\nPARIS.\n"
-- "Of "
+- "\n\n"
+- "PARIS.\nOf "
 - honourable
 - " reckoning"
 - " are you "
@@ -2111,8 +2115,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "letters "
 - "and the "
 - language.
-- "\n\nSERVANT."
-- "\nYe say "
+- "\n\n"
+- "SERVANT.\n"
+- "Ye say "
 - "honestly, "
 - "rest you "
 - "merry!\n\n"
@@ -2172,8 +2177,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Whither "
 - "should "
 - they come?
-- "\n\nSERVANT."
-- "\nUp.\n\n"
+- "\n\n"
+- "SERVANT.\n"
+- "Up.\n\n"
 - "ROMEO.\n"
 - Whither to
 - " supper?\n\n"
@@ -3928,8 +3934,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - him dead I
 - " hold it "
 - not a sin.
-- "\n\nCAPULET."
-- "\nWhy how "
+- "\n\n"
+- "CAPULET.\n"
+- "Why how "
 - "now, "
 - "kinsman!\n"
 - "Wherefore "
@@ -4221,8 +4228,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "urg’d!\n"
 - Give me my
 - " sin again"
-- ".\n\nJULIET."
-- "\nYou kiss "
+- ".\n\n"
+- "JULIET.\n"
+- "You kiss "
 - "by the "
 - "book.\n\n"
 - "NURSE.\n"
@@ -4354,8 +4362,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " dance?\n\n"
 - "NURSE.\n"
 - I know not
-- ".\n\nJULIET."
-- "\n"
+- ".\n\n"
+- "JULIET.\n"
 - Go ask his
 - " name. "
 - "If he be "
@@ -5123,8 +5131,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "kinsmen "
 - "are no "
 - stop to me
-- ".\n\nJULIET."
-- "\n"
+- ".\n\n"
+- "JULIET.\n"
 - If they do
 - " see thee,"
 - " they will"
@@ -5383,8 +5391,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "If my "
 - "heart’s "
 - "dear love,"
-- "—\n\nJULIET."
-- "\nWell, do "
+- "—\n\n"
+- "JULIET.\n"
+- "Well, do "
 - not swear.
 - " "
 - Although I
@@ -6935,8 +6944,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "good-den, "
 - "fair "
 - gentlewoma
-- "n.\n\nNURSE."
-- "\n"
+- "n.\n\n"
+- "NURSE.\n"
 - Is it good
 - "-den?\n\n"
 - "MERCUTIO.\n"
@@ -7090,8 +7099,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Mercutio "
 - "and "
 - Benvolio.
-- "_]\n\nNURSE."
-- "\n"
+- "_]\n\n"
+- "NURSE.\n"
 - I pray you
 - ", sir, "
 - what saucy
@@ -8093,8 +8102,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " either by"
 - " this dear"
 - " encounter"
-- ".\n\nJULIET."
-- "\nConceit "
+- ".\n\n"
+- "JULIET.\n"
+- "Conceit "
 - "more rich "
 - "in matter "
 - "than in "
@@ -8768,8 +8778,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Mercutio "
 - "and "
 - Benvolio.
-- "_]\n\nROMEO."
-- "\nThis "
+- "_]\n\n"
+- "ROMEO.\n"
+- "This "
 - "gentleman,"
 - " the "
 - "Prince’s "
@@ -11043,8 +11054,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Lady "
 - "Capulet "
 - and Paris.
-- "\n\nCAPULET."
-- "\nThings "
+- "\n\n"
+- "CAPULET.\n"
+- "Things "
 - "have "
 - fallen out
 - ", sir, so "
@@ -11102,8 +11114,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "mew’d up "
 - "to her "
 - heaviness.
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "Sir Paris,"
 - " I will "
 - "make a "
@@ -11201,8 +11213,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Thursday "
 - "were "
 - tomorrow.
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "Well, get "
 - "you gone. "
 - A Thursday
@@ -11273,8 +11285,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - ", love, it"
 - " was the "
 - nightingal
-- "e.\n\nROMEO."
-- "\n"
+- "e.\n\n"
+- "ROMEO.\n"
 - It was the
 - " lark, the"
 - " herald of"
@@ -11595,8 +11607,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "_] Ho, "
 - "daughter, "
 - are you up
-- "?\n\nJULIET."
-- "\nWho is’t "
+- "?\n\n"
+- "JULIET.\n"
+- "Who is’t "
 - that calls
 - "? "
 - "Is it my "
@@ -11954,8 +11967,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " Enter "
 - "Capulet "
 - and Nurse.
-- "\n\nCAPULET."
-- "\nWhen the "
+- "\n\n"
+- "CAPULET.\n"
+- "When the "
 - "sun sets, "
 - "the air "
 - "doth "
@@ -12061,8 +12075,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "gentleman "
 - "to be her "
 - bridegroom
-- "?\n\nJULIET."
-- "\n"
+- "?\n\n"
+- "JULIET.\n"
 - "Not proud "
 - "you have, "
 - "but "
@@ -12211,14 +12225,15 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "NURSE.\n"
 - I speak no
 - " treason."
-- "\n\nCAPULET."
-- "\nO God ye "
+- "\n\n"
+- "CAPULET.\n"
+- "O God ye "
 - "good-en!\n\n"
 - "NURSE.\n"
 - "May not "
 - one speak?
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "Peace, you"
 - " mumbling "
 - "fool!\n"
@@ -12767,8 +12782,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "is much "
 - "abus’d "
 - with tears
-- ".\n\nJULIET."
-- "\n"
+- ".\n\n"
+- "JULIET.\n"
 - "The tears "
 - "have got "
 - "small "
@@ -13307,8 +13322,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Capulet, "
 - "Nurse and "
 - Servants.
-- "\n\nCAPULET."
-- "\nSo many "
+- "\n\n"
+- "CAPULET.\n"
+- "So many "
 - "guests "
 - "invite as "
 - "here are "
@@ -13332,8 +13348,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "they can "
 - lick their
 - "\nfingers."
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "How canst "
 - "thou try "
 - "them so?\n\n"
@@ -13375,8 +13391,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "\n\nNURSE.\n"
 - "Ay, "
 - forsooth.
-- "\n\nCAPULET."
-- "\nWell, he "
+- "\n\n"
+- "CAPULET.\n"
+- "Well, he "
 - may chance
 - " to do "
 - "some good "
@@ -13968,8 +13985,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "For this "
 - "night’s "
 - watching.
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "No, not a "
 - "whit. "
 - "What! "
@@ -14050,8 +14067,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - the matter
 - ".\n\n"
 - " [_Exit._]"
-- "\n\nCAPULET."
-- "\nMass and "
+- "\n\n"
+- "CAPULET.\n"
+- "Mass and "
 - well said;
 - " a merry "
 - "whoreson, "
@@ -14209,8 +14227,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "CAPULET.\n"
 - What noise
 - " is here?"
-- "\n\nNURSE.\n"
-- "O "
+- "\n\n"
+- "NURSE.\nO "
 - lamentable
 - " day!\n\n"
 - "LADY "
@@ -14446,8 +14464,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Not life, "
 - "but love "
 - in death!
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "Despis’d, "
 - distressed
 - ", hated, "
@@ -14576,8 +14594,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "tears are "
 - "reason’s "
 - merriment.
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - All things
 - " that we "
 - "ordained "
@@ -15622,8 +15640,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "flowers. "
 - "Do as I "
 - "bid thee, "
-- "go.\n\nPAGE."
-- "\n[_Aside."
+- "go.\n\n"
+- "PAGE.\n"
+- "[_Aside."
 - "_] I am "
 - "almost "
 - "afraid to "
@@ -15705,8 +15724,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "with a "
 - "torch, "
 - "mattock, &"
-- "c.\n\nROMEO."
-- "\nGive me "
+- "c.\n\n"
+- "ROMEO.\n"
+- "Give me "
 - "that "
 - "mattock "
 - "and the "
@@ -16718,8 +16738,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " Prince "
 - "and "
 - Attendants
-- ".\n\nPRINCE."
-- "\nWhat "
+- ".\n\n"
+- "PRINCE.\n"
+- "What "
 - misadventu
 - "re is so "
 - "early up,\n"
@@ -16779,8 +16800,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "before,\n"
 - "Warm and "
 - new kill’d
-- ".\n\nPRINCE."
-- "\nSearch, "
+- ".\n\n"
+- "PRINCE.\n"
+- "Search, "
 - "seek, and "
 - "know how "
 - "this foul "
@@ -16837,8 +16859,9 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "\n\n Enter "
 - "Montague "
 - and others
-- ".\n\nPRINCE."
-- "\nCome, "
+- ".\n\n"
+- "PRINCE.\n"
+- "Come, "
 - "Montague, "
 - "for thou "
 - "art early "
@@ -17299,8 +17322,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - " kinsmen. "
 - "All are "
 - punish’d.
-- "\n\nCAPULET."
-- "\n"
+- "\n\n"
+- "CAPULET.\n"
 - "O brother "
 - "Montague, "
 - "give me "
