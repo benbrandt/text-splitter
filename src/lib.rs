@@ -1,15 +1,15 @@
 /*!
-# Text Splitter
+# text-splitter
 
-Large language models (LLMs) have lots of amazing use cases. But often they have a limited context size that is smaller than larger documents. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
+Large language models (LLMs) can be used for many tasks, but often have a limited context size that can be smaller than documents you might want to use. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
 
-This crate provides methods for doing so by trying to maximize a desired chunk size, but still splitting at semantic units whenever possible.
+This crate provides methods for splitting longer pieces of text into smaller chunks, aiming to maximize a desired chunk size, but still splitting at semantically sensible boundaries whenever possible.
 
 ## Get Started
 
 ### By Number of Characters
 
-```
+```rust
 use text_splitter::{Characters, TextSplitter};
 
 // Maximum number of characters in a chunk
@@ -18,12 +18,12 @@ let splitter = TextSplitter::new(Characters::new(max_characters))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunk_by_paragraphs("your document text");
+let chunks = splitter.chunks("your document text");
 ```
 
 ### By Tokens
 
-```
+```rust
 use text_splitter::{TextSplitter, Tokens};
 // Can also use tiktoken-rs, or anything that implements the NumTokens
 // trait from the text_splitter crate.
@@ -35,7 +35,7 @@ let splitter = TextSplitter::new(Tokens::new(tokenizer, 1000))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunk_by_paragraphs("your document text");
+let chunks = splitter.chunks("your document text");
 ```
 
 ## Method
@@ -44,10 +44,10 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
 
 1. Split the text by a given level
 2. For each section, does it fit within the chunk size?
-    a. Yes. Fit as many of these neighboring sections into a chunk as possible.
-    b. No. Split by the next level and repeat.
+  a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+  b. No. Split by the next level and repeat.
 
-The boundaries used to split the text if using the top-level `chunk_by_paragraphs` method, in descending length:
+The boundaries used to split the text if using the top-level `split` method, in descending length:
 
 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
 2. 1 newline
@@ -121,7 +121,7 @@ where
     trim_chunks: bool,
 }
 
-// Lazy's so that we don't have to compile them more than once
+// Lazy so that we don't have to compile them more than once
 /// Any sequence of 2 or more newlines
 static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
 /// Fallback for anything else
@@ -173,7 +173,11 @@ where
         })
     }
 
-    /// Internal method to handle chunk splitting for anything above char level
+    /// Internal method to handle chunk splitting for anything above char level.
+    /// Merges neighboring chunks, and also assumes that all chunks in the iterator
+    /// are already less than the chunk size.
+    ///
+    /// Any elements that are above the chunk size limit will be included.
     fn generate_chunks_from_str_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
@@ -252,44 +256,15 @@ where
             .flatten()
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
-    /// the `max_chunk_size`.
+    /// Returns an iterator over the characters of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many `char`s as
     /// possible.
     ///
     /// If you chunk size is smaller than a given character, the character will be returned anyway, otherwise you would get just partial bytes of a char
     /// that might not be a valid unicode str.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_chars(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec!["Some text ", "from a doc", "ument"], chunks);
-    /// ```
-    pub fn chunk_by_chars<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_char_indices(text).map(|(_, t)| t)
-    }
-
-    /// Returns an iterator over the characters of the text and their byte offsets.
-    /// See [`TextSplitter::chunk_by_chars()`] for more information.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_char_indices(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec![(0, "Some text "), (10, "from a doc"), (20, "ument")], chunks);
-    /// ```
-    pub fn chunk_by_char_indices<'a, 'b: 'a>(
+    fn chunk_by_char_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -304,8 +279,8 @@ where
         )
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
-    /// the `max_chunk_size`.
+    /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many
     /// [unicode graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
@@ -313,37 +288,9 @@ where
     ///
     /// If a given grapheme is larger than your chunk size, given the length
     /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_chars`] until it will fit in a chunk.
-    ///
+    /// [`TextSplitter::chunk_by_char_indices`] until it will fit in a chunk.
     /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text\r\nfrom a document";
-    /// let chunks = splitter.chunk_by_graphemes(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec!["Some text", "\r\nfrom a d", "ocument"], chunks);
-    /// ```
-    pub fn chunk_by_graphemes<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_grapheme_indices(text).map(|(_, t)| t)
-    }
-
-    /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
-    /// See [`TextSplitter::chunk_by_graphemes()`] for more information.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text\r\nfrom a document";
-    /// let chunks = splitter.chunk_by_grapheme_indices(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\r\nfrom a d"), (19, "ocument")], chunks);
-    /// ```
-    pub fn chunk_by_grapheme_indices<'a, 'b: 'a>(
+    fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -364,8 +311,8 @@ where
         )
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
-    /// the `max_chunk_size`.
+    /// Returns an iterator over the words of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many
     /// [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
@@ -373,37 +320,8 @@ where
     ///
     /// If a given word is larger than your chunk size, given the length
     /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_graphemes`] until it will fit in a chunk.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_words(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec!["Some text ", "from a ", "document"], chunks);
-    /// ```
-    pub fn chunk_by_words<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_word_indices(text).map(|(_, t)| t)
-    }
-
-    /// Returns an iterator over the words of the text and their byte offsets.
-    /// See [`TextSplitter::chunk_by_words()`] for more information.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text from a document";
-    /// let chunks = splitter.chunk_by_word_indices(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec![(0, "Some text "), (10, "from a "), (17, "document")], chunks);
-    /// ```
-    pub fn chunk_by_word_indices<'a, 'b: 'a>(
+    /// [`TextSplitter::chunk_by_grapheme_indices`] until it will fit in a chunk.
+    fn chunk_by_word_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -424,7 +342,7 @@ where
         )
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// Returns an iterator over the unicode sentences of the text and their byte offsets. Each chunk will be up to
     /// the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many
@@ -433,37 +351,8 @@ where
     ///
     /// If a given sentence is larger than your chunk size, given the length
     /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_words`] until it will fit in a chunk.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text. From a document.";
-    /// let chunks = splitter.chunk_by_sentences(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec!["Some text.", " From a ", "document."], chunks);
-    /// ```
-    pub fn chunk_by_sentences<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_sentence_indices(text).map(|(_, t)| t)
-    }
-
-    /// Returns an iterator over the unicode sentences of the text and their byte offsets.
-    /// See [`TextSplitter::chunk_by_sentences()`] for more information.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text. From a document.";
-    /// let chunks = splitter.chunk_by_sentence_indices(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec![(0, "Some text."), (10, " From a "), (18, "document.")], chunks);
-    /// ```
-    pub fn chunk_by_sentence_indices<'a, 'b: 'a>(
+    /// [`TextSplitter::chunk_by_word_indices`] until it will fit in a chunk.
+    fn chunk_by_sentence_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -485,8 +374,8 @@ where
         )
     }
 
-    /// Generate a list of chunks from a given text. Each chunk will be up to
-    /// the `max_chunk_size`.
+    /// Returns an iterator over the paragraphs of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
     ///
     /// If a text is too large, each chunk will fit as many paragraphs as
     /// possible, first splitting by two or more newlines (checking for both \r
@@ -494,37 +383,8 @@ where
     ///
     /// If a given paragraph is larger than your chunk size, given the length
     /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_sentences`] until it will fit in a chunk.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text\n\nfrom a\ndocument";
-    /// let chunks = splitter.chunk_by_paragraphs(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
-    /// ```
-    pub fn chunk_by_paragraphs<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-    ) -> impl Iterator<Item = &'b str> + 'a {
-        self.chunk_by_paragraph_indices(text).map(|(_, t)| t)
-    }
-
-    /// Returns an iterator over the paragraphs of the text and their byte offsets.
-    /// See [`TextSplitter::chunk_by_paragraphs()`] for more information.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, TextSplitter};
-    ///
-    /// let splitter = TextSplitter::new(Characters::new(10));
-    /// let text = "Some text\n\nfrom a\ndocument";
-    /// let chunks = splitter.chunk_by_paragraph_indices(text).collect::<Vec<_>>();;
-    ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
-    /// ```
-    pub fn chunk_by_paragraph_indices<'a, 'b: 'a>(
+    /// [`TextSplitter::chunk_by_sentence_indices`] until it will fit in a chunk.
+    fn chunk_by_paragraph_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
@@ -556,5 +416,315 @@ where
                     }
                 }),
         )
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to
+    /// the `max_chunk_size`.
+    ///
+    /// ## Method
+    ///
+    /// To preserve as much semantic meaning within a chunk as possible, a recursive approach is used, starting at larger semantic units and, if that is too large, breaking it up into the next largest unit. Here is an example of the steps used:
+    ///
+    /// 1. Split the text by a given level
+    /// 2. For each section, does it fit within the chunk size?
+    ///   a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+    ///   b. No. Split by the next level and repeat.
+    ///
+    /// The boundaries used to split the text if using the top-level `split` method, in descending length:
+    ///
+    /// 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
+    /// 2. 1 newline
+    /// 3. [Unicode Sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 4. [Unicode Words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 5. [Unicode Graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 6. Characters
+    ///
+    /// Splitting doesn't occur below the character level, otherwise you could get partial
+    /// bytes of a char, which may not be a valid unicode str.
+    ///
+    /// ```
+    /// use text_splitter::{Characters, TextSplitter};
+    ///
+    /// let splitter = TextSplitter::new(Characters::new(10));
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    ///
+    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
+    /// ```
+    pub fn chunks<'a, 'b: 'a>(&'a self, text: &'b str) -> impl Iterator<Item = &'b str> + 'a {
+        self.chunk_indices(text).map(|(_, t)| t)
+    }
+
+    /// Returns an iterator over chunks of the text and their byte offsets.
+    /// Each chunk will be up to the `max_chunk_size`.
+    ///
+    /// See [`TextSplitter::chunks`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::{Characters, TextSplitter};
+    ///
+    /// let splitter = TextSplitter::new(Characters::new(10));
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
+    ///
+    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
+    pub fn chunk_indices<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.chunk_by_paragraph_indices(text)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::cmp::min;
+
+    use fake::{Fake, Faker};
+
+    use super::*;
+
+    #[test]
+    fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
+        let text = Faker.fake::<String>();
+        let splitter = TextSplitter::new(Characters::new(text.chars().count()));
+        let chunks = splitter
+            .chunk_by_char_indices(&text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert_eq!(vec![&text], chunks);
+    }
+
+    #[test]
+    fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
+        let text1 = Faker.fake::<String>();
+        let text2 = Faker.fake::<String>();
+        let text = format!("{text1}{text2}");
+        // Round up to one above half so it goes to 2 chunks
+        let max_chunk_size = text.chars().count() / 2 + 1;
+
+        let splitter = TextSplitter::new(Characters::new(max_chunk_size));
+        let chunks = splitter
+            .chunk_by_char_indices(&text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+
+        assert!(chunks.iter().all(|c| c.chars().count() <= max_chunk_size));
+
+        // Check that beginning of first chunk and text 1 matches
+        let len = min(text1.len(), chunks[0].len());
+        assert_eq!(text1[..len], chunks[0][..len]);
+        // Check that end of second chunk and text 2 matches
+        let len = min(text2.len(), chunks[1].len());
+        assert_eq!(
+            text2[(text2.len() - len)..],
+            chunks[1][chunks[1].len() - len..]
+        );
+
+        assert_eq!(chunks.join(""), text);
+    }
+
+    #[test]
+    fn empty_string() {
+        let text = "";
+        let splitter = TextSplitter::new(Characters::new(100));
+        let chunks = splitter
+            .chunk_by_char_indices(text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert!(chunks.is_empty());
+    }
+
+    #[test]
+    fn can_handle_unicode_characters() {
+        let text = "éé"; // Char that is more than one byte
+        let splitter = TextSplitter::new(Characters::new(1));
+        let chunks = splitter
+            .chunk_by_char_indices(text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert_eq!(vec!["é", "é"], chunks);
+    }
+
+    // Just for testing
+    struct Str {
+        length: usize,
+    }
+
+    impl ChunkSize for Str {
+        fn valid_chunk(&self, chunk: &str) -> bool {
+            chunk.len() <= self.length
+        }
+    }
+
+    #[test]
+    fn custom_len_function() {
+        let text = "éé"; // Char that is two bytes each
+        let splitter = TextSplitter::new(Str { length: 2 });
+        let chunks = splitter
+            .chunk_by_char_indices(text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert_eq!(vec!["é", "é"], chunks);
+    }
+
+    #[test]
+    fn handles_char_bigger_than_len() {
+        let text = "éé"; // Char that is two bytes each
+        let splitter = TextSplitter::new(Str { length: 1 });
+        let chunks = splitter
+            .chunk_by_char_indices(text)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        // We can only go so small
+        assert_eq!(vec!["é", "é"], chunks);
+    }
+
+    #[test]
+    fn chunk_by_graphemes() {
+        let text = "a̐éö̲\r\n";
+        let splitter = TextSplitter::new(Characters::new(3));
+
+        let chunks = splitter
+            .chunk_by_grapheme_indices(text)
+            .map(|(_, g)| g)
+            .collect::<Vec<_>>();
+        // \r\n is grouped together not separated
+        assert_eq!(vec!["a̐é", "ö̲", "\r\n"], chunks);
+    }
+
+    #[test]
+    fn trim_char_indices() {
+        let text = " a b ";
+        let splitter = TextSplitter::new(Characters::new(1)).with_trim_chunks(true);
+
+        let chunks = splitter.chunk_by_char_indices(text).collect::<Vec<_>>();
+        assert_eq!(vec![(1, "a"), (3, "b")], chunks);
+    }
+
+    #[test]
+    fn graphemes_fallback_to_chars() {
+        let text = "a̐éö̲\r\n";
+        let splitter = TextSplitter::new(Characters::new(1));
+
+        let chunks = splitter
+            .chunk_by_grapheme_indices(text)
+            .map(|(_, g)| g)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["a", "\u{310}", "é", "ö", "\u{332}", "\r", "\n"],
+            chunks
+        );
+    }
+
+    #[test]
+    fn trim_grapheme_indices() {
+        let text = "\r\na̐éö̲\r\n";
+        let splitter = TextSplitter::new(Characters::new(3)).with_trim_chunks(true);
+
+        let chunks = splitter.chunk_by_grapheme_indices(text).collect::<Vec<_>>();
+        assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
+    }
+
+    #[test]
+    fn chunk_by_words() {
+        let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
+        let splitter = TextSplitter::new(Characters::new(10));
+
+        let chunks = splitter
+            .chunk_by_word_indices(text)
+            .map(|(_, w)| w)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec![
+                "The quick ",
+                "(\"brown\") ",
+                "fox can't ",
+                "jump 32.3 ",
+                "feet, ",
+                "right?"
+            ],
+            chunks
+        );
+    }
+
+    #[test]
+    fn words_fallback_to_graphemes() {
+        let text = "Thé quick\r\n";
+        let splitter = TextSplitter::new(Characters::new(2));
+
+        let chunks = splitter
+            .chunk_by_word_indices(text)
+            .map(|(_, w)| w)
+            .collect::<Vec<_>>();
+        assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
+    }
+
+    #[test]
+    fn trim_word_indices() {
+        let text = "Some text from a document";
+        let splitter = TextSplitter::new(Characters::new(10)).with_trim_chunks(true);
+
+        let chunks = splitter.chunk_by_word_indices(text).collect::<Vec<_>>();
+        assert_eq!(
+            vec![(0, "Some text"), (10, "from a"), (17, "document")],
+            chunks
+        );
+    }
+
+    #[test]
+    fn chunk_by_sentences() {
+        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let splitter = TextSplitter::new(Characters::new(21));
+
+        let chunks = splitter
+            .chunk_by_sentence_indices(text)
+            .map(|(_, s)| s)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too lazy."],
+            chunks
+        );
+    }
+
+    #[test]
+    fn sentences_falls_back_to_words() {
+        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let splitter = TextSplitter::new(Characters::new(16));
+
+        let chunks = splitter
+            .chunk_by_sentence_indices(text)
+            .map(|(_, s)| s)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+            chunks
+        );
+    }
+
+    #[test]
+    fn trim_sentence_indices() {
+        let text = "Some text. From a document.";
+        let splitter = TextSplitter::new(Characters::new(10)).with_trim_chunks(true);
+
+        let chunks = splitter.chunk_by_sentence_indices(text).collect::<Vec<_>>();
+        assert_eq!(
+            vec![(0, "Some text."), (11, "From a"), (18, "document.")],
+            chunks
+        );
+    }
+
+    #[test]
+    fn trim_paragraph_indices() {
+        let text = "Some text\n\nfrom a\ndocument";
+        let splitter = TextSplitter::new(Characters::new(10)).with_trim_chunks(true);
+
+        let chunks = splitter
+            .chunk_by_paragraph_indices(text)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec![(0, "Some text"), (11, "from a"), (18, "document")],
+            chunks
+        );
     }
 }

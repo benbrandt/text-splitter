@@ -1,8 +1,8 @@
 # text-splitter
 
-Large language models (LLMs) have lots of amazing use cases. But often they have a limited context size that is smaller than larger documents. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
+Large language models (LLMs) can be used for many tasks, but often have a limited context size that can be smaller than documents you might want to use. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
 
-This crate attempts to maximize chunk size, while still preserving semantic units wherever possible.
+This crate provides methods for splitting longer pieces of text into smaller chunks, aiming to maximize a desired chunk size, but still splitting at semantically sensible boundaries whenever possible.
 
 ## Get Started
 
@@ -17,7 +17,7 @@ let splitter = TextSplitter::new(Characters::new(max_characters))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunk_by_paragraphs("your document text");
+let chunks = splitter.chunks("your document text");
 ```
 
 ### By Tokens
@@ -30,11 +30,11 @@ use tokenizers::Tokenizer;
 
 let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
 let max_tokens = 1000;
-let splitter = TextSplitter::new(Tokens::new(tokenizer), 1000)
+let splitter = TextSplitter::new(Tokens::new(tokenizer, 1000))
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
-let chunks = splitter.chunk_by_paragraphs("your document text");
+let chunks = splitter.chunks("your document text");
 ```
 
 ## Method
@@ -43,10 +43,10 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
 
 1. Split the text by a given level
 2. For each section, does it fit within the chunk size?
-   a. Yes. Fit as many of these neighboring sections into a chunk as possible.
+   a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
    b. No. Split by the next level and repeat.
 
-The boundaries used to split the text if using the top-level `chunk_by_paragraphs` method, in descending length:
+The boundaries used to split the text if using the top-level `split` method, in descending length:
 
 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
 2. 1 newline
