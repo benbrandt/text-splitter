@@ -295,7 +295,6 @@ where
     /// If a given grapheme is larger than your chunk size, given the length
     /// function, then it will be passed through
     /// [`TextSplitter::chunk_by_char_indices`] until it will fit in a chunk.
-    /// ```
     fn chunk_by_grapheme_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,

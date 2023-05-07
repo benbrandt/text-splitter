@@ -847,8 +847,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "it stinted, and said ‘Ay’"
 - ".\n\nJULIET."
 - "And stint thou too, I pray thee, Nurse"
-- ", say I.\n\nNURSE."
-- "Peace, I have done."
+- ", say I."
+- "NURSE.\nPeace, I have done."
 - God mark thee to his grace
 - Thou wast the prettiest babe that
 - "e’er I nurs’d:"
@@ -873,8 +873,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - That you are now a maid.
 - "Thus, then, in brief;"
 - The valiant Paris seeks you for his love
-- ".\n\nNURSE."
-- "A man, young lady!"
+- "."
+- "NURSE.\nA man, young lady!"
 - "Lady, such a man"
 - As all the world—why he’s a
 - man of wax.
@@ -1313,8 +1313,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - Makes my flesh tremble in their different greeting.
 - "I will withdraw: but this intrusion shall,"
 - "Now seeming sweet, convert to bitter gall."
-- "[_Exit._]\n\nROMEO."
-- "[_To Juliet."
+- "[_Exit._]"
+- "ROMEO.\n[_To Juliet."
 - "_] If I profane with my"
 - unworthiest hand
 - "This holy shrine, the gentle sin is this,"
@@ -1412,8 +1412,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - A rhyme I learn’d even now
 - Of one I danc’d withal.
 - "[_One calls within, ‘Juliet’."
-- "_]\n\nNURSE."
-- "Anon, anon!"
+- "_]"
+- "NURSE.\nAnon, anon!"
 - "Come let’s away, the strangers all are"
 - "gone.\n\n [_Exeunt._]"
 - "ACT II\n\n Enter Chorus.\n\nCHORUS."
@@ -1755,8 +1755,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Anon, good Nurse!—Sweet Montague"
 - be true.
 - "Stay but a little, I will come again."
-- "[_Exit._]\n\nROMEO."
-- "O blessed, blessed night."
+- "[_Exit._]"
+- "ROMEO.\nO blessed, blessed night."
 - "I am afeard,"
 - "Being in night, all this is but a dream"
 - ",\nToo flattering sweet to be substantial."
@@ -2311,8 +2311,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - NURSE.
 - "I will tell her, sir, that you do"
 - "protest, which, as I take it, is"
-- "a\ngentlemanlike offer.\n\nROMEO."
-- Bid her devise
+- "a\ngentlemanlike offer."
+- "ROMEO.\nBid her devise"
 - Some means to come to shrift this afternoon
 - ","
 - And there she shall at Friar Lawrence’ cell
@@ -2363,8 +2363,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - Romeo begin both with a letter?
 - ROMEO.
 - "Ay, Nurse; what of that?"
-- "Both with an R.\n\nNURSE."
-- "Ah, mocker!"
+- Both with an R.
+- "NURSE.\nAh, mocker!"
 - That’s the dog’s name.
 - "R is for the—no, I know it"
 - begins
@@ -2931,8 +2931,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Not Romeo, Prince, he was"
 - Mercutio’s friend;
 - "His fault concludes but what the law should end,"
-- "The life of Tybalt.\n\nPRINCE."
-- And for that offence
+- The life of Tybalt.
+- "PRINCE.\nAnd for that offence"
 - Immediately we do exile him hence.
 - I have an interest in your hate’s proceeding
 - ","
@@ -3097,8 +3097,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - Was ever book containing such vile matter
 - So fairly bound?
 - "O, that deceit should dwell"
-- "In such a gorgeous palace.\n\nNURSE."
-- "There’s no trust,"
+- In such a gorgeous palace.
+- "NURSE.\nThere’s no trust,"
 - "No faith, no honesty in men."
 - "All perjur’d,"
 - "All forsworn, all naught,"
@@ -3191,8 +3191,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Come cords, come Nurse, I’ll"
 - "to my wedding bed,"
 - "And death, not Romeo, take my maidenhead"
-- ".\n\nNURSE."
-- Hie to your chamber.
+- "."
+- "NURSE.\nHie to your chamber."
 - "I’ll find Romeo\nTo comfort you."
 - I wot well where he is.
 - "Hark ye, your Romeo will be here at"
@@ -3212,8 +3212,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - Affliction is enanmour’d
 - of thy parts
 - And thou art wedded to calamity.
-- "Enter Romeo.\n\nROMEO."
-- "Father, what news?"
+- Enter Romeo.
+- "ROMEO.\nFather, what news?"
 - What is the Prince’s doom?
 - "What sorrow craves acquaintance at my hand,"
 - That I yet know not?
@@ -3227,8 +3227,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - A gentler judgment vanish’d from his
 - "lips,"
 - "Not body’s death, but body’s"
-- "banishment.\n\nROMEO."
-- "Ha, banishment?"
+- banishment.
+- "ROMEO.\nHa, banishment?"
 - "Be merciful, say death;"
 - "For exile hath more terror in his look,"
 - Much more than death.
@@ -3984,8 +3984,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - Upon so soft a subject as myself.
 - What say’st thou?
 - Hast thou not a word of joy?
-- "Some comfort, Nurse.\n\nNURSE."
-- "Faith, here it is."
+- "Some comfort, Nurse."
+- "NURSE.\nFaith, here it is."
 - Romeo is banished; and all the world to nothing
 - That he dares ne’er come back to
 - challenge you.
@@ -4379,8 +4379,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "Get thee to bed and rest, for thou"
 - hast need.
 - "[_Exeunt Lady Capulet and Nurse"
-- "._]\n\nJULIET."
-- Farewell.
+- "._]"
+- "JULIET.\nFarewell."
 - God knows when we shall meet again.
 - I have a faint cold fear thrills through my
 - veins
@@ -4614,8 +4614,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - But one thing to rejoice and solace
 - "in,"
 - And cruel death hath catch’d it from
-- "my sight.\n\nNURSE."
-- O woe!
+- my sight.
+- "NURSE.\nO woe!"
 - "O woeful, woeful,"
 - woeful day.
 - "Most lamentable day, most woeful"
@@ -4880,8 +4880,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "What, ho! Apothecary!"
 - Enter Apothecary.
 - APOTHECARY.
-- "Who calls so loud?\n\nROMEO."
-- "Come hither, man."
+- Who calls so loud?
+- "ROMEO.\nCome hither, man."
 - I see that thou art poor.
 - "Hold, there is forty ducats."
 - Let me have
@@ -5112,8 +5112,8 @@ input_file: tests/texts/romeo_and_juliet.txt
 - "here.\n\nROMEO."
 - Wilt thou provoke me?
 - "Then have at thee, boy!"
-- "[_They fight._]\n\nPAGE."
-- "O lord, they fight!"
+- "[_They fight._]"
+- "PAGE.\nO lord, they fight!"
 - I will go call the watch.
 - "[_Exit._]\n\nPARIS."
 - "O, I am slain! [_Falls."
