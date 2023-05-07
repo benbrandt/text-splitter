@@ -18,9 +18,9 @@ impl ChunkValidator for Characters {
     /// ```
     /// use text_splitter::{Characters, ChunkValidator};
     ///
-    /// assert!(Characters.validate("hello", 10));
+    /// assert!(Characters.validate_chunk("hello", 10));
     /// ```
-    fn validate(&self, chunk: &str, chunk_size: usize) -> bool {
+    fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool {
         chunk.chars().count() <= chunk_size
     }
 }

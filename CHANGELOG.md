@@ -15,6 +15,10 @@ The other methods are now private. It was likely that the other methods would ha
 
 You also specify chunk size directly in these methods to allow reusing the `TextSplitter` for different chunk sizes.
 
+#### Allow passing in tokenizers directly
+
+Rather than wrapping a tokenizer in another struct, you can instead just pass a tokenizer directly into `TextSplitter::new`.
+
 ## v0.1.0
 
 Initial release
