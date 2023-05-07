@@ -40,10 +40,10 @@ jobs:
         uses: actions-rs/cargo@v1.0.3
         with:
           command: nextest
-          args: --workspace --all-features
+          args: --all-features
 
       # - name: Run tests and generate code coverage
-      #   run: cargo llvm-cov nextest --all-features --workspace --lcov --output-path lcov.info
+      #   run: cargo llvm-cov nextest --all-features --lcov --output-path lcov.info
 
       # - name: Upload to codecov.io
       #   uses: codecov/codecov-action@v3
