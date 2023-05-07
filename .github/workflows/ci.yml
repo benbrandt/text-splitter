@@ -24,17 +24,23 @@ jobs:
       - name: Install rust toolchain
         uses: actions-rs/toolchain@v1
         with:
-          components: llvm-tools-preview
+          # components: llvm-tools-preview
           profile: minimal
           toolchain: stable
 
       - uses: Swatinem/rust-cache@v1
 
-      - name: Install cargo-llvm-cov
-        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Run cargo test
+        uses: actions-rs/cargo@v1.0.3
+        with:
+          command: test
+          args: --workspace --all-features
 
-      - name: Run tests and generate code coverage
-        run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+      # - name: Install cargo-llvm-cov
+      #   uses: taiki-e/install-action@cargo-llvm-cov
+
+      # - name: Run tests and generate code coverage
+      #   run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
 
       # - name: Upload to codecov.io
       #   uses: codecov/codecov-action@v3
