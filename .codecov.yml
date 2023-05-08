@@ -1,0 +1,12 @@
+ignore:
+  - "tests" # we also don't care about coverage of test code
+coverage:
+  status:
+    # ref: https://docs.codecov.com/docs/commit-status
+    project:
+      default:
+        # Avoid false negatives
+        threshold: 1%
+# Make comments less noisy
+comment:
+  require_changes: true
