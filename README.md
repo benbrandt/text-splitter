@@ -49,8 +49,8 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
 
 1. Split the text by a given level
 2. For each section, does it fit within the chunk size?
-   a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
-   b. No. Split by the next level and repeat.
+   - Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+   - No. Split by the next level and repeat.
 
 The boundaries used to split the text if using the top-level `split` method, in descending length:
 

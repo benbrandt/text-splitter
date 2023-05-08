@@ -1,6 +1,11 @@
 /*!
 # text-splitter
 
+[![Docs](https://docs.rs/text-splitter/badge.svg)](https://docs.rs/text-splitter/)
+[![Licence](https://img.shields.io/crates/l/text-splitter)](https://github.com/benbrandt/text-splitter/blob/main/LICENSE.txt)
+[![Crates.io](https://img.shields.io/crates/v/text-splitter)](https://crates.io/crates/text-splitter)
+[![codecov](https://codecov.io/github/benbrandt/text-splitter/branch/main/graph/badge.svg?token=TUF1IAI7G7)](https://codecov.io/github/benbrandt/text-splitter)
+
 Large language models (LLMs) can be used for many tasks, but often have a limited context size that can be smaller than documents you might want to use. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
 
 This crate provides methods for splitting longer pieces of text into smaller chunks, aiming to maximize a desired chunk size, but still splitting at semantically sensible boundaries whenever possible.
@@ -45,8 +50,8 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
 
 1. Split the text by a given level
 2. For each section, does it fit within the chunk size?
-  a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
-  b. No. Split by the next level and repeat.
+    - Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+    - No. Split by the next level and repeat.
 
 The boundaries used to split the text if using the top-level `split` method, in descending length:
 
@@ -59,13 +64,14 @@ The boundaries used to split the text if using the top-level `split` method, in 
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
-*Note on sentences:* There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.
+_Note on sentences:_ There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.
 
 ## Inspiration
 
 This crate was inspired by [LangChain's TextSplitter](https://python.langchain.com/en/latest/modules/indexes/text_splitters/examples/recursive_text_splitter.html). But, looking into the implementation, there was potential for better performance as well as better semantic chunking.
 
 A big thank you to the unicode-rs team for their [unicode-segmentation](https://crates.io/crates/unicode-segmentation) crate that manages a lot of the complexity of matching the Unicode rules for words and sentences.
+
 */
 
 #![warn(
