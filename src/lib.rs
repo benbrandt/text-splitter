@@ -14,7 +14,8 @@ use text_splitter::{Characters, TextSplitter};
 
 // Maximum number of characters in a chunk
 let max_characters = 1000;
-let splitter = TextSplitter::new(Characters)
+// Default implementation uses character count for chunk size
+let splitter = TextSplitter::default()
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 
@@ -121,6 +122,12 @@ where
     trim_chunks: bool,
 }
 
+impl Default for TextSplitter<Characters> {
+    fn default() -> Self {
+        Self::new(Characters)
+    }
+}
+
 // Lazy so that we don't have to compile them more than once
 /// Any sequence of 2 or more newlines
 static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
@@ -136,6 +143,7 @@ where
     /// ```
     /// use text_splitter::{Characters, TextSplitter};
     ///
+    /// // Characters is the default, so you can also do `TextSplitter::default()`
     /// let splitter = TextSplitter::new(Characters);
     /// ```
     #[must_use]
@@ -156,7 +164,7 @@ where
     /// ```
     /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+    /// let splitter = TextSplitter::default().with_trim_chunks(true);
     /// ```
     #[must_use]
     pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
@@ -481,7 +489,7 @@ where
     /// ```
     /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(Characters);
+    /// let splitter = TextSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
@@ -503,7 +511,7 @@ where
     /// ```
     /// use text_splitter::{Characters, TextSplitter};
     ///
-    /// let splitter = TextSplitter::new(Characters);
+    /// let splitter = TextSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
@@ -528,7 +536,7 @@ mod tests {
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
         let chunks = splitter
             .chunk_by_char_indices(&text, text.chars().count())
             .map(|(_, c)| c)
@@ -544,7 +552,7 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
         let chunks = splitter
             .chunk_by_char_indices(&text, max_chunk_size)
             .map(|(_, c)| c)
@@ -568,7 +576,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let text = "";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
         let chunks = splitter
             .chunk_by_char_indices(text, 100)
             .map(|(_, c)| c)
@@ -579,7 +587,7 @@ mod tests {
     #[test]
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
         let chunks = splitter
             .chunk_by_char_indices(text, 1)
             .map(|(_, c)| c)
@@ -622,7 +630,7 @@ mod tests {
     #[test]
     fn chunk_by_graphemes() {
         let text = "a̐éö̲\r\n";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_grapheme_indices(text, 3)
@@ -635,7 +643,7 @@ mod tests {
     #[test]
     fn trim_char_indices() {
         let text = " a b ";
-        let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+        let splitter = TextSplitter::default().with_trim_chunks(true);
 
         let chunks = splitter.chunk_by_char_indices(text, 1).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
@@ -644,7 +652,7 @@ mod tests {
     #[test]
     fn graphemes_fallback_to_chars() {
         let text = "a̐éö̲\r\n";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_grapheme_indices(text, 1)
@@ -659,7 +667,7 @@ mod tests {
     #[test]
     fn trim_grapheme_indices() {
         let text = "\r\na̐éö̲\r\n";
-        let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+        let splitter = TextSplitter::default().with_trim_chunks(true);
 
         let chunks = splitter
             .chunk_by_grapheme_indices(text, 3)
@@ -670,7 +678,7 @@ mod tests {
     #[test]
     fn chunk_by_words() {
         let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_word_indices(text, 10)
@@ -692,7 +700,7 @@ mod tests {
     #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_word_indices(text, 2)
@@ -704,7 +712,7 @@ mod tests {
     #[test]
     fn trim_word_indices() {
         let text = "Some text from a document";
-        let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+        let splitter = TextSplitter::default().with_trim_chunks(true);
 
         let chunks = splitter.chunk_by_word_indices(text, 10).collect::<Vec<_>>();
         assert_eq!(
@@ -716,7 +724,7 @@ mod tests {
     #[test]
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_sentence_indices(text, 21)
@@ -731,7 +739,7 @@ mod tests {
     #[test]
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let splitter = TextSplitter::new(Characters);
+        let splitter = TextSplitter::default();
 
         let chunks = splitter
             .chunk_by_sentence_indices(text, 16)
@@ -746,7 +754,7 @@ mod tests {
     #[test]
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
-        let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+        let splitter = TextSplitter::default().with_trim_chunks(true);
 
         let chunks = splitter
             .chunk_by_sentence_indices(text, 10)
@@ -760,7 +768,7 @@ mod tests {
     #[test]
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
-        let splitter = TextSplitter::new(Characters).with_trim_chunks(true);
+        let splitter = TextSplitter::default().with_trim_chunks(true);
 
         let chunks = splitter
             .chunk_by_double_newline_indices(text, 10)

@@ -13,7 +13,8 @@ use text_splitter::{Characters, TextSplitter};
 
 // Maximum number of characters in a chunk
 let max_characters = 1000;
-let splitter = TextSplitter::new(Characters)
+// Default implementation uses character count for chunk size
+let splitter = TextSplitter::default()
     // Optionally can also have the splitter trim whitespace for you
     .with_trim_chunks(true);
 

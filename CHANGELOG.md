@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.1
+
+### New Features
+
+- impl `Default` for `TextSplitter` using `Characters`. Character count is used for chunk length by default.
+
 ## v0.2.0
 
 ### Breaking Changes
