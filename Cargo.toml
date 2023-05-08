@@ -9,6 +9,7 @@ license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
 exclude = ["/tests/snapshots/**", "/tests/texts/**"]
+rust-version = "1.62.1"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -16,13 +17,13 @@ exclude = ["/tests/snapshots/**", "/tests/texts/**"]
 either = "1.8.1"
 itertools = "0.10.5"
 once_cell = "1.17.1"
-regex = "1.7.3"
-tiktoken-rs = { version = "0.4.1", optional = true }
+regex = "1.8.1"
+tiktoken-rs = { version = "0.4.2", optional = true }
 tokenizers = { version = "0.13.3", optional = true }
 unicode-segmentation = "1.10.1"
 
 [dev-dependencies]
-fake = "2.5.0"
+fake = "2.6.0"
 insta = { version = "1.29.0", features = ["glob", "yaml"] }
 more-asserts = "0.3.1"
 

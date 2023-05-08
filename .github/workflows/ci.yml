@@ -15,66 +15,66 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
-    env:
-      RUSTC_BOOTSTRAP: 1
+
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
-
-      - name: Install rust toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
         with:
-          # components: llvm-tools-preview
-          profile: minimal
           toolchain: stable
-
       - uses: Swatinem/rust-cache@v1
-
-      # - name: Install cargo-llvm-cov
-      #   uses: taiki-e/install-action@cargo-llvm-cov
 
       - name: Run cargo test
         run: cargo test --workspace --all-features
 
-      # - name: Run tests and generate code coverage
-      #   run: cargo llvm-cov --workspace --all-features --lcov --output-path lcov.info
-
-      # - name: Upload to codecov.io
-      #   uses: codecov/codecov-action@v3
-      #   with:
-      #     token: ${{secrets.CODECOV_TOKEN}}
-      #     files: lcov.info
-      #     fail_ci_if_error: true
+  coverage:
+    runs-on: ubuntu-latest
+    name: Test Coverage
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
 
   lints:
     name: Lints
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v3
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
           components: rustfmt, clippy
-
       - uses: Swatinem/rust-cache@v1
 
-      - name: Run cargo fmt
-        uses: actions-rs/cargo@v1.0.3
-        with:
-          command: fmt
-          args: -- --check
-
+      - run: cargo fmt -- --check
       - uses: actions-rs/clippy-check@v1.0.7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --workspace --all-features --all-targets
 
-      - name: Run cargo build
-        uses: actions-rs/cargo@v1.0.3
+      - uses: taiki-e/install-action@cargo-hack
+      - name: cargo hack
+        # Check that all feature combinations work
+        run: cargo hack --feature-powerset check
+
+  msrv:
+    runs-on: ubuntu-latest
+    # we use a matrix here just because env can't be used in job names
+    # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+    strategy:
+      matrix:
+        msrv: [1.62.1]
+    name: ${{ matrix.msrv }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install ${{ matrix.msrv }}
+        uses: dtolnay/rust-toolchain@master
         with:
-          command: build
-          args: --workspace --all-features
+          toolchain: ${{ matrix.msrv }}
+      - name: cargo +${{ matrix.msrv }} check
+        run: cargo check

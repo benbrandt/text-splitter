@@ -5,6 +5,7 @@
 ### New Features
 
 - impl `Default` for `TextSplitter` using `Characters`. Character count is used for chunk length by default.
+- Specify the current MSRV (1.62.1)
 
 ## v0.2.0
 
