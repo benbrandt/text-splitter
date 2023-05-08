@@ -86,6 +86,7 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
     rust_2021_compatibility,
     unused
 )]
+#![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
 use core::iter::once;
 
