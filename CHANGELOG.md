@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.2.2
+
+Add all features to docs.rs
+
 ## v0.2.1
 
 ### New Features
