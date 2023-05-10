@@ -1,6 +1,6 @@
 [package]
 name = "text-splitter"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens (when used with large language models)."
@@ -32,8 +32,8 @@ insta = { version = "1.29.0", features = ["glob", "yaml"] }
 more-asserts = "0.3.1"
 
 [features]
-huggingface = ["dep:tokenizers"]
-tiktoken = ["dep:tiktoken-rs"]
+tokenizers = ["dep:tokenizers"]
+tiktoken-rs = ["dep:tiktoken-rs"]
 
 [profile.dev.package.insta]
 opt-level = 3

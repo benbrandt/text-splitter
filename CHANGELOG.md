@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.3.0
+
+### Breaking Changes
+
+- Match feature names for tokenizer crates to prevent conflicts in the future.
+  - `huggingface -> tokenizers`
+  - `tiktoken -> tiktoken-rs`
+
 ## v0.2.2
 
 Add all features to docs.rs

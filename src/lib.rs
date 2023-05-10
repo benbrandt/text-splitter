@@ -97,9 +97,9 @@ use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
 mod characters;
-#[cfg(feature = "huggingface")]
+#[cfg(feature = "tokenizers")]
 mod huggingface;
-#[cfg(feature = "tiktoken")]
+#[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 mod tokenizer;
 
