@@ -79,7 +79,7 @@ fn trim_paragraphs() {
 
 #[test]
 fn random_chunk_size() {
-    let text = fs::read_to_string("tests/texts/room_with_a_view.txt").unwrap();
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
     for _ in 0..100 {
         let max_characters = Faker.fake();
