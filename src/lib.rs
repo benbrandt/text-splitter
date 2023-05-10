@@ -196,7 +196,7 @@ where
     /// are already less than the chunk size.
     ///
     /// Any elements that are above the chunk size limit will be included.
-    fn generate_chunks_from_str_indices<'a, 'b: 'a>(
+    fn coalesce_str_indices<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
         chunk_size: usize,
@@ -288,7 +288,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             text.char_indices().map(|(i, c)| {
@@ -315,7 +315,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             text.grapheme_indices(true).flat_map(move |(i, grapheme)| {
@@ -348,7 +348,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             text.split_word_bound_indices().flat_map(move |(i, word)| {
@@ -381,7 +381,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             text.split_sentence_bound_indices()
@@ -414,7 +414,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             Self::str_indices_from_regex_separator(text, &NEWLINE).flat_map(
@@ -449,7 +449,7 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.generate_chunks_from_str_indices(
+        self.coalesce_str_indices(
             text,
             chunk_size,
             Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE).flat_map(
