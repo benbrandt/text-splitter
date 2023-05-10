@@ -22,6 +22,7 @@ either = "1.8.1"
 itertools = "0.10.5"
 once_cell = "1.17.1"
 regex = "1.8.1"
+pulldown-cmark = { version = "0.9.2", default-features = false, optional = true }
 tiktoken-rs = { version = "0.4.2", optional = true }
 tokenizers = { version = "0.13.3", optional = true }
 unicode-segmentation = "1.10.1"
@@ -32,8 +33,9 @@ insta = { version = "1.29.0", features = ["glob", "yaml"] }
 more-asserts = "0.3.1"
 
 [features]
-tokenizers = ["dep:tokenizers"]
+markdown = ["dep:pulldown-cmark"]
 tiktoken-rs = ["dep:tiktoken-rs"]
+tokenizers = ["dep:tokenizers"]
 
 [profile.dev.package.insta]
 opt-level = 3
