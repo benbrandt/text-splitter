@@ -40,6 +40,9 @@ tokenizers = ["dep:tokenizers"]
 [profile.dev.package.insta]
 opt-level = 3
 
+[profile.dev.package.pulldown-cmark]
+opt-level = 3
+
 [profile.dev.package.similar]
 opt-level = 3
 

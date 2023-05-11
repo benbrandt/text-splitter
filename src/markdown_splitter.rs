@@ -97,6 +97,141 @@ where
         )
     }
 
+    /// Split by level 6 headings
+    fn chunk_by_h6<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H6, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_horizontal_rule(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Split by level 5 headings
+    fn chunk_by_h5<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H5, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_h6(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Split by level 4 headings
+    fn chunk_by_h4<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H4, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_h5(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Split by level 3 headings
+    fn chunk_by_h3<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H3, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_h4(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Split by level 2 headings
+    fn chunk_by_h2<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H2, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_h3(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
     /// Split by level 1 headings
     fn chunk_by_h1<'a, 'b: 'a>(
         &'a self,
@@ -115,7 +250,7 @@ where
                 } else {
                     // If section is too large, fallback
                     Either::Right(
-                        self.chunk_by_horizontal_rule(str, chunk_size)
+                        self.chunk_by_h2(str, chunk_size)
                             // Offset relative indices back to parent string
                             .map(move |(ci, c)| (ci + i, c)),
                     )

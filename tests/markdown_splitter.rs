@@ -40,14 +40,41 @@ fn horizontal_rule_with_trim() {
 }
 
 #[test]
-fn h1() {
+fn headings() {
     let splitter = MarkdownSplitter::default();
-    let text = "# Heading\nParagraph\n# Heading\nParagraph";
-    let chunks = splitter.chunks(text, 33).collect::<Vec<_>>();
+    for heading in ["#", "##", "###", "####", "#####", "######"] {
+        let text = format!("{heading} Heading\nParagraph\n{heading} Heading\nParagraph");
+        let chunks = splitter
+            .chunks(&text, 32 + heading.chars().count())
+            .collect::<Vec<_>>();
 
-    // Chunk size big enough to grab next heading, but it should be in the next chunk
-    assert_eq!(
-        vec!["# Heading\nParagraph\n", "# Heading\nParagraph"],
-        chunks
-    );
+        // Chunk size big enough to grab next heading, but it should be in the next chunk
+        assert_eq!(
+            vec![
+                format!("{heading} Heading\nParagraph\n"),
+                format!("{heading} Heading\nParagraph")
+            ],
+            chunks
+        );
+    }
+}
+
+#[test]
+fn headings_trim() {
+    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    for heading in ["#", "##", "###", "####", "#####", "######"] {
+        let text = format!("{heading} Heading\nParagraph\n{heading} Heading\nParagraph");
+        let chunks = splitter
+            .chunks(&text, 32 + heading.chars().count())
+            .collect::<Vec<_>>();
+
+        // Chunk size big enough to grab next heading, but it should be in the next chunk
+        assert_eq!(
+            vec![
+                format!("{heading} Heading\nParagraph"),
+                format!("{heading} Heading\nParagraph")
+            ],
+            chunks
+        );
+    }
 }
