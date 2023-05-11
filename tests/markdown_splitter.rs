@@ -38,3 +38,16 @@ fn horizontal_rule_with_trim() {
 
     assert_eq!(vec!["Text\n\nfrom", "---", "a document"], chunks);
 }
+
+#[test]
+fn h1() {
+    let splitter = MarkdownSplitter::default();
+    let text = "# Heading\nParagraph\n# Heading\nParagraph";
+    let chunks = splitter.chunks(text, 33).collect::<Vec<_>>();
+
+    // Chunk size big enough to grab next heading, but it should be in the next chunk
+    assert_eq!(
+        vec!["# Heading\nParagraph\n", "# Heading\nParagraph"],
+        chunks
+    );
+}

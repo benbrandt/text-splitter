@@ -8,7 +8,7 @@ as possible, eventually falling back to the normal [`TextSplitter`] method.
 use std::{iter::once, ops::Range};
 
 use either::Either;
-use pulldown_cmark::{Event, Parser};
+use pulldown_cmark::{Event, HeadingLevel, Parser, Tag};
 
 use crate::{str_indices_from_separator, Characters, ChunkValidator, TextSplitter};
 
@@ -69,6 +69,7 @@ where
         self
     }
 
+    /// Check for thematic break/horizontal rule and break there
     fn chunk_by_horizontal_rule<'a, 'b: 'a>(
         &'a self,
         text: &'b str,
@@ -77,20 +78,49 @@ where
         self.text_splitter.coalesce_str_indices(
             text,
             chunk_size,
-            str_indices_from_parser_separator(text, |(event, _)| matches!(event, Event::Rule))
-                .flat_map(move |(i, str)| {
-                    if self.text_splitter.is_within_chunk_size(str, chunk_size) {
-                        Either::Left(once((i, str)))
-                    } else {
-                        // If section is too large, fallback
-                        Either::Right(
-                            self.text_splitter
-                                .chunk_indices(str, chunk_size)
-                                // Offset relative indices back to parent string
-                                .map(move |(ci, c)| (ci + i, c)),
-                        )
-                    }
-                }),
+            str_indices_from_parser_separator(text, true, |(event, _)| {
+                matches!(event, Event::Rule)
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.text_splitter
+                            .chunk_indices(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
+        )
+    }
+
+    /// Split by level 1 headings
+    fn chunk_by_h1<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, false, |(event, _)| {
+                matches!(event, Event::Start(Tag::Heading(HeadingLevel::H1, _, _)))
+            })
+            .flat_map(move |(i, str)| {
+                if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                    Either::Left(once((i, str)))
+                } else {
+                    // If section is too large, fallback
+                    Either::Right(
+                        self.chunk_by_horizontal_rule(str, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(ci, c)| (ci + i, c)),
+                    )
+                }
+            }),
         )
     }
 
@@ -111,15 +141,9 @@ where
     ///
     /// The boundaries used to split the text if using the top-level `chunks` method, in descending length:
     ///
-    /// 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
-    /// 2. 1 newline
-    /// 3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    /// 4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    /// 5. [Unicode Graphemes Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-    /// 6. Characters
-    ///
-    /// Splitting doesn't occur below the character level, otherwise you could get partial
-    /// bytes of a char, which may not be a valid unicode str.
+    /// 1. [Headings](https://spec.commonmark.org/0.30/#atx-headings) - in descending levels
+    /// 2. [Thematic Breaks](https://spec.commonmark.org/0.30/#thematic-break)
+    /// 3. Progress through the `TextSplitter::chunks` method.
     ///
     /// ```
     /// use text_splitter::{Characters, MarkdownSplitter};
@@ -156,12 +180,13 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.chunk_by_horizontal_rule(text, chunk_size)
+        self.chunk_by_h1(text, chunk_size)
     }
 }
 
 fn str_indices_from_parser_separator<'a, F>(
     text: &'a str,
+    separator_is_own_chunk: bool,
     filter: F,
 ) -> impl Iterator<Item = (usize, &'a str)> + '_
 where
@@ -169,6 +194,7 @@ where
 {
     str_indices_from_separator(
         text,
+        separator_is_own_chunk,
         Parser::new(text)
             .into_offset_iter()
             .filter(filter)
