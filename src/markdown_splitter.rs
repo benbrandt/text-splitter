@@ -1,4 +1,16 @@
-use crate::{Characters, ChunkValidator, TextSplitter};
+/*!
+# [`MarkdownSplitter`]
+
+Semantic splitting of Markdown documents. Tries to use as many semantic units from Markdown
+as possible, eventually falling back to the normal [`TextSplitter`] method.
+*/
+
+use std::{iter::once, ops::Range};
+
+use either::Either;
+use pulldown_cmark::{Event, Parser};
+
+use crate::{str_indices_from_separator, Characters, ChunkValidator, TextSplitter};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -55,6 +67,31 @@ where
     pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
         self.text_splitter = self.text_splitter.with_trim_chunks(trim_chunks);
         self
+    }
+
+    fn chunk_by_horizontal_rule<'a, 'b: 'a>(
+        &'a self,
+        text: &'b str,
+        chunk_size: usize,
+    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+        self.text_splitter.coalesce_str_indices(
+            text,
+            chunk_size,
+            str_indices_from_parser_separator(text, |(event, _)| matches!(event, Event::Rule))
+                .flat_map(move |(i, str)| {
+                    if self.text_splitter.is_within_chunk_size(str, chunk_size) {
+                        Either::Left(once((i, str)))
+                    } else {
+                        // If section is too large, fallback
+                        Either::Right(
+                            self.text_splitter
+                                .chunk_indices(str, chunk_size)
+                                // Offset relative indices back to parent string
+                                .map(move |(ci, c)| (ci + i, c)),
+                        )
+                    }
+                }),
+        )
     }
 
     /// Generate a list of chunks from a given text. Each chunk will be up to
@@ -119,6 +156,22 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.text_splitter.chunk_indices(text, chunk_size)
+        self.chunk_by_horizontal_rule(text, chunk_size)
     }
+}
+
+fn str_indices_from_parser_separator<'a, F>(
+    text: &'a str,
+    filter: F,
+) -> impl Iterator<Item = (usize, &'a str)> + '_
+where
+    F: for<'f> FnMut(&'f (Event<'_>, Range<usize>)) -> bool + 'a,
+{
+    str_indices_from_separator(
+        text,
+        Parser::new(text)
+            .into_offset_iter()
+            .filter(filter)
+            .map(|(_, range)| range),
+    )
 }

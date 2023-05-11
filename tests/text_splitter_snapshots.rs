@@ -1,3 +1,15 @@
+#![warn(
+    clippy::pedantic,
+    future_incompatible,
+    missing_debug_implementations,
+    missing_docs,
+    nonstandard_style,
+    rust_2018_compatibility,
+    rust_2018_idioms,
+    rust_2021_compatibility,
+    unused
+)]
+
 use std::fs;
 
 use once_cell::sync::Lazy;

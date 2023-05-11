@@ -30,7 +30,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 ### By Tokens
 
 ```rust
-use text_splitter::{TextSplitter};
+use text_splitter::TextSplitter;
 // Can also use tiktoken-rs, or anything that implements the TokenCount
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
@@ -106,6 +106,7 @@ mod tiktoken;
 mod tokenizer;
 
 pub use characters::Characters;
+#[cfg(feature = "markdown")]
 pub use markdown_splitter::MarkdownSplitter;
 pub use tokenizer::TokenCount;
 
