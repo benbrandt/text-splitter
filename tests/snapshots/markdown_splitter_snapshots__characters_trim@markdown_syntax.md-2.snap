@@ -138,10 +138,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Blockquotes can be nested (i.e. a blockquote-in-a-blockquote) by\nadding additional levels of `>`:"
 - "> This is the first level of quoting.\n    >\n    > > This is nested blockquote.\n    >"
 - "> Back to the first level."
-- "Blockquotes can contain other Markdown elements, including headers, lists,\nand code blocks:"
-- "> ## This is a header.\n\t> \n\t> 1.   This is the first list item."
-- "> 2.   This is the second list item.\n\t> \n\t> Here's some example code:\n\t>"
-- ">     return shell_exec(\"echo $input | $markdown_script\");"
+- "Blockquotes can contain other Markdown elements, including headers, lists,\nand code blocks:\n\n\t>"
+- "## This is a header.\n\t> \n\t> 1.   This is the first list item.\n\t> 2.   This is the second list item."
+- "> \n\t> Here's some example code:\n\t> \n\t>     return shell_exec(\"echo $input | $markdown_script\");"
 - Any decent text editor should make email-style quoting easy. For
 - "example, with BBEdit, you can make a selection and choose Increase\nQuote Level from the Text menu."
 - "<h3 id=\"list\">Lists</h3>\n\nMarkdown supports ordered (numbered) and unordered (bulleted) lists."

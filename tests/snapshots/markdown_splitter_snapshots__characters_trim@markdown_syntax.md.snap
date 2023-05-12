@@ -1159,10 +1159,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "lists,"
 - and code
 - "blocks:"
-- "> ## This"
-- is a
-- "header.\n\t>"
-- "> 1."
+- ">"
+- "## This is"
+- a header.
+- "> \n\t> 1."
 - This is
 - the first
 - list item.
