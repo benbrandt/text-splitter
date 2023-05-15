@@ -53,13 +53,13 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
     - Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
     - No. Split by the next level and repeat.
 
-The boundaries used to split the text if using the top-level `split` method, in descending length:
+The boundaries used to split the text if using the top-level `chunks` method, in descending length:
 
 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
 2. 1 newline
-3. [Unicode Sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-4. [Unicode Words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-5. [Unicode Graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+5. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
 6. Characters
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
@@ -88,7 +88,7 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
 )]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use core::iter::once;
+use core::{iter::once, ops::Range};
 
 use either::Either;
 use itertools::Itertools;
@@ -113,7 +113,7 @@ pub trait ChunkValidator {
     fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool;
 }
 
-/// Default plain-text splitter. Recursively splits chunks into the smallest
+/// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 #[derive(Debug)]
@@ -154,9 +154,9 @@ where
     /// let splitter = TextSplitter::new(Characters);
     /// ```
     #[must_use]
-    pub fn new(chunk_size: C) -> Self {
+    pub fn new(chunk_validator: C) -> Self {
         Self {
-            chunk_validator: chunk_size,
+            chunk_validator,
             trim_chunks: false,
         }
     }
@@ -236,45 +236,6 @@ where
             (!chunk.is_empty()).then_some((start, chunk))
         })
     }
-
-    /// Generate iter of str indices from a regex separator. These won't be
-    /// batched yet in case further fallbacks are needed.
-    fn str_indices_from_regex_separator<'a, 'b: 'a>(
-        text: &'b str,
-        separator: &'a Regex,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        let mut cursor = 0;
-        let mut final_match = false;
-        separator
-            .find_iter(text)
-            .batching(move |it| match it.next() {
-                // If we've hit the end, actually return None
-                None if final_match => None,
-                // First time we hit None, return the final section of the text
-                None => {
-                    final_match = true;
-                    text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
-                }
-                // Return text preceding match + the match
-                Some(sep) => {
-                    let sep_range = sep.range();
-                    let prev_word = (
-                        cursor,
-                        text.get(cursor..sep_range.start)
-                            .expect("invalid character sequence in regex"),
-                    );
-                    let separator = (
-                        sep_range.start,
-                        text.get(sep_range.start..sep_range.end)
-                            .expect("invalid character sequence in regex"),
-                    );
-                    cursor = sep_range.end;
-                    Some(Either::Right([prev_word, separator].into_iter()))
-                }
-            })
-            .flatten()
-    }
-
     /// Returns an iterator over the characters of the text and their byte offsets.
     /// Each chunk will be up to the `max_chunk_size`.
     ///
@@ -417,20 +378,18 @@ where
         self.coalesce_str_indices(
             text,
             chunk_size,
-            Self::str_indices_from_regex_separator(text, &NEWLINE).flat_map(
-                move |(i, paragraph)| {
-                    if self.is_within_chunk_size(paragraph, chunk_size) {
-                        Either::Left(once((i, paragraph)))
-                    } else {
-                        // If paragraph is still too large, do sentences
-                        Either::Right(
-                            self.chunk_by_sentence_indices(paragraph, chunk_size)
-                                // Offset relative indices back to parent string
-                                .map(move |(si, s)| (si + i, s)),
-                        )
-                    }
-                },
-            ),
+            str_indices_from_regex_separator(text, &NEWLINE).flat_map(move |(i, paragraph)| {
+                if self.is_within_chunk_size(paragraph, chunk_size) {
+                    Either::Left(once((i, paragraph)))
+                } else {
+                    // If paragraph is still too large, do sentences
+                    Either::Right(
+                        self.chunk_by_sentence_indices(paragraph, chunk_size)
+                            // Offset relative indices back to parent string
+                            .map(move |(si, s)| (si + i, s)),
+                    )
+                }
+            }),
         )
     }
 
@@ -452,7 +411,7 @@ where
         self.coalesce_str_indices(
             text,
             chunk_size,
-            Self::str_indices_from_regex_separator(text, &DOUBLE_NEWLINE).flat_map(
+            str_indices_from_regex_separator(text, &DOUBLE_NEWLINE).flat_map(
                 move |(i, paragraph)| {
                     if self.is_within_chunk_size(paragraph, chunk_size) {
                         Either::Left(once((i, paragraph)))
@@ -485,9 +444,9 @@ where
     ///
     /// 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
     /// 2. 1 newline
-    /// 3. [Unicode Sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    /// 4. [Unicode Words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    /// 5. [Unicode Graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 5. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
     /// 6. Characters
     ///
     /// Splitting doesn't occur below the character level, otherwise you could get partial
@@ -530,6 +489,62 @@ where
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
         self.chunk_by_double_newline_indices(text, chunk_size)
     }
+}
+
+/// Generate iter of str indices from a regex separator. These won't be
+/// batched yet in case further fallbacks are needed.
+fn str_indices_from_regex_separator<'a, 'b: 'a>(
+    text: &'b str,
+    separator: &'a Regex,
+) -> impl Iterator<Item = (usize, &'b str)> + 'a {
+    str_indices_from_separator(text, true, separator.find_iter(text).map(|sep| sep.range()))
+}
+
+/// Given a list of separator ranges, construct the sections of the text
+fn str_indices_from_separator(
+    text: &str,
+    separator_is_own_chunk: bool,
+    separator_ranges: impl Iterator<Item = Range<usize>>,
+) -> impl Iterator<Item = (usize, &str)> {
+    let mut cursor = 0;
+    let mut final_match = false;
+    separator_ranges
+        .batching(move |it| match it.next() {
+            // If we've hit the end, actually return None
+            None if final_match => None,
+            // First time we hit None, return the final section of the text
+            None => {
+                final_match = true;
+                text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
+            }
+            // Return text preceding match + the match
+            Some(range) if separator_is_own_chunk => {
+                let prev_section = (
+                    cursor,
+                    text.get(cursor..range.start)
+                        .expect("invalid character sequence"),
+                );
+                let separator = (
+                    range.start,
+                    text.get(range.start..range.end)
+                        .expect("invalid character sequence in regex"),
+                );
+                cursor = range.end;
+                Some(Either::Right([prev_section, separator].into_iter()))
+            }
+            // Return just the text preceding the match
+            Some(range) => {
+                let prev_section = (
+                    cursor,
+                    text.get(cursor..range.start)
+                        .expect("invalid character sequence"),
+                );
+                // Separator will be part of the next chunk
+                cursor = range.start;
+                Some(Either::Left(once(prev_section)))
+            }
+        })
+        .flatten()
 }
 
 #[cfg(test)]

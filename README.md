@@ -56,9 +56,9 @@ The boundaries used to split the text if using the top-level `split` method, in 
 
 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
 2. 1 newline
-3. [Unicode Sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-4. [Unicode Words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-5. [Unicode Graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+5. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
 6. Characters
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
