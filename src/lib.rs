@@ -249,7 +249,13 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> TextChunks<'b, 'a, C> {
-        TextChunks::new(chunk_size, &self.chunk_validator, text, self.trim_chunks)
+        TextChunks::new(
+            chunk_size,
+            &self.chunk_validator,
+            SemanticLevel::Char,
+            text,
+            self.trim_chunks,
+        )
     }
 
     /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
@@ -538,6 +544,37 @@ fn str_indices_from_separator(
         .flatten()
 }
 
+/// Different semantic levels that text can be split by.
+/// Each level provides a method of splitting text into chunks of a given level
+/// as well as a fallback in case a given fallback is too large.
+#[derive(Clone, Copy, Debug)]
+enum SemanticLevel {
+    /// Split by individual chars. May be larger than a single byte,
+    /// but we don't go lower so we always have valid UTF str's.
+    Char,
+}
+
+impl SemanticLevel {
+    /// Optional fallback, if available, if the current level is too large
+    fn fallback(self) -> Option<Self> {
+        match self {
+            Self::Char => None,
+        }
+    }
+
+    /// Split a given text into str with byte offsets for each semantic chunk
+    fn str_indices(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
+        match self {
+            Self::Char => text.char_indices().map(|(i, c)| {
+                (
+                    i,
+                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
+                )
+            }),
+        }
+    }
+}
+
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
 pub struct TextChunks<'text, 'validator, V>
@@ -550,6 +587,8 @@ where
     chunk_validator: &'validator V,
     /// Current byte offset in the `text`
     cursor: usize,
+    /// Largest Semantic Level we are splitting by
+    semantic_level: SemanticLevel,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// Whether or not chunks should be trimmed
@@ -565,6 +604,7 @@ where
     fn new(
         chunk_size: usize,
         chunk_validator: &'validator V,
+        semantic_level: SemanticLevel,
         text: &'text str,
         trim_chunks: bool,
     ) -> Self {
@@ -572,6 +612,7 @@ where
             cursor: 0,
             chunk_size,
             chunk_validator,
+            semantic_level,
             text,
             trim_chunks,
         }
@@ -599,12 +640,10 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         let start = self.cursor;
 
-        let it = self.text.get(start..)?.char_indices().map(|(i, c)| {
-            let i = i + start;
-            self.text
-                .get(i..i + c.len_utf8())
-                .expect("char should be valid")
-        });
+        let it = self
+            .semantic_level
+            .str_indices(self.text.get(start..)?)
+            .map(|(_, s)| s);
 
         // Consume as many as we can fit
         for str in it {
