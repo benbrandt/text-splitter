@@ -619,15 +619,24 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn is_within_chunk_size(&self, chunk: &str) -> bool {
-        self.chunk_validator.validate_chunk(
-            if self.trim_chunks {
-                chunk.trim()
-            } else {
-                chunk
-            },
-            self.chunk_size,
-        )
+    fn validate_chunk(&self, chunk: &str) -> bool {
+        self.chunk_validator.validate_chunk(chunk, self.chunk_size)
+    }
+
+    /// Generate chunk for a given range, applying trimming settings.
+    /// Returns final byte offset and str.
+    /// Will return `None` if given an invalid range.
+    fn chunk(&self, range: Range<usize>) -> Option<(usize, &'text str)> {
+        let start = range.start;
+        let chunk = self.text.get(range)?;
+        // Trim whitespace if user requested it
+        Some(if self.trim_chunks {
+            // Figure out how many bytes we lose trimming the beginning
+            let offset = chunk.len() - chunk.trim_start().len();
+            (start + offset, chunk.trim())
+        } else {
+            (start, chunk)
+        })
     }
 }
 
@@ -640,32 +649,42 @@ where
     fn next(&mut self) -> Option<Self::Item> {
         let start = self.cursor;
 
-        let it = self
+        let mut it = self
             .semantic_level
             .str_indices(self.text.get(start..)?)
-            .map(|(_, s)| s);
+            .peekable();
+
+        // Check if we need to split it up first
+        let mut current_level = self.semantic_level;
+        loop {
+            match (it.peek(), current_level.fallback()) {
+                // Break early, nothing to do here
+                (None, _) => return None,
+                // If this is a valid chunk, we are fine
+                (Some((_, str)), _) if self.validate_chunk(str) => break,
+                // If we can't break up further, exit loop
+                (Some(_), None) => break,
+                // Otherwise break up the text with the fallback
+                (Some((_, str)), Some(fallback)) => {
+                    it = fallback.str_indices(str).peekable();
+                    current_level = fallback;
+                }
+            }
+        }
 
         // Consume as many as we can fit
-        for str in it {
-            let chunk = self.text.get(start..self.cursor + str.len())?;
+        for (_, str) in it {
+            let (_, chunk) = self.chunk(start..self.cursor + str.len())?;
             // If this doesn't fit, as log as it isn't our first one, end the check here,
             // we have a chunk.
-            if !self.is_within_chunk_size(chunk) && start != self.cursor {
+            if !self.validate_chunk(chunk) && start != self.cursor {
                 break;
             }
 
             self.cursor += str.len();
         }
 
-        let chunk = self.text.get(start..self.cursor)?;
-        // Trim whitespace if user requested it
-        let (start, chunk) = if self.trim_chunks {
-            // Figure out how many bytes we lose trimming the beginning
-            let offset = chunk.len() - chunk.trim_start().len();
-            (start + offset, chunk.trim())
-        } else {
-            (start, chunk)
-        };
+        let (start, chunk) = self.chunk(start..self.cursor)?;
 
         // Make sure we didn't get an empty chunk
         (!chunk.is_empty()).then_some((start, chunk))
