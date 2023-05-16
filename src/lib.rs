@@ -30,7 +30,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 ### By Tokens
 
 ```rust
-use text_splitter::{TextSplitter};
+use text_splitter::TextSplitter;
 // Can also use tiktoken-rs, or anything that implements the TokenCount
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
@@ -248,17 +248,8 @@ where
         &'a self,
         text: &'b str,
         chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
-            chunk_size,
-            text.char_indices().map(|(i, c)| {
-                (
-                    i,
-                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
-                )
-            }),
-        )
+    ) -> TextChunks<'b, 'a, C> {
+        TextChunks::new(chunk_size, &self.chunk_validator, text, self.trim_chunks)
     }
 
     /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
@@ -545,6 +536,101 @@ fn str_indices_from_separator(
             }
         })
         .flatten()
+}
+
+/// Returns chunks of text with their byte offsets as an iterator.
+#[derive(Debug)]
+pub struct TextChunks<'text, 'validator, V>
+where
+    V: ChunkValidator,
+{
+    /// Size of the chunks to generate
+    chunk_size: usize,
+    /// How to validate chunk sizes
+    chunk_validator: &'validator V,
+    /// Current byte offset in the `text`
+    cursor: usize,
+    /// Original text to iterate over and generate chunks from
+    text: &'text str,
+    /// Whether or not chunks should be trimmed
+    trim_chunks: bool,
+}
+
+impl<'text, 'validator, V> TextChunks<'text, 'validator, V>
+where
+    V: ChunkValidator,
+{
+    /// Generate new [`TextChunks`] iterator for a given text.
+    /// Starts with an offset of 0
+    fn new(
+        chunk_size: usize,
+        chunk_validator: &'validator V,
+        text: &'text str,
+        trim_chunks: bool,
+    ) -> Self {
+        Self {
+            cursor: 0,
+            chunk_size,
+            chunk_validator,
+            text,
+            trim_chunks,
+        }
+    }
+
+    /// Is the given text within the chunk size?
+    fn is_within_chunk_size(&self, chunk: &str) -> bool {
+        self.chunk_validator.validate_chunk(
+            if self.trim_chunks {
+                chunk.trim()
+            } else {
+                chunk
+            },
+            self.chunk_size,
+        )
+    }
+}
+
+impl<'text, 'validator, V> Iterator for TextChunks<'text, 'validator, V>
+where
+    V: ChunkValidator,
+{
+    type Item = (usize, &'text str);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let start = self.cursor;
+
+        let it = self.text.get(start..)?.char_indices().map(|(i, c)| {
+            let i = i + start;
+            self.text
+                .get(i..i + c.len_utf8())
+                .expect("char should be valid")
+        });
+
+        // Consume as many as we can fit
+        for str in it {
+            let chunk = self.text.get(start..self.cursor + str.len())?;
+            // If this doesn't fit, as log as it isn't our first one, end the check here,
+            // we have a chunk.
+            if !self.is_within_chunk_size(chunk) && start != self.cursor {
+                break;
+            }
+
+            self.cursor += str.len();
+        }
+
+        let chunk = self.text.get(start..self.cursor)?;
+        // Trim whitespace if user requested it
+        let (start, chunk) = if self.trim_chunks {
+            // Figure out how many bytes we lose trimming the beginning
+            let offset = chunk.len() - chunk.trim_start().len();
+            (start + offset, chunk.trim())
+        } else {
+            (start, chunk)
+        };
+
+        // Make sure we didn't get an empty chunk
+        (!chunk.is_empty()).then_some((start, chunk))
+    }
 }
 
 #[cfg(test)]
