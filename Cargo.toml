@@ -28,7 +28,7 @@ tokenizers = { version = "0.13.3", optional = true }
 unicode-segmentation = "1.10.1"
 
 [dev-dependencies]
-fake = "2.6.0"
+fake = "2.6.1"
 insta = { version = "1.29.0", features = ["glob", "yaml"] }
 more-asserts = "0.3.1"
 

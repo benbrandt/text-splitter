@@ -238,30 +238,6 @@ where
         })
     }
 
-    /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
-    /// Each chunk will be up to the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many
-    /// [unicode graphemes](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-    /// as possible.
-    ///
-    /// If a given grapheme is larger than your chunk size, given the length
-    /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_char_indices`] until it will fit in a chunk.
-    fn chunk_by_grapheme_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        TextChunks::new(
-            chunk_size,
-            &self.chunk_validator,
-            SemanticLevel::GraphemeCluster,
-            text,
-            self.trim_chunks,
-        )
-    }
-
     /// Returns an iterator over the words of the text and their byte offsets.
     /// Each chunk will be up to the `max_chunk_size`.
     ///
@@ -276,22 +252,13 @@ where
         &'a self,
         text: &'b str,
         chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
+    ) -> TextChunks<'b, 'a, C> {
+        TextChunks::new(
             chunk_size,
-            text.split_word_bound_indices().flat_map(move |(i, word)| {
-                if self.is_within_chunk_size(word, chunk_size) {
-                    Either::Left(once((i, word)))
-                } else {
-                    // If words is too large, do grapheme chunking
-                    Either::Right(
-                        self.chunk_by_grapheme_indices(word, chunk_size)
-                            // Offset relative indices back to parent string
-                            .map(move |(gi, g)| (gi + i, g)),
-                    )
-                }
-            }),
+            &self.chunk_validator,
+            SemanticLevel::Word,
+            text,
+            self.trim_chunks,
         )
     }
 
@@ -524,8 +491,11 @@ enum SemanticLevel {
     /// but we don't go lower so we always have valid UTF str's.
     Char,
     /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
-    /// Fallsback to [`Self::Char`]
+    /// Falls back to [`Self::Char`]
     GraphemeCluster,
+    /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// Falls back to [`Self::GraphemeCluster`]
+    Word,
 }
 
 impl SemanticLevel {
@@ -534,20 +504,19 @@ impl SemanticLevel {
         match self {
             Self::Char => None,
             Self::GraphemeCluster => Some(Self::Char),
+            Self::Word => Some(Self::GraphemeCluster),
         }
     }
 
-    /// Split a given text into str with byte offsets for each semantic chunk
+    /// Split a given text into iterator over each semantic chunk
     #[auto_enum(Iterator)]
-    fn str_indices(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
+    fn chunks(self, text: &str) -> impl Iterator<Item = &str> {
         match self {
-            Self::Char => text.char_indices().map(|(i, c)| {
-                (
-                    i,
-                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
-                )
-            }),
-            Self::GraphemeCluster => text.grapheme_indices(true),
+            Self::Char => text
+                .char_indices()
+                .map(|(i, c)| text.get(i..i + c.len_utf8()).expect("char should be valid")),
+            Self::GraphemeCluster => text.graphemes(true),
+            Self::Word => text.split_word_bounds(),
         }
     }
 }
@@ -597,7 +566,14 @@ where
 
     /// Is the given text within the chunk size?
     fn validate_chunk(&self, chunk: &str) -> bool {
-        self.chunk_validator.validate_chunk(chunk, self.chunk_size)
+        self.chunk_validator.validate_chunk(
+            if self.trim_chunks {
+                chunk.trim()
+            } else {
+                chunk
+            },
+            self.chunk_size,
+        )
     }
 
     /// Generate chunk for a given range, applying trimming settings.
@@ -624,47 +600,57 @@ where
     type Item = (usize, &'text str);
 
     fn next(&mut self) -> Option<Self::Item> {
-        let start = self.cursor;
-
-        let mut it = self
-            .semantic_level
-            .str_indices(self.text.get(start..)?)
-            .peekable();
-
-        // Check if we need to split it up first
-        let mut current_level = self.semantic_level;
         loop {
-            match (it.peek(), current_level.fallback()) {
-                // Break early, nothing to do here
-                (None, _) => return None,
-                // If this is a valid chunk, we are fine
-                (Some((_, str)), _) if self.validate_chunk(str) => break,
-                // If we can't break up further, exit loop
-                (Some(_), None) => break,
-                // Otherwise break up the text with the fallback
-                (Some((_, str)), Some(fallback)) => {
-                    it = fallback.str_indices(str).peekable();
-                    current_level = fallback;
+            let start = self.cursor;
+
+            let mut it = self
+                .semantic_level
+                .chunks(self.text.get(start..)?)
+                .peekable();
+
+            // Check if we need to split it up first
+            let mut current_level = self.semantic_level;
+            loop {
+                match (it.peek(), current_level.fallback()) {
+                    // Break early, nothing to do here
+                    (None, _) => return None,
+                    // If we can't break up further, exit loop
+                    (Some(_), None) => break,
+                    // If this is a valid chunk, we are fine
+                    (Some(str), _) if self.validate_chunk(str) => {
+                        dbg!(str);
+                        break;
+                    }
+                    // Otherwise break up the text with the fallback
+                    (Some(str), Some(fallback)) => {
+                        dbg!((str, fallback));
+                        it = fallback.chunks(str).peekable();
+                        current_level = fallback;
+                    }
                 }
             }
-        }
 
-        // Consume as many as we can fit
-        for (_, str) in it {
-            let (_, chunk) = self.chunk(start..self.cursor + str.len())?;
-            // If this doesn't fit, as log as it isn't our first one, end the check here,
-            // we have a chunk.
-            if !self.validate_chunk(chunk) && start != self.cursor {
-                break;
+            // Consume as many as we can fit
+            for str in it {
+                let chunk = self.text.get(start..self.cursor + str.len())?;
+                // If this doesn't fit, as log as it isn't our first one, end the check here,
+                // we have a chunk.
+                if !self.validate_chunk(chunk) && start != self.cursor {
+                    break;
+                }
+
+                self.cursor += str.len();
             }
 
-            self.cursor += str.len();
+            let (start, chunk) = self.chunk(start..self.cursor)?;
+
+            // Make sure we didn't get an empty chunk. Should only happen in
+            // cases where we trim.
+            if chunk.is_empty() {
+                continue;
+            }
+            return Some((start, chunk));
         }
-
-        let (start, chunk) = self.chunk(start..self.cursor)?;
-
-        // Make sure we didn't get an empty chunk
-        (!chunk.is_empty()).then_some((start, chunk))
     }
 }
 
@@ -773,10 +759,8 @@ mod tests {
     #[test]
     fn chunk_by_graphemes() {
         let text = "a̐éö̲\r\n";
-        let splitter = TextSplitter::default();
 
-        let chunks = splitter
-            .chunk_by_grapheme_indices(text, 3)
+        let chunks = TextChunks::new(3, &Characters, SemanticLevel::GraphemeCluster, text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         // \r\n is grouped together not separated
@@ -795,10 +779,8 @@ mod tests {
     #[test]
     fn graphemes_fallback_to_chars() {
         let text = "a̐éö̲\r\n";
-        let splitter = TextSplitter::default();
 
-        let chunks = splitter
-            .chunk_by_grapheme_indices(text, 1)
+        let chunks = TextChunks::new(1, &Characters, SemanticLevel::GraphemeCluster, text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -810,10 +792,8 @@ mod tests {
     #[test]
     fn trim_grapheme_indices() {
         let text = "\r\na̐éö̲\r\n";
-        let splitter = TextSplitter::default().with_trim_chunks(true);
 
-        let chunks = splitter
-            .chunk_by_grapheme_indices(text, 3)
+        let chunks = TextChunks::new(3, &Characters, SemanticLevel::GraphemeCluster, text, true)
             .collect::<Vec<_>>();
         assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
     }
