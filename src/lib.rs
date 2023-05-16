@@ -90,6 +90,7 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
 
 use core::{iter::once, ops::Range};
 
+use auto_enums::auto_enum;
 use either::Either;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
@@ -236,27 +237,6 @@ where
             (!chunk.is_empty()).then_some((start, chunk))
         })
     }
-    /// Returns an iterator over the characters of the text and their byte offsets.
-    /// Each chunk will be up to the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many `char`s as
-    /// possible.
-    ///
-    /// If you chunk size is smaller than a given character, the character will be returned anyway, otherwise you would get just partial bytes of a char
-    /// that might not be a valid unicode str.
-    fn chunk_by_char_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> TextChunks<'b, 'a, C> {
-        TextChunks::new(
-            chunk_size,
-            &self.chunk_validator,
-            SemanticLevel::Char,
-            text,
-            self.trim_chunks,
-        )
-    }
 
     /// Returns an iterator over the grapheme clusters of the text and their byte offsets.
     /// Each chunk will be up to the `max_chunk_size`.
@@ -273,21 +253,12 @@ where
         text: &'b str,
         chunk_size: usize,
     ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
+        TextChunks::new(
             chunk_size,
-            text.grapheme_indices(true).flat_map(move |(i, grapheme)| {
-                if self.is_within_chunk_size(grapheme, chunk_size) {
-                    Either::Left(once((i, grapheme)))
-                } else {
-                    // If grapheme is too large, do char chunking
-                    Either::Right(
-                        self.chunk_by_char_indices(grapheme, chunk_size)
-                            // Offset relative indices back to parent string
-                            .map(move |(ci, c)| (ci + i, c)),
-                    )
-                }
-            }),
+            &self.chunk_validator,
+            SemanticLevel::GraphemeCluster,
+            text,
+            self.trim_chunks,
         )
     }
 
@@ -552,6 +523,9 @@ enum SemanticLevel {
     /// Split by individual chars. May be larger than a single byte,
     /// but we don't go lower so we always have valid UTF str's.
     Char,
+    /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
+    /// Fallsback to [`Self::Char`]
+    GraphemeCluster,
 }
 
 impl SemanticLevel {
@@ -559,10 +533,12 @@ impl SemanticLevel {
     fn fallback(self) -> Option<Self> {
         match self {
             Self::Char => None,
+            Self::GraphemeCluster => Some(Self::Char),
         }
     }
 
     /// Split a given text into str with byte offsets for each semantic chunk
+    #[auto_enum(Iterator)]
     fn str_indices(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
         match self {
             Self::Char => text.char_indices().map(|(i, c)| {
@@ -571,6 +547,7 @@ impl SemanticLevel {
                     text.get(i..i + c.len_utf8()).expect("char should be valid"),
                 )
             }),
+            Self::GraphemeCluster => text.grapheme_indices(true),
         }
     }
 }
@@ -702,11 +679,15 @@ mod tests {
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let splitter = TextSplitter::default();
-        let chunks = splitter
-            .chunk_by_char_indices(&text, text.chars().count())
-            .map(|(_, c)| c)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(
+            text.chars().count(),
+            &Characters,
+            SemanticLevel::Char,
+            &text,
+            false,
+        )
+        .map(|(_, c)| c)
+        .collect::<Vec<_>>();
         assert_eq!(vec![&text], chunks);
     }
 
@@ -718,11 +699,15 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let splitter = TextSplitter::default();
-        let chunks = splitter
-            .chunk_by_char_indices(&text, max_chunk_size)
-            .map(|(_, c)| c)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(
+            max_chunk_size,
+            &Characters,
+            SemanticLevel::Char,
+            &text,
+            false,
+        )
+        .map(|(_, c)| c)
+        .collect::<Vec<_>>();
 
         assert!(chunks.iter().all(|c| c.chars().count() <= max_chunk_size));
 
@@ -742,9 +727,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let text = "";
-        let splitter = TextSplitter::default();
-        let chunks = splitter
-            .chunk_by_char_indices(text, 100)
+        let chunks = TextChunks::new(100, &Characters, SemanticLevel::Char, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert!(chunks.is_empty());
@@ -753,9 +736,7 @@ mod tests {
     #[test]
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
-        let splitter = TextSplitter::default();
-        let chunks = splitter
-            .chunk_by_char_indices(text, 1)
+        let chunks = TextChunks::new(1, &Characters, SemanticLevel::Char, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -773,9 +754,7 @@ mod tests {
     #[test]
     fn custom_len_function() {
         let text = "éé"; // Char that is two bytes each
-        let splitter = TextSplitter::new(Str);
-        let chunks = splitter
-            .chunk_by_char_indices(text, 2)
+        let chunks = TextChunks::new(2, &Str, SemanticLevel::Char, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -784,9 +763,7 @@ mod tests {
     #[test]
     fn handles_char_bigger_than_len() {
         let text = "éé"; // Char that is two bytes each
-        let splitter = TextSplitter::new(Str);
-        let chunks = splitter
-            .chunk_by_char_indices(text, 1)
+        let chunks = TextChunks::new(1, &Str, SemanticLevel::Char, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         // We can only go so small
@@ -809,9 +786,9 @@ mod tests {
     #[test]
     fn trim_char_indices() {
         let text = " a b ";
-        let splitter = TextSplitter::default().with_trim_chunks(true);
 
-        let chunks = splitter.chunk_by_char_indices(text, 1).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(1, &Characters, SemanticLevel::Char, text, true).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
     }
 
