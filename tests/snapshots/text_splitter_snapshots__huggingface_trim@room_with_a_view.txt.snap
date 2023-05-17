@@ -2950,9 +2950,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - into the old chaotic methods.
 - “They’re nothing to me.”
 - “How could you think she was defending them?
-- ”
-- "said Miss Bartlett, much discomfited by"
-- the unpleasant scene.
+- "” said Miss Bartlett, much discomfited"
+- by the unpleasant scene.
 - The shopman was possibly listening.
 - “She will find it difficult.
 - For that man has murdered his wife in the sight
@@ -5793,10 +5792,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - He is very fond of it.”
 - “And you?”
 - "He meant, “Are you fond of it?"
-- ”
-- "But she answered dreamily, “I bathed"
-- "here, too, till I was found out."
-- Then there was a row.”
+- "” But she answered dreamily, “I"
+- "bathed here, too, till I was found"
+- out. Then there was a row.”
 - "At another time he might have been shocked, for"
 - he had depths of prudishness within him
 - ". But now?"
@@ -5994,10 +5992,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Mrs. Honeychurch cried.
 - “Just because they’re old and silly
 - one’s expected to say ‘How sweet!
-- ’
-- I hate their ‘if’-ing and ‘
-- but’-ing and ‘and’-ing
-- "."
+- ’ I hate their ‘if’-ing and
+- ‘but’-ing and ‘and’-
+- ing.
 - And poor Lucy—serve her right—worn to
 - "a shadow.”\n\nMr."
 - Beebe watched the shadow springing and shouting over
@@ -6812,9 +6809,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - But not until we are comrades shall we enter the
 - garden.”
 - "“I say, what about this bathe?"
-- ”
-- "murmured Freddy, appalled at the mass of"
-- philosophy that was approaching him.
+- "” murmured Freddy, appalled at the mass"
+- of philosophy that was approaching him.
 - “I believed in a return to Nature once.
 - But how can we return to Nature when we have
 - never been with her?
@@ -7936,9 +7932,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Cecil said one day—and I thought it
 - so profound—that there are two kinds of
 - cads—the conscious and the subconscious.
-- ”
-- "She paused again, to be sure of doing justice"
-- to Cecil’s profundity.
+- "” She paused again, to be sure of doing"
+- justice to Cecil’s profundity.
 - "Through the window she saw Cecil himself, turning over"
 - the pages of a novel.
 - It was a new one from Smith’s library

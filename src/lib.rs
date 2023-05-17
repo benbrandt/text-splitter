@@ -238,30 +238,6 @@ where
         })
     }
 
-    /// Returns an iterator over the words of the text and their byte offsets.
-    /// Each chunk will be up to the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many
-    /// [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    /// as possible.
-    ///
-    /// If a given word is larger than your chunk size, given the length
-    /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_grapheme_indices`] until it will fit in a chunk.
-    fn chunk_by_word_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> TextChunks<'b, 'a, C> {
-        TextChunks::new(
-            chunk_size,
-            &self.chunk_validator,
-            SemanticLevel::Word,
-            text,
-            self.trim_chunks,
-        )
-    }
-
     /// Returns an iterator over the unicode sentences of the text and their byte offsets. Each chunk will be up to
     /// the `max_chunk_size`.
     ///
@@ -276,23 +252,13 @@ where
         &'a self,
         text: &'b str,
         chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
+    ) -> TextChunks<'b, 'a, C> {
+        TextChunks::new(
             chunk_size,
-            text.split_sentence_bound_indices()
-                .flat_map(move |(i, sentence)| {
-                    if self.is_within_chunk_size(sentence, chunk_size) {
-                        Either::Left(once((i, sentence)))
-                    } else {
-                        // If sentence is too large, do word chunking
-                        Either::Right(
-                            self.chunk_by_word_indices(sentence, chunk_size)
-                                // Offset relative indices back to parent string
-                                .map(move |(wi, w)| (wi + i, w)),
-                        )
-                    }
-                }),
+            &self.chunk_validator,
+            SemanticLevel::Sentence,
+            text,
+            self.trim_chunks,
         )
     }
 
@@ -496,6 +462,9 @@ enum SemanticLevel {
     /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
     /// Falls back to [`Self::GraphemeCluster`]
     Word,
+    /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// Falls back to [`Self::Word`]
+    Sentence,
 }
 
 impl SemanticLevel {
@@ -505,6 +474,7 @@ impl SemanticLevel {
             Self::Char => None,
             Self::GraphemeCluster => Some(Self::Char),
             Self::Word => Some(Self::GraphemeCluster),
+            Self::Sentence => Some(Self::Word),
         }
     }
 
@@ -517,6 +487,7 @@ impl SemanticLevel {
                 .map(|(i, c)| text.get(i..i + c.len_utf8()).expect("char should be valid")),
             Self::GraphemeCluster => text.graphemes(true),
             Self::Word => text.split_word_bounds(),
+            Self::Sentence => text.split_sentence_bounds(),
         }
     }
 }
@@ -801,10 +772,8 @@ mod tests {
     #[test]
     fn chunk_by_words() {
         let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
-        let splitter = TextSplitter::default();
 
-        let chunks = splitter
-            .chunk_by_word_indices(text, 10)
+        let chunks = TextChunks::new(10, &Characters, SemanticLevel::Word, text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -823,10 +792,7 @@ mod tests {
     #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
-        let splitter = TextSplitter::default();
-
-        let chunks = splitter
-            .chunk_by_word_indices(text, 2)
+        let chunks = TextChunks::new(2, &Characters, SemanticLevel::Word, text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
@@ -835,9 +801,8 @@ mod tests {
     #[test]
     fn trim_word_indices() {
         let text = "Some text from a document";
-        let splitter = TextSplitter::default().with_trim_chunks(true);
-
-        let chunks = splitter.chunk_by_word_indices(text, 10).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(10, &Characters, SemanticLevel::Word, text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (10, "from a"), (17, "document")],
             chunks

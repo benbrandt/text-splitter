@@ -1150,8 +1150,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - foul thing.
 - FIRST SERVANT.
 - "Away with the join-stools, remove the"
-- "court-cupboard, look to the"
-- "plate. Good thou, save me a piece of"
+- "court-cupboard, look to the\nplate."
+- "Good thou, save me a piece of"
 - "marchpane; and as thou loves me,"
 - let the porter let in Susan
 - Grindstone and Nell.
@@ -2665,8 +2665,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Could you not take some occasion without giving?
 - TYBALT.
 - "Mercutio, thou consortest with Romeo"
-- ".\n\nMERCUTIO."
-- "Consort? What, dost thou make us"
+- ".\n\nMERCUTIO.\nConsort?"
+- "What, dost thou make us"
 - minstrels?
 - And thou make minstrels of
 - "us, look to hear nothing but discords."
@@ -5901,8 +5901,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Gutenberg-tm electronic work under this
 - "agreement, disclaim all"
 - "liability to you for damages, costs and expenses,"
-- including legal
-- fees. YOU AGREE THAT YOU
+- "including legal\nfees."
+- YOU AGREE THAT YOU
 - HAVE NO REMEDIES
 - "FOR NEGLIGENCE,"
 - STRICT
