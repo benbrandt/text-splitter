@@ -1290,9 +1290,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "BENVOLIO.\n"
 - "See, where"
 - " he comes."
-- " "
-- "So please "
-- "you step "
+- " So please"
+- " you step "
 - "aside;\n"
 - "I’ll know "
 - "his "
@@ -1921,9 +1920,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "night\n"
 - Inherit at
 - " my house."
-- " "
-- "Hear all, "
-- "all see,\n"
+- " Hear all,"
+- " all see,\n"
 - "And like "
 - "her most "
 - "whose "
@@ -2584,10 +2582,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "wit;\n"
 - "Wilt thou "
 - "not, Jule?"
-- "’ "
-- "and, by my"
-- " holidame,"
-- "\n"
+- "’ and, by "
+- "my "
+- "holidame,\n"
 - The pretty
 - " wretch "
 - "left "
@@ -2608,10 +2605,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I never "
 - "should "
 - forget it.
-- " "
-- ‘Wilt thou
-- " not, Jule"
-- "?’ "
+- " ‘Wilt "
+- "thou not, "
+- "Jule?’ "
 - "quoth he;\n"
 - "And, "
 - "pretty "
@@ -2666,10 +2662,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "age;\n"
 - "Wilt thou "
 - "not, Jule?"
-- "’ "
-- it stinted
-- ", and said"
-- " ‘Ay’.\n\n"
+- "’ it "
+- "stinted, "
+- and said ‘
+- "Ay’.\n\n"
 - "JULIET.\n"
 - "And stint "
 - "thou too, "
@@ -2722,9 +2718,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "of.\n\n"
 - "NURSE.\n"
 - An honour!
-- " "
-- Were not I
-- " thine "
+- " Were not "
+- "I thine "
 - only nurse
 - ",\nI would "
 - "say thou "
@@ -3611,10 +3606,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "away?\n"
 - He shift a
 - " trencher!"
-- " "
-- "He scrape "
-- a trencher
-- "!\n\nSECOND "
+- " He scrape"
+- " a "
+- trencher!
+- "\n\nSECOND "
 - "SERVANT.\n"
 - "When good "
 - "manners "
@@ -3651,10 +3646,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - " in Susan "
 - Grindstone
 - " and Nell."
-- " "
-- Antony and
-- " Potpan!\n\n"
-- "SECOND "
+- " Antony "
+- and Potpan
+- "!\n\nSECOND "
 - "SERVANT.\n"
 - "Ay, boy, "
 - "ready.\n\n"
@@ -5395,9 +5389,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "JULIET.\n"
 - "Well, do "
 - not swear.
-- " "
-- Although I
-- " joy in "
+- " Although "
+- "I joy in "
 - "thee,\n"
 - "I have no "
 - "joy of "
@@ -6535,13 +6528,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - new tuners
 - "\n"
 - of accent.
-- " "
-- "By Jesu, a"
-- " very good"
-- " blade, a "
-- "very tall "
-- "man, a "
-- "very good\n"
+- " By Jesu, "
+- "a very "
+- good blade
+- ", a very "
+- "tall man, "
+- "a very "
+- "good\n"
 - "whore. "
 - "Why, is "
 - not this a
@@ -6593,9 +6586,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "flesh, how"
 - " art thou\n"
 - fishified!
-- " "
-- "Now is he "
-- "for the "
+- " Now is he"
+- " for the "
 - "numbers "
 - "that "
 - "Petrarch "
@@ -7512,9 +7504,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Perchance "
 - she cannot
 - " meet him."
-- " "
-- That’s not
-- " so.\n"
+- " That’s "
+- "not so.\n"
 - "O, she is "
 - "lame. "
 - "Love’s "
@@ -7747,11 +7738,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ways, "
 - "wench, "
 - serve God.
-- " "
-- "What, have"
-- " you dined"
-- " at home?"
-- "\n\nJULIET.\n"
+- " What, "
+- "have you "
+- "dined at "
+- "home?\n\n"
+- "JULIET.\n"
 - "No, no. "
 - "But all "
 - this did I
@@ -8929,10 +8920,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "death\n"
 - "If thou "
 - art taken.
-- " "
-- "Hence, be "
-- "gone, away"
-- "!\n\nROMEO.\n"
+- " Hence, be"
+- " gone, "
+- "away!\n\n"
+- "ROMEO.\n"
 - "O, I am "
 - "fortune’s "
 - "fool!\n\n"
@@ -10719,9 +10710,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "both!\n"
 - "Thou hast "
 - amaz’d me.
-- " "
-- By my holy
-- " order,\n"
+- " By my "
+- holy order
+- ",\n"
 - "I thought "
 - "thy "
 - dispositio
@@ -11243,9 +11234,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "May call "
 - "it early "
 - by and by.
-- " "
-- Good night
-- ".\n\n"
+- " Good "
+- "night.\n\n"
 - " [_Exeunt."
 - "_]\n\n"
 - "SCENE V. "
@@ -11591,9 +11581,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "That is "
 - "renown’d "
 - for faith?
-- " "
-- "Be fickle,"
-- " Fortune;\n"
+- " Be fickle"
+- ", Fortune;"
+- "\n"
 - "For then, "
 - "I hope "
 - "thou wilt "
@@ -11814,9 +11804,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "thereof,\n"
 - Soon sleep
 - " in quiet."
-- " "
-- "O, how my "
-- "heart "
+- " O, how my"
+- " heart "
 - "abhors\n"
 - "To hear "
 - "him nam’d,"
@@ -13487,15 +13476,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "This is "
 - "as’t "
 - should be.
-- " "
-- Let me see
-- " the "
+- " Let me "
+- "see the "
 - "County.\n"
 - "Ay, marry."
-- " "
-- "Go, I say,"
-- " and fetch"
-- " him "
+- " Go, I say"
+- ", and "
+- "fetch him "
 - "hither.\n"
 - "Now afore "
 - "God, this "
@@ -13778,9 +13765,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - " Romeo\n"
 - "Come to "
 - redeem me?
-- " "
-- "There’s a "
-- "fearful "
+- " There’s a"
+- " fearful "
 - "point!\n"
 - "Shall I "
 - "not then "
@@ -15005,10 +14991,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "well?\n"
 - "How fares "
 - my Juliet?
-- " "
-- That I ask
-- " again;\n"
-- "For "
+- " That I "
+- ask again;
+- "\nFor "
 - "nothing "
 - can be ill
 - " if she be"
@@ -15117,9 +15102,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "tonight.\n"
 - "Let’s see "
 - for means.
-- " "
-- O mischief
-- " thou art "
+- " O "
+- "mischief "
+- "thou art "
 - "swift\n"
 - "To enter "
 - "in the "
@@ -16066,10 +16051,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "of Juliet,"
 - "\nTo think "
 - it was so?
-- " "
-- "O, give me"
-- " thy hand,"
-- "\nOne writ "
+- " O, give "
+- "me thy "
+- "hand,\n"
+- "One writ "
 - with me in
 - " sour "
 - misfortune
@@ -16125,9 +16110,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Call this "
 - "a "
 - lightning?
-- " "
-- "O my love,"
-- " my wife,\n"
+- " O my love"
+- ", my wife,"
+- "\n"
 - Death that
 - " hath "
 - suck’d the
@@ -16275,9 +16260,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "!\n"
 - "Thy drugs "
 - are quick.
-- " "
-- "Thus with "
-- "a kiss I "
+- " Thus with"
+- " a kiss I "
 - "die.\n\n"
 - " [_Dies._]"
 - "\n\n"
@@ -17439,9 +17423,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "so the "
 - Foundation
 - " (and you!"
-- ") "
-- "can copy "
-- "and "
+- ) can copy
+- " and "
 - distribute
 - " it in the"
 - "\nUnited "
@@ -17505,10 +17488,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Project "
 - "Gutenberg "
 - trademark.
-- " "
-- "If you do "
-- not charge
-- " anything "
+- " If you do"
+- " not "
+- "charge "
+- "anything "
 - "for\n"
 - "copies of "
 - this eBook
@@ -17664,10 +17647,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - /copyright
 - ") "
 - agreement.
-- " "
-- "If you do "
-- "not agree "
-- "to abide "
+- " If you do"
+- " not agree"
+- " to abide "
 - "by all\n"
 - "the terms "
 - "of this "
@@ -17740,9 +17722,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "terms of "
 - "this "
 - agreement.
-- " "
-- "There are "
-- "a few\n"
+- " There are"
+- " a few\n"
 - "things "
 - "that you "
 - "can do "
@@ -19380,10 +19361,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "including "
 - "outdated "
 - equipment.
-- " "
-- Many small
-- " donations"
-- "\n($1 to $"
+- " Many "
+- "small "
+- "donations\n"
+- ($1 to $
 - "5,000) are"
 - " "
 - particular
@@ -19526,9 +19507,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "methods "
 - "and "
 - addresses.
-- " "
-- "Donations "
-- "are "
+- " Donations"
+- " are "
 - "accepted "
 - "in a "
 - "number of "

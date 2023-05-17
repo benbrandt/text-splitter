@@ -2475,8 +2475,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - wit;
 - Wilt thou
 - "not, Jule?"
-- ’
-- "and, by my"
+- "’ and, by"
+- my
 - "holidame,"
 - The pretty
 - wretch
@@ -2499,9 +2499,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - forget it.
 - ‘Wilt thou
 - "not, Jule?"
-- ’
-- quoth he;
-- "And,"
+- ’ quoth he
+- ";\nAnd,"
 - pretty
 - "fool, it"
 - "stinted,"
@@ -2552,10 +2551,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - age;
 - Wilt thou
 - "not, Jule?"
-- ’
-- it stinted
-- ", and said"
-- ‘Ay’.
+- ’ it
+- "stinted,"
+- and said ‘
+- Ay’.
 - JULIET.
 - And stint
 - "thou too,"

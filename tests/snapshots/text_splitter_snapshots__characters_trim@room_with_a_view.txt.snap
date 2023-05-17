@@ -261,9 +261,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - accent.
 - “It might
 - be London.
-- ”
-- She looked
-- at the two
+- ” She
+- looked at
+- the two
 - rows of
 - English
 - people who
@@ -2168,8 +2168,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - will do it
 - "."
 - Would you
-- "then,"
-- "Mr. Beebe,"
+- "then,\nMr."
+- "Beebe,"
 - kindly
 - tell Mr.
 - Emerson
@@ -2287,8 +2287,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Lucy.
 - “Poor
 - young man!
-- ”
-- said Miss
+- ” said
+- Miss
 - "Bartlett,"
 - as soon as
 - he had
@@ -5359,8 +5359,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “He’s
 - unhappy.”
 - "“Oh, dear!"
-- ”
-- said Lucy.
+- ” said
+- Lucy.
 - “How can
 - he be
 - unhappy
@@ -9122,8 +9122,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - wondering
 - what to do
 - with them.
-- ”
-- He pointed
+- ” He
+- pointed
 - down-
 - stream.
 - “They’ve
@@ -9681,10 +9681,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - alone.
 - "“No,"
 - Charlotte!
-- ”
-- cried the
-- "girl, with"
-- real
+- ” cried
+- "the girl,"
+- with real
 - warmth.
 - “It’s very
 - kind of Mr
@@ -9926,10 +9925,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - saw from
 - the
 - beginning.
-- ”
-- Lucy poked
-- at the
-- ground
+- ” Lucy
+- poked at
+- the ground
 - with her
 - parasol.
 - “But
@@ -11160,9 +11158,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ", flushing"
 - "."
 - “Exposure!
-- ”
-- hissed Mr.
-- Eager.
+- ” hissed
+- Mr. Eager.
 - He tried
 - to change
 - the
@@ -15630,9 +15627,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - themselves
 - ".”"
 - “Exploits?
-- ”
-- cried Lucy
-- ", wincing"
+- ” cried
+- "Lucy,"
+- wincing
 - under the
 - horrible
 - plural.
@@ -17409,9 +17406,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "like: he’s"
 - well
 - connected.
-- ”
-- She paused
-- ", as if"
+- ” She
+- "paused, as"
+- if
 - rehearsing
 - her eulogy
 - ", but her"
@@ -17575,11 +17572,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - delighted
 - if Lucy
 - wishes it.
-- ’
-- Then I put
-- in at the
-- "top, ‘and"
-- I have
+- ’ Then I
+- put in at
+- "the top, ‘"
+- and I have
 - told Lucy
 - so.’
 - I must
@@ -20224,10 +20220,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “My dear
 - "Cecil,"
 - look here.
-- ”
-- She spread
-- out her
-- knees and
+- ” She
+- spread out
+- her knees
+- and
 - perched
 - her card-
 - case on
@@ -20494,8 +20490,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - goodness
 - gracious
 - "me, child!"
-- ”
-- said Mrs.
+- ” said Mrs
+- "."
 - Honeychurc
 - h. “You’ll
 - blow my
@@ -21169,11 +21165,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - initials—
 - every one
 - different.
-- ”
-- For he had
-- read his
-- Ruskin.
-- He built
+- ” For he
+- had read
+- his Ruskin
+- ". He built"
 - his villas
 - according
 - to his
@@ -23320,9 +23315,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - elapses.
 - “Wasn’t
 - what name?
-- ”
-- asked Lucy
-- ", with her"
+- ” asked
+- "Lucy, with"
+- her
 - brother’s
 - head in
 - her lap.
@@ -23815,9 +23810,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - nly and
 - yet so
 - beautiful.
-- ’
-- It is all
-- very
+- ’ It is
+- all very
 - difficult.
 - "Yes, I"
 - always
@@ -27386,8 +27380,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Oh, look—"
 - don’t look
 - "! Oh, poor"
-- Mr.
-- Beebe! How
+- "Mr.\nBeebe!"
+- How
 - unfortunat
 - e again—”
 - For Mr.
@@ -28347,9 +28341,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - letter
 - from
 - Charlotte?
-- ”
-- and Freddy
-- ran away.
+- ” and
+- Freddy ran
+- away.
 - “Yes.
 - I really
 - can’t stop
@@ -28544,8 +28538,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - know them
 - at the
 - Bertolini?
-- ”
-- asked Mrs.
+- ” asked
+- Mrs.
 - Honeychurc
 - h.
 - "“Oh, very"
@@ -29334,9 +29328,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and meant
 - she didn’t
 - know what.
-- ”
-- Now Cecil
-- had
+- ” Now
+- Cecil had
 - explained
 - psychology
 - to her one
@@ -30164,9 +30157,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - different.
 - "”\n\n“Now,"
 - Charlotte!
-- ”
-- She struck
-- at her
+- ” She
+- struck at
+- her
 - playfully.
 - "“You kind,"
 - anxious
@@ -31021,8 +31014,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "now, when"
 - should I
 - wear them?
-- ”
-- said Miss
+- ” said
+- Miss
 - Bartlett
 - reproachfu
 - lly.
