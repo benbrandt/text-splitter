@@ -57,7 +57,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "SAMPSON.\nI strike quickly, being moved.\n\nGREGORY.\nBut thou art not quickly moved to strike."
 - "SAMPSON.\nA dog of the house of Montague moves me."
 - "GREGORY.\nTo move is to stir; and to be valiant is to stand: therefore, if thou"
-- "art moved, thou runn’st away.\n\nSAMPSON.\nA dog of that house shall move me to stand."
+- "art moved, thou runn’st away."
+- "SAMPSON.\nA dog of that house shall move me to stand."
 - I will take the wall of any man or maid of Montague’s.
 - "GREGORY.\nThat shows thee a weak slave, for the weakest goes to the wall."
 - "SAMPSON.\nTrue, and therefore women, being the weaker vessels, are ever thrust to"
@@ -372,7 +373,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Of a despised life, clos’d in my breast\nBy some vile forfeit of untimely death."
 - "But he that hath the steerage of my course\nDirect my suit. On, lusty gentlemen!"
 - "BENVOLIO.\nStrike, drum.\n\n [_Exeunt._]\n\nSCENE V. A Hall in Capulet’s House."
-- "Musicians waiting. Enter Servants.\n\nFIRST SERVANT.\nWhere’s Potpan, that he helps not to take away?"
+- Musicians waiting. Enter Servants.
+- "FIRST SERVANT.\nWhere’s Potpan, that he helps not to take away?"
 - He shift a trencher! He scrape a trencher!
 - "SECOND SERVANT.\nWhen good manners shall lie all in one or two men’s hands, and they"
 - "unwash’d too, ’tis a foul thing."
@@ -420,10 +422,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "CAPULET.\nHe shall be endur’d.\nWhat, goodman boy! I say he shall, go to;"
 - "Am I the master here, or you? Go to.\nYou’ll not endure him! God shall mend my soul,"
 - "You’ll make a mutiny among my guests!\nYou will set cock-a-hoop, you’ll be the man!"
-- "TYBALT.\nWhy, uncle, ’tis a shame.\n\nCAPULET.\nGo to, go to!\nYou are a saucy boy. Is’t so, indeed?"
+- "TYBALT.\nWhy, uncle, ’tis a shame."
+- "CAPULET.\nGo to, go to!\nYou are a saucy boy. Is’t so, indeed?"
 - "This trick may chance to scathe you, I know what.\nYou must contrary me! Marry, ’tis time."
 - "Well said, my hearts!—You are a princox; go:\nBe quiet, or—More light, more light!—For shame!"
-- "I’ll make you quiet. What, cheerly, my hearts.\n\nTYBALT.\nPatience perforce with wilful choler meeting"
+- "I’ll make you quiet. What, cheerly, my hearts."
+- "TYBALT.\nPatience perforce with wilful choler meeting"
 - "Makes my flesh tremble in their different greeting.\nI will withdraw: but this intrusion shall,"
 - "Now seeming sweet, convert to bitter gall.\n\n [_Exit._]"
 - "ROMEO.\n[_To Juliet._] If I profane with my unworthiest hand"
@@ -440,7 +444,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "[_Kissing her._]\n\nJULIET.\nThen have my lips the sin that they have took."
 - "ROMEO.\nSin from my lips? O trespass sweetly urg’d!\nGive me my sin again."
 - "JULIET.\nYou kiss by the book.\n\nNURSE.\nMadam, your mother craves a word with you."
-- "ROMEO.\nWhat is her mother?\n\nNURSE.\nMarry, bachelor,\nHer mother is the lady of the house,"
+- "ROMEO.\nWhat is her mother?"
+- "NURSE.\nMarry, bachelor,\nHer mother is the lady of the house,"
 - "And a good lady, and a wise and virtuous.\nI nurs’d her daughter that you talk’d withal."
 - "I tell you, he that can lay hold of her\nShall have the chinks."
 - "ROMEO.\nIs she a Capulet?\nO dear account! My life is my foe’s debt."
@@ -599,12 +604,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ROMEO.\nI would I were thy bird."
 - "JULIET.\nSweet, so would I:\nYet I should kill thee with much cherishing."
 - "Good night, good night. Parting is such sweet sorrow\nThat I shall say good night till it be morrow."
-- "[_Exit._]\n\nROMEO.\nSleep dwell upon thine eyes, peace in thy breast."
+- "[_Exit._]"
+- "ROMEO.\nSleep dwell upon thine eyes, peace in thy breast."
 - "Would I were sleep and peace, so sweet to rest.\nThe grey-ey’d morn smiles on the frowning night,"
 - "Chequering the eastern clouds with streaks of light;\nAnd darkness fleckled like a drunkard reels"
 - "From forth day’s pathway, made by Titan’s wheels\nHence will I to my ghostly Sire’s cell,"
 - "His help to crave and my dear hap to tell.\n\n [_Exit._]\n\nSCENE III. Friar Lawrence’s Cell."
-- "Enter Friar Lawrence with a basket.\n\nFRIAR LAWRENCE.\nNow, ere the sun advance his burning eye,"
+- Enter Friar Lawrence with a basket.
+- "FRIAR LAWRENCE.\nNow, ere the sun advance his burning eye,"
 - "The day to cheer, and night’s dank dew to dry,\nI must upfill this osier cage of ours"
 - "With baleful weeds and precious-juiced flowers.\nThe earth that’s nature’s mother, is her tomb;"
 - "What is her burying grave, that is her womb:\nAnd from her womb children of divers kind"
@@ -818,7 +825,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "JULIET.\nNo, no. But all this did I know before.\nWhat says he of our marriage? What of that?"
 - "NURSE.\nLord, how my head aches! What a head have I!\nIt beats as it would fall in twenty pieces."
 - "My back o’ t’other side,—O my back, my back!\nBeshrew your heart for sending me about"
-- "To catch my death with jauncing up and down.\n\nJULIET.\nI’faith, I am sorry that thou art not well."
+- To catch my death with jauncing up and down.
+- "JULIET.\nI’faith, I am sorry that thou art not well."
 - "Sweet, sweet, sweet Nurse, tell me, what says my love?"
 - "NURSE.\nYour love says like an honest gentleman,\nAnd a courteous, and a kind, and a handsome,"
 - "And I warrant a virtuous,—Where is your mother?"
@@ -843,7 +851,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And in their triumph die; like fire and powder,\nWhich as they kiss consume. The sweetest honey"
 - "Is loathsome in his own deliciousness,\nAnd in the taste confounds the appetite."
 - "Therefore love moderately: long love doth so;\nToo swift arrives as tardy as too slow."
-- "Enter Juliet.\n\nHere comes the lady. O, so light a foot\nWill ne’er wear out the everlasting flint."
+- Enter Juliet.
+- "Here comes the lady. O, so light a foot\nWill ne’er wear out the everlasting flint."
 - "A lover may bestride the gossamers\nThat idles in the wanton summer air"
 - "And yet not fall; so light is vanity.\n\nJULIET.\nGood even to my ghostly confessor."
 - "FRIAR LAWRENCE.\nRomeo shall thank thee, daughter, for us both."
@@ -913,7 +922,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Tybalt, Mercutio, the Prince expressly hath\nForbid this bandying in Verona streets."
 - "Hold, Tybalt! Good Mercutio!\n\n [_Exeunt Tybalt with his Partizans._]"
 - "MERCUTIO.\nI am hurt.\nA plague o’ both your houses. I am sped.\nIs he gone, and hath nothing?"
-- "BENVOLIO.\nWhat, art thou hurt?\n\nMERCUTIO.\nAy, ay, a scratch, a scratch. Marry, ’tis enough."
+- "BENVOLIO.\nWhat, art thou hurt?"
+- "MERCUTIO.\nAy, ay, a scratch, a scratch. Marry, ’tis enough."
 - "Where is my page? Go villain, fetch a surgeon.\n\n [_Exit Page._]"
 - "ROMEO.\nCourage, man; the hurt cannot be much."
 - "MERCUTIO.\nNo, ’tis not so deep as a well, nor so wide as a church door, but ’tis"
@@ -1025,7 +1035,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "A damned saint, an honourable villain!\nO nature, what hadst thou to do in hell"
 - "When thou didst bower the spirit of a fiend\nIn mortal paradise of such sweet flesh?"
 - "Was ever book containing such vile matter\nSo fairly bound? O, that deceit should dwell"
-- "In such a gorgeous palace.\n\nNURSE.\nThere’s no trust,\nNo faith, no honesty in men. All perjur’d,"
+- In such a gorgeous palace.
+- "NURSE.\nThere’s no trust,\nNo faith, no honesty in men. All perjur’d,"
 - "All forsworn, all naught, all dissemblers.\nAh, where’s my man? Give me some aqua vitae."
 - "These griefs, these woes, these sorrows make me old.\nShame come to Romeo."
 - "JULIET.\nBlister’d be thy tongue\nFor such a wish! He was not born to shame."
@@ -1061,7 +1072,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "FRIAR LAWRENCE.\nRomeo, come forth; come forth, thou fearful man."
 - "Affliction is enanmour’d of thy parts\nAnd thou art wedded to calamity.\n\n Enter Romeo."
 - "ROMEO.\nFather, what news? What is the Prince’s doom?\nWhat sorrow craves acquaintance at my hand,"
-- "That I yet know not?\n\nFRIAR LAWRENCE.\nToo familiar\nIs my dear son with such sour company."
+- That I yet know not?
+- "FRIAR LAWRENCE.\nToo familiar\nIs my dear son with such sour company."
 - "I bring thee tidings of the Prince’s doom.\n\nROMEO.\nWhat less than doomsday is the Prince’s doom?"
 - "FRIAR LAWRENCE.\nA gentler judgment vanish’d from his lips,\nNot body’s death, but body’s banishment."
 - "ROMEO.\nHa, banishment? Be merciful, say death;\nFor exile hath more terror in his look,"
@@ -1070,7 +1082,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ROMEO.\nThere is no world without Verona walls,\nBut purgatory, torture, hell itself."
 - "Hence banished is banish’d from the world,\nAnd world’s exile is death. Then banished"
 - "Is death misterm’d. Calling death banished,\nThou cutt’st my head off with a golden axe,"
-- "And smilest upon the stroke that murders me.\n\nFRIAR LAWRENCE.\nO deadly sin, O rude unthankfulness!"
+- And smilest upon the stroke that murders me.
+- "FRIAR LAWRENCE.\nO deadly sin, O rude unthankfulness!"
 - "Thy fault our law calls death, but the kind Prince,\nTaking thy part, hath brush’d aside the law,"
 - "And turn’d that black word death to banishment.\nThis is dear mercy, and thou see’st it not."
 - "ROMEO.\n’Tis torture, and not mercy. Heaven is here\nWhere Juliet lives, and every cat and dog,"
@@ -1099,7 +1112,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Taking the measure of an unmade grave.\n\n [_Knocking within._]"
 - "FRIAR LAWRENCE.\nArise; one knocks. Good Romeo, hide thyself."
 - "ROMEO.\nNot I, unless the breath of heartsick groans\nMist-like infold me from the search of eyes."
-- "[_Knocking._]\n\nFRIAR LAWRENCE.\nHark, how they knock!—Who’s there?—Romeo, arise,"
+- "[_Knocking._]"
+- "FRIAR LAWRENCE.\nHark, how they knock!—Who’s there?—Romeo, arise,"
 - "Thou wilt be taken.—Stay awhile.—Stand up.\n\n [_Knocking._]"
 - "Run to my study.—By-and-by.—God’s will,\nWhat simpleness is this.—I come, I come.\n\n [_Knocking._]"
 - "Who knocks so hard? Whence come you, what’s your will?"
@@ -1306,7 +1320,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "How shall that faith return again to earth,\nUnless that husband send it me from heaven"
 - "By leaving earth? Comfort me, counsel me.\nAlack, alack, that heaven should practise stratagems"
 - "Upon so soft a subject as myself.\nWhat say’st thou? Hast thou not a word of joy?"
-- "Some comfort, Nurse.\n\nNURSE.\nFaith, here it is.\nRomeo is banished; and all the world to nothing"
+- "Some comfort, Nurse."
+- "NURSE.\nFaith, here it is.\nRomeo is banished; and all the world to nothing"
 - "That he dares ne’er come back to challenge you.\nOr if he do, it needs must be by stealth."
 - "Then, since the case so stands as now it doth,\nI think it best you married with the County."
 - "O, he’s a lovely gentleman.\nRomeo’s a dishclout to him. An eagle, madam,"
@@ -1434,7 +1449,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "So please you, let me now be left alone,\nAnd let the nurse this night sit up with you,"
 - "For I am sure you have your hands full all\nIn this so sudden business."
 - "LADY CAPULET.\nGood night.\nGet thee to bed and rest, for thou hast need."
-- "[_Exeunt Lady Capulet and Nurse._]\n\nJULIET.\nFarewell. God knows when we shall meet again."
+- "[_Exeunt Lady Capulet and Nurse._]"
+- "JULIET.\nFarewell. God knows when we shall meet again."
 - "I have a faint cold fear thrills through my veins\nThat almost freezes up the heat of life."
 - "I’ll call them back again to comfort me.\nNurse!—What should she do here?"
 - "My dismal scene I needs must act alone.\nCome, vial.\nWhat if this mixture do not work at all?"
@@ -1463,8 +1479,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "NURSE.\nThey call for dates and quinces in the pastry.\n\n Enter Capulet."
 - "CAPULET.\nCome, stir, stir, stir! The second cock hath crow’d,"
 - "The curfew bell hath rung, ’tis three o’clock.\nLook to the bak’d meats, good Angelica;"
-- "Spare not for cost.\n\nNURSE.\nGo, you cot-quean, go,\nGet you to bed; faith, you’ll be sick tomorrow"
-- "For this night’s watching.\n\nCAPULET.\nNo, not a whit. What! I have watch’d ere now"
+- Spare not for cost.
+- "NURSE.\nGo, you cot-quean, go,\nGet you to bed; faith, you’ll be sick tomorrow"
+- For this night’s watching.
+- "CAPULET.\nNo, not a whit. What! I have watch’d ere now"
 - "All night for lesser cause, and ne’er been sick."
 - "LADY CAPULET.\nAy, you have been a mouse-hunt in your time;"
 - "But I will watch you from such watching now.\n\n [_Exeunt Lady Capulet and Nurse._]"
@@ -1578,7 +1596,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ROMEO.\nIs it even so? Then I defy you, stars!\nThou know’st my lodging. Get me ink and paper,"
 - And hire post-horses. I will hence tonight.
 - "BALTHASAR.\nI do beseech you sir, have patience.\nYour looks are pale and wild, and do import"
-- "Some misadventure.\n\nROMEO.\nTush, thou art deceiv’d.\nLeave me, and do the thing I bid thee do."
+- Some misadventure.
+- "ROMEO.\nTush, thou art deceiv’d.\nLeave me, and do the thing I bid thee do."
 - "Hast thou no letters to me from the Friar?\n\nBALTHASAR.\nNo, my good lord."
 - "ROMEO.\nNo matter. Get thee gone,\nAnd hire those horses. I’ll be with thee straight."
 - "[_Exit Balthasar._]"
@@ -1757,7 +1776,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "FIRST WATCH.\nSovereign, here lies the County Paris slain,\nAnd Romeo dead, and Juliet, dead before,"
 - "Warm and new kill’d.\n\nPRINCE.\nSearch, seek, and know how this foul murder comes."
 - "FIRST WATCH.\nHere is a Friar, and slaughter’d Romeo’s man,\nWith instruments upon them fit to open"
-- "These dead men’s tombs.\n\nCAPULET.\nO heaven! O wife, look how our daughter bleeds!"
+- These dead men’s tombs.
+- "CAPULET.\nO heaven! O wife, look how our daughter bleeds!"
 - "This dagger hath mista’en, for lo, his house\nIs empty on the back of Montague,"
 - And it mis-sheathed in my daughter’s bosom.
 - "LADY CAPULET.\nO me! This sight of death is as a bell\nThat warns my old age to a sepulchre."
@@ -1802,14 +1822,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Sirrah, what made your master in this place?"
 - "PAGE.\nHe came with flowers to strew his lady’s grave,\nAnd bid me stand aloof, and so I did."
 - "Anon comes one with light to ope the tomb,\nAnd by and by my master drew on him,"
-- "And then I ran away to call the watch.\n\nPRINCE.\nThis letter doth make good the Friar’s words,"
+- And then I ran away to call the watch.
+- "PRINCE.\nThis letter doth make good the Friar’s words,"
 - "Their course of love, the tidings of her death.\nAnd here he writes that he did buy a poison"
 - "Of a poor ’pothecary, and therewithal\nCame to this vault to die, and lie with Juliet."
 - "Where be these enemies? Capulet, Montague,\nSee what a scourge is laid upon your hate,"
 - "That heaven finds means to kill your joys with love!\nAnd I, for winking at your discords too,"
 - Have lost a brace of kinsmen. All are punish’d.
 - "CAPULET.\nO brother Montague, give me thy hand.\nThis is my daughter’s jointure, for no more"
-- "Can I demand.\n\nMONTAGUE.\nBut I can give thee more,\nFor I will raise her statue in pure gold,"
+- Can I demand.
+- "MONTAGUE.\nBut I can give thee more,\nFor I will raise her statue in pure gold,"
 - "That whiles Verona by that name is known,\nThere shall no figure at such rate be set"
 - As that of true and faithful Juliet.
 - "CAPULET.\nAs rich shall Romeo’s by his lady’s lie,\nPoor sacrifices of our enmity."
@@ -2026,7 +2048,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - electronic works in formats readable by the widest variety of
 - "computers including obsolete, old, middle-aged and new computers. It"
 - exists because of the efforts of hundreds of volunteers and donations
-- "from people in all walks of life.\n\nVolunteers and financial support to provide volunteers with the"
+- from people in all walks of life.
+- Volunteers and financial support to provide volunteers with the
 - "assistance they need are critical to reaching Project Gutenberg-tm's"
 - goals and ensuring that the Project Gutenberg-tm collection will
 - "remain freely available for generations to come. In 2001, the Project"

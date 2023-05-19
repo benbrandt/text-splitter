@@ -118,12 +118,12 @@ pub trait ChunkValidator {
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 #[derive(Debug)]
-pub struct TextSplitter<C>
+pub struct TextSplitter<V>
 where
-    C: ChunkValidator,
+    V: ChunkValidator,
 {
     /// Method of determining chunk sizes.
-    chunk_validator: C,
+    chunk_validator: V,
     /// Whether or not all chunks should have whitespace trimmed.
     /// If `false`, joining all chunks should return the original string.
     /// If `true`, all chunks will have whitespace removed from beginning and end.
@@ -136,15 +136,9 @@ impl Default for TextSplitter<Characters> {
     }
 }
 
-// Lazy so that we don't have to compile them more than once
-/// Any sequence of 2 or more newlines
-static DOUBLE_NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
-/// Fallback for anything else
-static NEWLINE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r|\n)+").unwrap());
-
-impl<C> TextSplitter<C>
+impl<V> TextSplitter<V>
 where
-    C: ChunkValidator,
+    V: ChunkValidator,
 {
     /// Creates a new [`TextSplitter`].
     ///
@@ -155,7 +149,7 @@ where
     /// let splitter = TextSplitter::new(Characters);
     /// ```
     #[must_use]
-    pub fn new(chunk_validator: C) -> Self {
+    pub fn new(chunk_validator: V) -> Self {
         Self {
             chunk_validator,
             trim_chunks: false,
@@ -178,155 +172,6 @@ where
     pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
         self.trim_chunks = trim_chunks;
         self
-    }
-
-    /// Is the given text within the chunk size?
-    fn is_within_chunk_size(&self, chunk: &str, chunk_size: usize) -> bool {
-        self.chunk_validator.validate_chunk(
-            if self.trim_chunks {
-                chunk.trim()
-            } else {
-                chunk
-            },
-            chunk_size,
-        )
-    }
-
-    /// Internal method to handle chunk splitting for anything above char level.
-    /// Merges neighboring chunks, and also assumes that all chunks in the iterator
-    /// are already less than the chunk size.
-    ///
-    /// Any elements that are above the chunk size limit will be included.
-    fn coalesce_str_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-        it: impl Iterator<Item = (usize, &'b str)> + 'a,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        it.peekable().batching(move |it| {
-            let (mut start, mut end) = (None, 0);
-
-            // Consume as many other chunks as we can
-            while let Some((i, str)) = it.peek() {
-                let chunk = text
-                    .get(*start.get_or_insert(*i)..*i + str.len())
-                    .expect("invalid str range");
-
-                // If this doesn't fit, as long as it isn't our first one,
-                // end the check here, we have a chunk.
-                if !self.is_within_chunk_size(chunk, chunk_size) && end != 0 {
-                    break;
-                }
-
-                end = i + str.len();
-                it.next();
-            }
-
-            let start = start?;
-            let chunk = text.get(start..end)?;
-            // Trim whitespace if user requested it
-            let (start, chunk) = if self.trim_chunks {
-                // Figure out how many bytes we lose trimming the beginning
-                let offset = chunk.len() - chunk.trim_start().len();
-                (start + offset, chunk.trim())
-            } else {
-                (start, chunk)
-            };
-
-            // Filter out any chunks who got through as empty strings
-            (!chunk.is_empty()).then_some((start, chunk))
-        })
-    }
-
-    /// Returns an iterator over the unicode sentences of the text and their byte offsets. Each chunk will be up to
-    /// the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many
-    /// [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    /// as possible.
-    ///
-    /// If a given sentence is larger than your chunk size, given the length
-    /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_word_indices`] until it will fit in a chunk.
-    fn chunk_by_sentence_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> TextChunks<'b, 'a, C> {
-        TextChunks::new(
-            chunk_size,
-            &self.chunk_validator,
-            SemanticLevel::Sentence,
-            text,
-            self.trim_chunks,
-        )
-    }
-
-    /// Returns an iterator over the paragraphs of the text and their byte offsets.
-    /// Each chunk will be up to the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many paragraphs as
-    /// possible by single newlines.
-    ///
-    /// If a given paragraph is larger than your chunk size, given the length
-    /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_sentence_indices`] until it will fit in a chunk.
-    fn chunk_by_newline_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
-            chunk_size,
-            str_indices_from_regex_separator(text, &NEWLINE).flat_map(move |(i, paragraph)| {
-                if self.is_within_chunk_size(paragraph, chunk_size) {
-                    Either::Left(once((i, paragraph)))
-                } else {
-                    // If paragraph is still too large, do sentences
-                    Either::Right(
-                        self.chunk_by_sentence_indices(paragraph, chunk_size)
-                            // Offset relative indices back to parent string
-                            .map(move |(si, s)| (si + i, s)),
-                    )
-                }
-            }),
-        )
-    }
-
-    /// Returns an iterator over the paragraphs of the text and their byte offsets.
-    /// Each chunk will be up to the `max_chunk_size`.
-    ///
-    /// If a text is too large, each chunk will fit as many paragraphs as
-    /// possible, splitting by two or more newlines (checking for both \r
-    /// and \n)/
-    ///
-    /// If a given paragraph is larger than your chunk size, given the length
-    /// function, then it will be passed through
-    /// [`TextSplitter::chunk_by_newline_indices`] until it will fit in a chunk.
-    fn chunk_by_double_newline_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
-        chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.coalesce_str_indices(
-            text,
-            chunk_size,
-            str_indices_from_regex_separator(text, &DOUBLE_NEWLINE).flat_map(
-                move |(i, paragraph)| {
-                    if self.is_within_chunk_size(paragraph, chunk_size) {
-                        Either::Left(once((i, paragraph)))
-                    } else {
-                        // If paragraph is still too large, do single newline
-                        Either::Right(
-                            self.chunk_by_newline_indices(paragraph, chunk_size)
-                                // Offset relative indices back to parent string
-                                .map(move |(si, s)| (si + i, s)),
-                        )
-                    }
-                },
-            ),
-        )
     }
 
     /// Generate a list of chunks from a given text. Each chunk will be up to
@@ -360,13 +205,13 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
+    /// assert_eq!(vec!["Some text", "\n\n", "from a\n", "document"], chunks);
     /// ```
-    pub fn chunks<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
+    pub fn chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
         chunk_size: usize,
-    ) -> impl Iterator<Item = &'b str> + 'a {
+    ) -> impl Iterator<Item = &'text str> + 'splitter {
         self.chunk_indices(text, chunk_size).map(|(_, t)| t)
     }
 
@@ -382,71 +227,28 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
-    pub fn chunk_indices<'a, 'b: 'a>(
-        &'a self,
-        text: &'b str,
+    /// assert_eq!(vec![(0, "Some text"), (9, "\n\n"), (11, "from a\n"), (18, "document")], chunks);
+    pub fn chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
         chunk_size: usize,
-    ) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-        self.chunk_by_double_newline_indices(text, chunk_size)
+    ) -> TextChunks<'text, 'splitter, V> {
+        TextChunks::new(
+            chunk_size,
+            &self.chunk_validator,
+            SemanticLevel::DoubleLineBreak,
+            text,
+            self.trim_chunks,
+        )
     }
 }
 
-/// Generate iter of str indices from a regex separator. These won't be
-/// batched yet in case further fallbacks are needed.
-fn str_indices_from_regex_separator<'a, 'b: 'a>(
-    text: &'b str,
-    separator: &'a Regex,
-) -> impl Iterator<Item = (usize, &'b str)> + 'a {
-    str_indices_from_separator(text, true, separator.find_iter(text).map(|sep| sep.range()))
-}
-
-/// Given a list of separator ranges, construct the sections of the text
-fn str_indices_from_separator(
-    text: &str,
-    separator_is_own_chunk: bool,
-    separator_ranges: impl Iterator<Item = Range<usize>>,
-) -> impl Iterator<Item = (usize, &str)> {
-    let mut cursor = 0;
-    let mut final_match = false;
-    separator_ranges
-        .batching(move |it| match it.next() {
-            // If we've hit the end, actually return None
-            None if final_match => None,
-            // First time we hit None, return the final section of the text
-            None => {
-                final_match = true;
-                text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
-            }
-            // Return text preceding match + the match
-            Some(range) if separator_is_own_chunk => {
-                let prev_section = (
-                    cursor,
-                    text.get(cursor..range.start)
-                        .expect("invalid character sequence"),
-                );
-                let separator = (
-                    range.start,
-                    text.get(range.start..range.end)
-                        .expect("invalid character sequence in regex"),
-                );
-                cursor = range.end;
-                Some(Either::Right([prev_section, separator].into_iter()))
-            }
-            // Return just the text preceding the match
-            Some(range) => {
-                let prev_section = (
-                    cursor,
-                    text.get(cursor..range.start)
-                        .expect("invalid character sequence"),
-                );
-                // Separator will be part of the next chunk
-                cursor = range.start;
-                Some(Either::Left(once(prev_section)))
-            }
-        })
-        .flatten()
-}
+// Lazy so that we don't have to compile them more than once
+/// Any sequence of 2 or more newlines
+static DOUBLE_LINEBREAK: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
+/// Fallback for anything else
+static LINEBREAK: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r|\n)+").unwrap());
 
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
@@ -465,6 +267,12 @@ enum SemanticLevel {
     /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
     /// Falls back to [`Self::Word`]
     Sentence,
+    /// Split by single linebreak, either `\n`, `\r`, or `\r\n`.
+    /// Falls back to [`Self::Sentence`]
+    LineBreak,
+    /// Split by 2 or more linebreaks, either `\n`, `\r`, or `\r\n`.
+    /// Falls back to [`Self::LineBreak`]
+    DoubleLineBreak,
 }
 
 impl SemanticLevel {
@@ -475,6 +283,8 @@ impl SemanticLevel {
             Self::GraphemeCluster => Some(Self::Char),
             Self::Word => Some(Self::GraphemeCluster),
             Self::Sentence => Some(Self::Word),
+            Self::LineBreak => Some(Self::Sentence),
+            Self::DoubleLineBreak => Some(Self::LineBreak),
         }
     }
 
@@ -488,6 +298,8 @@ impl SemanticLevel {
             Self::GraphemeCluster => text.graphemes(true),
             Self::Word => text.split_word_bounds(),
             Self::Sentence => text.split_sentence_bounds(),
+            Self::LineBreak => split_str_by_regex_separator(text, &LINEBREAK),
+            Self::DoubleLineBreak => split_str_by_regex_separator(text, &DOUBLE_LINEBREAK),
         }
     }
 }
@@ -572,6 +384,12 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
+            // Make sure we haven't reached the end
+            if self.cursor >= self.text.len() {
+                return None;
+            }
+
+            // Start with the top-level breaks
             let start = self.cursor;
 
             let mut it = self
@@ -589,12 +407,10 @@ where
                     (Some(_), None) => break,
                     // If this is a valid chunk, we are fine
                     (Some(str), _) if self.validate_chunk(str) => {
-                        dbg!(str);
                         break;
                     }
                     // Otherwise break up the text with the fallback
                     (Some(str), Some(fallback)) => {
-                        dbg!((str, fallback));
                         it = fallback.chunks(str).peekable();
                         current_level = fallback;
                     }
@@ -620,9 +436,61 @@ where
             if chunk.is_empty() {
                 continue;
             }
+
+            // Return a chunk if we have one
             return Some((start, chunk));
         }
     }
+}
+
+/// Generate iter of str indices from a regex separator. These won't be
+/// batched yet in case further fallbacks are needed.
+fn split_str_by_regex_separator<'sep, 'text: 'sep>(
+    text: &'text str,
+    separator: &'sep Regex,
+) -> impl Iterator<Item = &'text str> + 'sep {
+    split_str_by_separator(text, true, separator.find_iter(text).map(|sep| sep.range()))
+}
+
+/// Given a list of separator ranges, construct the sections of the text
+fn split_str_by_separator(
+    text: &str,
+    separator_is_own_chunk: bool,
+    separator_ranges: impl Iterator<Item = Range<usize>>,
+) -> impl Iterator<Item = &str> {
+    let mut cursor = 0;
+    let mut final_match = false;
+    separator_ranges
+        .batching(move |it| match it.next() {
+            // If we've hit the end, actually return None
+            None if final_match => None,
+            // First time we hit None, return the final section of the text
+            None => {
+                final_match = true;
+                text.get(cursor..).map(|t| Either::Left(once(t)))
+            }
+            // Return text preceding match + the match
+            Some(range) if separator_is_own_chunk => {
+                let prev_section = text
+                    .get(cursor..range.start)
+                    .expect("invalid character sequence");
+                let separator = text
+                    .get(range.start..range.end)
+                    .expect("invalid character sequence");
+                cursor = range.end;
+                Some(Either::Right([prev_section, separator].into_iter()))
+            }
+            // Return just the text preceding the match
+            Some(range) => {
+                let prev_section = text
+                    .get(cursor..range.start)
+                    .expect("invalid character sequence");
+                // Separator will be part of the next chunk
+                cursor = range.start;
+                Some(Either::Left(once(prev_section)))
+            }
+        })
+        .flatten()
 }
 
 #[cfg(test)]
@@ -812,10 +680,7 @@ mod tests {
     #[test]
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let splitter = TextSplitter::default();
-
-        let chunks = splitter
-            .chunk_by_sentence_indices(text, 21)
+        let chunks = TextChunks::new(21, &Characters, SemanticLevel::Sentence, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -827,10 +692,7 @@ mod tests {
     #[test]
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let splitter = TextSplitter::default();
-
-        let chunks = splitter
-            .chunk_by_sentence_indices(text, 16)
+        let chunks = TextChunks::new(16, &Characters, SemanticLevel::Sentence, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -842,10 +704,7 @@ mod tests {
     #[test]
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
-        let splitter = TextSplitter::default().with_trim_chunks(true);
-
-        let chunks = splitter
-            .chunk_by_sentence_indices(text, 10)
+        let chunks = TextChunks::new(10, &Characters, SemanticLevel::Sentence, text, true)
             .collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text."), (11, "From a"), (18, "document.")],
@@ -856,10 +715,7 @@ mod tests {
     #[test]
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
-        let splitter = TextSplitter::default().with_trim_chunks(true);
-
-        let chunks = splitter
-            .chunk_by_double_newline_indices(text, 10)
+        let chunks = TextChunks::new(10, &Characters, SemanticLevel::DoubleLineBreak, text, true)
             .collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],

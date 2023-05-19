@@ -28,7 +28,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - restrictio
 - ns
 - whatsoever
-- ". You may"
+- "."
+- You may
 - "copy it,"
 - give it
 - away or re
@@ -100,7 +101,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - The
 - Bertolini
 - Chapter II
-- ". In Santa"
+- "."
+- In Santa
 - Croce with
 - "No"
 - Baedeker
@@ -111,7 +113,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and the
 - Letter “S”
 - Chapter IV
-- ". Fourth"
+- "."
+- Fourth
 - Chapter
 - Chapter V.
 - Possibilit
@@ -119,7 +122,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Pleasant
 - Outing
 - Chapter VI
-- ". The"
+- "."
+- The
 - Reverend
 - Arthur
 - "Beebe, the"
@@ -127,7 +131,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Cuthbert
 - "Eager, Mr."
 - "Emerson,"
-- Mr. George
+- Mr.
+- George
 - "Emerson,"
 - Miss
 - Eleanor
@@ -146,7 +151,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Italians
 - Drive Them
 - Chapter
-- VII. They
+- VII.
+- They
 - Return
 - Part Two.
 - Chapter
@@ -185,7 +191,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Situation
 - Bravely
 - Chapter XV
-- ". The"
+- "."
+- The
 - Disaster
 - Within
 - Chapter
@@ -351,7 +358,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - would have
 - looked
 - over the
-- Arno. The
+- Arno.
+- The
 - Signora
 - had no
 - business
@@ -552,7 +560,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "then said:"
 - “A view?
 - "Oh, a view"
-- "! How"
+- "!"
+- How
 - delightful
 - a view is!
 - ”
@@ -591,7 +600,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - sympathize
 - d with the
 - new-comers
-- ". Miss"
+- "."
+- Miss
 - "Bartlett,"
 - "in reply,"
 - opened her
@@ -799,7 +809,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - opposite.
 - “Eat your
 - "dinner,"
-- dear. This
+- dear.
+- This
 - pension is
 - a failure.
 - To-morrow
@@ -813,7 +824,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - decision
 - when she
 - reversed
-- it. The
+- it.
+- The
 - curtains
 - at the end
 - of the
@@ -845,7 +857,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - exclaiming
 - ": “Oh, oh!"
 - "Why, it’s"
-- "Mr.\nBeebe!"
+- Mr.
+- Beebe!
 - "Oh, how"
 - perfectly
 - lovely!
@@ -856,7 +869,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - however
 - bad the
 - rooms are.
-- "Oh!”\n\nMiss"
+- Oh!”
+- Miss
 - Bartlett
 - "said, with"
 - more
@@ -925,7 +939,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - her cousin
 - had
 - permitted
-- it. “Just
+- it.
+- “Just
 - fancy how
 - small the
 - world is.
@@ -973,7 +988,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "I said: ‘"
 - Mr.
 - Beebe is—’
-- "”\n\n“Quite"
+- ”
+- “Quite
 - "right,”"
 - said the
 - clergyman.
@@ -997,7 +1013,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - house is
 - Windy
 - Corner.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - bowed.
 - “There is
 - mother and
@@ -1019,12 +1036,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - let Mr.
 - Beebe eat
 - his dinner
-- ".”\n\n“I am"
+- ".”"
+- “I am
 - "eating it,"
 - "thank you,"
 - and
 - enjoying
-- "it.”\n\nHe"
+- it.”
+- He
 - preferred
 - to talk to
 - "Lucy,"
@@ -1268,7 +1287,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - supported
 - "by ’Enery,"
 - her little
-- "boy,\nand"
+- "boy,"
+- and
 - "Victorier,"
 - her
 - daughter.
@@ -1443,7 +1463,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - be under
 - an
 - obligation
-- ".”\n\n“He is"
+- ".”"
+- “He is
 - rather a
 - peculiar
 - man.”
@@ -1576,7 +1597,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - is a
 - Socialist?
 - ”
-- Mr. Beebe
+- Mr.
+- Beebe
 - accepted
 - the
 - convenient
@@ -1675,7 +1697,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - as soon as
 - he had
 - disappeare
-- d. “Why
+- d.
+- “Why
 - didn’t you
 - "talk, Lucy"
 - "?"
@@ -1701,7 +1724,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Lucy.
 - “Just what
 - I remember
-- ". He seems"
+- "."
+- He seems
 - to see
 - good in
 - everyone.
@@ -1808,7 +1832,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - a very
 - depressing
 - companion.
-- "”\n\nAnd the"
+- ”
+- And the
 - girl again
 - "thought: “"
 - I must
@@ -1947,7 +1972,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - into the
 - court.”
 - She sighed
-- ". “If only"
+- "."
+- “If only
 - Mr.
 - Emerson
 - was more
@@ -2048,7 +2074,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - said the
 - other
 - helplessly
-- ". “But"
+- "."
+- “But
 - things are
 - so
 - "difficult,"
@@ -2145,7 +2172,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - t in
 - comparison
 - with yours
-- ". It would"
+- "."
+- It would
 - be hard
 - indeed if
 - I stopped
@@ -2168,7 +2196,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - will do it
 - "."
 - Would you
-- "then,\nMr."
+- "then,"
+- Mr.
 - "Beebe,"
 - kindly
 - tell Mr.
@@ -2197,7 +2226,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the Guelfs
 - and the
 - Ghibelline
-- s. The
+- s.
+- The
 - "clergyman,"
 - inwardly
 - cursing
@@ -2220,7 +2250,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Grant me
 - "that, at"
 - all events
-- ".”\n\nMr."
+- ".”"
+- Mr.
 - Beebe was
 - "back,"
 - saying
@@ -2251,7 +2282,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - cannot
 - thank him
 - personally
-- ". But any"
+- "."
+- But any
 - message
 - given by
 - you to me
@@ -2371,7 +2403,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Handbook
 - to
 - Northern
-- "Italy,\nshe"
+- "Italy,"
+- she
 - committed
 - to memory
 - the most
@@ -2385,7 +2418,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to enjoy
 - herself on
 - the morrow
-- ". Thus the"
+- "."
+- Thus the
 - half-hour
 - crept
 - profitably
@@ -2496,7 +2530,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - like it.”
 - Lucy was
 - bewildered
-- ".\n\n“If you"
+- "."
+- “If you
 - are to
 - accept a
 - favour it
@@ -2776,7 +2811,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - employed
 - for some
 - mysterious
-- end. An
+- end.
+- An
 - electric
 - tram came
 - rushing
@@ -2844,7 +2880,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - somersault
 - s in time
 - with the
-- band. The
+- band.
+- The
 - tramcar
 - became
 - entangled
@@ -2951,7 +2988,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - clever
 - lady among
 - the crumbs
-- ".\n\nA"
+- "."
+- A
 - conversati
 - on then
 - "ensued, on"
@@ -2997,7 +3035,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - accompany
 - Lucy
 - everywhere
-- ". Oh,"
+- "."
+- "Oh,"
 - certainly
 - not; Lucy
 - would stop
@@ -3033,7 +3072,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - safe.
 - Italians
 - understand
-- ". A dear"
+- "."
+- A dear
 - friend of
 - "mine,"
 - Contessa
@@ -3144,7 +3184,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - found by
 - patient
 - observatio
-- "n.”\n\nThis"
+- n.”
+- This
 - sounded
 - very
 - interestin
@@ -3161,7 +3202,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - spirits.
 - Italy was
 - coming at
-- "last.\nThe"
+- last.
+- The
 - Cockney
 - Signora
 - and her
@@ -3446,7 +3488,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - field of
 - us!
 - How funny!
-- "”\n\nMiss"
+- ”
+- Miss
 - Lavish
 - looked at
 - the narrow
@@ -3457,7 +3500,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - have
 - property
 - in Surrey?
-- "”\n\n“Hardly"
+- ”
+- “Hardly
 - "any,” said"
 - "Lucy,"
 - fearful of
@@ -3504,7 +3548,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "liked it,"
 - which was
 - odd of her
-- ". And just"
+- "."
+- And just
 - as Miss
 - Lavish had
 - got the
@@ -3548,7 +3593,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - her with
 - "no"
 - misgivings
-- ".\n\n“Lost!"
+- "."
+- “Lost!
 - lost!
 - My dear
 - "Miss Lucy,"
@@ -3564,7 +3610,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Conservati
 - ves would
 - jeer at us
-- "!\nWhat are"
+- "!"
+- What are
 - we to do?
 - Two lone
 - females in
@@ -3636,7 +3683,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and became
 - discontent
 - ed herself
-- ". For one"
+- "."
+- For one
 - ravishing
 - moment
 - Italy
@@ -3756,9 +3804,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - spoke to
 - it
 - dramatical
-- ly. It was
+- ly.
+- It was
 - Santa
-- Croce. The
+- Croce.
+- The
 - adventure
 - was over.
 - “Stop a
@@ -3769,7 +3819,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - I shall
 - have to
 - speak to
-- them. I do
+- them.
+- I do
 - detest
 - convention
 - al
@@ -3836,7 +3887,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "events,"
 - would get
 - full marks
-- ". In this"
+- "."
+- In this
 - exalted
 - mood they
 - reached
@@ -3858,7 +3910,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - goes my
 - local-
 - colour box
-- "! I must"
+- "!"
+- I must
 - have a
 - word with
 - him!”
@@ -3885,7 +3938,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - him
 - playfully
 - upon the
-- "arm.\n\nLucy"
+- arm.
+- Lucy
 - waited for
 - nearly ten
 - minutes.
@@ -3989,7 +4043,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - was full
 - of
 - originalit
-- y. Now she
+- y.
+- Now she
 - entered
 - the church
 - depressed
@@ -4109,8 +4164,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - which they
 - found
 - themselves
-- ",\nnot to"
-- spit. She
+- ","
+- not to
+- spit.
+- She
 - watched
 - the
 - tourists;
@@ -4272,7 +4329,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "baby hurt,"
 - "cold, and"
 - frightened
-- "! But what"
+- "!"
+- But what
 - else can
 - you expect
 - from a
@@ -4303,7 +4361,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "prayers,"
 - came to
 - the rescue
-- ". By some"
+- "."
+- By some
 - mysterious
 - "virtue,"
 - which
@@ -4384,7 +4443,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - rather
 - than
 - "delicate,"
-- "and,\nif"
+- "and,"
+- if
 - "possible,"
 - to erase
 - Miss
@@ -4407,7 +4467,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “But what
 - are you
 - doing here
-- "? Are you"
+- "?"
+- Are you
 - doing the
 - church?
 - Are you
@@ -4529,7 +4590,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - giving us
 - your rooms
 - last night
-- ".\nI hope"
+- "."
+- I hope
 - that you
 - have not
 - been put
@@ -4548,7 +4610,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - have heard
 - older
 - people say
-- ". You are"
+- "."
+- You are
 - pretending
 - to be
 - touchy;
@@ -4599,7 +4662,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - surely a
 - girl might
 - humour him
-- ". On the"
+- "."
+- On the
 - other hand
 - ", his son"
 - was a
@@ -4718,7 +4782,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - anatomy
 - and
 - perspectiv
-- e. Could
+- e.
+- Could
 - anything
 - be more
 - "majestic,"
@@ -4792,7 +4857,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - voice
 - "faltered,"
 - as well it
-- might. The
+- might.
+- The
 - audience
 - shifted
 - "uneasily,"
@@ -4822,7 +4888,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "happen, or"
 - didn’t it?
 - Yes or no?
-- "”\n\nGeorge"
+- ”
+- George
 - "replied:"
 - “It
 - happened
@@ -4876,7 +4943,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "the saint,"
 - whoever he
 - "is, going"
-- up. It did
+- up.
+- It did
 - happen
 - "like that,"
 - if it
@@ -4978,11 +5046,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - remind him
 - who I am.
 - It’s that
-- "Mr.\nEager."
+- Mr.
+- Eager.
 - Why did he
-- go? Did we
+- go?
+- Did we
 - talk too
-- loud? How
+- loud?
+- How
 - vexatious.
 - I shall go
 - and say we
@@ -5007,7 +5078,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - away to
 - apologize
 - to the Rev
-- ". Cuthbert"
+- "."
+- Cuthbert
 - Eager.
 - "Lucy,"
 - apparently
@@ -5108,7 +5180,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - pace up
 - and down
 - the chapel
-- ".\nFor a"
+- "."
+- For a
 - young man
 - his face
 - was rugged
@@ -5122,7 +5195,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - sprang
 - into
 - tenderness
-- ". She saw"
+- "."
+- She saw
 - him once
 - again at
 - "Rome, on"
@@ -5147,7 +5221,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - only find
 - solution
 - in the
-- night. The
+- night.
+- The
 - feeling
 - soon
 - passed; it
@@ -5180,7 +5255,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - asked his
 - son
 - tranquilly
-- ".\n\n“But we"
+- "."
+- “But we
 - have
 - spoilt the
 - pleasure
@@ -5447,7 +5523,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Lucy had
 - made no
 - suggestion
-- ". Suddenly"
+- "."
+- Suddenly
 - "he said:"
 - “Now don’t
 - be stupid
@@ -5496,7 +5573,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - if I may
 - judge from
 - last night
-- ". Let"
+- "."
+- Let
 - yourself
 - go.
 - Pull out
@@ -5515,7 +5593,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and know
 - the
 - meaning of
-- them. By
+- them.
+- By
 - understand
 - ing George
 - you may
@@ -5551,7 +5630,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - trouble;
 - things
 - won’t fit.
-- "”\n\n“What"
+- ”
+- “What
 - things?”
 - “The
 - things of
@@ -5614,11 +5694,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the
 - eternal
 - smoothness
-- ". But why"
+- "."
+- But why
 - should
 - this make
 - us unhappy
-- "? Let us"
+- "?"
+- Let us
 - rather
 - love one
 - "another,"
@@ -5704,14 +5786,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - no end of
 - good for
 - my brother
-- ". Perhaps"
+- "."
+- Perhaps
 - Italy
 - bores him;
 - you ought
 - to try the
 - Alps or
 - the Lakes.
-- "”\n\nThe old"
+- ”
+- The old
 - man’s face
 - "saddened,"
 - and he
@@ -5742,7 +5826,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - kind thing
 - ", but"
 - quite
-- silly. Her
+- silly.
+- Her
 - feelings
 - were as
 - inflated
@@ -5768,9 +5853,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - both
 - pitiable
 - and absurd
-- ". He"
+- "."
+- He
 - approached
-- ",\nhis face"
+- ","
+- his face
 - in the
 - shadow.
 - "He said:"
@@ -5829,7 +5916,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - fortunate
 - "girl, I"
 - assure you
-- ". I’m"
+- "."
+- I’m
 - thoroughly
 - "happy, and"
 - having a
@@ -5854,10 +5942,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - much for
 - all your
 - kindness.
-- "Ah,\nyes!"
+- "Ah,"
+- yes!
 - there does
 - come my
-- cousin. A
+- cousin.
+- A
 - delightful
 - morning!
 - Santa
@@ -5895,7 +5985,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - longer
 - either a
 - rebel or a
-- "slave.\nThe"
+- slave.
+- The
 - kingdom of
 - music is
 - not the
@@ -6122,7 +6213,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - she come
 - to her
 - desire.
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - sitting
 - unnoticed
 - in the
@@ -6599,7 +6691,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - in the way
 - of
 - definition
-- ". Miss"
+- "."
+- Miss
 - Lavish was
 - so
 - original.
@@ -6694,7 +6787,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - all events
 - ", have"
 - made it up
-- ".”\n\nHe was"
+- ".”"
+- He was
 - interested
 - in the
 - sudden
@@ -6766,7 +6860,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Lucy were
 - charming
 - to look at
-- ",\nbut Mr."
+- ","
+- but Mr.
 - "Beebe was,"
 - from
 - rather
@@ -6930,7 +7025,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - quite
 - agree with
 - "you, Miss"
-- Alan. The
+- Alan.
+- The
 - Italians
 - are a most
 - unpleasant
@@ -6939,7 +7035,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - everywhere
 - ", they see"
 - everything
-- ",\nand they"
+- ","
+- and they
 - know what
 - we want
 - before we
@@ -7126,7 +7223,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “What was
 - that?”
 - asked Lucy
-- ".\n\nMr."
+- "."
+- Mr.
 - Beebe sat
 - back
 - complacent
@@ -7143,7 +7241,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "gather,"
 - not a very
 - nice novel
-- ". It is so"
+- "."
+- It is so
 - sad when
 - people who
 - have
@@ -7203,7 +7302,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - tempted
 - into
 - cigarettes
-- ". It is a"
+- "."
+- It is a
 - great
 - "secret,"
 - but I am
@@ -7320,7 +7420,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - when the
 - Emersons
 - arrived.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - smiled as
 - Miss Alan
 - plunged
@@ -7357,11 +7458,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - things
 - very
 - strangely—
-- "”\n\nHer jaw"
+- ”
+- Her jaw
 - dropped.
 - She was
 - silent.
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - whose
 - social
 - resources
@@ -7469,7 +7572,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "!"
 - The early
 - Victorians
-- ".’ Just"
+- ".’"
+- Just
 - imagine!
 - ‘Tut!
 - The early
@@ -7549,7 +7653,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - place.
 - But that
 - was not
-- all. After
+- all.
+- After
 - dinner
 - Miss
 - Lavish
@@ -7572,7 +7677,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - such an
 - unsuitable
 - invitation
-- ",\nand she"
+- ","
+- and she
 - had the
 - impertinen
 - ce to tell
@@ -7632,11 +7738,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Whatever
 - happened?”
 - cried Lucy
-- ".\n\n“No one"
+- "."
+- “No one
 - knows.
 - No one
 - will ever
-- know. Miss
+- know.
+- Miss
 - Lavish
 - will never
 - dare to
@@ -7657,7 +7765,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - I do so
 - want to
 - know.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - laughed
 - and
 - suggested
@@ -7746,10 +7855,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - They are
 - _not_ nice
 - ".”"
-- Mr. Beebe
+- Mr.
+- Beebe
 - smiled
 - nonchalant
-- ly. He had
+- ly.
+- He had
 - made a
 - gentle
 - effort to
@@ -7786,7 +7897,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "breeding,"
 - were
 - following
-- her. Miss
+- her.
+- Miss
 - "Bartlett,"
 - smarting
 - under an
@@ -7880,7 +7992,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - seats at
 - dinner had
 - been moved
-- ".\n\n“But"
+- "."
+- “But
 - aren’t
 - they
 - always
@@ -7904,7 +8017,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - quite
 - "politely,"
 - of course.
-- "”\n\n“Most"
+- ”
+- “Most
 - right of
 - her.
 - They don’t
@@ -7913,12 +8027,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - They must
 - find their
 - level.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - rather
 - felt that
 - they had
 - gone under
-- ". They had"
+- "."
+- They had
 - given up
 - their
 - attempt—if
@@ -7931,7 +8047,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - was almost
 - as silent
 - as the son
-- ". He"
+- "."
+- He
 - wondered
 - whether he
 - would not
@@ -8209,7 +8326,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - immortal
 - in this
 - medieval
-- lady. The
+- lady.
+- The
 - dragons
 - "have gone,"
 - and so
@@ -8249,7 +8367,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - creature
 - grows
 - degenerate
-- ". In her"
+- "."
+- In her
 - heart also
 - there are
 - springing
@@ -8264,7 +8383,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and green
 - expanses
 - of the sea
-- ". She has"
+- "."
+- She has
 - marked the
 - kingdom of
 - this world
@@ -8367,7 +8487,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - her well-
 - wishers
 - disapprove
-- d. As she
+- d.
+- As she
 - might not
 - go on the
 - electric
@@ -8609,10 +8730,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - throbbing
 - in the
 - tranquil
-- sky. Its
+- sky.
+- Its
 - brightness
 - mesmerized
-- "her,\nstill"
+- "her,"
+- still
 - dancing
 - before her
 - eyes when
@@ -8626,7 +8749,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Then
 - something
 - did happen
-- ".\n\nTwo"
+- "."
+- Two
 - Italians
 - by the
 - Loggia had
@@ -8688,7 +8812,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - him away
 - to the
 - fountain.
-- Mr. George
+- Mr.
+- George
 - Emerson
 - happened
 - to be a
@@ -8728,7 +8853,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - done?”
 - "“Oh, what"
 - have I
-- done?” she
+- done?”
+- she
 - "murmured,"
 - and opened
 - her eyes.
@@ -8767,7 +8893,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "spoke, and"
 - began to
 - dust his
-- knees. She
+- knees.
+- She
 - "repeated:"
 - "“Oh, what"
 - have I
@@ -8798,7 +8925,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - out his
 - hand to
 - pull her
-- up. She
+- up.
+- She
 - pretended
 - not to see
 - it.
@@ -8836,7 +8964,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - extended.
 - "“Oh, my"
 - photograph
-- s!” she
+- s!”
+- she
 - exclaimed
 - suddenly.
 - “What
@@ -8883,7 +9012,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the Arno.
 - “Miss
 - Honeychurc
-- "h!”\n\nShe"
+- h!”
+- She
 - stopped
 - with her
 - hand on
@@ -8972,7 +9102,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "that she,"
 - as well as
 - the dying
-- "man,\nhad"
+- "man,"
+- had
 - crossed
 - some
 - spiritual
@@ -8982,7 +9113,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and she
 - talked of
 - the murder
-- ". Oddly"
+- "."
+- Oddly
 - "enough, it"
 - was an
 - easy topic
@@ -9152,7 +9284,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Then the
 - boy verged
 - into a man
-- ". “For"
+- "."
+- “For
 - something
 - tremendous
 - has
@@ -9179,7 +9312,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - mean to
 - find out
 - what it is
-- ".”\n\n“Mr."
+- ".”"
+- “Mr.
 - Emerson—”
 - He turned
 - towards
@@ -9210,7 +9344,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - parapet of
 - the
 - embankment
-- ". He did"
+- "."
+- He did
 - likewise.
 - There is
 - at times a
@@ -9291,7 +9426,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ", my"
 - foolish
 - behaviour?
-- "”\n\n“Your"
+- ”
+- “Your
 - behaviour?
 - "Oh, yes,"
 - all right—
@@ -9488,7 +9624,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Charlotte
 - Bartlett
 - would turn
-- ".” She was"
+- ".”"
+- She was
 - perfectly
 - pleasant
 - and
@@ -9535,7 +9672,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - reticules
 - for
 - provisions
-- ". It might"
+- "."
+- It might
 - have been
 - most
 - unpleasant
@@ -9590,7 +9728,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - not that
 - she had
 - encountere
-- d it. This
+- d it.
+- This
 - solitude
 - oppressed
 - her; she
@@ -9613,7 +9752,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - she was
 - thinking
 - right or
-- "wrong.\n\nAt"
+- wrong.
+- At
 - breakfast
 - next
 - morning
@@ -9710,7 +9850,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - of shame
 - on the
 - cheeks of
-- Lucy. How
+- Lucy.
+- How
 - abominably
 - she
 - behaved to
@@ -9719,12 +9860,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - always!
 - But now
 - she should
-- alter. All
+- alter.
+- All
 - morning
 - she would
 - be really
 - nice to
-- "her.\n\nShe"
+- her.
+- She
 - slipped
 - her arm
 - into her
@@ -9748,7 +9891,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - over the
 - parapet to
 - look at it
-- ". She then"
+- "."
+- She then
 - made her
 - usual
 - "remark,"
@@ -9760,7 +9904,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - mother
 - could see
 - "this, too!"
-- "”\n\nLucy"
+- ”
+- Lucy
 - fidgeted;
 - it was
 - tiresome
@@ -9862,7 +10007,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - would have
 - such
 - significan
-- ce. For a
+- ce.
+- For a
 - moment she
 - understood
 - the nature
@@ -9911,12 +10057,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - What a
 - fortunate
 - thing!”
-- “Aha! Miss
+- “Aha!
+- Miss
 - Honeychurc
 - "h, come"
 - you here I
 - am in luck
-- ". Now, you"
+- "."
+- "Now, you"
 - are to
 - tell me
 - absolutely
@@ -9973,7 +10121,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - heart into
 - which we
 - wouldn’t
-- "pry.”\n\nShe"
+- pry.”
+- She
 - marched
 - cheerfully
 - to the
@@ -10040,7 +10189,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Eleanor.
 - “I do hope
 - she’s nice
-- ".”\n\nThat"
+- ".”"
+- That
 - desideratu
 - m would
 - not be
@@ -10143,7 +10293,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - going to
 - paint so
 - far as I
-- can. For I
+- can.
+- For I
 - repeat and
 - "I insist,"
 - and I have
@@ -10202,7 +10353,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - aim was
 - not to get
 - put into
-- it. Her
+- it.
+- Her
 - perception
 - s this
 - morning
@@ -10284,7 +10436,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Were you
 - indeed?
 - Andate via
-- "! sono"
+- "!"
+- sono
 - occupato!”
 - The last
 - remark was
@@ -10377,7 +10530,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "no"
 - commonplac
 - e chaplain
-- ". He was a"
+- "."
+- He was a
 - member of
 - the
 - residentia
@@ -10386,7 +10540,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - made
 - Florence
 - their home
-- ". He knew"
+- "."
+- He knew
 - the people
 - who never
 - walked
@@ -10556,7 +10711,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - message of
 - purity.
 - Andate via
-- "! andate"
+- "!"
+- andate
 - "presto,"
 - presto!
 - "Ah, the"
@@ -10590,7 +10746,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - portentous
 - and
 - humiliatin
-- "g.”\n\n“"
+- g.”
+- “
 - Humiliatin
 - "g indeed,”"
 - said Miss
@@ -10607,7 +10764,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - hardly
 - bear to
 - speak of
-- "it.”\nShe"
+- it.”
+- She
 - glanced at
 - Lucy
 - proudly.
@@ -10618,7 +10776,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - asked the
 - chaplain
 - paternally
-- ".\n\nMiss"
+- "."
+- Miss
 - Bartlett’s
 - recent
 - liberalism
@@ -10662,7 +10821,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - towards
 - her to
 - catch her
-- "reply.\n\n“"
+- reply.
+- “
 - Practicall
 - y.”
 - “One of
@@ -10685,7 +10845,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - been a
 - terrible
 - experience
-- ". I trust"
+- "."
+- I trust
 - that
 - neither of
 - you was at
@@ -10694,7 +10855,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - in your
 - immediate
 - proximity?
-- "”\n\nOf the"
+- ”
+- Of the
 - many
 - things
 - Lucy was
@@ -10819,14 +10981,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Bartlett.
 - “Ignore
 - "him,” said"
-- Mr. Eager
+- Mr.
+- Eager
 - "sharply,"
 - and they
 - all walked
 - rapidly
 - away from
 - the square
-- ".\n\nBut an"
+- "."
+- But an
 - Italian
 - can never
 - be ignored
@@ -10841,13 +11005,15 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Eager
 - became
 - relentless
-- ";\nthe air"
+- ;
+- the air
 - rang with
 - his
 - threats
 - and
 - lamentatio
-- ns. He
+- ns.
+- He
 - appealed
 - to Lucy;
 - would not
@@ -10975,7 +11141,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "enough,"
 - ceased to
 - respect
-- them. She
+- them.
+- She
 - doubted
 - that Miss
 - Lavish was
@@ -11048,7 +11215,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - y people
 - rise in
 - these days
-- "!” sighed"
+- "!”"
+- sighed
 - Miss
 - "Bartlett,"
 - fingering
@@ -11094,7 +11262,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ".”"
 - “Is he a
 - journalist
-- now?” Miss
+- now?”
+- Miss
 - Bartlett
 - asked.
 - “He is not
@@ -11114,7 +11283,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - a sigh.
 - "“Oh, so he"
 - has a wife
-- ".”\n\n“Dead,"
+- ".”"
+- "“Dead,"
 - Miss
 - "Bartlett,"
 - dead.
@@ -11309,7 +11479,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “That man
 - murdered
 - his wife!”
-- “How?” she
+- “How?”
+- she
 - retorted.
 - “To all
 - intents
@@ -11324,7 +11495,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - they say
 - anything
 - against me
-- "?”\n\n“Not a"
+- "?”"
+- “Not a
 - "word, Mr."
 - Eager—not
 - a single
@@ -11370,7 +11542,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - discomfite
 - d by the
 - unpleasant
-- scene. The
+- scene.
+- The
 - shopman
 - was
 - possibly
@@ -11384,7 +11557,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - his wife
 - in the
 - sight of
-- "God.”\n\nThe"
+- God.”
+- The
 - addition
 - of God was
 - striking.
@@ -11477,11 +11651,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - We might
 - as well
 - invite him
-- ". We are"
+- "."
+- We are
 - each
 - paying for
 - ourselves.
-- "”\n\nMiss"
+- ”
+- Miss
 - "Bartlett,"
 - who had
 - intended
@@ -11581,7 +11757,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the most
 - extraordin
 - ary things
-- ".\nMurder,"
+- "."
+- "Murder,"
 - accusation
 - s of
 - "murder, a"
@@ -11613,7 +11790,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - speedily
 - to a
 - fulfillmen
-- "t?\n\nHappy"
+- t?
+- Happy
 - "Charlotte,"
 - "who,"
 - though
@@ -11836,7 +12014,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the heart
 - of Sir
 - Harry
-- Otway. She
+- Otway.
+- She
 - recalled
 - "the free,"
 - pleasant
@@ -12060,7 +12239,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Cuthbert
 - "Eager, Mr."
 - "Emerson,"
-- Mr. George
+- Mr.
+- George
 - "Emerson,"
 - Miss
 - Eleanor
@@ -12078,7 +12258,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - View;
 - Italians
 - Drive Them
-- ".\n\n\nIt was"
+- "."
+- It was
 - Phaethon
 - who drove
 - them to
@@ -12153,7 +12334,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - guard
 - against
 - imposition
-- ". But the"
+- "."
+- But the
 - ladies
 - interceded
 - ", and when"
@@ -12216,7 +12398,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - dreadful
 - thing had
 - "happened:"
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - without
 - consulting
 - Mr.
@@ -12279,7 +12462,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "it,"
 - was now
 - impossible
-- ". Lucy and"
+- "."
+- Lucy and
 - Miss
 - Bartlett
 - had a
@@ -12310,7 +12494,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - villa at
 - his
 - introducti
-- "on.\n\nLucy,"
+- on.
+- "Lucy,"
 - elegantly
 - dressed in
 - "white, sat"
@@ -12396,7 +12581,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - of death
 - is
 - pardonable
-- ".\nBut to"
+- "."
+- But to
 - discuss it
 - afterwards
 - ", to pass"
@@ -12497,7 +12683,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Honeychurc
 - "h, you are"
 - travelling
-- "? As a"
+- "?"
+- As a
 - student of
 - art?”
 - "“Oh, dear"
@@ -12593,7 +12780,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - where we
 - saw the
 - yaller dog
-- ".’ There’s"
+- ".’"
+- There’s
 - travelling
 - for you.
 - Ha! ha!
@@ -12609,7 +12797,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - interrupt
 - his
 - mordant
-- wit. “The
+- wit.
+- “The
 - narrowness
 - and
 - superficia
@@ -12809,7 +12998,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - enjoying
 - the
 - expedition
-- ". The"
+- "."
+- The
 - carriage
 - swept with
 - agonizing
@@ -12873,7 +13063,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "large,"
 - slumbering
 - form of Mr
-- ".\nEmerson"
+- "."
+- Emerson
 - was thrown
 - against
 - the
@@ -12939,7 +13130,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - round on
 - them with
 - piteous
-- "eyes.\n\nMr."
+- eyes.
+- Mr.
 - Eager took
 - the
 - trouble to
@@ -12956,7 +13148,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - accusation
 - ", but at"
 - its manner
-- ". At this"
+- "."
+- At this
 - point Mr.
 - "Emerson,"
 - whom the
@@ -12986,7 +13179,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the cause
 - of
 - Bohemianis
-- "m.\n\n“Most"
+- m.
+- “Most
 - certainly
 - I would
 - let them
@@ -13039,7 +13233,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "up behind,"
 - and
 - sensible
-- Mr. Beebe
+- Mr.
+- Beebe
 - called out
 - that after
 - this
@@ -13108,7 +13303,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - determined
 - to make
 - himself
-- heard. He
+- heard.
+- He
 - addressed
 - the driver
 - again.
@@ -13168,7 +13364,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - he appeal
 - to Lucy?
 - “Signorina
-- "!” echoed"
+- "!”"
+- echoed
 - Persephone
 - in her
 - glorious
@@ -13183,7 +13380,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - two girls
 - looked at
 - each other
-- ". Then"
+- "."
+- Then
 - Persephone
 - got down
 - from the
@@ -13209,7 +13407,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - parted two
 - people who
 - were happy
-- ".”\n\nMr."
+- ".”"
+- Mr.
 - Eager shut
 - his eyes.
 - He was
@@ -13228,7 +13427,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and took
 - up the
 - matter
-- warmly. He
+- warmly.
+- He
 - commanded
 - Lucy to
 - agree with
@@ -13243,7 +13443,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - cannot be
 - bought
 - with money
-- ". He has"
+- "."
+- He has
 - bargained
 - to drive
 - "us, and he"
@@ -13278,7 +13479,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - It was as
 - restful as
 - sleeping.
-- Aha! he is
+- Aha!
+- he is
 - jolting us
 - now.
 - Can you
@@ -13297,7 +13499,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ous I’d be
 - frightened
 - of the
-- "girl,\ntoo."
+- "girl,"
+- too.
 - It doesn’t
 - do to
 - injure
@@ -13307,7 +13510,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ever heard
 - of Lorenzo
 - de Medici?
-- "”\n\nMiss"
+- ”
+- Miss
 - Lavish
 - bristled.
 - “Most
@@ -13347,7 +13551,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - against
 - the Spring
 - ".’”"
-- Mr. Eager
+- Mr.
+- Eager
 - could not
 - resist the
 - opportunit
@@ -13465,7 +13670,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - promontory
 - ","
 - uncultivat
-- "ed,\nwet,"
+- "ed,"
+- "wet,"
 - covered
 - with
 - bushes and
@@ -13577,7 +13783,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - go
 - different
 - directions
-- ". Finally"
+- "."
+- Finally
 - they split
 - into
 - groups.
@@ -13628,7 +13835,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Miss
 - Bartlett
 - had asked
-- Mr. George
+- Mr.
+- George
 - Emerson
 - what his
 - profession
@@ -13665,7 +13873,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - much hurt
 - at her
 - asking him
-- ".\n\n“The"
+- "."
+- “The
 - railway!”
 - gasped
 - Miss
@@ -13706,7 +13915,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - it’s all
 - "right,”"
 - put in
-- Lucy. “The
+- Lucy.
+- “The
 - Emersons
 - won’t hear
 - ", and they"
@@ -13726,7 +13936,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - rather
 - crossly.
 - “Pouf!
-- Wouf! You
+- Wouf!
+- You
 - naughty
 - girl!
 - Go away!”
@@ -13741,7 +13952,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "now, and I"
 - don’t want
 - to either.
-- "”\n\n“Mr."
+- ”
+- “Mr.
 - Eager will
 - be
 - offended.
@@ -13832,7 +14044,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - functions
 - of
 - enthusiasm
-- ". Lucy did"
+- "."
+- Lucy did
 - not look
 - at the
 - view
@@ -13945,7 +14158,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "cough, and"
 - I have had
 - it three
-- days. It’s
+- days.
+- It’s
 - nothing to
 - do with
 - sitting
@@ -13965,7 +14179,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - in search
 - of Mr.
 - Beebe and
-- "Mr. Eager,"
+- Mr.
+- "Eager,"
 - vanquished
 - by the
 - mackintosh
@@ -14046,7 +14261,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Italian
 - for “
 - clergyman”
-- "?\n\n“Dove"
+- "?"
+- “Dove
 - buoni
 - uomini?”
 - said she
@@ -14155,7 +14371,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - was
 - beautiful
 - and direct
-- ". For the"
+- "."
+- For the
 - first time
 - she felt
 - the
@@ -14183,7 +14400,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "first,"
 - violets
 - afterwards
-- ". They"
+- "."
+- They
 - proceeded
 - briskly
 - through
@@ -14241,7 +14459,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - them.
 - The voice
 - of Mr.
-- Eager? He
+- Eager?
+- He
 - shrugged
 - his
 - shoulders.
@@ -14310,11 +14529,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - standing
 - some six
 - feet above
-- ".\n“Courage"
+- "."
+- “Courage
 - and love.”
 - She did
 - not answer
-- ". From her"
+- "."
+- From her
 - feet the
 - ground
 - sloped
@@ -14420,7 +14641,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "called,"
 - “Lucy!
 - Lucy!
-- Lucy!” The
+- Lucy!”
+- The
 - silence of
 - life had
 - been
@@ -14576,7 +14798,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - He will be
 - "hours,”"
 - said Mr.
-- "Beebe.\n\n“"
+- Beebe.
+- “
 - Apparently
 - "."
 - I told him
@@ -14615,7 +14838,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - what he
 - wished
 - them to be
-- ". He alone"
+- "."
+- He alone
 - had
 - interprete
 - d the
@@ -14797,7 +15021,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to
 - extinguish
 - you or me?
-- "”\n\n“No—of"
+- ”
+- “No—of
 - course—”
 - “Even from
 - the
@@ -14857,7 +15082,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to pay for
 - it
 - afterwards
-- ". Miss"
+- "."
+- Miss
 - "Bartlett,"
 - by this
 - timely
@@ -14873,7 +15099,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - preaching
 - or cross
 - examinatio
-- "n.\n\nShe"
+- n.
+- She
 - renewed it
 - when the
 - two
@@ -14888,7 +15115,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “We want
 - your
 - assistance
-- ". Will you"
+- "."
+- Will you
 - interpret
 - for us?”
 - “George!”
@@ -14963,7 +15191,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - —“_he_
 - knows
 - everything
-- ". Dearest,"
+- "."
+- "Dearest,"
 - had we
 - better?
 - Shall I?”
@@ -15021,7 +15250,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the great
 - supports
 - had fallen
-- ". If they"
+- "."
+- If they
 - had not
 - stopped
 - perhaps
@@ -15083,7 +15313,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - it to be
 - unmanly or
 - unladylike
-- ". Miss"
+- "."
+- Miss
 - Lavish
 - calculated
 - "that,"
@@ -15096,7 +15327,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - caught in
 - the
 - accident.
-- Mr. Eager
+- Mr.
+- Eager
 - mumbled a
 - temperate
 - prayer.
@@ -15161,7 +15393,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - disturbed
 - her
 - repentance
-- ". As a"
+- "."
+- As a
 - matter of
 - "fact, the"
 - storm was
@@ -15191,7 +15424,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "surprise,"
 - just as I
 - was before
-- ".\nBut this"
+- "."
+- But this
 - time I’m
 - not to
 - blame; I
@@ -15233,7 +15467,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - schoolgirl
 - s.”
 - “And then?
-- "”\n\n“But,"
+- ”
+- "“But,"
 - "Charlotte,"
 - you know
 - what
@@ -15242,7 +15477,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Miss
 - Bartlett
 - was silent
-- ". Indeed,"
+- "."
+- "Indeed,"
 - she had
 - little
 - more to
@@ -15303,7 +15539,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - in others.
 - The storm
 - had ceased
-- ",\nand Mr."
+- ","
+- and Mr.
 - Emerson
 - was easier
 - about his
@@ -15397,12 +15634,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - She
 - refused
 - vehemently
-- ". Music"
+- "."
+- Music
 - seemed to
 - her the
 - employment
 - of a child
-- ". She sat"
+- "."
+- She sat
 - close to
 - her cousin
 - ", who,"
@@ -15498,7 +15737,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - upon.
 - “What is
 - to be done
-- "? A point,"
+- "?"
+- "A point,"
 - "dearest,"
 - which you
 - alone can
@@ -15569,7 +15809,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Bartlett
 - ignored
 - the remark
-- ".\n\n“How do"
+- "."
+- “How do
 - you
 - propose to
 - silence
@@ -15578,7 +15819,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - driver?”
 - “My dear
 - "girl, no;"
-- Mr. George
+- Mr.
+- George
 - Emerson.”
 - Lucy began
 - to pace up
@@ -15588,7 +15830,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - understand
 - ",” she"
 - said at
-- "last.\n\nShe"
+- last.
+- She
 - understood
 - "very well,"
 - but she no
@@ -15613,7 +15856,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - intend to
 - judge him
 - charitably
-- ". But"
+- "."
+- But
 - unfortunat
 - ely I have
 - met the
@@ -15748,11 +15992,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to keep
 - silence?”
 - “Certainly
-- not. There
+- not.
+- There
 - would be
 - "no"
 - difficulty
-- ". Whatever"
+- "."
+- Whatever
 - you ask
 - him he
 - "answers,"
@@ -15821,7 +16067,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - intoning
 - it more
 - vigorously
-- ".\n\n“What"
+- "."
+- “What
 - would have
 - happened
 - if I
@@ -16042,7 +16289,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - remained
 - motionless
 - and silent
-- ". To her"
+- "."
+- To her
 - tired eyes
 - Charlotte
 - throbbed
@@ -16068,7 +16316,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to Rome.
 - "Lucy, when"
 - admonished
-- ",\nbegan to"
+- ","
+- began to
 - move to
 - and fro
 - between
@@ -16149,7 +16398,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and
 - receive
 - some human
-- "love.\nThe"
+- love.
+- The
 - impulse
 - had come
 - before to-
@@ -16172,7 +16422,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - with
 - tenderness
 - and warmth
-- ". But she"
+- "."
+- But she
 - was not a
 - stupid
 - "woman, and"
@@ -16208,7 +16459,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - forgiving
 - Miss
 - Bartlett
-- meant. Her
+- meant.
+- Her
 - emotion
 - "relaxed,"
 - she
@@ -16298,7 +16550,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - often able
 - to leave
 - me at home
-- ". I had my"
+- "."
+- I had my
 - own poor
 - ideas of
 - what a
@@ -16317,7 +16570,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - these
 - "rooms, at"
 - all events
-- ".”\n\n“You"
+- ".”"
+- “You
 - mustn’t
 - say these
 - "things,”"
@@ -16332,7 +16586,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - loved each
 - "other,"
 - heart and
-- soul. They
+- soul.
+- They
 - continued
 - to pack in
 - silence.
@@ -16409,7 +16664,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - true that
 - I have
 - neglected
-- you. Your
+- you.
+- Your
 - mother
 - will see
 - this as
@@ -16435,11 +16691,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I suppose
 - I do
 - generally.
-- "”\n\n“I dare"
+- ”
+- “I dare
 - not break
 - your
 - confidence
-- ". There is"
+- "."
+- There is
 - something
 - sacred in
 - it.
@@ -16475,7 +16733,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - it either
 - to her or
 - to any one
-- ".”\n\nHer"
+- ".”"
+- Her
 - promise
 - brought
 - the long-
@@ -16501,7 +16760,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - trouble
 - was in the
 - background
-- ". George"
+- "."
+- George
 - would seem
 - to have
 - behaved
@@ -16535,7 +16795,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - intervened
 - ", and,"
 - ever since
-- ",\nit was"
+- ","
+- it was
 - Miss
 - Bartlett
 - who had
@@ -16682,7 +16943,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - his room
 - he had to
 - go by hers
-- ". She was"
+- "."
+- She was
 - still
 - dressed.
 - It struck
@@ -16703,7 +16965,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ary
 - intercours
 - e was over
-- ".\n\nWhether"
+- "."
+- Whether
 - she would
 - have dared
 - to do this
@@ -16718,7 +16981,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "own door,"
 - and her
 - voice said
-- ":\n\n“I wish"
+- ":"
+- “I wish
 - one word
 - with you
 - in the
@@ -16747,7 +17011,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Lucy cried
 - "aloud: “It"
 - isn’t true
-- ". It can’t"
+- "."
+- It can’t
 - all be
 - true.
 - I want not
@@ -16805,7 +17070,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - them was
 - subdued
 - and varied
-- ". A poet—"
+- "."
+- A poet—
 - none was
 - present—
 - might have
@@ -17011,12 +17277,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ble.”
 - “Do you
 - "indeed,"
-- dear? How
+- dear?
+- How
 - interestin
 - g!”
 - “I feel—
 - never mind
-- ".”\n\nHe"
+- ".”"
+- He
 - returned
 - to his
 - work.
@@ -17095,7 +17363,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Why so?”
 - asked the
 - son and
-- heir. “Why
+- heir.
+- “Why
 - shouldn’t
 - my
 - permission
@@ -17143,7 +17412,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - shy to say
 - what the
 - bother was
-- ".\nMrs."
+- "."
+- Mrs.
 - Honeychurc
 - h went
 - back to
@@ -17208,7 +17478,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - awfully.”
 - He gave a
 - nervous
-- gulp. “Not
+- gulp.
+- “Not
 - content
 - with ‘
 - permission
@@ -17253,7 +17524,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - you gave a
 - careful
 - "answer,"
-- "dear.”\n\n“I"
+- dear.”
+- “I
 - answered ‘
 - No’” said
 - "the boy,"
@@ -17271,7 +17543,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - He ought
 - never to
 - have asked
-- "me.”\n\n“"
+- me.”
+- “
 - Ridiculous
 - child!”
 - cried his
@@ -17364,7 +17637,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Not a bit
 - "!”"
 - he pleaded
-- ". “I only"
+- "."
+- “I only
 - let out I
 - didn’t
 - like him.
@@ -17386,7 +17660,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "like him,”"
 - said Mrs.
 - Honeychurc
-- h. “I know
+- h.
+- “I know
 - his mother
 - ; he’s
 - "good, he’s"
@@ -17448,7 +17723,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - interest.
 - “I don’t
 - see how Mr
-- ". Beebe"
+- "."
+- Beebe
 - comes in.”
 - “You know
 - Mr.
@@ -17561,7 +17837,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - called his
 - mother.
 - “‘Dear Mrs
-- ". Vyse,—"
+- "."
+- "Vyse,—"
 - Cecil has
 - just asked
 - my
@@ -17595,7 +17872,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - must
 - decide for
 - themselves
-- ".’\nI said"
+- ".’"
+- I said
 - that
 - because I
 - didn’t
@@ -17651,7 +17929,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - must
 - decide for
 - themselves
-- ". I know"
+- "."
+- I know
 - that Lucy
 - likes your
 - "son,"
@@ -17719,7 +17998,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - must
 - decide for
 - themselves
-- ". I know"
+- "."
+- I know
 - that Lucy
 - likes your
 - "son,"
@@ -17727,7 +18007,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - she tells
 - me
 - everything
-- ". But I do"
+- "."
+- But I do
 - not know—’
 - ”
 - “Look out!
@@ -17741,7 +18022,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - movement
 - was one of
 - irritation
-- ". He"
+- "."
+- He
 - couldn’t
 - bear the
 - Honeychurc
@@ -17876,7 +18158,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - worshipped
 - as
 - asceticism
-- ". A Gothic"
+- "."
+- A Gothic
 - statue
 - implies
 - "celibacy,"
@@ -17905,7 +18188,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - wearing
 - another
 - fellow’s
-- "cap.\n\nMrs."
+- cap.
+- Mrs.
 - Honeychurc
 - h left her
 - letter on
@@ -17918,11 +18202,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - acquaintan
 - ce.
 - "“Oh, Cecil"
-- "!” she"
+- "!”"
+- she
 - exclaimed—
 - "“oh, Cecil"
 - ", do tell"
-- "me!”\n\n“I"
+- me!”
+- “I
 - promessi
 - "sposi,”"
 - said he.
@@ -18000,7 +18286,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “This is
 - indeed a
 - joyous day
-- "! I feel"
+- "!"
+- I feel
 - sure that
 - you will
 - make our
@@ -18077,7 +18364,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - arms.
 - "He said, “"
 - Steady on!
-- "”\n\n“Not a"
+- ”
+- “Not a
 - kiss for
 - me?”
 - asked her
@@ -18099,7 +18387,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - stop here
 - and tell
 - my mother.
-- "”\n\n“We go"
+- ”
+- “We go
 - with Lucy?
 - ” said
 - "Freddy, as"
@@ -18162,7 +18451,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - such a
 - happy
 - conclusion
-- ".\n\nHe had"
+- "."
+- He had
 - known Lucy
 - for
 - several
@@ -18216,7 +18506,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - precious—
 - it gave
 - her shadow
-- ". Soon he"
+- "."
+- Soon he
 - detected
 - in her a
 - wonderful
@@ -18289,7 +18580,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - away at
 - the
 - suggestion
-- ". Her"
+- "."
+- Her
 - refusal
 - had been
 - clear and
@@ -18318,7 +18610,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "bald,"
 - traditiona
 - l language
-- ". She"
+- "."
+- She
 - reminded
 - him of a
 - Leonardo
@@ -18467,7 +18760,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Messrs.
 - Shoolbred
 - and Messrs
-- ".\nMaple"
+- "."
+- Maple
 - arriving
 - at the
 - door and
@@ -18662,7 +18956,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "you,” said"
 - Cecil.
 - “News?”
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - whose news
 - was of a
 - very
@@ -18722,7 +19017,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "might be,"
 - he still
 - thought Mr
-- ". Beebe"
+- "."
+- Beebe
 - rather a
 - bounder.
 - “
@@ -18746,7 +19042,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - up
 - opposite
 - the church
-- "! I’ll set"
+- "!"
+- I’ll set
 - Mrs.
 - Honeychurc
 - h after
@@ -18802,7 +19099,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "on"
 - sufferance
 - ".”"
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - distressed
 - at this
 - heavy
@@ -18903,12 +19201,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "example,"
 - Freddy
 - Honeychurc
-- "h.”\n\n“Oh,"
+- h.”
+- "“Oh,"
 - Freddy’s a
 - "good sort,"
 - isn’t he?”
 - “Admirable
-- ". The sort"
+- "."
+- The sort
 - who has
 - made
 - England
@@ -18917,7 +19217,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Cecil
 - wondered
 - at himself
-- ". Why, on"
+- "."
+- "Why, on"
 - this day
 - of all
 - "others,"
@@ -18996,7 +19297,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Mary, but"
 - they are
 - very grave
-- ". Shall we"
+- "."
+- Shall we
 - look in
 - the garden
 - "?”"
@@ -19069,7 +19371,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - theory
 - about Miss
 - Honeychurc
-- h. Does it
+- h.
+- Does it
 - seem
 - reasonable
 - that she
@@ -19148,7 +19451,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "course,"
 - you knew
 - her before
-- ". No, she"
+- "."
+- "No, she"
 - wasn’t
 - wonderful
 - in
@@ -19199,7 +19503,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Bartlett
 - holding
 - the string
-- ". Picture"
+- "."
+- Picture
 - number two
 - ": the"
 - string
@@ -19214,7 +19519,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - viewed
 - things
 - artistical
-- ly. At the
+- ly.
+- At the
 - time he
 - had given
 - surreptiti
@@ -19283,7 +19589,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - that she
 - is going
 - to marry
-- "me.”\n\nThe"
+- me.”
+- The
 - clergyman
 - was
 - conscious
@@ -19311,7 +19618,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - this
 - "flippant,"
 - superficia
-- "l way.\nMr."
+- l way.
+- Mr.
 - "Vyse, you"
 - ought to
 - have
@@ -19376,7 +19684,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - you a
 - "shock,” he"
 - said dryly
-- ". “I fear"
+- "."
+- “I fear
 - that
 - Lucy’s
 - choice
@@ -19389,7 +19698,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ought to
 - have
 - stopped me
-- ". I know"
+- "."
+- I know
 - Miss
 - Honeychurc
 - h only a
@@ -19413,12 +19723,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - something
 - indiscreet
 - "?”"
-- Mr. Beebe
+- Mr.
+- Beebe
 - pulled
 - himself
 - together.
 - "Really, Mr"
-- ". Vyse had"
+- "."
+- Vyse had
 - the art of
 - placing
 - one in the
@@ -19431,7 +19743,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - prerogativ
 - es of his
 - profession
-- ".\n\n“No, I"
+- "."
+- "“No, I"
 - have said
 - nothing
 - indiscreet
@@ -19620,7 +19933,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - poetry or
 - the
 - Scriptures
-- ". None of"
+- "."
+- None of
 - them dared
 - or was
 - able to be
@@ -19689,7 +20003,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the most
 - feel
 - sentimenta
-- "l. Inside,"
+- l.
+- "Inside,"
 - though the
 - saints and
 - gods are
@@ -19755,7 +20070,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - kicked the
 - drawing-
 - room door.
-- Mr. Beebe
+- Mr.
+- Beebe
 - chirruped.
 - Freddy was
 - at his
@@ -19818,7 +20134,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - party in
 - the
 - neighbourh
-- "ood,\nfor"
+- "ood,"
+- for
 - naturally
 - she wanted
 - to show
@@ -20005,7 +20322,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - notice us
 - so much
 - next time.
-- "”\n\n“But my"
+- ”
+- “But my
 - point is
 - that their
 - whole
@@ -20096,7 +20414,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ".”"
 - “Inglese
 - Italianato
-- "?”\n\n“E un"
+- "?”"
+- “E un
 - diavolo
 - incarnato!
 - You know
@@ -20129,7 +20448,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - was far
 - from
 - possessing
-- ".\n\n“Well,”"
+- "."
+- "“Well,”"
 - "said he, “"
 - I cannot
 - help it if
@@ -20183,14 +20503,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - by the
 - barriers
 - of others?
-- "”\n\nShe"
+- ”
+- She
 - thought a
 - "moment,"
 - and agreed
 - that it
 - did make a
 - difference
-- ".\n\n“"
+- "."
+- “
 - Difference
 - "?”"
 - cried Mrs.
@@ -20229,7 +20551,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - case on
 - her lap.
 - “This is
-- me. That’s
+- me.
+- That’s
 - Windy
 - Corner.
 - The rest
@@ -20243,7 +20566,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - but the
 - fence
 - comes here
-- ".”\n\n“We"
+- ".”"
+- “We
 - weren’t
 - talking of
 - real
@@ -20376,7 +20700,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - he had.”
 - “No!”
 - “Why ‘no’?
-- "”\n\n“He was"
+- ”
+- “He was
 - such a
 - nice old
 - "man, I’m"
@@ -20481,19 +20806,22 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - lecture on
 - Giotto.
 - I hate him
-- ". Nothing"
+- "."
+- Nothing
 - can hide a
 - petty
 - nature.
 - I _hate_
-- "him.”\n\n“My"
+- him.”
+- “My
 - goodness
 - gracious
 - "me, child!"
 - ” said Mrs
 - "."
 - Honeychurc
-- h. “You’ll
+- h.
+- “You’ll
 - blow my
 - head off!
 - Whatever
@@ -20542,7 +20870,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "mystery,"
 - not in
 - muscular
-- rant. But
+- rant.
+- But
 - possibly
 - rant is a
 - sign of
@@ -20595,7 +20924,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - e beauty
 - of the
 - turnpike
-- road. The
+- road.
+- The
 - outdoor
 - world was
 - not very
@@ -20675,7 +21005,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - depressing
 - of
 - companions
-- ". Yet they"
+- "."
+- Yet they
 - may have a
 - tacit
 - sympathy
@@ -20690,11 +21021,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "feel that,"
 - Mrs.
 - Honeychurc
-- "h?”\n\nMrs."
+- h?”
+- Mrs.
 - Honeychurc
 - h started
 - and smiled
-- ". She had"
+- "."
+- She had
 - not been
 - attending.
 - "Cecil,"
@@ -20750,7 +21083,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - touched
 - her knee
 - with his
-- "own.\n\nShe"
+- own.
+- She
 - flushed
 - again and
 - "said: “"
@@ -20851,7 +21185,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - with
 - Cecil’s
 - engagement
-- ",\nhaving"
+- ","
+- having
 - been
 - acquired
 - by Sir
@@ -20918,7 +21253,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - lace.
 - “Cissie”
 - was to let
-- ". Three"
+- "."
+- Three
 - notice-
 - "boards,"
 - belonging
@@ -20954,7 +21290,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - will never
 - be the
 - same again
-- ".”\n\nAs the"
+- ".”"
+- As the
 - carriage
 - "passed, “"
 - Cissie’s”
@@ -21010,7 +21347,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - before the
 - contract
 - was signed
-- ". Does she"
+- "."
+- Does she
 - still live
 - "rent free,"
 - as she did
@@ -21137,7 +21475,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - as well as
 - decorative
 - "."
-- Mr. Flack
+- Mr.
+- Flack
 - replied
 - that all
 - the
@@ -21168,7 +21507,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ” For he
 - had read
 - his Ruskin
-- ". He built"
+- "."
+- He built
 - his villas
 - according
 - to his
@@ -21183,7 +21523,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - one of
 - them did
 - Sir Harry
-- "buy.\n\nThis"
+- buy.
+- This
 - futile and
 - unprofitab
 - le
@@ -21345,7 +21686,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - herself to
 - stop him.
 - “Sir Harry
-- "!” she"
+- "!”"
+- she
 - "exclaimed,"
 - “I have an
 - idea.
@@ -21368,7 +21710,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - n?”
 - he asked
 - tentativel
-- "y.\n\n“Yes,"
+- y.
+- "“Yes,"
 - "indeed,"
 - and at the
 - present
@@ -21384,11 +21727,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Alan.
 - I’m really
 - not joking
-- ".\nThey are"
+- "."
+- They are
 - quite the
 - right
 - people.
-- Mr. Beebe
+- Mr.
+- Beebe
 - knows them
 - ", too."
 - May I tell
@@ -21445,7 +21790,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - As if one
 - cares
 - about that
-- "! And"
+- "!"
+- And
 - several
 - references
 - I took up
@@ -21456,9 +21802,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "swindlers,"
 - or not
 - respectabl
-- "e. And oh,"
+- e.
+- "And oh,"
 - the deceit
-- "! I have"
+- "!"
+- I have
 - seen a
 - good deal
 - of the
@@ -21555,7 +21903,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - who am
 - "tiresome,”"
 - he replied
-- ". “I"
+- "."
+- “I
 - oughtn’t
 - to come
 - with my
@@ -21609,7 +21958,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Beware of
 - women
 - altogether
-- ". Only let"
+- "."
+- Only let
 - to a man.”
 - “Really—”
 - he
@@ -21665,7 +22015,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - not leave
 - them much
 - distinctio
-- n. He
+- n.
+- He
 - suggested
 - that Mrs.
 - Honeychurc
@@ -21705,7 +22056,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - as she
 - followed
 - her mother
-- ".\n\n“Mrs."
+- "."
+- “Mrs.
 - Honeychurc
 - "h,” he"
 - "said, “"
@@ -21715,7 +22067,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - leave you?
 - ”
 - “Certainly
-- "!” was her"
+- "!”"
+- was her
 - cordial
 - reply.
 - Sir Harry
@@ -21729,7 +22082,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - at them
 - "knowingly,"
 - "said, “Aha"
-- "! young"
+- "!"
+- young
 - "people,"
 - young
 - people!”
@@ -21812,7 +22166,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - whether it
 - matters so
 - very much.
-- "”\n\n“It"
+- ”
+- “It
 - matters
 - supremely.
 - Sir Harry
@@ -21820,7 +22175,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - essence of
 - that
 - garden-
-- "party.\nOh,"
+- party.
+- "Oh,"
 - "goodness,"
 - how cross
 - I feel!
@@ -21854,7 +22210,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - disliked
 - Sir Harry
 - Otway and
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - what
 - guarantee
 - was there
@@ -22030,7 +22387,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ","
 - hopelessly
 - bewildered
-- ".\n\n“Yes."
+- "."
+- “Yes.
 - "Or, at the"
 - "most, in a"
 - "garden, or"
@@ -22064,7 +22422,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - view—a
 - certain
 - type of
-- view. Why
+- view.
+- Why
 - shouldn’t
 - you
 - connect me
@@ -22090,7 +22449,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - always as
 - in a room.
 - How funny!
-- "”\n\nTo her"
+- ”
+- To her
 - "surprise,"
 - he seemed
 - annoyed.
@@ -22190,7 +22550,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - holding in
 - its bosom
 - a shallow
-- "pool.\n\nShe"
+- pool.
+- She
 - "exclaimed,"
 - “The
 - Sacred
@@ -22213,7 +22574,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - stream
 - going
 - through it
-- "? Well, a"
+- "?"
+- "Well, a"
 - good deal
 - of water
 - comes down
@@ -22240,7 +22602,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "He meant,"
 - “Are you
 - fond of it
-- "?” But she"
+- "?”"
+- But she
 - answered
 - "dreamily,"
 - “I bathed
@@ -22283,7 +22646,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "smart, as"
 - she
 - phrased it
-- ",\nand she"
+- ","
+- and she
 - reminded
 - him of
 - some
@@ -22412,7 +22776,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Her reply
 - was
 - inadequate
-- ". She gave"
+- "."
+- She gave
 - such a
 - business-
 - like lift
@@ -22596,7 +22961,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - district
 - was
 - opening up
-- ",\nand,"
+- ","
+- "and,"
 - falling in
 - love with
 - his own
@@ -22656,7 +23022,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - of an
 - indigenous
 - aristocrac
-- y. He was
+- y.
+- He was
 - inclined
 - to be
 - frightened
@@ -22734,7 +23101,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - since her
 - return
 - from Italy
-- ".\nHitherto"
+- "."
+- Hitherto
 - she had
 - accepted
 - their
@@ -22750,7 +23118,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ", their"
 - dislike of
 - paper-bags
-- ",\norange-"
+- ","
+- orange-
 - "peel, and"
 - broken
 - bottles.
@@ -22859,7 +23228,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "tolerance,"
 - but to
 - irritation
-- ". He saw"
+- "."
+- He saw
 - that the
 - local
 - society
@@ -22998,7 +23368,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - she was
 - trying to
 - talk to Mr
-- ". Beebe at"
+- "."
+- Beebe at
 - the same
 - time.
 - "“Oh, it"
@@ -23039,7 +23410,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - impressed
 - her
 - favourably
-- ". They are"
+- "."
+- They are
 - coming.
 - I heard
 - from them
@@ -23071,7 +23443,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - her right—
 - worn to a
 - shadow.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - watched
 - the shadow
 - springing
@@ -23180,7 +23553,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "her hand,"
 - ready to
 - plug it in
-- ". That’s"
+- "."
+- That’s
 - "right,"
 - "Minnie, go"
 - for her—
@@ -23200,7 +23574,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - rolled
 - from her
 - hand.
-- Mr. Beebe
+- Mr.
+- Beebe
 - picked it
 - "up, and"
 - "said: “The"
@@ -23276,7 +23651,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - could see
 - "this,”"
 - observed
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - just as
 - "Lucy, who"
 - was
@@ -23310,7 +23686,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - most
 - agreeably
 - on to the
-- grass. An
+- grass.
+- An
 - interval
 - elapses.
 - “Wasn’t
@@ -23357,7 +23734,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - tenants.’
 - "I said, ‘"
 - "ooray, old"
-- "boy!’\nand"
+- boy!’
+- and
 - slapped
 - him on the
 - back.”
@@ -23413,7 +23791,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - it instead
 - ".”"
 - "“Yes, I do"
-- ". I’ve got"
+- "."
+- I’ve got
 - it.
 - Emerson.”
 - “What name
@@ -23485,7 +23864,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Freddy,"
 - who was
 - democratic
-- ". Like his"
+- "."
+- Like his
 - sister and
 - like most
 - young
@@ -23556,7 +23936,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - one beyond
 - another
 - into the
-- Weald. The
+- Weald.
+- The
 - further
 - one
 - descended
@@ -23607,7 +23988,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - call in
 - perfect
 - safety.”
-- “_Cecil?_”
+- “_Cecil?
+- _”
 - exclaimed
 - Lucy.
 - “Don’t be
@@ -23738,7 +24120,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - suppose it
 - will prove
 - to be them
-- ". It is"
+- "."
+- It is
 - probably a
 - long cry
 - from them
@@ -23757,7 +24140,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - part we
 - liked them
 - ", didn’t"
-- we?” He
+- we?”
+- He
 - appealed
 - to Lucy.
 - “There was
@@ -23898,7 +24282,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - his wife?”
 - said Mrs.
 - Honeychurc
-- "h. “Lucy,"
+- h.
+- "“Lucy,"
 - don’t
 - desert us—
 - go on
@@ -23931,7 +24316,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Charlotte
 - here some
 - time.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - could
 - recall no
 - second
@@ -23946,7 +24332,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - hint of
 - opposition
 - she warmed
-- ". She was"
+- "."
+- She was
 - perfectly
 - sure that
 - there had
@@ -23964,7 +24351,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the name?
 - "Oh, what"
 - was the
-- name? She
+- name?
+- She
 - clasped
 - her knees
 - for the
@@ -24033,7 +24421,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - pair of
 - nondescrip
 - t tourists
-- ". Hitherto"
+- "."
+- Hitherto
 - truth had
 - come to
 - her
@@ -24051,13 +24440,15 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - all events
 - ", she must"
 - not tell
-- lies. She
+- lies.
+- She
 - hurried up
 - the garden
 - ", still"
 - flushed
 - with shame
-- ". A word"
+- "."
+- A word
 - from Cecil
 - would
 - soothe her
@@ -24077,7 +24468,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I was
 - hoping
 - you’d come
-- ". I heard"
+- "."
+- I heard
 - you all
 - bear-
 - "gardening,"
@@ -24091,7 +24483,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - victory
 - for the
 - Comic Muse
-- ". George"
+- "."
+- George
 - Meredith’s
 - right—the
 - cause of
@@ -24307,7 +24700,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - long
 - you’ll
 - agree with
-- me. There
+- me.
+- There
 - ought to
 - be
 - intermarri
@@ -24360,7 +24754,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - make me
 - look
 - ridiculous
-- ". You call"
+- "."
+- You call
 - it scoring
 - off Sir
 - "Harry, but"
@@ -24396,7 +24791,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - g the Miss
 - "Alans, she"
 - had not
-- minded. He
+- minded.
+- He
 - perceived
 - that these
 - new
@@ -24412,7 +24808,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - out the
 - "son, who"
 - was silent
-- ". In the"
+- "."
+- In the
 - interests
 - of the
 - Comic Muse
@@ -24482,7 +24879,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - responsibl
 - e for the
 - failure.
-- Mr. Beebe
+- Mr.
+- Beebe
 - planned
 - pleasant
 - moments
@@ -24515,7 +24913,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to be
 - "forgotten,"
 - and to die
-- ".\n\nLucy—to"
+- "."
+- Lucy—to
 - descend
 - from
 - bright
@@ -24541,7 +24940,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - did not
 - matter the
 - very least
-- ".\nNow that"
+- "."
+- Now that
 - she was
 - "engaged,"
 - the
@@ -24640,7 +25040,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “So you do
 - "love me,"
 - little
-- thing?” he
+- thing?”
+- he
 - murmured.
 - "“Oh, Cecil"
 - ", I do, I"
@@ -24715,7 +25116,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - they could
 - continue
 - their tour
-- ". Lucy had"
+- "."
+- Lucy had
 - said she
 - would join
 - the Vyses—
@@ -24761,7 +25163,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - from Windy
 - Corner.
 - “TUNBRIDGE
-- "WELLS,\n“"
+- "WELLS,"
+- “
 - _September
 - _.
 - “DEAREST
@@ -24769,7 +25172,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I have
 - news of
 - you at
-- last! Miss
+- last!
+- Miss
 - Lavish has
 - been
 - bicycling
@@ -24871,7 +25275,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - warned you
 - "."
 - “Believe
-- "me,\n“Your"
+- "me,"
+- “Your
 - anxious
 - and loving
 - "cousin,"
@@ -24952,7 +25357,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - making a
 - fuss at
 - this stage
-- ". You must"
+- "."
+- You must
 - see that
 - it would
 - be too
@@ -25065,7 +25471,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Bartlett
 - suggested
 - the former
-- ". Perhaps"
+- "."
+- Perhaps
 - she was
 - right.
 - It had
@@ -25149,7 +25556,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - In spite
 - of the
 - "season,"
-- Mrs. Vyse
+- Mrs.
+- Vyse
 - managed to
 - scrape
 - together a
@@ -25188,7 +25596,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - amid
 - sympatheti
 - c laughter
-- ". In this"
+- "."
+- In this
 - atmosphere
 - the
 - Pension
@@ -25210,7 +25619,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - that she
 - had loved
 - in the
-- "past.\n\nThe"
+- past.
+- The
 - grandchild
 - ren asked
 - her to
@@ -25246,7 +25656,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - once from
 - the cradle
 - to the
-- grave. The
+- grave.
+- The
 - sadness of
 - the
 - incomplete
@@ -25421,7 +25832,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - of us
 - already.”
 - “But her
-- music!” he
+- music!”
+- he
 - exclaimed.
 - “The style
 - of her!
@@ -25501,7 +25913,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the maid
 - if she
 - liked but
-- Mrs. Vyse
+- Mrs.
+- Vyse
 - thought it
 - kind to go
 - herself.
@@ -25633,7 +26046,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “They
 - might
 - amuse you.
-- "”\n\nFreddy,"
+- ”
+- "Freddy,"
 - whom his
 - fellow-
 - creatures
@@ -25649,7 +26063,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - since they
 - had only
 - just moved
-- "in.\n\n“I"
+- in.
+- “I
 - suggested
 - we should
 - hinder
@@ -25706,7 +26121,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - round it
 - with
 - difficulty
-- ". The"
+- "."
+- The
 - sitting-
 - room
 - itself was
@@ -25732,9 +26148,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - What have
 - they got?
 - Byron.
-- Exactly. A
+- Exactly.
+- A
 - Shropshire
-- Lad. Never
+- Lad.
+- Never
 - heard of
 - it.
 - The Way of
@@ -25762,7 +26180,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - own
 - "business,"
 - Honeychurc
-- "h.”\n\n“Mr."
+- h.”
+- “Mr.
 - "Beebe,"
 - look at
 - "that,”"
@@ -25793,7 +26212,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Isn’t it
 - jolly?
 - I like
-- that. I’m
+- that.
+- I’m
 - certain
 - that’s the
 - old man’s
@@ -25854,7 +26274,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Cecil are
 - thicker
 - than ever.
-- "”\n\n“That’s"
+- ”
+- “That’s
 - good
 - hearing.”
 - “I wish I
@@ -25862,7 +26283,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - such a
 - "fool, Mr."
 - Beebe.”
-- Mr. Beebe
+- Mr.
+- Beebe
 - ignored
 - the remark
 - "."
@@ -25891,7 +26313,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - can talk
 - about
 - afterwards
-- ".\nCecil is"
+- "."
+- Cecil is
 - teaching
 - Lucy
 - "Italian,"
@@ -25933,7 +26356,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Honeychurc
 - "h, a"
 - neighbour.
-- "”\n\nThen"
+- ”
+- Then
 - Freddy
 - hurled one
 - of the
@@ -26025,7 +26449,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - slowly
 - descending
 - the stairs
-- ". “Good"
+- "."
+- “Good
 - "afternoon,"
 - Mr. Beebe.
 - I tell you
@@ -26046,7 +26471,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Garden of
 - "Eden,”"
 - pursued Mr
-- ". Emerson,"
+- "."
+- "Emerson,"
 - still
 - descending
 - ", “which"
@@ -26062,7 +26488,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - despise
 - our bodies
 - ".”"
-- Mr. Beebe
+- Mr.
+- Beebe
 - disclaimed
 - placing
 - the Garden
@@ -26097,7 +26524,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - philosophy
 - that was
 - approachin
-- "g him.\n\n“I"
+- g him.
+- “I
 - believed
 - in a
 - return to
@@ -26207,7 +26635,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Honeychurc
 - h!”
 - “Not a bit
-- "!” mumbled"
+- "!”"
+- mumbled
 - Freddy.
 - “I must—
 - that is to
@@ -26303,7 +26732,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - I can’t
 - believe
 - he’s well.
-- "”\n\nGeorge"
+- ”
+- George
 - bowed his
 - "head,"
 - dusty and
@@ -26348,7 +26778,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - house and
 - into the
 - pine-woods
-- ". How"
+- "."
+- How
 - glorious
 - it was!
 - For a
@@ -26436,7 +26867,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - down here?
 - ”
 - “I did not
-- ". Miss"
+- "."
+- Miss
 - Lavish
 - told me.”
 - “When I
@@ -26447,7 +26879,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - write a ‘
 - History of
 - Coincidenc
-- "e.’”\n\nNo"
+- e.’”
+- "No"
 - enthusiasm
 - "."
 - "“Though,"
@@ -26516,7 +26949,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - for you
 - "did it,"
 - ten to one
-- ". Now I’ll"
+- "."
+- Now I’ll
 - cross-
 - question
 - you.
@@ -26547,7 +26981,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - talk of
 - coincidenc
 - e and Fate
-- ". You"
+- "."
+- You
 - naturally
 - seek out
 - things
@@ -26621,7 +27056,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Oh, good!"
 - ”
 - exclaimed
-- "Mr. Beebe,"
+- Mr.
+- "Beebe,"
 - mopping
 - his brow.
 - “In
@@ -26749,7 +27185,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - he
 - stripped
 - himself.
-- Mr. Beebe
+- Mr.
+- Beebe
 - thought he
 - was not.
 - “Water’s
@@ -26873,7 +27310,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "possible,"
 - looked
 - around him
-- ". He could"
+- "."
+- He could
 - detect no
 - parishione
 - rs except
@@ -26994,7 +27432,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Freddy
 - splashed
 - each other
-- ". A little"
+- "."
+- A little
 - deferentia
 - "lly, they"
 - splashed
@@ -27076,7 +27515,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - on the
 - "sward,"
 - proclaimin
-- "g:\n\n“No."
+- "g:"
+- “No.
 - We are
 - what
 - matters.
@@ -27129,7 +27569,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Freddy.
 - Dress now.
 - "No, I say!"
-- "”\n\nBut the"
+- ”
+- But the
 - two young
 - men were
 - delirious.
@@ -27152,7 +27593,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “That’ll
 - do!”
 - shouted Mr
-- ". Beebe,"
+- "."
+- "Beebe,"
 - rememberin
 - g that
 - after all
@@ -27206,7 +27648,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - call on
 - old Mrs.
 - Butterwort
-- "h.\nFreddy"
+- h.
+- Freddy
 - dropped
 - the
 - waistcoat
@@ -27243,7 +27686,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - And poor
 - Mr.
 - "Beebe, too"
-- "!\nWhatever"
+- "!"
+- Whatever
 - has
 - happened?”
 - “Come this
@@ -27282,10 +27726,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - waistcoat
 - we left in
 - the path?
-- "Cecil,\nMr."
+- "Cecil,"
+- Mr.
 - Beebe’s
 - waistcoat—
-- "”\n\nNo"
+- ”
+- "No"
 - business
 - "of ours,"
 - said Cecil
@@ -27298,7 +27744,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - evidently
 - “minded.”
 - “I fancy
-- Mr. Beebe
+- Mr.
+- Beebe
 - jumped
 - back into
 - the pond.”
@@ -27340,14 +27787,17 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I can’t
 - be trodden
 - "on, can I?"
-- "”\n\n“Good"
+- ”
+- “Good
 - gracious
 - "me, dear;"
 - so it’s
-- you! What
+- you!
+- What
 - miserable
 - management
-- "! Why not"
+- "!"
+- Why not
 - have a
 - comfortabl
 - e bath at
@@ -27375,12 +27825,15 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - position
 - to argue.
 - "Come, Lucy"
-- ".” They"
+- ".”"
+- They
 - turned.
 - "“Oh, look—"
 - don’t look
-- "! Oh, poor"
-- "Mr.\nBeebe!"
+- "!"
+- "Oh, poor"
+- Mr.
+- Beebe!
 - How
 - unfortunat
 - e again—”
@@ -27417,7 +27870,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I’ve
 - swallowed
 - a pollywog
-- ". It"
+- "."
+- It
 - wriggleth
 - in my
 - tummy.
@@ -27427,7 +27881,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "you beast,"
 - you’ve got
 - on my bags
-- ".”\n\n“Hush,"
+- ".”"
+- "“Hush,"
 - "dears,”"
 - said Mrs.
 - Honeychurc
@@ -27670,7 +28125,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - faculties
 - were busy
 - with Cecil
-- ". It was"
+- "."
+- It was
 - another of
 - those
 - dreadful
@@ -27710,7 +28166,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - where “Yes
 - ” or “No”
 - would have
-- done. Lucy
+- done.
+- Lucy
 - soothed
 - him and
 - tinkered
@@ -27745,7 +28202,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - contains
 - nothing
 - satisfacto
-- "ry. Lucy,"
+- ry.
+- "Lucy,"
 - though she
 - disliked
 - the
@@ -27768,7 +28226,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - anything
 - the matter
 - with Cecil
-- "?”\n\nThe"
+- "?”"
+- The
 - question
 - was
 - ominous;
@@ -27790,7 +28249,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ”
 - “Perhaps
 - he’s tired
-- ".”\n\nLucy"
+- ".”"
+- Lucy
 - compromise
 - "d: perhaps"
 - Cecil was
@@ -27922,7 +28382,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - while I
 - was away
 - in London.
-- "”\n\nThis"
+- ”
+- This
 - attempt to
 - divert the
 - conversati
@@ -27980,7 +28441,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - certainly
 - Cecil
 - oughtn’t
-- to. But he
+- to.
+- But he
 - does not
 - mean to be
 - uncivil—he
@@ -28089,7 +28551,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - distinguis
 - hable from
 - the comic
-- "song.\n\nShe"
+- song.
+- She
 - remained
 - in much
 - embarrassm
@@ -28160,14 +28623,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "-trees"
 - hung close
 - to her
-- eyes. One
+- eyes.
+- One
 - connected
 - the
 - landing
 - window
 - with
 - depression
-- ". No"
+- "."
+- "No"
 - definite
 - problem
 - menaced
@@ -28187,7 +28652,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - else was
 - behaving
 - very badly
-- ". And she"
+- "."
+- And she
 - ought not
 - to have
 - mentioned
@@ -28259,7 +28725,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - week?”
 - “Not that
 - I know of.
-- "”\n\n“Then I"
+- ”
+- “Then I
 - want to
 - ask the
 - Emersons
@@ -28289,7 +28756,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I meant
 - _it’s_
 - better not
-- ". I really"
+- "."
+- I really
 - mean it.”
 - He seized
 - her by the
@@ -28347,9 +28815,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Yes.
 - I really
 - can’t stop
-- ". I must"
+- "."
+- I must
 - dress too.
-- "”\n\n“How’s"
+- ”
+- “How’s
 - Charlotte?
 - ”
 - “All right
@@ -28408,12 +28878,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - not
 - pleased
 - with Cecil
-- ".”\n\nMrs."
+- ".”"
+- Mrs.
 - Honeychurc
 - h might
 - have
 - flamed out
-- ". She did"
+- "."
+- She did
 - not.
 - "She said:"
 - “Come here
@@ -28464,7 +28936,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the family
 - poured in
 - a drop of
-- oil. Cecil
+- oil.
+- Cecil
 - despised
 - their
 - methods—
@@ -28478,7 +28951,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Dinner was
 - at half-
 - past seven
-- ". Freddy"
+- "."
+- Freddy
 - gabbled
 - "the grace,"
 - and they
@@ -28528,7 +29002,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "sort, like"
 - "myself,”"
 - said Cecil
-- ".\n\nFreddy"
+- "."
+- Freddy
 - looked at
 - him
 - doubtfully
@@ -28675,7 +29150,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - There were
 - too many
 - ghosts
-- about. The
+- about.
+- The
 - original
 - ghost—that
 - touch of
@@ -28700,7 +29176,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Miss
 - Bartlett’s
 - "letter, Mr"
-- ". Beebe’s"
+- "."
+- Beebe’s
 - memories
 - of violets
 - —and one
@@ -28746,17 +29223,20 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - very
 - "cheerful,"
 - I suppose.
-- "”\n\n“Then,"
+- ”
+- "“Then,"
 - depend
 - "upon it,"
 - it _is_
 - the boiler
-- ". I know"
+- "."
+- I know
 - myself how
 - water
 - preys upon
 - one’s mind
-- ". I would"
+- "."
+- I would
 - rather
 - anything
 - else—even
@@ -28822,11 +29302,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to her
 - upstairs.
 - "“Mother,"
-- no!” she
+- no!”
+- she
 - pleaded.
 - “It’s
 - impossible
-- ". We can’t"
+- "."
+- We can’t
 - have
 - Charlotte
 - on the top
@@ -28863,7 +29345,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - the bath.
 - Not
 - otherwise.
-- "”\n\n“Minnie"
+- ”
+- “Minnie
 - can sleep
 - with you.”
 - “I won’t
@@ -28897,7 +29380,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - want to
 - make
 - difficulti
-- "es,\nbut it"
+- "es,"
+- but it
 - really
 - isn’t fair
 - on the
@@ -28911,7 +29395,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - you don’t
 - like
 - Charlotte.
-- "”\n\n“No, I"
+- ”
+- "“No, I"
 - don’t.
 - And no
 - more does
@@ -28944,7 +29429,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Hear,"
 - hear!”
 - said Cecil
-- ".\n\nMrs."
+- "."
+- Mrs.
 - Honeychurc
 - "h, with"
 - more
@@ -28961,7 +29447,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - This isn’t
 - very kind
 - of you two
-- ". You have"
+- "."
+- You have
 - each other
 - and all
 - these
@@ -28984,7 +29471,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - clever
 - young
 - people are
-- ",\nand"
+- ","
+- and
 - however
 - many books
 - "they read,"
@@ -29065,12 +29553,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - nor any
 - one else
 - upon earth
-- ". She was"
+- "."
+- She was
 - reduced to
 - "saying: “I"
 - can’t help
 - "it, mother"
-- ". I don’t"
+- "."
+- I don’t
 - like
 - Charlotte.
 - I admit
@@ -29172,12 +29662,14 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - meant how
 - jolly kind
 - she seemed
-- ".”\n\nCecil"
+- ".”"
+- Cecil
 - frowned
 - again.
 - "Oh, these"
 - Honeychurc
-- "hes! Eggs,"
+- hes!
+- "Eggs,"
 - "boilers,"
 - hydrangeas
 - ", maids—of"
@@ -29550,7 +30042,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I have
 - upset
 - everything
-- ". Bursting"
+- "."
+- Bursting
 - in on
 - young
 - people!
@@ -29612,7 +30105,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - and I gave
 - a bob to
 - the driver
-- ".”\n\nMiss"
+- ".”"
+- Miss
 - Bartlett
 - looked in
 - her purse.
@@ -29673,7 +30167,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Here
 - Freddy’s
 - "friend, Mr"
-- ". Floyd,"
+- "."
+- "Floyd,"
 - made the
 - one remark
 - of his
@@ -29845,7 +30340,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - see why—
 - "Freddy,"
 - don’t poke
-- me. Miss
+- me.
+- Miss
 - Honeychurc
 - "h, your"
 - brother’s
@@ -29856,7 +30352,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Floyd’s
 - ten
 - shillings?
-- "Ow! No, I"
+- Ow!
+- "No, I"
 - don’t see
 - and I
 - never
@@ -29868,7 +30365,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - pay that
 - bob for
 - the driver
-- ".”\n\n“I had"
+- ".”"
+- “I had
 - forgotten
 - the driver
 - ",” said"
@@ -30015,7 +30513,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - settle
 - your debt
 - nicely now
-- ".”\n\nMiss"
+- ".”"
+- Miss
 - Bartlett
 - was in the
 - drawing-
@@ -30050,7 +30549,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "girl,"
 - entering
 - the battle
-- ". “George"
+- "."
+- “George
 - Emerson is
 - "all right,"
 - and what
@@ -30060,7 +30560,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Miss
 - Bartlett
 - considered
-- ". “For"
+- "."
+- “For
 - "instance,"
 - the driver
 - "."
@@ -30074,7 +30575,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - violet
 - between
 - his teeth.
-- "”\n\nLucy"
+- ”
+- Lucy
 - shuddered
 - a little.
 - “We shall
@@ -30099,7 +30601,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - y.”
 - "“Oh, it’s"
 - all right.
-- "”\n\n“Or"
+- ”
+- “Or
 - perhaps
 - old Mr.
 - Emerson
@@ -30124,7 +30627,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - can trust
 - Cecil to
 - laugh at
-- "it.”\n\n“To"
+- it.”
+- “To
 - contradict
 - it?”
 - "“No, to"
@@ -30155,7 +30659,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Ladies are
 - certainly
 - different.
-- "”\n\n“Now,"
+- ”
+- "“Now,"
 - Charlotte!
 - ” She
 - struck at
@@ -30276,7 +30781,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - any
 - "nuisance,"
 - Charlotte.
-- "”\n\n“Once a"
+- ”
+- “Once a
 - "cad,"
 - always a
 - cad.
@@ -30306,7 +30812,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - justice to
 - Cecil’s
 - profundity
-- ".\nThrough"
+- "."
+- Through
 - the window
 - she saw
 - Cecil
@@ -30396,7 +30903,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - he’s going
 - to burst
 - into tears
-- ". He is a"
+- "."
+- He is a
 - clerk in
 - the
 - General
@@ -30427,7 +30935,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - hold of
 - her guest
 - by the arm
-- ". “Suppose"
+- "."
+- “Suppose
 - we don’t
 - talk about
 - this silly
@@ -30444,7 +30953,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Corner,"
 - with no
 - worriting.
-- "”\n\nLucy"
+- ”
+- Lucy
 - thought
 - this
 - rather a
@@ -30541,7 +31051,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ","
 - themselves
 - unchangeab
-- le. Either
+- le.
+- Either
 - country
 - was
 - spanned by
@@ -30585,7 +31096,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "says, “"
 - need she
 - go?”—“Tell
-- "her,\nno"
+- "her,"
+- "no"
 - nonsense”—
 - “Anne!
 - Mary!
@@ -30766,7 +31278,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - idling
 - there like
 - a flamingo
-- ".”\n\nLucy"
+- ".”"
+- Lucy
 - picked up
 - the book
 - and
@@ -31053,7 +31566,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - unsatisfac
 - tory
 - conversati
-- on. He had
+- on.
+- He had
 - said that
 - people
 - ought to
@@ -31139,7 +31653,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Introduce
 - "me,” said"
 - her mother
-- ". “Unless"
+- "."
+- “Unless
 - the young
 - man
 - considers
@@ -31230,7 +31745,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - said Mrs.
 - Honeychurc
 - h uneasily
-- ".\n\n“Our"
+- "."
+- “Our
 - landlord
 - was told
 - that we
@@ -31262,7 +31778,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Alans and
 - offer to
 - give it up
-- ". What do"
+- "."
+- What do
 - you think?
 - ” He
 - appealed
@@ -31319,10 +31836,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - exclaimed
 - Mrs.
 - Honeychurc
-- h. “That’s
+- h.
+- “That’s
 - exactly
 - what I say
-- ". Why all"
+- "."
+- Why all
 - this
 - twiddling
 - and
@@ -31411,7 +31930,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - to me.
 - It is his
 - philosophy
-- ". Only he"
+- "."
+- Only he
 - starts
 - life with
 - it; and I
@@ -31457,7 +31977,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - tennis on
 - Sunday.
 - No more do
-- I. That’s
+- I.
+- That’s
 - settled.
 - Mr.
 - "Emerson,"
@@ -31495,7 +32016,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - his arm
 - round his
 - father’s
-- neck. The
+- neck.
+- The
 - kindness
 - that Mr.
 - Beebe and
@@ -31514,7 +32036,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - a touch of
 - the
 - morning
-- sun? She
+- sun?
+- She
 - remembered
 - that in
 - all his
@@ -31536,7 +32059,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Honeychurc
 - h
 - pleasantly
-- ".\n“You met"
+- "."
+- “You met
 - her with
 - my
 - daughter
@@ -31552,7 +32076,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - out of the
 - garden to
 - meet the
-- lady. Miss
+- lady.
+- Miss
 - Bartlett
 - promptly
 - got into
@@ -31678,7 +32203,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - coming up
 - this
 - afternoon.
-- "”\n\nLucy"
+- ”
+- Lucy
 - caught her
 - cousin’s
 - eye.
@@ -31714,7 +32240,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - away.
 - Satisfacto
 - ry that Mr
-- ". Emerson"
+- "."
+- Emerson
 - had not
 - been told
 - of the
@@ -31737,7 +32264,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - with
 - disproport
 - ionate joy
-- ". All the"
+- "."
+- All the
 - way home
 - the horses
 - ’ hoofs
@@ -31791,7 +32319,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ever.
 - Cecil will
 - never hear
-- ".” She was"
+- ".”"
+- She was
 - even glad
 - that Miss
 - Bartlett
@@ -32318,7 +32847,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - works in
 - your
 - possession
-- ". If you"
+- "."
+- If you
 - paid a fee
 - for
 - obtaining
@@ -32413,10 +32943,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Gutenberg-
 - tm
 - electronic
-- works. See
+- works.
+- See
 - paragraph
 - 1.E below.
-- 1.C. The
+- 1.C.
+- The
 - Project
 - Gutenberg
 - Literary
@@ -32543,7 +33075,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - charge
 - with
 - others.
-- 1.D. The
+- 1.D.
+- The
 - copyright
 - laws of
 - the place
@@ -32620,7 +33153,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - references
 - to Project
 - "Gutenberg:"
-- 1.E.1. The
+- 1.E.1.
+- The
 - following
 - "sentence,"
 - with
@@ -32680,7 +33214,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - restrictio
 - ns
 - whatsoever
-- ". You may"
+- "."
+- You may
 - "copy it,"
 - give it
 - away or re
@@ -32775,7 +33310,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - requiremen
 - ts of
 - paragraphs
-- 1.E.1
+- "1."
+- E.1
 - through 1.
 - E.7 or
 - obtain
@@ -32815,7 +33351,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - comply
 - with both
 - paragraphs
-- 1.E.1
+- "1."
+- E.1
 - through 1.
 - E.7 and
 - any
@@ -32892,7 +33429,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - set forth
 - in
 - paragraph
-- 1.E.1 with
+- "1."
+- E.1 with
 - active
 - links or
 - immediate
@@ -32903,7 +33441,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Project
 - Gutenberg-
 - tm License
-- ".\n\n1.E.6."
+- "."
+- 1.E.6.
 - You may
 - convert to
 - and
@@ -32979,7 +33518,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Vanilla
 - "ASCII\" or"
 - other form
-- ". Any"
+- "."
+- Any
 - alternate
 - format
 - must
@@ -33076,7 +33616,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Literary
 - Archive
 - Foundation
-- ". Royalty"
+- "."
+- Royalty
 - payments
 - must be
 - paid
@@ -33123,7 +33664,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Literary
 - Archive
 - Foundation
-- ".\"\n\n* You"
+- ".\""
+- "* You"
 - provide a
 - full
 - refund of
@@ -33170,13 +33712,15 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Project
 - Gutenberg-
 - tm   works
-- ".\n\n* You"
+- "."
+- "* You"
 - "provide,"
 - in
 - accordance
 - with
 - paragraph
-- "1.F.3, a"
+- "1."
+- "F.3, a"
 - full
 - refund of
 - any money
@@ -33282,7 +33826,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Gutenberg-
 - tm
 - collection
-- ". Despite"
+- "."
+- Despite
 - these
 - "efforts,"
 - Project
@@ -33344,7 +33889,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - described
 - in
 - paragraph
-- "1.F.3, the"
+- "1."
+- "F.3, the"
 - Project
 - Gutenberg
 - Literary
@@ -33610,7 +34156,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - void the
 - remaining
 - provisions
-- ".\n\n1.F.6."
+- "."
+- 1.F.6.
 - INDEMNITY
 - "- You"
 - agree to
@@ -33871,7 +34418,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - laws and
 - your
 - "state's"
-- "laws.\n\nThe"
+- laws.
+- The
 - Foundation
 - "'s"
 - business
@@ -33960,7 +34508,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - exempt
 - status
 - with the
-- "IRS.\n\nThe"
+- IRS.
+- The
 - Foundation
 - is
 - committed
@@ -34006,7 +34555,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - confirmati
 - on of
 - compliance
-- ". To SEND"
+- "."
+- To SEND
 - DONATIONS
 - or
 - determine
