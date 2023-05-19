@@ -34,7 +34,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Music, Violets, and the Letter “"
 - "S”\n Chapter IV. Fourth Chapter\n"
 - " Chapter V. Possibilities of a Pleasant Outing"
-- "\n Chapter VI. "
+- "\n"
+- " Chapter VI. "
 - "The Reverend Arthur Beebe, the Reverend"
 - " Cuthbert Eager, Mr. "
 - "Emerson, Mr. "
@@ -50,7 +51,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Chapter XII. Twelfth Chapter\n"
 - " Chapter XIII. "
 - "How Miss Bartlett’s Boiler Was So "
-- "Tiresome\n Chapter XIV. "
+- "Tiresome\n"
+- " Chapter XIV. "
 - How Lucy Faced the External Situation Bravely
 - "\n Chapter XV. The Disaster Within\n"
 - " Chapter XVI. Lying to George\n"
@@ -156,7 +158,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Miss Bartlett, in reply, opened her mouth"
 - " as little as possible, and said “Thank you"
 - " very much indeed; that is out of the question"
-- ".”\n\n“Why?” "
+- ".”\n\n"
+- "“Why?” "
 - "said the old man, with both fists on the"
 - " table.\n\n"
 - "“Because it is quite out of the question,"
@@ -175,7 +178,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“There’s nothing else to say.”\n\n"
 - He did not look at the ladies as he spoke
 - ", but his voice was perplexed and sorrowful"
-- ". Lucy, too, was perplexed; but"
+- ". "
+- "Lucy, too, was perplexed; but"
 - " she saw that they were in for what is known"
 - " as “quite a scene,” and she had an"
 - " odd feeling that whenever these ill-bred tourists spoke"
@@ -203,7 +207,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Lucy, and began to toy again with the meat"
 - " that she had once censured.\n\n"
 - Lucy mumbled that those seemed very odd people
-- " opposite.\n\n“Eat your dinner, dear. "
+- " opposite.\n\n"
+- "“Eat your dinner, dear. "
 - "This pension is a failure. "
 - "To-morrow we will make a change.”\n\n"
 - Hardly had she announced this fell decision when she
@@ -254,7 +259,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “I move into the Rectory at Summer Street next
 - " June. "
 - I am lucky to be appointed to such a charming
-- " neighbourhood.”\n\n“Oh, how glad I am! "
+- " neighbourhood.”\n\n"
+- "“Oh, how glad I am! "
 - The name of our house is Windy Corner.”
 - " Mr. Beebe bowed.\n\n"
 - "“There is mother and me generally, and my brother"
@@ -277,7 +283,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " concluded. "
 - “The first fine afternoon drive up to Fiesole
 - ", and round by Settignano, or"
-- " something of that sort.”\n\n“No!” "
+- " something of that sort.”\n\n"
+- "“No!” "
 - cried a voice from the top of the table
 - ". “Mr. "
 - "Beebe, you are wrong. "
@@ -421,7 +428,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "He replied, with some irritation, that it would"
 - " be quite unnecessary,\n"
 - and got up from his seat to go to the
-- " smoking-room.\n\n“Was I a bore?” "
+- " smoking-room.\n\n"
+- "“Was I a bore?” "
 - "said Miss Bartlett, as soon as he had"
 - " disappeared. "
 - "“Why didn’t you talk, Lucy? "
@@ -495,7 +503,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "We were so sorry for you at dinner.”\n\n"
 - "“I think he was meaning to be kind.”\n\n"
 - "“Undoubtedly he was,” said Miss Bartlett"
-- ".\n\n“Mr. "
+- ".\n\n"
+- "“Mr. "
 - Beebe has just been scolding me for
 - " my suspicious nature. "
 - "Of course, I was holding back on my "
@@ -507,7 +516,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " not help feeling a great fool. "
 - No one was careful with her at home; or
 - ", at all events, she had not noticed it"
-- ".\n\n“About old Mr. "
+- ".\n\n"
+- "“About old Mr. "
 - "Emerson—I hardly know. "
 - "No, he is not tactful; yet,"
 - " have you ever noticed that there are people who do"
@@ -563,7 +573,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ". Grant me that, at all events.”\n\n"
 - "Mr. "
 - "Beebe was back, saying rather nervously"
-- ":\n\n“Mr. "
+- ":\n\n"
+- "“Mr. "
 - "Emerson is engaged, but here is his son"
 - " instead.”\n\n"
 - The young man gazed down on the three ladies
@@ -580,7 +591,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Emerson scored a notable triumph to the delight of
 - " Mr. "
 - Beebe and to the secret delight of Lucy
-- ".\n\n“Poor young man!” "
+- ".\n\n"
+- "“Poor young man!” "
 - "said Miss Bartlett, as soon as he had"
 - " gone.\n\n"
 - “How angry he is with his father about the rooms
@@ -590,7 +602,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " ready,” said Mr. Beebe. "
 - "Then looking rather thoughtfully at the two cousins,"
 - " he retired to his own rooms, to write up"
-- " his philosophic diary.\n\n“Oh, dear!” "
+- " his philosophic diary.\n\n"
+- "“Oh, dear!” "
 - "breathed the little old lady, and "
 - shuddered as if all the winds of heaven
 - " had entered the apartment. "
@@ -616,7 +629,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Naturally, dear. "
 - "It is my affair.”\n\n"
 - "“But I would like to help you.”\n\n"
-- "“No, dear.”\n\nCharlotte’s energy! "
+- "“No, dear.”\n\n"
+- "Charlotte’s energy! "
 - "And her unselfishness! "
 - "She had been thus all her life, but really"
 - ", on this Italian tour, she was surpassing"
@@ -665,7 +679,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "It was then that she saw, pinned up over"
 - " the washstand, a sheet of paper on which"
 - " was scrawled an enormous note of interrogation."
-- " Nothing more.\n\n“What does it mean?” "
+- " Nothing more.\n\n"
+- "“What does it mean?” "
 - "she thought, and she examined it carefully by the"
 - " light of a candle. "
 - "Meaningless at first, it gradually became menacing"
@@ -681,7 +696,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " clean for him. "
 - "Then she completed her inspection of the room, sighed"
 - " heavily according to her habit, and went to bed"
-- ".\n\n\n\n\nChapter II In Santa Croce with No "
+- ".\n\n\n\n\n"
+- "Chapter II In Santa Croce with No "
 - "Baedeker\n\n\n"
 - "It was pleasant to wake up in Florence, to"
 - " open the eyes upon a bright bare room, with"
@@ -807,7 +823,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ".) "
 - Then Miss Lavish darted under the archway
 - " of the white bullocks, and she stopped,"
-- " and she cried:\n\n“A smell! "
+- " and she cried:\n\n"
+- "“A smell! "
 - "a true Florentine smell! "
 - "Every city, let me teach you, has its"
 - " own smell.”\n\n"
@@ -839,9 +856,11 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Indeed, I’m not!” "
 - "exclaimed Lucy. "
 - "“We are Radicals, too, out and out"
-- ".\nMy father always voted for Mr. "
+- ".\n"
+- "My father always voted for Mr. "
 - "Gladstone, until he was so dreadful about"
-- " Ireland.”\n\n“I see, I see. "
+- " Ireland.”\n\n"
+- "“I see, I see. "
 - "And now you have gone over to the enemy.”\n\n"
 - "“Oh, please—! "
 - "If my father was alive, I am sure he"
@@ -850,7 +869,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "And as it is, the glass over our front"
 - " door was broken last election, and Freddy is sure"
 - " it was the Tories; but mother says nonsense,"
-- " a tramp.”\n\n“Shameful! "
+- " a tramp.”\n\n"
+- "“Shameful! "
 - "A manufacturing district, I suppose?”\n\n"
 - "“No—in the Surrey hills. "
 - "About five miles from Dorking, looking over"
@@ -895,7 +915,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "My dear Miss Lucy, during our political "
 - diatribes we have taken a wrong turning.
 - " How those horrid Conservatives would jeer at us"
-- "!\nWhat are we to do? "
+- "!\n"
+- "What are we to do? "
 - "Two lone females in an unknown town. "
 - "Now, this is what _I_ call an"
 - " adventure.”\n\n"
@@ -913,7 +934,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "neither commodious nor picturesque, in which the"
 - " eastern quarter of the city abounds. "
 - Lucy soon lost interest in the discontent of Lady
-- " Louisa,\nand became discontented herself. "
+- " Louisa,\n"
+- "and became discontented herself. "
 - "For one ravishing moment Italy appeared. "
 - "She stood in the Square of the "
 - Annunziata and saw in the living terra
@@ -1048,7 +1070,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Protestant as she was, Lucy darted"
 - " forward. She was too late. "
 - He fell heavily upon the prelate’s upturned
-- " toes.\n\n“Hateful bishop!” "
+- " toes.\n\n"
+- "“Hateful bishop!” "
 - "exclaimed the voice of old Mr. "
 - "Emerson, who had darted forward also."
 - " “Hard in life, hard in death. "
@@ -1163,7 +1186,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“I am not touchy, I hope. "
 - It is the Giottos that I want to
 - " see, if you will kindly tell me which they"
-- " are.”\n\nThe son nodded. "
+- " are.”\n\n"
+- "The son nodded. "
 - "With a look of sombre satisfaction, he led"
 - " the way to the Peruzzi Chapel. "
 - There was a hint of the teacher about him.
@@ -1189,7 +1213,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " technical cleverness against a man who truly feels!”\n\n"
 - "“No!” exclaimed Mr. "
 - "Emerson, in much too loud a voice for"
-- " church.\n“Remember nothing of the sort! "
+- " church.\n"
+- "“Remember nothing of the sort! "
 - "Built by faith indeed! "
 - That simply means the workmen weren’t paid properly
 - ". "
@@ -1276,7 +1301,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Because we think it improves our characters. "
 - But he is kind to people because he loves them
 - "; and they find him out, and are offended"
-- ", or frightened.”\n\n“How silly of them!” "
+- ", or frightened.”\n\n"
+- "“How silly of them!” "
 - "said Lucy, though in her heart she sympathized"
 - "; “I think that a kind action done "
 - "tactfully—”\n\n“Tact!”\n\n"
@@ -1341,7 +1367,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “It is so wonderful what they say about his tactile
 - " values. "
 - Though I like things like the Della Robbia
-- " babies better.”\n\n“So you ought. "
+- " babies better.”\n\n"
+- "“So you ought. "
 - "A baby is worth a dozen saints. "
 - "And my baby’s worth the whole of Paradise,"
 - " and as far as I can see he lives in"
@@ -1400,7 +1427,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "asked Lucy fearfully, expecting some harrowing"
 - " tale.\n\n"
 - "“The old trouble; things won’t fit.”\n\n"
-- "“What things?”\n\n“The things of the universe. "
+- "“What things?”\n\n"
+- "“The things of the universe. "
 - "It is quite true. They don’t.”\n\n"
 - "“Oh, Mr. "
 - "Emerson, whatever do you mean?”\n\n"
@@ -1471,7 +1499,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " I think myself a very fortunate girl, I assure"
 - " you. "
 - "I’m thoroughly happy, and having a splendid time"
-- ". Pray don’t waste time mourning over "
+- ". "
+- "Pray don’t waste time mourning over "
 - "_me_.\n"
 - "There’s enough sorrow in the world, isn’t"
 - " there, without trying to invent it. "
@@ -1537,7 +1566,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " mere feel of the notes: they were fingers "
 - "caressing her own; and by touch, not"
 - " by sound alone, did she come to her desire"
-- ".\n\nMr. "
+- ".\n\n"
+- "Mr. "
 - "Beebe, sitting unnoticed in the window,"
 - " pondered this illogical element in Miss Honeychurch"
 - ", and recalled the occasion at Tunbridge Wells when"
@@ -1605,7 +1635,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Oh, what a funny thing! "
 - "Some one said just the same to mother, and"
 - " she said she trusted I should never live a "
-- "duet.”\n\n“Doesn’t Mrs. "
+- "duet.”\n\n"
+- "“Doesn’t Mrs. "
 - "Honeychurch like music?”\n\n"
 - "“She doesn’t mind it. "
 - But she doesn’t like one to get excited over
@@ -1782,7 +1813,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " her life’s work was carried away in a "
 - "landslip. "
 - "Surely that makes it more excusable.”\n\n"
-- "“What was that?” asked Lucy.\n\nMr. "
+- "“What was that?” asked Lucy.\n\n"
+- "Mr. "
 - "Beebe sat back complacently, and"
 - " Miss Alan began as follows: “It was a"
 - " novel—and I am afraid, from what I can"
@@ -1916,7 +1948,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Mr. Emerson does not think it worth telling.”\n\n"
 - "“Mr. Beebe—old Mr. "
 - "Emerson, is he nice or not nice?"
-- " I do so want to know.”\n\nMr. "
+- " I do so want to know.”\n\n"
+- "Mr. "
 - Beebe laughed and suggested that she should settle
 - " the question for herself.\n\n"
 - "“No; but it is so difficult. "
@@ -1982,7 +2015,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "quite politely, of course.”\n\n"
 - "“Most right of her. "
 - "They don’t understand our ways. "
-- "They must find their level.”\n\nMr. "
+- "They must find their level.”\n\n"
+- "Mr. "
 - Beebe rather felt that they had gone under
 - ". "
 - They had given up their attempt—if it was one
@@ -2013,7 +2047,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Her two companions looked grave. Mr. "
 - "Beebe, who felt responsible for her in"
 - " the absence of Miss Bartlett, ventured to say"
-- ":\n\n“I wish we could. "
+- ":\n\n"
+- "“I wish we could. "
 - "Unluckily I have letters. "
 - "If you do want to go out alone, "
 - "won’t you be better on your feet?”\n\n"
@@ -2176,7 +2211,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "fell on to her softly, slowly, noiselessly"
 - ", and the sky fell with it.\n\n"
 - "She thought: “Oh, what have I done"
-- "?”\n\n“Oh, what have I done?” "
+- "?”\n\n"
+- "“Oh, what have I done?” "
 - "she murmured, and opened her eyes.\n\n"
 - "George Emerson still looked at her, but not across"
 - " anything. "
@@ -2200,7 +2236,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - The cries from the fountain—they had never ceased—
 - "rang emptily. "
 - The whole world seemed pale and void of its original
-- " meaning.\n\n“How very kind you have been! "
+- " meaning.\n\n"
+- "“How very kind you have been! "
 - "I might have hurt myself falling. "
 - "But now I am well. "
 - "I can go alone, thank you.”\n\n"
@@ -2211,7 +2248,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " I must have dropped them out there in the square"
 - ".” She looked at him cautiously. "
 - “Would you add to your kindness by fetching them
-- "?”\n\nHe added to his kindness. "
+- "?”\n\n"
+- "He added to his kindness. "
 - "As soon as he had turned his back, Lucy"
 - " arose with the running of a maniac and stole"
 - " down the arcade towards the Arno.\n\n"
@@ -2220,7 +2258,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “You sit still; you aren’t fit to go
 - " home alone.”\n\n"
 - "“Yes, I am, thank you so very much"
-- ".”\n\n“No, you aren’t. "
+- ".”\n\n"
+- "“No, you aren’t. "
 - "You’d go openly if you were.”\n\n"
 - "“But I had rather—”\n\n"
 - "“Then I don’t fetch your photographs.”\n\n"
@@ -2233,7 +2272,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - In the distance she saw creatures with black hoods
 - ", such as appear in dreams. "
 - The palace tower had lost the reflection of the declining
-- " day,\nand joined itself to earth. "
+- " day,\n"
+- "and joined itself to earth. "
 - "How should she talk to Mr. "
 - Emerson when he returned from the shadowy square
 - "? Again the thought occurred to her,\n"
@@ -2292,7 +2332,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "He turned towards her frowning, as if she"
 - " had disturbed him in some abstract quest.\n\n"
 - “I want to ask you something before we go in
-- ".”\n\nThey were close to their pension. "
+- ".”\n\n"
+- "They were close to their pension. "
 - "She stopped and leant her elbows against the "
 - "parapet of the embankment. "
 - "He did likewise. "
@@ -2383,7 +2424,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " at dinner-time, had again passed to himself the"
 - " remark of “Too much Beethoven.” "
 - But he only supposed that she was ready for an
-- " adventure,\nnot that she had encountered it. "
+- " adventure,\n"
+- "not that she had encountered it. "
 - This solitude oppressed her; she was accustomed to have
 - " her thoughts confirmed by others or, at all events"
 - ",\n"
@@ -2403,7 +2445,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " who hated shopping, changing money, fetching letters,"
 - " and other irksome duties—all of which Miss"
 - " Bartlett must accomplish this morning and could easily accomplish"
-- " alone.\n\n“No, Charlotte!” "
+- " alone.\n\n"
+- "“No, Charlotte!” "
 - "cried the girl, with real warmth. "
 - "“It’s very kind of Mr. "
 - "Beebe, but I am certainly coming with"
@@ -2455,10 +2498,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "She hailed them briskly. "
 - The dreadful catastrophe of the previous day had given her
 - " an idea which she thought would work up into a"
-- " book.\n\n“Oh, let me congratulate you!” "
+- " book.\n\n"
+- "“Oh, let me congratulate you!” "
 - "said Miss Bartlett. "
 - "“After your despair of yesterday! "
-- "What a fortunate thing!”\n\n“Aha! "
+- "What a fortunate thing!”\n\n"
+- "“Aha! "
 - "Miss Honeychurch, come you here I am in"
 - " luck. "
 - "Now, you are to tell me absolutely everything that"
@@ -2487,7 +2532,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - For the five-franc note she should substitute a
 - " young lady, which would raise the tone of the"
 - " tragedy, and at the same time furnish an excellent"
-- " plot.\n\n“What is the heroine’s name?” "
+- " plot.\n\n"
+- "“What is the heroine’s name?” "
 - "asked Miss Bartlett.\n\n"
 - "“Leonora,” said Miss Lavish; her"
 - " own name was Eleanor.\n\n"
@@ -2728,7 +2774,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Lavish and by Mr. "
 - "Eager, she knew not why. "
 - "And as they frightened her, she had, strangely"
-- " enough,\nceased to respect them. "
+- " enough,\n"
+- "ceased to respect them. "
 - She doubted that Miss Lavish was a great artist
 - ". She doubted that Mr. "
 - Eager was as full of spirituality and culture as
@@ -2749,7 +2796,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“How wonderfully people rise in these days!” "
 - "sighed Miss Bartlett,\n"
 - fingering a model of the leaning Tower of
-- " Pisa.\n\n“Generally,” replied Mr. "
+- " Pisa.\n\n"
+- "“Generally,” replied Mr. "
 - "Eager, “one has only sympathy for their"
 - " success. "
 - The desire for education and for social advance—in these
@@ -2867,7 +2915,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Eager is really the same as the one we
 - " are going with Mr. "
 - "Beebe, then I foresee a sad kettle"
-- " of fish.”\n\n“How?”\n\n“Because Mr. "
+- " of fish.”\n\n“How?”\n\n"
+- "“Because Mr. "
 - Beebe has asked Eleanor Lavish to come
 - ", too.”\n\n“That will mean another carriage.”\n\n"
 - "“Far worse. Mr. "
@@ -2924,7 +2973,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "asked Miss Bartlett, flushed from the struggle"
 - ", and buttoning up her dress.\n\n"
 - "“I don’t know what I think, nor what"
-- " I want.”\n\n“Oh, dear, Lucy! "
+- " I want.”\n\n"
+- "“Oh, dear, Lucy! "
 - "I do hope Florence isn’t boring you. "
 - "Speak the word,\n"
 - "and, as you know, I would take you"
@@ -2989,14 +3039,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "No, you said you’d go to the ends"
 - " of the earth! Do! Do!”\n\n"
 - "Miss Bartlett, with equal vivacity, replied"
-- ":\n\n“Oh, you droll person! "
+- ":\n\n"
+- "“Oh, you droll person! "
 - "Pray, what would become of your drive in"
 - " the hills?”\n\n"
 - They passed together through the gaunt beauty of the
 - " square, laughing over the unpractical suggestion.\n\n\n\n\n"
 - "Chapter VI The Reverend Arthur Beebe, the"
 - " Reverend Cuthbert Eager, Mr."
-- " Emerson,\nMr. "
+- " Emerson,\n"
+- "Mr. "
 - "George Emerson, Miss Eleanor Lavish, Miss Charlotte"
 - " Bartlett, and Miss Lucy Honeychurch Drive Out"
 - " in Carriages to See a View; Italians Drive"
@@ -3047,7 +3099,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - It was hard on the poor chaplain to have
 - " his _partie carrée_ thus transformed."
 - " Tea at a Renaissance villa, if he had ever"
-- " meditated it,\nwas now impossible. "
+- " meditated it,\n"
+- "was now impossible. "
 - Lucy and Miss Bartlett had a certain style
 - " about them, and Mr. "
 - "Beebe, though unreliable, was a man"
@@ -3096,7 +3149,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "And now celestial irony, working through her cousin and"
 - " two clergymen, did not suffer her"
 - " to leave Florence till she had made this expedition with"
-- " him through the hills.\n\nMeanwhile Mr. "
+- " him through the hills.\n\n"
+- "Meanwhile Mr. "
 - Eager held her in civil converse; their little
 - " tiff was over.\n\n"
 - "“So, Miss Honeychurch, you are travelling?"
@@ -3152,7 +3206,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ", does it not?”\n\n"
 - "“It does indeed!” cried Miss Lavish. "
 - "“Tell me, where do they place the scene"
-- " of that wonderful seventh day?”\n\nBut Mr. "
+- " of that wonderful seventh day?”\n\n"
+- "But Mr. "
 - Eager proceeded to tell Miss Honeychurch that on
 - " the right lived Mr. "
 - "Someone Something, an American of the best type—"
@@ -3187,7 +3242,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " head.\n\n"
 - "“Va bene, signore, va bene,"
 - " va bene,” crooned the driver, and whipped"
-- " his horses up again.\n\nNow Mr. "
+- " his horses up again.\n\n"
+- "Now Mr. "
 - Eager and Miss Lavish began to talk against
 - " each other on the subject of Alessio "
 - "Baldovinetti. "
@@ -3311,7 +3367,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "He would like to throw us out, and most"
 - " certainly he is justified. "
 - And if I were superstitious I’d be
-- " frightened of the girl,\ntoo. "
+- " frightened of the girl,\n"
+- "too. "
 - It doesn’t do to injure young people.
 - " Have you ever heard of Lorenzo de Medici?”\n\n"
 - "Miss Lavish bristled.\n\n"
@@ -3325,7 +3382,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Lorenzo the poet. "
 - He wrote a line—so I heard yesterday—which
 - " runs like this: ‘Don’t go fighting against"
-- " the Spring.’”\n\nMr. "
+- " the Spring.’”\n\n"
+- "Mr. "
 - "Eager could not resist the opportunity for "
 - "erudition.\n\n"
 - "“Non fate guerra al Maggio,” he "
@@ -3436,7 +3494,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " have got separated from the girls. "
 - "Miss Lucy, you are to go. "
 - We wish to converse on high topics unsuited
-- " for your ear.”\n\nThe girl was stubborn. "
+- " for your ear.”\n\n"
+- "The girl was stubborn. "
 - As her time at Florence drew to its close she
 - " was only at ease amongst those to whom she felt"
 - " indifferent. "
@@ -3493,7 +3552,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "The miscreant, a bony young man"
 - " scorched black by the sun, rose to greet"
 - " her with the courtesy of a host and the assurance"
-- " of a relative.\n\n“Dove?” "
+- " of a relative.\n\n"
+- "“Dove?” "
 - "said Lucy, after much anxious thought.\n\n"
 - "His face lit up. "
 - "Of course he knew where. "
@@ -3505,15 +3565,18 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "oozing with visible extract of knowledge.\n\n"
 - "More seemed necessary. "
 - What was the Italian for “clergyman”?
-- "\n\n“Dove buoni uomini?” "
-- "said she at last.\n\nGood? "
+- "\n\n"
+- "“Dove buoni uomini?” "
+- "said she at last.\n\n"
+- "Good? "
 - Scarcely the adjective for those noble beings!
 - " He showed her his cigar.\n\n"
 - "“Uno—piu—piccolo,” was"
 - " her next remark, implying “Has the cigar been"
 - " given to you by Mr. "
 - "Beebe, the smaller of the two good"
-- " men?”\n\nShe was correct as usual. "
+- " men?”\n\n"
+- "She was correct as usual. "
 - "He tied the horse to a tree, kicked it"
 - " to make it stay quiet, dusted the carriage"
 - ", arranged his hair, remoulded his hat"
@@ -3566,7 +3629,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Light and beauty enveloped her. "
 - "She had fallen on to a little open terrace,"
 - " which was covered with violets from end to"
-- " end.\n\n“Courage!” "
+- " end.\n\n"
+- "“Courage!” "
 - "cried her companion, now standing some six feet"
 - " above.\n“Courage and love.”\n\n"
 - "She did not answer. "
@@ -3632,7 +3696,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " “The signorino will walk.”\n\n"
 - "“All the way? "
 - "He will be hours,” said Mr. "
-- "Beebe.\n\n“Apparently. "
+- "Beebe.\n\n"
+- "“Apparently. "
 - "I told him it was unwise.” "
 - He would look no one in the face; perhaps
 - " defeat was particularly mortifying for him. "
@@ -3651,7 +3716,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "The thoughts of a cab-driver, however just,"
 - " seldom affect the lives of his employers. "
 - He was the most competent of Miss Bartlett’s
-- " opponents,\nbut infinitely the least dangerous. "
+- " opponents,\n"
+- "but infinitely the least dangerous. "
 - "Once back in the town, he and his insight"
 - " and his knowledge would trouble English ladies no more."
 - " Of course, it was most unpleasant; she had"
@@ -3714,15 +3780,18 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - don’t ask our driver; our driver is no
 - " help. Go and support poor Mr. "
 - "Beebe—, he is nearly "
-- "demented.”\n\n“He may be killed!” "
+- "demented.”\n\n"
+- "“He may be killed!” "
 - "cried the old man. "
 - "“He may be killed!”\n\n"
 - "“Typical behaviour,” said the chaplain,"
 - " as he quitted the carriage. "
 - “In the presence of reality that kind of person invariably
-- " breaks down.”\n\n“What does he know?” "
+- " breaks down.”\n\n"
+- "“What does he know?” "
 - whispered Lucy as soon as they were alone
-- ".\n“Charlotte, how much does Mr. "
+- ".\n"
+- "“Charlotte, how much does Mr. "
 - "Eager know?”\n\n"
 - "“Nothing, dearest; he knows nothing."
 - " But—” she pointed at the driver—“"
@@ -3783,7 +3852,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "As a matter of fact, the storm was worst"
 - " along the road; but she had been near danger"
 - ", and so she thought it must be near to"
-- " everyone.\n\n“I trust not. "
+- " everyone.\n\n"
+- "“I trust not. "
 - "One would always pray against that.”\n\n"
 - “He is really—I think he was taken by surprise
 - ", just as I was before.\n"
@@ -3816,7 +3886,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "clasped. "
 - It was a shock to the girl to find how
 - " far emotion had ebbed in others. "
-- "The storm had ceased,\nand Mr. "
+- "The storm had ceased,\n"
+- "and Mr. "
 - "Emerson was easier about his son. "
 - "Mr. "
 - "Beebe had regained good humour, and Mr"
@@ -4001,7 +4072,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " not liking to say that she had given notice already"
 - ".\n\n"
 - “She will make us pay for a whole week’s
-- " pension.”\n\n“I expect she will. "
+- " pension.”\n\n"
+- "“I expect she will. "
 - "However, we shall be much more comfortable at the"
 - " Vyses’ hotel. "
 - "Isn’t afternoon tea given there for nothing?”\n\n"
@@ -4053,7 +4125,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Charlotte dear, what do you mean? "
 - "As if I have anything to forgive!”\n\n"
 - "“You have a great deal, and I have a"
-- " very great deal to forgive myself,\ntoo. "
+- " very great deal to forgive myself,\n"
+- "too. "
 - I know well how much I vex you at every
 - " turn.”\n\n“But no—”\n\n"
 - "Miss Bartlett assumed her favourite role, that of"
@@ -4078,7 +4151,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“You mustn’t say these things,” said Lucy"
 - " softly.\n\n"
 - She still clung to the hope that she and
-- " Charlotte loved each other,\nheart and soul. "
+- " Charlotte loved each other,\n"
+- "heart and soul. "
 - "They continued to pack in silence.\n\n"
 - "“I have been a failure,” said Miss Bartlett"
 - ", as she struggled with the straps of Lucy’s"
@@ -4285,11 +4359,13 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Freddy, you must come. "
 - "There they still are!”\n\n"
 - “I don’t see you ought to go peeping
-- " like that.”\n\n“Peeping like that! "
+- " like that.”\n\n"
+- "“Peeping like that! "
 - "Can’t I look out of my own window?”\n\n"
 - "But she returned to the writing-table, observing,"
 - " as she passed her son, “Still page "
-- "322?” Freddy snorted, and turned over two"
+- "322?” "
+- "Freddy snorted, and turned over two"
 - " leaves. "
 - "For a brief space they were silent. "
 - "Close by, beyond the curtains, the gentle "
@@ -4481,7 +4557,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Mr. Beebe meant. "
 - "And Freddy, who ignored history and art, perhaps"
 - " meant the same when he failed to imagine Cecil wearing"
-- " another fellow’s cap.\n\nMrs. "
+- " another fellow’s cap.\n\n"
+- "Mrs. "
 - Honeychurch left her letter on the writing table
 - " and moved towards her young acquaintance.\n\n"
 - "“Oh, Cecil!” "
@@ -4603,7 +4680,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Freddy’s chemicals had come off on it, he"
 - " moved to the writing table. "
 - "There he saw “Dear Mrs. Vyse,”"
-- "\nfollowed by many erasures. "
+- "\n"
+- "followed by many erasures. "
 - "He recoiled without reading any more, and after"
 - " a little hesitation sat down elsewhere, and pencilled"
 - " a note on his knee.\n\n"
@@ -4663,16 +4741,19 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " together, they kindled the room into the life"
 - " that he desired.\n\n"
 - "“I’ve come for tea and for gossip. "
-- "Isn’t this news?”\n\n“News? "
+- "Isn’t this news?”\n\n"
+- "“News? "
 - "I don’t understand you,” said Cecil. "
-- "“News?”\n\nMr. "
+- "“News?”\n\n"
+- "Mr. "
 - "Beebe, whose news was of a very"
 - " different nature, prattled forward.\n\n"
 - “I met Sir Harry Otway as I came up
 - ; I have every reason to hope that I am
 - " first in the field. "
 - He has bought Cissie and Albert from Mr
-- ". Flack!”\n\n“Has he indeed?” "
+- ". Flack!”\n\n"
+- "“Has he indeed?” "
 - "said Cecil, trying to recover himself. "
 - Into what a grotesque mistake had he fallen!
 - " Was it likely that a clergyman and a gentleman"
@@ -4726,7 +4807,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - I daren’t face the healthy person—for example
 - ", Freddy Honeychurch.”\n\n"
 - "“Oh, Freddy’s a good sort, isn’t"
-- " he?”\n\n“Admirable. "
+- " he?”\n\n"
+- "“Admirable. "
 - "The sort who has made England what she is.”\n\n"
 - "Cecil wondered at himself. "
 - "Why, on this day of all others, was"
@@ -4766,7 +4848,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“She has none,” said the young man, with"
 - " grave sincerity.\n\n"
 - "“I quite agree. At present she has none.”\n\n"
-- "“At present?”\n\n“I’m not cynical. "
+- "“At present?”\n\n"
+- "“I’m not cynical. "
 - I’m only thinking of my pet theory about Miss
 - " Honeychurch. "
 - Does it seem reasonable that she should play so wonderfully
@@ -4774,7 +4857,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - I suspect that one day she will be wonderful in
 - " both. "
 - The water-tight compartments in her will break down
-- ",\nand music and life will mingle. "
+- ",\n"
+- "and music and life will mingle. "
 - "Then we shall have her heroically good,\n"
 - "heroically bad—too heroic, perhaps, to"
 - " be good or bad.”\n\n"
@@ -4808,7 +4892,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ". "
 - "At the time he had given surreptitious "
 - "tugs to the string himself.\n\n"
-- "“But the string never broke?”\n\n“No. "
+- "“But the string never broke?”\n\n"
+- "“No. "
 - I mightn’t have seen Miss Honeychurch rise
 - ", but I should certainly have heard Miss Bartlett"
 - " fall.”\n\n"
@@ -4829,7 +4914,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“I am sorry; I must apologize. "
 - "I had no idea you were intimate with her,"
 - " or I should never have talked in this "
-- "flippant, superficial way.\nMr. "
+- "flippant, superficial way.\n"
+- "Mr. "
 - "Vyse, you ought to have stopped me.”"
 - " And down the garden he saw Lucy herself; yes"
 - ", he was disappointed.\n\n"
@@ -4846,14 +4932,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“I am sorry I have given you a shock,”"
 - " he said dryly. "
 - “I fear that Lucy’s choice does not meet with
-- " your approval.”\n\n“Not that. "
+- " your approval.”\n\n"
+- "“Not that. "
 - "But you ought to have stopped me. "
 - I know Miss Honeychurch only a little as time
 - " goes. "
 - Perhaps I oughtn’t to have discussed her so
 - " freely with any one; certainly not with you.”\n\n"
 - “You are conscious of having said something indiscreet
-- "?”\n\nMr. Beebe pulled himself together. "
+- "?”\n\n"
+- "Mr. Beebe pulled himself together. "
 - "Really, Mr. "
 - Vyse had the art of placing one in the
 - " most tiresome positions. "
@@ -4896,7 +4984,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " I am always supposed to do, but generally "
 - "I’m too shy. "
 - I want to invoke every kind of blessing on them
-- ",\ngrave and gay, great and small. "
+- ",\n"
+- "grave and gay, great and small. "
 - I want them all their lives to be supremely
 - " good and supremely happy as husband and wife,"
 - " as father and mother. "
@@ -5022,7 +5111,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Inglese Italianato.”\n\n"
 - "“Inglese Italianato?”\n\n"
 - "“E un diavolo incarnato! "
-- "You know the proverb?”\n\nShe did not. "
+- "You know the proverb?”\n\n"
+- "She did not. "
 - Nor did it seem applicable to a young man who
 - " had spent a quiet winter in Rome with his mother"
 - ". But Cecil, since his engagement,\n"
@@ -5128,7 +5218,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“You’ll blow my head off! "
 - "Whatever is there to shout over? "
 - "I forbid you and Cecil to hate any more "
-- "clergymen.”\n\nHe smiled. "
+- "clergymen.”\n\n"
+- "He smiled. "
 - "There was indeed something rather incongruous in "
 - "Lucy’s moral outburst over Mr. "
 - "Eager. "
@@ -5192,7 +5283,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "yonder mountain height,\n"
 - "What pleasure lives in height (the shepherd sang).\n"
 - In height and in the splendour of the
-- " hills?’\n\n\nLet us take Mrs. "
+- " hills?’\n\n\n"
+- "Let us take Mrs. "
 - "Honeychurch’s advice and hate "
 - "clergymen no more.\n"
 - "What’s this place?”\n\n"
@@ -5222,7 +5314,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " on the garden gates, but appeared a second time"
 - " on the porches, where they followed the "
 - semicircular curve of the entrance arch in block
-- " capitals. “Albert”\nwas inhabited. "
+- " capitals. “Albert”\n"
+- "was inhabited. "
 - His tortured garden was bright with geraniums and
 - " lobelias and polished shells. "
 - His little windows were chastely swathed in Nottingham
@@ -5233,14 +5326,17 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " not surprising fact. "
 - Her paths were already weedy; her pocket-
 - "handkerchief of a lawn was yellow with "
-- "dandelions.\n\n“The place is ruined!” "
+- "dandelions.\n\n"
+- "“The place is ruined!” "
 - "said the ladies mechanically. "
 - "“Summer Street will never be the same again.”\n\n"
 - "As the carriage passed, “Cissie’s"
 - "” door opened, and a gentleman came out of"
-- " her.\n\n“Stop!” cried Mrs. "
+- " her.\n\n"
+- "“Stop!” cried Mrs. "
 - "Honeychurch, touching the coachman with her"
-- " parasol.\n“Here’s Sir Harry. "
+- " parasol.\n"
+- "“Here’s Sir Harry. "
 - "Now we shall know. "
 - "Sir Harry, pull those things down at once!”\n\n"
 - Sir Harry Otway—who need not be described—
@@ -5398,7 +5494,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “Then may I write to my Misses Alan
 - "?”\n\n“Please!”\n\n"
 - "But his eye wavered when Mrs. "
-- "Honeychurch exclaimed:\n\n“Beware! "
+- "Honeychurch exclaimed:\n\n"
+- "“Beware! "
 - "They are certain to have canaries. "
 - "Sir Harry, beware of canaries: they spit"
 - " the seed out through the bars of the cages and"
@@ -5414,7 +5511,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "they somehow keep it to themselves. "
 - "It doesn’t spread so. "
 - "Give me a man—of course, provided "
-- "he’s clean.”\n\nSir Harry blushed. "
+- "he’s clean.”\n\n"
+- "Sir Harry blushed. "
 - Neither he nor Cecil enjoyed these open compliments to their
 - " sex. "
 - Even the exclusion of the dirty did not leave them
@@ -5428,7 +5526,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Domestic arrangements always attracted her, especially when they"
 - " were on a small scale.\n\n"
 - Cecil pulled Lucy back as she followed her
-- " mother.\n\n“Mrs. "
+- " mother.\n\n"
+- "“Mrs. "
 - "Honeychurch,” he said, “what if"
 - " we two walk home and leave you?”\n\n"
 - "“Certainly!” was her cordial reply.\n\n"
@@ -5457,7 +5556,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“All that you say is quite true,” said Lucy"
 - ", though she felt discouraged. "
 - “I wonder whether—whether it matters so very much
-- ".”\n\n“It matters supremely. "
+- ".”\n\n"
+- "“It matters supremely. "
 - "Sir Harry is the essence of that garden-party.\n"
 - "Oh, goodness, how cross I feel! "
 - How I do hope he’ll get some vulgar tenant
@@ -5498,7 +5598,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Lucy, that you always say the road?"
 - " Do you know that you have never once been with"
 - " me in the fields or the wood since we were"
-- " engaged?”\n\n“Haven’t I? "
+- " engaged?”\n\n"
+- "“Haven’t I? "
 - "The wood, then,” said Lucy, startled at"
 - " his queerness, but pretty sure that he would"
 - " explain later; it was not his habit to leave"
@@ -5508,7 +5609,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " gone a dozen yards.\n\n"
 - “I had got an idea—I dare say wrongly—that
 - " you feel more at home with me in a room"
-- ".”\n\n“A room?” "
+- ".”\n\n"
+- "“A room?” "
 - "she echoed, hopelessly bewildered.\n\n"
 - "“Yes. "
 - "Or, at the most, in a garden,"
@@ -5582,7 +5684,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Who found you out?”\n\n"
 - "“Charlotte,” she murmured. "
 - "“She was stopping with us.\nCharlotte—Charlotte.”\n\n"
-- "“Poor girl!”\n\nShe smiled gravely. "
+- "“Poor girl!”\n\n"
+- "She smiled gravely. "
 - "A certain scheme, from which hitherto he"
 - " had shrunk, now appeared practical.\n\n"
 - "“Lucy!”\n\n"
@@ -5614,7 +5717,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " he could recoil. "
 - "As he touched her, his gold pince-"
 - nez became dislodged and was flattened between them
-- ".\n\nSuch was the embrace. "
+- ".\n\n"
+- "Such was the embrace. "
 - "He considered, with truth, that it had been"
 - " a failure. Passion should believe itself irresistible. "
 - It should forget civility and consideration and all the
@@ -5760,7 +5864,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - but’-ing and ‘and’-ing
 - ". "
 - And poor Lucy—serve her right—worn
-- " to a shadow.”\n\nMr. "
+- " to a shadow.”\n\n"
+- "Mr. "
 - Beebe watched the shadow springing and shouting
 - " over the tennis-court. "
 - "Cecil was absent—one did not play "
@@ -5795,7 +5900,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " the shins with the racquet—get her"
 - " over the shins!”\n\n"
 - "Lucy fell, the Beautiful White Devil rolled from"
-- " her hand.\n\nMr. "
+- " her hand.\n\n"
+- "Mr. "
 - "Beebe picked it up, and said:"
 - " “The name of this ball is Vittoria"
 - " Corombona, please.” "
@@ -5872,8 +5978,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " niece that _that_ was the proper way to"
 - " behave if any little thing went wrong.\n\n"
 - Meanwhile the name of the new tenants had diverted Mrs
-- ". Honeychurch from the contemplation of her own"
-- " abilities.\n\n“Emerson, Freddy? "
+- ". "
+- Honeychurch from the contemplation of her own
+- " abilities.\n\n"
+- "“Emerson, Freddy? "
 - "Do you know what Emersons they are?”\n\n"
 - “I don’t know whether they’re any Emersons
 - ",” retorted Freddy, who was democratic. "
@@ -5889,7 +5997,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ", and it’s affectation to pretend there "
 - "isn’t.”\n\n"
 - "“Emerson’s a common enough name,” Lucy"
-- " remarked.\n\nShe was gazing sideways. "
+- " remarked.\n\n"
+- "She was gazing sideways. "
 - "Seated on a promontory herself, she"
 - " could see the pine-clad promontories descending"
 - " one beyond another into the Weald. "
@@ -5904,7 +6013,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - they’re friends of Cecil; so”—
 - elaborate irony—“you and the other
 - " country families will be able to call in perfect safety"
-- ".”\n\n“_Cecil?"
+- ".”\n\n"
+- “_Cecil?
 - "_” exclaimed Lucy.\n\n"
 - "“Don’t be rude, dear,” said his"
 - " mother placidly. "
@@ -5975,7 +6085,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " cetera. "
 - Our special joy was the father—such a sentimental
 - " darling, and people declared he had murdered his wife"
-- ".”\n\nIn his normal state Mr. "
+- ".”\n\n"
+- "In his normal state Mr. "
 - "Beebe would never have repeated such gossip,\n"
 - but he was trying to shelter Lucy in her little
 - " trouble. "
@@ -5990,7 +6101,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " being there. "
 - "Whatever was Charlotte doing to stop? "
 - "By-the-by, we really must ask Charlotte here"
-- " some time.”\n\nMr. "
+- " some time.”\n\n"
+- "Mr. "
 - "Beebe could recall no second murderer. "
 - "He suggested that his hostess was mistaken. "
 - "At the hint of opposition she warmed. "
@@ -6044,7 +6156,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "You’ll forgive me when you hear it all.”\n\n"
 - "He looked very attractive when his face was bright,"
 - " and he dispelled her ridiculous forebodings at"
-- " once.\n\n“I have heard,” she said. "
+- " once.\n\n"
+- "“I have heard,” she said. "
 - "“Freddy has told us. "
 - "Naughty Cecil! "
 - "I suppose I must forgive you. "
@@ -6056,7 +6169,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "But you oughtn’t to tease one so.”\n\n"
 - "“Friends of mine?” he laughed. "
 - "“But, Lucy, the whole joke is to come"
-- "!\nCome here.” "
+- "!\n"
+- "Come here.” "
 - "But she remained standing where she was. "
 - “Do you know where I met these desirable tenants
 - "? "
@@ -6108,7 +6222,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " You call it scoring off Sir Harry, but do"
 - " you realize that it is all at my expense?"
 - " I consider it most disloyal of you.”\n\n"
-- "She left him.\n\n“Temper!” "
+- "She left him.\n\n"
+- "“Temper!” "
 - "he thought, raising his eyebrows.\n\n"
 - "No, it was worse than temper—"
 - "snobbishness. "
@@ -6177,7 +6292,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "he murmured.\n\n"
 - "“Oh, Cecil, I do, I do!"
 - " I don’t know what I should do without you"
-- ".”\n\nSeveral days passed. "
+- ".”\n\n"
+- "Several days passed. "
 - Then she had a letter from Miss Bartlett.
 - " A coolness had sprung up between the two cousins"
 - ", and they had not corresponded since they parted"
@@ -6192,7 +6308,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " have tried a sweeter temper than Lucy’s,"
 - " and once, in the Baths of Caracalla"
 - ", they had doubted whether they could continue their tour"
-- ". Lucy had said she would join the Vyses"
+- ". "
+- Lucy had said she would join the Vyses
 - "—Mrs. "
 - "Vyse was an acquaintance of her mother, so"
 - " there was no impropriety in the plan and"
@@ -6450,7 +6567,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Um—um—Schopenhauer, Nietzsche,"
 - " and so we go on. "
 - "Well, I suppose your generation knows its own business"
-- ", Honeychurch.”\n\n“Mr. "
+- ", Honeychurch.”\n\n"
+- "“Mr. "
 - "Beebe, look at that,” said Freddy"
 - " in awestruck tones.\n\n"
 - "On the cornice of the wardrobe, the hand"
@@ -6463,7 +6581,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Surely you agree?”\n\n"
 - But Freddy was his mother’s son and felt that
 - " one ought not to go on spoiling the furniture"
-- ".\n\n“Pictures!” "
+- ".\n\n"
+- "“Pictures!” "
 - "the clergyman continued, scrambling about the room.\n"
 - "“Giotto—they got that at Florence,"
 - " I’ll be bound.”\n\n"
@@ -6482,7 +6601,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " I am, but it’ll be very different now"
 - ", mother thinks. "
 - "She will read all kinds of books.”\n\n"
-- "“So will you.”\n\n“Only medical books. "
+- "“So will you.”\n\n"
+- "“Only medical books. "
 - "Not books that you can talk about afterwards.\n"
 - "Cecil is teaching Lucy Italian, and he"
 - " says her playing is wonderful.\n"
@@ -6518,7 +6638,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - And yet you will tell me that the sexes are
 - " equal.”\n\n"
 - "“I tell you that they shall be,” said Mr"
-- ". Emerson, who had been slowly descending the stairs"
+- ". "
+- "Emerson, who had been slowly descending the stairs"
 - ". “Good afternoon, Mr. "
 - "Beebe. "
 - "I tell you they shall be comrades, and George"
@@ -6529,7 +6650,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Emerson, still descending, “which you place"
 - " in the past, is really yet to come."
 - " We shall enter it when we no longer despise"
-- " our bodies.”\n\nMr. "
+- " our bodies.”\n\n"
+- "Mr. "
 - Beebe disclaimed placing the Garden of Eden
 - " anywhere.\n\n"
 - “In this—not in other things—we men are ahead
@@ -6549,13 +6671,16 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "It is our heritage.”\n\n"
 - "“Let me introduce Mr. "
 - "Honeychurch, whose sister you will remember at"
-- " Florence.”\n\n“How do you do? "
+- " Florence.”\n\n"
+- "“How do you do? "
 - "Very glad to see you, and that you are"
 - " taking George for a bathe. "
 - Very glad to hear that your sister is going to
-- " marry.\nMarriage is a duty. "
+- " marry.\n"
+- "Marriage is a duty. "
 - "I am sure that she will be happy, for"
-- " we know Mr.\nVyse, too. "
+- " we know Mr.\n"
+- "Vyse, too. "
 - "He has been most kind. "
 - "He met us by chance in the National Gallery,"
 - " and arranged everything about this delightful house. "
@@ -6663,7 +6788,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“It is Fate that I am here,” persisted George"
 - ". "
 - “But you can call it Italy if it makes you
-- " less unhappy.”\n\nMr. "
+- " less unhappy.”\n\n"
+- "Mr. "
 - Beebe slid away from such heavy treatment of
 - " the subject. "
 - "But he was infinitely tolerant of the young, and"
@@ -6810,7 +6936,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Away they twinkled into the trees, Freddy with"
 - " a clerical waistcoat under his arm, George"
 - " with a wide-awake hat on his dripping"
-- " hair.\n\n“That’ll do!” shouted Mr. "
+- " hair.\n\n"
+- "“That’ll do!” shouted Mr. "
 - "Beebe, remembering that after all he was"
 - " in his own parish. "
 - Then his voice changed as if every pine-tree was
@@ -6850,7 +6977,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Mr. Beebe’s waistcoat—”\n\n"
 - "No business of ours, said Cecil, glancing"
 - " at Lucy, who was all parasol and evidently"
-- " “minded.”\n\n“I fancy Mr. "
+- " “minded.”\n\n"
+- "“I fancy Mr. "
 - "Beebe jumped back into the pond.”\n\n"
 - "“This way, please, Mrs. "
 - "Honeychurch, this way.”\n\n"
@@ -6897,10 +7025,12 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " “Oh for goodness’ sake, do come.”\n\n"
 - "“Hullo!” "
 - "cried George, so that again the ladies stopped"
-- ".\n\nHe regarded himself as dressed. "
+- ".\n\n"
+- "He regarded himself as dressed. "
 - "Barefoot, bare-chested, radiant and"
 - " personable against the shadowy woods, he called"
-- ":\n\n“Hullo, Miss Honeychurch! "
+- ":\n\n"
+- "“Hullo, Miss Honeychurch! "
 - "Hullo!”\n\n"
 - "“Bow, Lucy; better bow. "
 - "Whoever is it? I shall bow.”\n\n"
@@ -7012,7 +7142,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Butterworth yourself!”\n\n"
 - "“Not in that way. "
 - "At times I could wring her neck. "
-- "But not in that way.\nNo. "
+- "But not in that way.\n"
+- "No. "
 - "It is the same with Cecil all over.”\n\n"
 - "“By-the-by—I never told you. "
 - I had a letter from Charlotte while I was away
@@ -7105,7 +7236,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " to Sunday tennis.”\n\n"
 - "“Oh, I wouldn’t do that, Freddy,"
 - " I wouldn’t do that with all this muddle"
-- ".”\n\n“What’s wrong with the court? "
+- ".”\n\n"
+- "“What’s wrong with the court? "
 - "They won’t mind a bump or two, and"
 - " I’ve ordered new balls.”\n\n"
 - "“I meant _it’s_ better not. "
@@ -7138,7 +7270,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“I can’t remember all Charlotte’s worries,” said"
 - " Lucy bitterly. "
 - "“I shall have enough of my own, now that"
-- " you are not pleased with Cecil.”\n\nMrs. "
+- " you are not pleased with Cecil.”\n\n"
+- "Mrs. "
 - "Honeychurch might have flamed out. "
 - "She did not. "
 - "She said: “Come here, old lady—"
@@ -7209,8 +7342,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " be nothing to her that a man had kissed her"
 - " on a mountain once.\n"
 - But it had begotten a spectral family—Mr
-- ". Harris, Miss Bartlett’s letter, Mr"
-- ". Beebe’s memories of violets—and"
+- ". "
+- "Harris, Miss Bartlett’s letter, Mr"
+- ". "
+- Beebe’s memories of violets—and
 - " one or other of these was bound to haunt her"
 - " before Cecil’s very eyes. "
 - "It was Miss Bartlett who returned now, and"
@@ -7245,7 +7380,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“It’s impossible. "
 - We can’t have Charlotte on the top of the
 - " other things; we’re squeezed to death as it"
-- " is. Freddy’s got a friend coming Tuesday,"
+- " is. "
+- "Freddy’s got a friend coming Tuesday,"
 - " there’s Cecil, and you’ve promised to take"
 - " in Minnie Beebe because of the "
 - "diphtheria scare. "
@@ -7265,7 +7401,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - but it really isn’t fair on the maids
 - " to fill up the house so.”\n\nAlas!\n\n"
 - "“The truth is, dear, you don’t like"
-- " Charlotte.”\n\n“No, I don’t. "
+- " Charlotte.”\n\n"
+- "“No, I don’t. "
 - "And no more does Cecil. "
 - "She gets on our nerves. "
 - "You haven’t seen her lately, and don’t"
@@ -7298,7 +7435,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“I know, dear. "
 - "She is kind to everyone, and yet Lucy makes"
 - " this difficulty when we try to give her some little"
-- " return.”\n\nBut Lucy hardened her heart. "
+- " return.”\n\n"
+- "But Lucy hardened her heart. "
 - It was no good being kind to Miss Bartlett
 - ". "
 - She had tried herself too often and too recently.
@@ -7394,7 +7532,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - She was anxious to show that she was not shy
 - ",\n"
 - and was glad that he did not seem shy either
-- ".\n\n“A nice fellow,” said Mr. "
+- ".\n\n"
+- "“A nice fellow,” said Mr. "
 - Beebe afterwards “He will work off his
 - " crudities in time. "
 - I rather mistrust young men who slip into life
@@ -7402,7 +7541,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Lucy said, “He seems in better spirits"
 - ". He laughs more.”\n\n"
 - "“Yes,” replied the clergyman. "
-- "“He is waking up.”\n\nThat was all. "
+- "“He is waking up.”\n\n"
+- "That was all. "
 - "But, as the week wore on, more of"
 - " her defences fell, and she entertained an image"
 - " that had physical beauty. "
@@ -7537,7 +7677,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " then could have bitten her tongue for understanding so quickly"
 - " what her cousin meant. "
 - “Let me see—a sovereign’s worth of silver
-- ".”\n\nShe escaped into the kitchen. "
+- ".”\n\n"
+- "She escaped into the kitchen. "
 - Miss Bartlett’s sudden transitions were too uncanny
 - ". "
 - It sometimes seemed as if she planned every word she
@@ -7562,7 +7703,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Oh, no, Charlotte,” said the girl,"
 - " entering the battle. "
 - "“George Emerson is all right, and what other"
-- " source is there?”\n\nMiss Bartlett considered. "
+- " source is there?”\n\n"
+- "Miss Bartlett considered. "
 - "“For instance, the driver. "
 - "I saw him looking through the bushes at you,"
 - " remember he had a violet between his teeth.”\n\n"
@@ -7653,7 +7795,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - He is a clerk in the General Manager’s office
 - " at one of the big railways—not a porter!"
 - " and runs down to his father for week-ends"
-- ". Papa was to do with journalism, but is"
+- ". "
+- "Papa was to do with journalism, but is"
 - " rheumatic and has retired. There! "
 - "Now for the garden.” "
 - She took hold of her guest by the arm.
@@ -7695,7 +7838,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - “The men say they won’t go”—“Well
 - ", I don’t blame them”—Minnie says"
 - ", “need she go?”—“Tell her"
-- ",\nno nonsense”—“Anne! Mary! "
+- ",\n"
+- "no nonsense”—“Anne! Mary! "
 - "Hook me behind!”—“Dearest Lucia,"
 - " may I trespass upon you for a pin?” "
 - For Miss Bartlett had announced that she at all
@@ -7768,7 +7912,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "That book’s all warped.\n"
 - "(Gracious, how plain you look!) "
 - "Put it under the Atlas to press.\n"
-- "Minnie!”\n\n“Oh, Mrs. "
+- "Minnie!”\n\n"
+- "“Oh, Mrs. "
 - "Honeychurch—” from the upper regions.\n\n"
 - "“Minnie, don’t be late. "
 - Here comes the horse”—it was always the horse
@@ -7977,7 +8122,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " “The old man hasn’t been told; I"
 - " knew it was all right.” Mrs. "
 - "Honeychurch followed her, and they drove away"
-- ".\n\nSatisfactory that Mr. "
+- ".\n\n"
+- "Satisfactory that Mr. "
 - "Emerson had not been told of the Florence "
 - escapade; yet Lucy’s spirits should not
 - " have leapt up as if she had sighted"
@@ -8034,7 +8180,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " as often happened, Cecil had paid no great attention"
 - " to her remarks. "
 - "Charm, not argument, was to be her"
-- " forte.\n\nLunch was a cheerful meal. "
+- " forte.\n\n"
+- "Lunch was a cheerful meal. "
 - "Generally Lucy was depressed at meals. "
 - Some one had to be soothed—either
 - " Cecil or Miss Bartlett or a Being not visible"
@@ -8106,7 +8253,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " www.gutenberg.org/license.\n\n"
 - "Section 1. "
 - General Terms of Use and Redistributing Project Gutenberg
-- "-tm electronic works\n\n1.A. "
+- "-tm electronic works\n\n"
+- "1.A. "
 - By reading or using any part of this Project Gutenberg
 - "-tm electronic work, you indicate that you have read"
 - ", understand, agree to and accept all the terms"
@@ -8122,7 +8270,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " of this agreement, you may obtain a refund from"
 - " the person or entity to whom you paid the fee"
 - " as set forth in paragraph 1."
-- "E.8.\n\n1.B. "
+- "E.8.\n\n"
+- "1.B. "
 - "\"Project Gutenberg\" is a registered trademark. "
 - It may only be used on or associated in any
 - " way with an electronic work by people who agree to"
@@ -8157,7 +8306,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - You can easily comply with the terms of this agreement
 - " by keeping this work in the same format with its"
 - " attached full Project Gutenberg-tm License when you share it"
-- " without charge with others.\n\n1.D. "
+- " without charge with others.\n\n"
+- "1.D. "
 - The copyright laws of the place where you are located
 - " also govern what you can do with this work."
 - " Copyright laws in most countries are in a constant state"
@@ -8170,7 +8320,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " work or any other Project Gutenberg-tm work. "
 - The Foundation makes no representations concerning the copyright status of
 - " any work in any country other than the United States"
-- ".\n\n1.E. "
+- ".\n\n"
+- "1.E. "
 - "Unless you have removed all references to Project Gutenberg:\n\n"
 - "1.E.1. "
 - "The following sentence, with active links to, or"
@@ -8192,7 +8343,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - If you are not located in the   United States
 - ", you will have to check the laws of the"
 - " country where   you are located before using this eBook"
-- ".\n\n1.E.2. "
+- ".\n\n"
+- "1.E.2. "
 - If an individual Project Gutenberg-tm electronic work is derived
 - " from texts not protected by U.S. copyright law"
 - " (does not contain a notice indicating that it is"
@@ -8248,7 +8400,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " \"Plain Vanilla ASCII\" or other form. "
 - Any alternate format must include the full Project Gutenberg-tm
 - " License as specified in paragraph 1."
-- "E.1.\n\n1.E.7. "
+- "E.1.\n\n"
+- "1.E.7. "
 - "Do not charge a fee for access to, viewing"
 - ", displaying,\n"
 - "performing, copying or distributing any Project Gutenberg-tm"
@@ -8286,7 +8439,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " access to other copies of Project Gutenberg-tm   works"
 - ".\n\n"
 - "* You provide, in accordance with paragraph 1"
-- ".F.3, a full refund of   any"
+- "."
+- "F.3, a full refund of   any"
 - " money paid for a work or a replacement copy,"
 - " if a defect in the   electronic work is discovered"
 - " and reported to you within 90 days of   "
@@ -8354,7 +8508,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " of a refund. "
 - "If the second copy is also defective, you may"
 - " demand a refund in writing without further opportunities to fix"
-- " the problem.\n\n1.F.4. "
+- " the problem.\n\n"
+- "1.F.4. "
 - Except for the limited right of replacement or refund set
 - " forth in paragraph 1."
 - "F.3, this work is provided to you"
@@ -8371,7 +8526,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " disclaimer or limitation permitted by the applicable state law."
 - " The invalidity or unenforceability of any"
 - " provision of this agreement shall not void the remaining provisions"
-- ".\n\n1.F.6. "
+- ".\n\n"
+- "1.F.6. "
 - INDEMNITY - You agree to indemnify
 - " and hold the Foundation, the trademark owner, any"
 - " agent or employee of the Foundation, anyone providing copies"
@@ -8385,7 +8541,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - " Project Gutenberg-tm work, (b) alteration,"
 - " modification, or additions or deletions to any Project"
 - " Gutenberg-tm work, and (c) any "
-- "Defect you cause.\n\nSection 2. "
+- "Defect you cause.\n\n"
+- "Section 2. "
 - "Information about the Mission of Project Gutenberg-tm\n\n"
 - Project Gutenberg-tm is synonymous with the free distribution of
 - " electronic works in formats readable by the widest variety of"
@@ -8458,7 +8615,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Donations are accepted in a number of other ways
 - " including checks, online payments and credit card donations."
 - " To donate, please visit: www.gutenberg.org"
-- "/donate\n\nSection 5. "
+- "/donate\n\n"
+- "Section 5. "
 - "General Information About Project Gutenberg-tm electronic works\n\n"
 - "Professor Michael S. "
 - Hart was the originator of the Project Gutenberg

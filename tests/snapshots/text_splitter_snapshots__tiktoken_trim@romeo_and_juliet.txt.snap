@@ -8,11 +8,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - This eBook is for the use of anyone anywhere in
 - the United States and
 - most other parts of the world at no cost and
-- "with almost no restrictions\nwhatsoever."
+- with almost no restrictions
+- whatsoever.
 - "You may copy it, give it away or re"
 - "-use it under the terms"
 - of the Project Gutenberg License included with this eBook or
-- "online at\nwww.gutenberg.org."
+- online at
+- www.gutenberg.org.
 - "If you are not located in the United States,"
 - you
 - will have to check the laws of the country where
@@ -32,9 +34,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ACT I\nScene I. A public place."
 - Scene II. A Street.
 - Scene III. Room in Capulet’s House.
-- "Scene IV. A Street.\nScene V."
+- Scene IV. A Street.
+- Scene V.
 - A Hall in Capulet’s House.
-- "ACT II\nCHORUS.\nScene I."
+- "ACT II\nCHORUS."
+- Scene I.
 - An open place adjoining Capulet’s Garden.
 - Scene II. Capulet’s Garden.
 - Scene III. Friar Lawrence’s Cell.
@@ -49,7 +53,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - A Room in Capulet’s House.
 - Scene V.
 - "An open Gallery to Juliet’s Chamber, overlooking the"
-- "Garden.\n\n\nACT IV"
+- Garden.
+- ACT IV
 - Scene I. Friar Lawrence’s Cell.
 - Scene II. Hall in Capulet’s House.
 - Scene III. Juliet’s Chamber.
@@ -97,7 +102,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Citizens of Verona; several Men and Women
 - ", relations to both houses;"
 - "Maskers, Guards, Watchmen and Attendants"
-- ".\n\nSCENE."
+- "."
+- SCENE.
 - During the greater part of the Play in Verona
 - "; once, in the"
 - "Fifth Act, at Mantua."
@@ -126,21 +132,26 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "to mend.\n\n [_Exit._]\n\n\n\nACT I"
 - SCENE I. A public place.
 - Enter Sampson and Gregory armed with swords and
-- "bucklers.\n\nSAMPSON."
+- bucklers.
+- SAMPSON.
 - "Gregory, on my word, we’ll not"
-- "carry coals.\n\nGREGORY."
+- carry coals.
+- GREGORY.
 - "No, for then we should be colliers."
 - SAMPSON.
 - "I mean, if we be in choler,"
-- "we’ll draw.\n\nGREGORY."
+- we’ll draw.
+- GREGORY.
 - "Ay, while you live, draw your neck out"
-- "o’ the collar.\n\nSAMPSON."
+- o’ the collar.
+- SAMPSON.
 - "I strike quickly, being moved."
 - GREGORY.
 - But thou art not quickly moved to strike.
 - SAMPSON.
 - A dog of the house of Montague moves me
-- ".\n\nGREGORY."
+- "."
+- GREGORY.
 - To move is to stir; and to be
 - "valiant is to stand: therefore, if thou"
 - "art moved, thou runn’st away."
@@ -148,9 +159,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - A dog of that house shall move me to stand
 - "."
 - I will take the wall of any man or maid
-- "of Montague’s.\n\nGREGORY."
+- of Montague’s.
+- GREGORY.
 - "That shows thee a weak slave, for the weakest"
-- "goes to the wall.\n\nSAMPSON."
+- goes to the wall.
+- SAMPSON.
 - "True, and therefore women, being the weaker vessels"
 - ", are ever thrust to"
 - "the wall: therefore I will push Montague’s"
@@ -158,7 +171,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - thrust his maids to the wall.
 - GREGORY.
 - The quarrel is between our masters and us their
-- "men.\n\nSAMPSON."
+- men.
+- SAMPSON.
 - "’Tis all one, I will show myself a"
 - "tyrant: when I have fought with the"
 - "men I will be civil with the maids,"
@@ -168,33 +182,38 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - SAMPSON.
 - "Ay, the heads of the maids, or"
 - their maidenheads; take it in what sense
-- "thou wilt.\n\nGREGORY."
+- thou wilt.
+- GREGORY.
 - They must take it in sense that feel it.
 - SAMPSON.
 - Me they shall feel while I am able to stand
 - ": and ’tis known I am a"
-- "pretty piece of flesh.\n\nGREGORY."
+- pretty piece of flesh.
+- GREGORY.
 - ’Tis well thou art not fish; if thou
 - "hadst, thou hadst been poor John."
 - Draw thy tool; here comes of the house of
 - "Montagues.\n\n Enter Abram and Balthasar."
 - SAMPSON.
 - "My naked weapon is out: quarrel, I"
-- "will back thee.\n\nGREGORY."
+- will back thee.
+- GREGORY.
 - How? Turn thy back and run?
 - "SAMPSON.\nFear me not."
 - GREGORY.
 - "No, marry; I fear thee!"
 - SAMPSON.
 - Let us take the law of our sides; let
-- "them begin.\n\nGREGORY."
+- them begin.
+- GREGORY.
 - "I will frown as I pass by, and"
 - let them take it as they list.
 - SAMPSON.
 - "Nay, as they dare."
 - "I will bite my thumb at them, which is"
 - disgrace to
-- "them if they bear it.\n\nABRAM."
+- them if they bear it.
+- ABRAM.
 - "Do you bite your thumb at us, sir?"
 - SAMPSON.
 - "I do bite my thumb, sir."
@@ -206,8 +225,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - SAMPSON.
 - "No sir, I do not bite my thumb at"
 - "you, sir; but I bite my thumb,"
-- "sir.\n\nGREGORY."
-- "Do you quarrel, sir?\n\nABRAM."
+- sir.
+- GREGORY.
+- "Do you quarrel, sir?"
+- ABRAM.
 - "Quarrel, sir? No, sir."
 - SAMPSON.
 - "But if you do, sir, I am for"
@@ -215,22 +236,27 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - I serve as good a man as you.
 - "ABRAM.\nNo better."
 - "SAMPSON.\nWell, sir."
-- "Enter Benvolio.\n\nGREGORY."
+- Enter Benvolio.
+- GREGORY.
 - Say better; here comes one of my master’s
 - kinsmen.
 - "SAMPSON.\nYes, better, sir."
-- "ABRAM.\nYou lie.\n\nSAMPSON."
+- "ABRAM.\nYou lie."
+- SAMPSON.
 - "Draw, if you be men."
 - "Gregory, remember thy washing blow."
 - "[_They fight._]"
-- "BENVOLIO.\nPart, fools!"
+- BENVOLIO.
+- "Part, fools!"
 - "put up your swords, you know not what you"
 - "do.\n\n [_Beats down their swords._]"
-- "Enter Tybalt.\n\nTYBALT."
+- Enter Tybalt.
+- TYBALT.
 - "What, art thou drawn among these heartless"
 - hinds?
 - "Turn thee Benvolio, look upon thy death"
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - "I do but keep the peace, put up thy"
 - "sword,"
 - Or manage it to part these men with me.
@@ -248,12 +274,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Down with the Montagues!
 - "Enter Capulet in his gown, and Lady"
 - Capulet.
-- "CAPULET.\nWhat noise is this?"
+- CAPULET.
+- What noise is this?
 - "Give me my long sword, ho!"
 - LADY CAPULET.
 - "A crutch, a crutch!"
 - Why call you for a sword?
-- "CAPULET.\nMy sword, I say!"
+- CAPULET.
+- "My sword, I say!"
 - "Old Montague is come,"
 - And flourishes his blade in spite of me.
 - Enter Montague and his Lady Montague.
@@ -283,7 +311,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ",\nAnd made Verona’s ancient citizens"
 - "Cast by their grave beseeming ornaments,"
 - "To wield old partisans, in hands as old"
-- ",\nCanker’d with peace, to part your"
+- ","
+- "Canker’d with peace, to part your"
 - canker’d hate.
 - "If ever you disturb our streets again,"
 - Your lives shall pay the forfeit of the peace
@@ -300,7 +329,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - MONTAGUE.
 - Who set this ancient quarrel new abroach?
 - "Speak, nephew, were you by when it began"
-- "?\n\nBENVOLIO."
+- "?"
+- BENVOLIO.
 - Here were the servants of your adversary
 - "And yours, close fighting ere I did approach."
 - "I drew to part them, in the instant came"
@@ -316,10 +346,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Came more and more, and fought on part"
 - "and part,"
 - "Till the Prince came, who parted either part"
-- ".\n\nLADY MONTAGUE."
+- "."
+- LADY MONTAGUE.
 - "O where is Romeo, saw you him today?"
 - Right glad I am he was not at this fray
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - "Madam, an hour before the worshipp’d"
 - sun
 - "Peer’d forth the golden window of the east,"
@@ -336,7 +368,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Pursu’d my humour, not pursuing his"
 - ","
 - And gladly shunn’d who gladly fled from me
-- ".\n\nMONTAGUE."
+- "."
+- MONTAGUE.
 - "Many a morning hath he there been seen,"
 - "With tears augmenting the fresh morning’s dew,"
 - Adding to clouds more clouds with his deep sighs
@@ -368,23 +401,27 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "air,\nOr dedicate his beauty to the sun."
 - Could we but learn from whence his sorrows grow
 - ",\nWe would as willingly give cure as know."
-- "Enter Romeo.\n\nBENVOLIO."
+- Enter Romeo.
+- BENVOLIO.
 - "See, where he comes."
 - So please you step aside;
 - I’ll know his grievance or be much denied
-- ".\n\nMONTAGUE."
+- "."
+- MONTAGUE.
 - I would thou wert so happy by thy stay
 - To hear true shrift.
 - "Come, madam, let’s away,"
 - "[_Exeunt Montague and Lady Montague"
-- "._]\n\nBENVOLIO."
+- "._]"
+- BENVOLIO.
 - "Good morrow, cousin."
 - "ROMEO.\nIs the day so young?"
 - "BENVOLIO.\nBut new struck nine."
 - ROMEO.
 - "Ay me, sad hours seem long."
 - Was that my father that went hence so fast?
-- "BENVOLIO.\nIt was."
+- BENVOLIO.
+- It was.
 - What sadness lengthens Romeo’s hours?
 - ROMEO.
 - "Not having that which, having, makes them short"
@@ -396,11 +433,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - BENVOLIO.
 - "Alas that love so gentle in his view,"
 - Should be so tyrannous and rough in proof
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Alas that love, whose view is muffled"
 - "still,"
 - "Should, without eyes, see pathways to his will"
-- "!\nWhere shall we dine? O me!"
+- "!"
+- Where shall we dine? O me!
 - What fray was here?
 - "Yet tell me not, for I have heard it"
 - all.
@@ -422,7 +461,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "No coz, I rather weep."
 - "ROMEO.\nGood heart, at what?"
 - BENVOLIO.
-- "At thy good heart’s oppression.\n\nROMEO."
+- At thy good heart’s oppression.
+- ROMEO.
 - Why such is love’s transgression.
 - Griefs of mine own lie heavy in my
 - "breast,"
@@ -440,36 +480,46 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "What is it else? A madness most discreet,"
 - "A choking gall, and a preserving sweet."
 - "Farewell, my coz."
-- "[_Going._]\n\nBENVOLIO."
+- "[_Going._]"
+- BENVOLIO.
 - "Soft! I will go along:"
 - "And if you leave me so, you do me"
-- "wrong.\n\nROMEO.\nTut!"
+- wrong.
+- ROMEO.
+- Tut!
 - I have lost myself; I am not here.
 - "This is not Romeo, he’s some other where"
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - Tell me in sadness who is that you love?
 - ROMEO.
 - "What, shall I groan and tell thee?"
-- "BENVOLIO.\nGroan!"
+- BENVOLIO.
+- Groan!
 - "Why, no; but sadly tell me who."
 - ROMEO.
 - "Bid a sick man in sadness make his will,"
 - A word ill urg’d to one that is so
 - ill.
 - "In sadness, cousin, I do love a woman"
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - I aim’d so near when I suppos’d
-- "you lov’d.\n\nROMEO."
+- you lov’d.
+- ROMEO.
 - "A right good markman, and she’s fair"
-- "I love.\n\nBENVOLIO."
+- I love.
+- BENVOLIO.
 - "A right fair mark, fair coz, is"
-- "soonest hit.\n\nROMEO."
+- soonest hit.
+- ROMEO.
 - "Well, in that hit you miss: she’ll"
 - not be hit
 - "With Cupid’s arrow, she hath"
 - Dian’s wit;
 - And in strong proof of chastity well arm’d
-- ",\nFrom love’s weak childish bow she lives"
+- ","
+- From love’s weak childish bow she lives
 - uncharm’d.
 - She will not stay the siege of loving terms
 - Nor bide th’encounter of assailing
@@ -478,9 +528,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "gold:"
 - "O she’s rich in beauty, only poor"
 - "That when she dies, with beauty dies her store"
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - Then she hath sworn that she will still live
-- "chaste?\n\nROMEO."
+- chaste?
+- ROMEO.
 - "She hath, and in that sparing makes huge waste"
 - ";\nFor beauty starv’d with her severity,"
 - Cuts beauty off from all posterity.
@@ -489,9 +541,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "She hath forsworn to love, and in"
 - that vow
 - "Do I live dead, that live to tell it"
-- "now.\n\nBENVOLIO."
+- now.
+- BENVOLIO.
 - "Be rul’d by me, forget to think"
-- "of her.\n\nROMEO."
+- of her.
+- ROMEO.
 - O teach me how I should forget to think.
 - BENVOLIO.
 - By giving liberty unto thine eyes;
@@ -507,7 +561,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Where I may read who pass’d that passing fair
 - "?"
 - "Farewell, thou canst not teach me"
-- "to forget.\n\nBENVOLIO."
+- to forget.
+- BENVOLIO.
 - "I’ll pay that doctrine, or else die in"
 - "debt.\n\n [_Exeunt._]"
 - SCENE II. A Street.
@@ -517,19 +572,22 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - In penalty alike; and ’tis not hard
 - ", I think,"
 - For men so old as we to keep the peace
-- ".\n\nPARIS."
+- "."
+- PARIS.
 - "Of honourable reckoning are you both,"
 - And pity ’tis you liv’d at odds
 - so long.
 - "But now my lord, what say you to my"
-- "suit?\n\nCAPULET."
+- suit?
+- CAPULET.
 - But saying o’er what I have said before
 - "."
 - "My child is yet a stranger in the world,"
 - She hath not seen the change of fourteen years;
 - Let two more summers wither in their pride
 - Ere we may think her ripe to be a
-- "bride.\n\nPARIS."
+- bride.
+- PARIS.
 - Younger than she are happy mothers made.
 - CAPULET.
 - And too soon marr’d are those so early
@@ -559,7 +617,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Which, on more view of many, mine,"
 - "being one,"
 - "May stand in number, though in reckoning none"
-- ".\nCome, go with me."
+- "."
+- "Come, go with me."
 - "Go, sirrah, trudge about"
 - Through fair Verona; find those persons out
 - "Whose names are written there, [_gives"
@@ -601,16 +660,19 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ","
 - Whipp’d and tormented and—God-den
 - ", good fellow."
-- "SERVANT.\nGod gi’ go-den."
+- SERVANT.
+- God gi’ go-den.
 - "I pray, sir, can you read?"
 - ROMEO.
 - "Ay, mine own fortune in my misery."
 - SERVANT.
 - Perhaps you have learned it without book.
 - "But I pray, can you read anything you see"
-- "?\n\nROMEO."
+- "?"
+- ROMEO.
 - "Ay, If I know the letters and the language"
-- ".\n\nSERVANT."
+- "."
+- SERVANT.
 - "Ye say honestly, rest you merry!"
 - ROMEO.
 - "Stay, fellow; I can read."
@@ -642,7 +704,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - and if you be not of the house of
 - "Montagues, I pray come and crush a"
 - cup of wine. Rest you merry.
-- "[_Exit._]\n\nBENVOLIO."
+- "[_Exit._]"
+- BENVOLIO.
 - At this same ancient feast of Capulet’s
 - Sups the fair Rosaline whom thou so
 - lov’st;
@@ -660,7 +723,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - One fairer than my love?
 - The all-seeing sun
 - Ne’er saw her match since first the world
-- "begun.\n\nBENVOLIO."
+- begun.
+- BENVOLIO.
 - "Tut, you saw her fair, none else"
 - "being by,"
 - Herself pois’d with herself in either eye
@@ -669,7 +733,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Your lady’s love against some other maid
 - "That I will show you shining at this feast,"
 - And she shall scant show well that now shows best
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "I’ll go along, no such sight to be"
 - "shown,"
 - But to rejoice in splendour of my own
@@ -679,7 +744,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Enter Lady Capulet and Nurse.
 - LADY CAPULET.
 - "Nurse, where’s my daughter?"
-- "Call her forth to me.\n\nNURSE."
+- Call her forth to me.
+- NURSE.
 - "Now, by my maidenhead, at twelve year"
 - "old,"
 - "I bade her come. What, lamb!"
@@ -700,10 +766,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I have remember’d me, thou’s hear our"
 - counsel.
 - Thou knowest my daughter’s of a pretty
-- "age.\n\nNURSE."
+- age.
+- NURSE.
 - "Faith, I can tell her age unto an"
-- "hour.\n\nLADY CAPULET."
-- "She’s not fourteen.\n\nNURSE."
+- hour.
+- LADY CAPULET.
+- She’s not fourteen.
+- NURSE.
 - "I’ll lay fourteen of my teeth,"
 - "And yet, to my teen be it spoken,"
 - "I have but four,"
@@ -717,7 +786,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Come Lammas Eve at night shall she be fourteen
 - "."
 - "Susan and she,—God rest all Christian souls!"
-- "—\nWere of an age."
+- —
+- Were of an age.
 - "Well, Susan is with God;"
 - She was too good for me.
 - "But as I said,"
@@ -753,23 +823,27 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And then my husband,—God be with his soul"
 - "!"
 - "A was a merry man,—took up the child"
-- ":\n‘Yea,’ quoth he, ‘"
+- ":"
+- "‘Yea,’ quoth he, ‘"
 - dost thou fall upon thy face?
 - Thou wilt fall backward when thou hast more wit
-- ";\nWilt thou not, Jule?’"
+- ;
+- "Wilt thou not, Jule?’"
 - "and, by my holidame,"
 - "The pretty wretch left crying, and said ‘"
 - Ay’.
 - To see now how a jest shall come about.
 - "I warrant, and I should live a thousand years"
-- ",\nI never should forget it."
+- ","
+- I never should forget it.
 - "‘Wilt thou not, Jule?’"
 - quoth he;
 - "And, pretty fool, it stinted, and"
 - said ‘Ay.’
 - LADY CAPULET.
 - Enough of this; I pray thee hold thy peace
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - "Yes, madam, yet I cannot choose but"
 - "laugh,"
 - "To think it should leave crying, and say ‘"
@@ -781,12 +855,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "‘Yea,’ quoth my husband, ‘"
 - fall’st upon thy face?
 - Thou wilt fall backward when thou comest to
-- "age;\nWilt thou not, Jule?’"
+- age;
+- "Wilt thou not, Jule?’"
 - "it stinted, and said ‘Ay’."
 - JULIET.
 - "And stint thou too, I pray thee, Nurse"
 - ", say I."
-- "NURSE.\nPeace, I have done."
+- NURSE.
+- "Peace, I have done."
 - God mark thee to his grace
 - Thou wast the prettiest babe that
 - "e’er I nurs’d:"
@@ -799,7 +875,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - How stands your disposition to be married?
 - JULIET.
 - It is an honour that I dream not of.
-- "NURSE.\nAn honour!"
+- NURSE.
+- An honour!
 - "Were not I thine only nurse,"
 - I would say thou hadst suck’d wisdom from
 - thy teat.
@@ -811,10 +888,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - That you are now a maid.
 - "Thus, then, in brief;"
 - The valiant Paris seeks you for his love.
-- "NURSE.\nA man, young lady!"
+- NURSE.
+- "A man, young lady!"
 - "Lady, such a man"
 - As all the world—why he’s a man
-- "of wax.\n\nLADY CAPULET."
+- of wax.
+- LADY CAPULET.
 - Verona’s summer hath not such a flower.
 - NURSE.
 - "Nay, he’s a flower, in faith"
@@ -847,12 +926,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Women grow by men.
 - LADY CAPULET.
 - "Speak briefly, can you like of Paris’ love"
-- "?\n\nJULIET."
+- "?"
+- JULIET.
 - "I’ll look to like, if looking liking move"
 - ":"
 - But no more deep will I endart mine eye
 - Than your consent gives strength to make it fly.
-- "Enter a Servant.\n\nSERVANT."
+- Enter a Servant.
+- SERVANT.
 - "Madam, the guests are come, supper served"
 - "up, you called, my young lady"
 - "asked for, the Nurse cursed in the pantry"
@@ -883,13 +964,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "After the prompter, for our entrance:"
 - "But let them measure us by what they will,"
 - "We’ll measure them a measure, and be gone"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Give me a torch, I am not for this"
 - ambling;
 - Being but heavy I will bear the light.
 - MERCUTIO.
 - "Nay, gentle Romeo, we must have you"
-- "dance.\n\nROMEO."
+- dance.
+- ROMEO.
 - "Not I, believe me, you have dancing shoes"
 - ","
 - "With nimble soles, I have a soul"
@@ -908,7 +991,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - MERCUTIO.
 - "And, to sink in it, should you burden"
 - "love;\nToo great oppression for a tender thing."
-- "ROMEO.\nIs love a tender thing?"
+- ROMEO.
+- Is love a tender thing?
 - "It is too rough,"
 - "Too rude, too boisterous; and it"
 - pricks like thorn.
@@ -923,7 +1007,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - What care I
 - What curious eye doth quote deformities?
 - Here are the beetle-brows shall blush for me
-- ".\n\nBENVOLIO."
+- "."
+- BENVOLIO.
 - "Come, knock and enter; and no sooner in"
 - But every man betake him to his legs.
 - ROMEO.
@@ -934,7 +1019,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ","
 - "I’ll be a candle-holder and look on,"
 - "The game was ne’er so fair, and"
-- "I am done.\n\nMERCUTIO."
+- I am done.
+- MERCUTIO.
 - "Tut, dun’s the mouse, the"
 - "constable’s own word:"
 - "If thou art dun, we’ll draw thee from"
@@ -950,7 +1036,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - day.
 - "Take our good meaning, for our judgment sits"
 - Five times in that ere once in our five
-- "wits.\n\nROMEO."
+- wits.
+- ROMEO.
 - And we mean well in going to this mask;
 - But ’tis no wit to go.
 - MERCUTIO.
@@ -959,9 +1046,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "MERCUTIO.\nAnd so did I."
 - "ROMEO.\nWell what was yours?"
 - MERCUTIO.
-- "That dreamers often lie.\n\nROMEO."
+- That dreamers often lie.
+- ROMEO.
 - "In bed asleep, while they do dream things true"
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - "O, then, I see Queen Mab hath"
 - been with you.
 - "She is the fairies’ midwife, and"
@@ -1000,7 +1089,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Which oft the angry Mab with blisters
 - "plagues,"
 - Because their breaths with sweetmeats tainted are
-- ":\nSometime she gallops o’er a"
+- ":"
+- Sometime she gallops o’er a
 - "courtier’s nose,"
 - And then dreams he of smelling out a suit;
 - And sometime comes she with a tithe-
@@ -1029,7 +1119,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "on their backs,"
 - "That presses them, and learns them first to bear"
 - ",\nMaking them women of good carriage:"
-- "This is she,—\n\nROMEO."
+- "This is she,—"
+- ROMEO.
 - "Peace, peace, Mercutio, peace,"
 - Thou talk’st of nothing.
 - MERCUTIO.
@@ -1046,7 +1137,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - BENVOLIO.
 - "This wind you talk of blows us from ourselves:"
 - "Supper is done, and we shall come too"
-- "late.\n\nROMEO."
+- late.
+- ROMEO.
 - "I fear too early: for my mind"
 - misgives
 - "Some consequence yet hanging in the stars,"
@@ -1060,20 +1152,24 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - But he that hath the steerage of my course
 - "Direct my suit. On, lusty gentlemen!"
 - "BENVOLIO.\nStrike, drum."
-- "[_Exeunt._]\n\nSCENE V."
+- "[_Exeunt._]"
+- SCENE V.
 - A Hall in Capulet’s House.
 - Musicians waiting. Enter Servants.
 - FIRST SERVANT.
 - "Where’s Potpan, that he helps not to"
-- "take away?\nHe shift a trencher!"
+- take away?
+- He shift a trencher!
 - He scrape a trencher!
 - SECOND SERVANT.
 - When good manners shall lie all in one or two
 - "men’s hands, and they"
 - "unwash’d too, ’tis a foul"
-- "thing.\n\nFIRST SERVANT."
+- thing.
+- FIRST SERVANT.
 - "Away with the join-stools, remove the court"
-- "-cupboard, look to the\nplate."
+- "-cupboard, look to the"
+- plate.
 - "Good thou, save me a piece of marchpane"
 - "; and as thou loves me,"
 - let the porter let in Susan Grindstone and
@@ -1160,18 +1256,22 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Did my heart love till now?
 - "Forswear it, sight!"
 - For I ne’er saw true beauty till this
-- "night.\n\nTYBALT."
+- night.
+- TYBALT.
 - "This by his voice, should be a Montague"
-- ".\nFetch me my rapier, boy."
+- "."
+- "Fetch me my rapier, boy."
 - "What, dares the slave"
 - "Come hither, cover’d with an antic face"
 - ","
 - To fleer and scorn at our solemnity?
 - "Now by the stock and honour of my kin,"
 - To strike him dead I hold it not a sin
-- ".\n\nCAPULET."
+- "."
+- CAPULET.
 - "Why how now, kinsman!"
-- "Wherefore storm you so?\n\nTYBALT."
+- Wherefore storm you so?
+- TYBALT.
 - "Uncle, this is a Montague, our"
 - foe;
 - "A villain that is hither come in spite,"
@@ -1190,27 +1290,33 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Here in my house do him disparagement.
 - "Therefore be patient, take no note of him,"
 - It is my will; the which if thou respect
-- ",\nShow a fair presence and put off these"
+- ","
+- Show a fair presence and put off these
 - "frowns,"
 - An ill-beseeming semblance for a feast
-- ".\n\nTYBALT."
+- "."
+- TYBALT.
 - "It fits when such a villain is a guest:"
-- "I’ll not endure him.\n\nCAPULET."
+- I’ll not endure him.
+- CAPULET.
 - He shall be endur’d.
 - "What, goodman boy!"
 - "I say he shall, go to;"
 - "Am I the master here, or you?"
-- "Go to.\nYou’ll not endure him!"
+- Go to.
+- You’ll not endure him!
 - "God shall mend my soul,"
 - You’ll make a mutiny among my guests!
 - "You will set cock-a-hoop, you’ll"
-- "be the man!\n\nTYBALT."
+- be the man!
+- TYBALT.
 - "Why, uncle, ’tis a shame."
 - "CAPULET.\nGo to, go to!"
 - You are a saucy boy.
 - "Is’t so, indeed?"
 - "This trick may chance to scathe you, I"
-- "know what.\nYou must contrary me!"
+- know what.
+- You must contrary me!
 - "Marry, ’tis time."
 - "Well said, my hearts!—You are a"
 - "princox; go:"
@@ -1224,7 +1330,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I will withdraw: but this intrusion shall,"
 - "Now seeming sweet, convert to bitter gall."
 - "[_Exit._]"
-- "ROMEO.\n[_To Juliet."
+- ROMEO.
+- "[_To Juliet."
 - "_] If I profane with my unworthiest"
 - hand
 - "This holy shrine, the gentle sin is this,"
@@ -1237,17 +1344,22 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - For saints have hands that pilgrims’ hands do
 - "touch,"
 - And palm to palm is holy palmers’ kiss
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Have not saints lips, and holy palmers too"
-- "?\n\nJULIET."
+- "?"
+- JULIET.
 - "Ay, pilgrim, lips that they must use"
-- "in prayer.\n\nROMEO."
+- in prayer.
+- ROMEO.
 - "O, then, dear saint, let lips do"
 - "what hands do:"
 - "They pray, grant thou, lest faith turn to"
-- "despair.\n\nJULIET."
+- despair.
+- JULIET.
 - "Saints do not move, though grant for prayers"
-- "’ sake.\n\nROMEO."
+- ’ sake.
+- ROMEO.
 - Then move not while my prayer’s effect I take
 - "."
 - "Thus from my lips, by thine my sin"
@@ -1255,11 +1367,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "[_Kissing her._]"
 - JULIET.
 - Then have my lips the sin that they have took
-- ".\n\nROMEO.\nSin from my lips?"
+- "."
+- ROMEO.
+- Sin from my lips?
 - O trespass sweetly urg’d!
 - Give me my sin again.
 - JULIET.
-- "You kiss by the book.\n\nNURSE."
+- You kiss by the book.
+- NURSE.
 - "Madam, your mother craves a word with"
 - "you.\n\nROMEO.\nWhat is her mother?"
 - "NURSE.\nMarry, bachelor,"
@@ -1275,9 +1390,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - My life is my foe’s debt.
 - BENVOLIO.
 - "Away, be gone; the sport is at the"
-- "best.\n\nROMEO."
+- best.
+- ROMEO.
 - "Ay, so I fear; the more is my"
-- "unrest.\n\nCAPULET."
+- unrest.
+- CAPULET.
 - "Nay, gentlemen, prepare not to be gone"
 - ",\nWe have a trifling foolish banquet towards."
 - Is it e’en so?
@@ -1289,15 +1406,19 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "it waxes late,"
 - I’ll to my rest.
 - "[_Exeunt all but Juliet and Nurse."
-- "_]\n\nJULIET."
+- "_]"
+- JULIET.
 - "Come hither, Nurse."
-- "What is yond gentleman?\n\nNURSE."
+- What is yond gentleman?
+- NURSE.
 - The son and heir of old Tiberio.
 - JULIET.
 - What’s he that now is going out of door
-- "?\n\nNURSE."
+- "?"
+- NURSE.
 - "Marry, that I think be young"
-- "Petruchio.\n\nJULIET."
+- Petruchio.
+- JULIET.
 - "What’s he that follows here, that would not"
 - "dance?\n\nNURSE.\nI know not."
 - JULIET.
@@ -1321,7 +1442,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "NURSE.\nAnon, anon!"
 - "Come let’s away, the strangers all are gone"
 - ".\n\n [_Exeunt._]\n\n\n\nACT II"
-- "Enter Chorus.\n\nCHORUS."
+- Enter Chorus.
+- CHORUS.
 - Now old desire doth in his deathbed lie
 - ","
 - And young affection gapes to be his heir;
@@ -1342,9 +1464,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "less\nTo meet her new beloved anywhere."
 - "But passion lends them power, time means, to"
 - "meet,\nTempering extremities with extreme sweet."
-- "[_Exit._]\n\nSCENE I."
+- "[_Exit._]"
+- SCENE I.
 - An open place adjoining Capulet’s Garden.
-- "Enter Romeo.\n\nROMEO."
+- Enter Romeo.
+- ROMEO.
 - Can I go forward when my heart is here?
 - "Turn back, dull earth, and find thy centre"
 - out.
@@ -1355,7 +1479,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Romeo! My cousin Romeo! Romeo!
 - "MERCUTIO.\nHe is wise,"
 - And on my life hath stol’n him home
-- "to bed.\n\nBENVOLIO."
+- to bed.
+- BENVOLIO.
 - "He ran this way, and leap’d this"
 - "orchard wall:"
 - "Call, good Mercutio."
@@ -1385,7 +1510,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - That in thy likeness thou appear to us.
 - BENVOLIO.
 - "An if he hear thee, thou wilt anger him"
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - This cannot anger him. ’Twould anger him
 - "To raise a spirit in his mistress’ circle,"
 - "Of some strange nature, letting it there stand"
@@ -1399,7 +1525,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Come, he hath hid himself among these trees"
 - To be consorted with the humorous night.
 - "Blind is his love, and best befits"
-- "the dark.\n\nMERCUTIO."
+- the dark.
+- MERCUTIO.
 - "If love be blind, love cannot hit the mark"
 - "."
 - "Now will he sit under a medlar tree,"
@@ -1409,7 +1536,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "O Romeo, that she were, O that she"
 - were
 - An open-arse and thou a poperin pear
-- "!\nRomeo, good night."
+- "!"
+- "Romeo, good night."
 - I’ll to my truckle-bed.
 - This field-bed is too cold for me to sleep
 - ".\nCome, shall we go?"
@@ -1418,7 +1546,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - To seek him here that means not to be found
 - ".\n\n [_Exeunt._]"
 - SCENE II. Capulet’s Garden.
-- "Enter Romeo.\n\nROMEO."
+- Enter Romeo.
+- ROMEO.
 - He jests at scars that never felt a wound
 - ".\n\n Juliet appears above at a window."
 - "But soft, what light through yonder window breaks"
@@ -1472,12 +1601,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Or if thou wilt not, be but sworn my"
 - "love,"
 - And I’ll no longer be a Capulet.
-- "ROMEO.\n[_Aside."
+- ROMEO.
+- "[_Aside."
 - "_] Shall I hear more, or shall I speak"
-- "at this?\n\nJULIET."
+- at this?
+- JULIET.
 - ’Tis but thy name that is my enemy;
 - "Thou art thyself, though not a"
-- "Montague.\nWhat’s Montague?"
+- Montague.
+- What’s Montague?
 - "It is nor hand nor foot,"
 - "Nor arm, nor face, nor any other part"
 - Belonging to a man.
@@ -1504,7 +1636,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "My name, dear saint, is hateful to myself"
 - ",\nBecause it is an enemy to thee."
 - "Had I it written, I would tear the word"
-- ".\n\nJULIET."
+- "."
+- JULIET.
 - My ears have yet not drunk a hundred words
 - "Of thy tongue’s utterance, yet I know"
 - the sound.
@@ -1519,30 +1652,37 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And the place death, considering who thou art,"
 - If any of my kinsmen find thee here
 - "."
-- "ROMEO.\nWith love’s light wings did I"
+- ROMEO.
+- With love’s light wings did I
 - "o’erperch these walls,"
 - "For stony limits cannot hold love out,"
 - "And what love can do, that dares love"
 - "attempt:"
 - Therefore thy kinsmen are no stop to me
-- ".\n\nJULIET."
+- "."
+- JULIET.
 - "If they do see thee, they will murder thee"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Alack, there lies more peril in thine"
-- "eye\nThan twenty of their swords."
+- eye
+- Than twenty of their swords.
 - "Look thou but sweet,"
 - And I am proof against their enmity.
 - JULIET.
 - I would not for the world they saw thee here
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - I have night’s cloak to hide me from their
 - "eyes,"
 - "And but thou love me, let them find me"
 - "here.\nMy life were better ended by their hate"
 - "Than death prorogued, wanting of thy"
-- "love.\n\nJULIET."
+- love.
+- JULIET.
 - By whose direction found’st thou out this place
-- "?\n\nROMEO."
+- "?"
+- ROMEO.
 - "By love, that first did prompt me to"
 - enquire;
 - "He lent me counsel, and I lent him eyes"
@@ -1570,7 +1710,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Or if thou thinkest I am too quickly won
 - ","
 - "I’ll frown and be perverse, and say"
-- "thee nay,\nSo thou wilt woo."
+- "thee nay,"
+- So thou wilt woo.
 - "But else, not for the world."
 - "In truth, fair Montague, I am too"
 - fond;
@@ -1615,7 +1756,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "This bud of love, by summer’s ripening"
 - "breath,"
 - May prove a beauteous flower when next
-- "we meet.\nGood night, good night."
+- we meet.
+- "Good night, good night."
 - As sweet repose and rest
 - Come to thy heart as that within my breast.
 - ROMEO.
@@ -1624,11 +1766,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - What satisfaction canst thou have tonight?
 - ROMEO.
 - Th’exchange of thy love’s faithful vow for
-- "mine.\n\nJULIET."
+- mine.
+- JULIET.
 - I gave thee mine before thou didst request it
 - ;
 - And yet I would it were to give again.
-- "ROMEO.\nWould’st thou withdraw it?"
+- ROMEO.
+- Would’st thou withdraw it?
 - "For what purpose, love?"
 - JULIET.
 - But to be frank and give it thee again.
@@ -1645,11 +1789,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - be true.
 - "Stay but a little, I will come again."
 - "[_Exit._]"
-- "ROMEO.\nO blessed, blessed night."
+- ROMEO.
+- "O blessed, blessed night."
 - "I am afeard,"
 - "Being in night, all this is but a dream"
 - ",\nToo flattering sweet to be substantial."
-- "Enter Juliet above.\n\nJULIET."
+- Enter Juliet above.
+- JULIET.
 - "Three words, dear Romeo, and good night indeed"
 - "."
 - "If that thy bent of love be honourable,"
@@ -1701,7 +1847,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "JULIET.\nWhat o’clock tomorrow"
 - Shall I send to thee?
 - "ROMEO.\nBy the hour of nine."
-- "JULIET.\nI will not fail."
+- JULIET.
+- I will not fail.
 - ’Tis twenty years till then.
 - I have forgot why I did call thee back.
 - ROMEO.
@@ -1728,7 +1875,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Good night, good night."
 - Parting is such sweet sorrow
 - That I shall say good night till it be
-- "morrow.\n\n [_Exit._]\n\nROMEO."
+- "morrow.\n\n [_Exit._]"
+- ROMEO.
 - "Sleep dwell upon thine eyes, peace in thy"
 - breast.
 - "Would I were sleep and peace, so sweet to"
@@ -1808,16 +1956,19 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Our Romeo hath not been in bed tonight.
 - ROMEO.
 - That last is true; the sweeter rest was
-- "mine.\n\nFRIAR LAWRENCE."
+- mine.
+- FRIAR LAWRENCE.
 - God pardon sin.
 - Wast thou with Rosaline?
 - ROMEO.
 - "With Rosaline, my ghostly father?"
 - No.
 - "I have forgot that name, and that name’s"
-- "woe.\n\nFRIAR LAWRENCE."
+- woe.
+- FRIAR LAWRENCE.
 - That’s my good son.
-- "But where hast thou been then?\n\nROMEO."
+- But where hast thou been then?
+- ROMEO.
 - I’ll tell thee ere thou ask it me again
 - ".\nI have been feasting with mine enemy,"
 - Where on a sudden one hath wounded me
@@ -1829,7 +1980,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Be plain, good son, and homely in"
 - thy drift;
 - Riddling confession finds but riddling
-- "shrift.\n\nROMEO."
+- shrift.
+- ROMEO.
 - Then plainly know my heart’s dear love is set
 - On the fair daughter of rich Capulet.
 - "As mine on hers, so hers is set on"
@@ -1845,10 +1997,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - FRIAR LAWRENCE.
 - Holy Saint Francis! What a change is here!
 - "Is Rosaline, that thou didst love"
-- "so dear,\nSo soon forsaken?"
+- "so dear,"
+- So soon forsaken?
 - Young men’s love then lies
 - "Not truly in their hearts, but in their eyes"
-- ".\nJesu Maria, what a deal of"
+- "."
+- "Jesu Maria, what a deal of"
 - brine
 - Hath wash’d thy sallow cheeks for
 - Rosaline!
@@ -1865,15 +2019,18 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "If ere thou wast thyself, and these woes"
 - "thine,"
 - Thou and these woes were all for
-- "Rosaline,\nAnd art thou chang’d?"
+- "Rosaline,"
+- And art thou chang’d?
 - "Pronounce this sentence then,"
 - "Women may fall, when there’s no strength in"
-- "men.\n\nROMEO."
+- men.
+- ROMEO.
 - Thou chidd’st me oft for loving
 - Rosaline.
 - FRIAR LAWRENCE.
 - "For doting, not for loving, pupil mine"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - And bad’st me bury love.
 - FRIAR LAWRENCE.
 - Not in a grave
@@ -1892,9 +2049,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - In one respect I’ll thy assistant be;
 - "For this alliance may so happy prove,"
 - To turn your households’ rancour to pure
-- "love.\n\nROMEO."
+- love.
+- ROMEO.
 - O let us hence; I stand on sudden haste
-- ".\n\nFRIAR LAWRENCE."
+- "."
+- FRIAR LAWRENCE.
 - Wisely and slow; they stumble that run fast
 - ".\n\n [_Exeunt._]"
 - SCENE IV. A Street.
@@ -1904,14 +2063,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Came he not home tonight?
 - BENVOLIO.
 - Not to his father’s; I spoke with his
-- "man.\n\nMERCUTIO."
+- man.
+- MERCUTIO.
 - "Why, that same pale hard-hearted wench,"
 - "that Rosaline, torments him so"
 - that he will sure run mad.
 - BENVOLIO.
 - "Tybalt, the kinsman to old"
 - "Capulet, hath sent a letter to his"
-- "father’s\nhouse.\n\nMERCUTIO."
+- "father’s\nhouse."
+- MERCUTIO.
 - "A challenge, on my life."
 - BENVOLIO.
 - Romeo will answer it.
@@ -1927,14 +2088,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ", the very pin of his heart"
 - cleft with the blind bow-boy’s butt-
 - shaft. And is he a man to encounter
-- "Tybalt?\n\nBENVOLIO."
+- Tybalt?
+- BENVOLIO.
 - "Why, what is Tybalt?"
 - MERCUTIO.
 - More than Prince of cats.
 - "O, he’s the courageous captain of"
 - compliments.
 - "He fights as you sing prick-song, keeps time"
-- ", distance,\nand proportion."
+- ", distance,"
+- and proportion.
 - "He rests his minim rest, one, two,"
 - and the third in
 - "your bosom: the very butcher of a silk"
@@ -1979,11 +2142,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - There’s a French salutation to your French
 - slop. You
 - gave us the counterfeit fairly last night.
-- "ROMEO.\nGood morrow to you both."
+- ROMEO.
+- Good morrow to you both.
 - What counterfeit did I give you?
 - MERCUTIO.
 - "The slip sir, the slip; can you not"
-- "conceive?\n\nROMEO."
+- conceive?
+- ROMEO.
 - "Pardon, good Mercutio, my business"
 - "was great, and in such a case as"
 - mine a man may strain courtesy.
@@ -1998,18 +2163,22 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - MERCUTIO.
 - "Nay, I am the very pink of courtesy"
 - ".\n\nROMEO.\nPink for flower."
-- "MERCUTIO.\nRight.\n\nROMEO."
+- "MERCUTIO.\nRight."
+- ROMEO.
 - "Why, then is my pump well flowered."
 - MERCUTIO.
 - "Sure wit, follow me this jest now, till"
 - "thou hast worn out thy pump,"
 - "that when the single sole of it is worn,"
 - the jest may remain after the
-- "wearing, solely singular.\n\nROMEO."
+- "wearing, solely singular."
+- ROMEO.
 - "O single-soled jest, solely singular for the"
-- "singleness!\n\nMERCUTIO."
+- singleness!
+- MERCUTIO.
 - "Come between us, good Benvolio; my"
-- "wits faint.\n\nROMEO."
+- wits faint.
+- ROMEO.
 - "Swits and spurs, swits and"
 - spurs; or I’ll cry a match.
 - MERCUTIO.
@@ -2018,23 +2187,29 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - For thou hast
 - more of the wild-goose in one of thy
 - "wits, than I am sure, I have"
-- "in my\nwhole five."
+- in my
+- whole five.
 - Was I with you there for the goose?
 - ROMEO.
 - "Thou wast never with me for anything, when"
 - thou wast not there for the
-- "goose.\n\nMERCUTIO."
+- goose.
+- MERCUTIO.
 - I will bite thee by the ear for that jest
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Nay, good goose, bite not."
 - MERCUTIO.
 - "Thy wit is a very bitter sweeting,"
-- "it is a most sharp sauce.\n\nROMEO."
+- it is a most sharp sauce.
+- ROMEO.
 - And is it not then well served in to a
-- "sweet goose?\n\nMERCUTIO."
+- sweet goose?
+- MERCUTIO.
 - "O here’s a wit of cheveril,"
 - that stretches from an inch narrow to an
-- "ell broad.\n\nROMEO."
+- ell broad.
+- ROMEO.
 - "I stretch it out for that word broad, which"
 - "added to the goose, proves"
 - thee far and wide a broad goose.
@@ -2052,9 +2227,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Stop there, stop there."
 - MERCUTIO.
 - Thou desirest me to stop in my tale
-- "against the hair.\n\nBENVOLIO."
+- against the hair.
+- BENVOLIO.
 - Thou wouldst else have made thy tale large
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - "O, thou art deceived; I would have made"
 - "it short, for I was come to the"
 - "whole depth of my tale, and meant indeed to"
@@ -2083,12 +2260,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Out upon you! What a man are you?
 - ROMEO.
 - "One, gentlewoman, that God hath made for"
-- "himself to mar.\n\nNURSE."
+- himself to mar.
+- NURSE.
 - "By my troth, it is well said;"
 - "for himself to mar, quoth a?"
 - "Gentlemen,"
 - can any of you tell me where I may find
-- "the young Romeo?\n\nROMEO."
+- the young Romeo?
+- ROMEO.
 - "I can tell you: but young Romeo will be"
 - older when you have found him
 - than he was when you sought him.
@@ -2098,9 +2277,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - MERCUTIO.
 - "Yea, is the worst well?"
 - "Very well took, i’faith; wisely,"
-- "wisely.\n\nNURSE."
+- wisely.
+- NURSE.
 - "If you be he, sir, I desire some"
-- "confidence with you.\n\nBENVOLIO."
+- confidence with you.
+- BENVOLIO.
 - She will endite him to some supper.
 - MERCUTIO.
 - "A bawd, a bawd,"
@@ -2124,14 +2305,17 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Farewell, ancient lady; farewell, lady"
 - ", lady, lady."
 - "[_Exeunt Mercutio and"
-- "Benvolio._]\n\nNURSE."
+- "Benvolio._]"
+- NURSE.
 - "I pray you, sir, what saucy"
 - merchant was this that was so full of his
-- "ropery?\n\nROMEO."
+- ropery?
+- ROMEO.
 - "A gentleman, Nurse, that loves to hear himself"
 - "talk, and will speak"
 - more in a minute than he will stand to in
-- "a month.\n\nNURSE."
+- a month.
+- NURSE.
 - "And a speak anything against me, I’ll take"
 - "him down, and a were lustier"
 - "than he is, and twenty such Jacks."
@@ -2141,7 +2325,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - am none of
 - his skains-mates.—And thou must stand
 - by too and suffer every knave to
-- "use me at his pleasure!\n\nPETER."
+- use me at his pleasure!
+- PETER.
 - I saw no man use you at his pleasure;
 - "if I had, my weapon should"
 - quickly have been out.
@@ -2149,10 +2334,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - another
 - "man, if I see occasion in a good"
 - "quarrel, and the law on my side"
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - "Now, afore God, I am so vexed"
 - that every part about me quivers.
-- "Scurvy\nknave."
+- Scurvy
+- knave.
 - "Pray you, sir, a word: and"
 - "as I told you, my young lady bid me"
 - enquire you out; what she bade me
@@ -2165,13 +2352,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And therefore, if you should deal double with"
 - "her, truly it were an ill thing to be"
 - "offered to any gentlewoman, and"
-- "very weak dealing.\n\nROMEO."
+- very weak dealing.
+- ROMEO.
 - "Nurse, commend me to thy lady and mistress"
 - ". I protest unto\nthee,—"
 - NURSE.
 - "Good heart, and i’faith I will tell"
 - "her as much. Lord, Lord, she will"
-- "be a joyful woman.\n\nROMEO."
+- be a joyful woman.
+- ROMEO.
 - "What wilt thou tell her, Nurse?"
 - Thou dost not mark me.
 - NURSE.
@@ -2182,12 +2371,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Some means to come to shrift this afternoon,"
 - And there she shall at Friar Lawrence’ cell
 - Be shriv’d and married.
-- "Here is for thy pains.\n\nNURSE."
+- Here is for thy pains.
+- NURSE.
 - "No truly, sir; not a penny."
 - ROMEO.
 - Go to; I say you shall.
-- "NURSE.\nThis afternoon, sir?"
-- "Well, she shall be there.\n\nROMEO."
+- NURSE.
+- "This afternoon, sir?"
+- "Well, she shall be there."
+- ROMEO.
 - "And stay, good Nurse, behind the abbey"
 - wall.
 - "Within this hour my man shall be with thee,"
@@ -2200,14 +2392,17 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Farewell; commend me to thy mistress.
 - NURSE.
 - Now God in heaven bless thee.
-- "Hark you, sir.\n\nROMEO."
+- "Hark you, sir."
+- ROMEO.
 - "What say’st thou, my dear Nurse?"
-- "NURSE.\nIs your man secret?"
+- NURSE.
+- Is your man secret?
 - "Did you ne’er hear say,"
 - "Two may keep counsel, putting one away?"
 - ROMEO.
 - I warrant thee my man’s as true as steel
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - "Well, sir, my mistress is the sweetest"
 - "lady. Lord, Lord!"
 - When ’twas a
@@ -2226,7 +2421,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ROMEO.
 - "Ay, Nurse; what of that?"
 - Both with an R.
-- "NURSE.\nAh, mocker!"
+- NURSE.
+- "Ah, mocker!"
 - That’s the dog’s name.
 - "R is for the—no, I know it"
 - begins
@@ -2242,7 +2438,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "NURSE.\nBefore and apace."
 - "[_Exeunt._]"
 - SCENE V. Capulet’s Garden.
-- "Enter Juliet.\n\nJULIET."
+- Enter Juliet.
+- JULIET.
 - The clock struck nine when I did send the Nurse
 - ",\nIn half an hour she promised to return."
 - Perchance she cannot meet him.
@@ -2270,9 +2467,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "O God, she comes."
 - "O honey Nurse, what news?"
 - Hast thou met with him?
-- "Send thy man away.\n\nNURSE."
+- Send thy man away.
+- NURSE.
 - "Peter, stay at the gate."
-- "[_Exit Peter._]\n\nJULIET."
+- "[_Exit Peter._]"
+- JULIET.
 - "Now, good sweet Nurse,—O Lord, why"
 - look’st thou sad?
 - "Though news be sad, yet tell them"
@@ -2280,7 +2479,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "If good, thou sham’st the music of"
 - sweet news
 - By playing it to me with so sour a face
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - "I am aweary, give me leave awhile;"
 - "Fie, how my bones ache!"
 - What a jaunt have I had!
@@ -2288,11 +2488,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I would thou hadst my bones, and I"
 - "thy news:"
 - "Nay come, I pray thee speak; good"
-- ", good Nurse, speak.\n\nNURSE."
+- ", good Nurse, speak."
+- NURSE.
 - "Jesu, what haste?"
 - Can you not stay a while?
 - Do you not see that I am
-- "out of breath?\n\nJULIET."
+- out of breath?
+- JULIET.
 - "How art thou out of breath, when thou hast"
 - breath
 - To say to me that thou art out of breath
@@ -2302,7 +2504,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Answer to that;
 - "Say either, and I’ll stay the circumstance."
 - "Let me be satisfied, is’t good or bad"
-- "?\n\nNURSE."
+- "?"
+- NURSE.
 - "Well, you have made a simple choice; you"
 - know not how to choose a man.
 - "Romeo? No, not he."
@@ -2316,10 +2519,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - gentle as a lamb. Go thy
 - "ways, wench, serve God."
 - "What, have you dined at home?"
-- "JULIET.\nNo, no."
+- JULIET.
+- "No, no."
 - But all this did I know before.
 - What says he of our marriage?
-- "What of that?\n\nNURSE."
+- What of that?
+- NURSE.
 - "Lord, how my head aches!"
 - What a head have I!
 - It beats as it would fall in twenty pieces.
@@ -2327,17 +2532,20 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "my back, my back!"
 - Beshrew your heart for sending me about
 - To catch my death with jauncing up and
-- "down.\n\nJULIET."
+- down.
+- JULIET.
 - "I’faith, I am sorry that thou art"
 - not well.
 - "Sweet, sweet, sweet Nurse, tell me,"
-- "what says my love?\n\nNURSE."
+- what says my love?
+- NURSE.
 - "Your love says like an honest gentleman,"
 - "And a courteous, and a kind, and a"
 - "handsome,"
 - "And I warrant a virtuous,—Where is your"
 - mother?
-- "JULIET.\nWhere is my mother?"
+- JULIET.
+- Where is my mother?
 - "Why, she is within."
 - Where should she be?
 - How oddly thou repliest.
@@ -2350,7 +2558,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "bones?\nHenceforward do your messages yourself."
 - JULIET.
 - Here’s such a coil.
-- "Come, what says Romeo?\n\nNURSE."
+- "Come, what says Romeo?"
+- NURSE.
 - Have you got leave to go to shrift today
 - "?\n\nJULIET.\nI have."
 - NURSE.
@@ -2360,7 +2569,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Now comes the wanton blood up in your cheeks
 - ","
 - They’ll be in scarlet straight at any news
-- ".\nHie you to church."
+- "."
+- Hie you to church.
 - "I must another way,"
 - To fetch a ladder by the which your love
 - Must climb a bird’s nest soon when it is
@@ -2370,7 +2580,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - But you shall bear the burden soon at night.
 - Go.
 - I’ll to dinner; hie you to the
-- "cell.\n\nJULIET."
+- cell.
+- JULIET.
 - Hie to high fortune!
 - "Honest Nurse, farewell."
 - "[_Exeunt._]"
@@ -2396,7 +2607,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - And in the taste confounds the appetite.
 - "Therefore love moderately: long love doth so;"
 - Too swift arrives as tardy as too slow.
-- "Enter Juliet.\n\nHere comes the lady."
+- Enter Juliet.
+- Here comes the lady.
 - "O, so light a foot"
 - Will ne’er wear out the everlasting flint
 - "."
@@ -2407,9 +2619,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Good even to my ghostly confessor.
 - FRIAR LAWRENCE.
 - "Romeo shall thank thee, daughter, for"
-- "us both.\n\nJULIET."
+- us both.
+- JULIET.
 - "As much to him, else is his thanks too"
-- "much.\n\nROMEO."
+- much.
+- ROMEO.
 - "Ah, Juliet, if the measure of thy joy"
 - "Be heap’d like mine, and that thy skill"
 - be more
@@ -2435,7 +2649,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "[_Exeunt._]\n\n\n\nACT III"
 - SCENE I. A public Place.
 - "Enter Mercutio, Benvolio, Page"
-- "and Servants.\n\nBENVOLIO."
+- and Servants.
+- BENVOLIO.
 - "I pray thee, good Mercutio,"
 - "let’s retire:"
 - "The day is hot, the Capulets abroad"
@@ -2443,7 +2658,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And if we meet, we shall not scape a"
 - "brawl,"
 - "For now these hot days, is the mad blood"
-- "stirring.\n\nMERCUTIO."
+- stirring.
+- MERCUTIO.
 - "Thou art like one of these fellows that,"
 - when he enters the confines of
 - "a tavern, claps me his sword upon the"
@@ -2490,45 +2706,54 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - And I were so apt to quarrel as thou
 - "art, any man should buy the fee"
 - simple of my life for an hour and a quarter
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - The fee simple! O simple!
 - Enter Tybalt and others.
 - BENVOLIO.
 - "By my head, here comes the Capulets"
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - "By my heel, I care not."
 - TYBALT.
 - "Follow me close, for I will speak to them"
 - "."
 - "Gentlemen, good-den: a word with"
-- "one of you.\n\nMERCUTIO."
+- one of you.
+- MERCUTIO.
 - And but one word with one of us?
 - Couple it with something; make it a
-- "word and a blow.\n\nTYBALT."
+- word and a blow.
+- TYBALT.
 - "You shall find me apt enough to that, sir"
 - ", and you will give me\noccasion."
 - MERCUTIO.
 - Could you not take some occasion without giving?
 - TYBALT.
 - "Mercutio, thou consortest with Romeo."
-- "MERCUTIO.\nConsort?"
+- MERCUTIO.
+- Consort?
 - "What, dost thou make us minstrels?"
 - And thou make minstrels of
 - "us, look to hear nothing but discords."
 - "Here’s my fiddlestick, here’s"
 - that shall make you dance.
-- "Zounds, consort!\n\nBENVOLIO."
+- "Zounds, consort!"
+- BENVOLIO.
 - We talk here in the public haunt of men.
 - "Either withdraw unto some private place,"
 - "And reason coldly of your grievances,"
 - Or else depart; here all eyes gaze on us
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - "Men’s eyes were made to look, and let"
 - them gaze.
 - I will not budge for no man’s pleasure
-- ", I.\n\n Enter Romeo.\n\nTYBALT."
+- ", I.\n\n Enter Romeo."
+- TYBALT.
 - "Well, peace be with you, sir, here"
-- "comes my man.\n\nMERCUTIO."
+- comes my man.
+- MERCUTIO.
 - "But I’ll be hanged, sir, if"
 - he wear your livery.
 - "Marry, go before to field, he’ll"
@@ -2538,17 +2763,20 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Romeo, the love I bear thee can"
 - afford
 - "No better term than this: Thou art a villain"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "Tybalt, the reason that I have to"
 - love thee
 - Doth much excuse the appertaining rage
 - To such a greeting.
 - Villain am I none;
 - Therefore farewell; I see thou know’st me
-- "not.\n\nTYBALT."
+- not.
+- TYBALT.
 - "Boy, this shall not excuse the injuries"
 - "That thou hast done me, therefore turn and draw"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "I do protest I never injur’d thee,"
 - But love thee better than thou canst devise
 - Till thou shalt know the reason of my love
@@ -2557,10 +2785,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "As dearly as mine own, be satisfied."
 - MERCUTIO.
 - "O calm, dishonourable, vile submission"
-- "!\n[_Draws."
+- "!"
+- "[_Draws."
 - "_] Alla stoccata carries it away."
 - "Tybalt, you rat-catcher, will"
-- "you walk?\n\nTYBALT."
+- you walk?
+- TYBALT.
 - What wouldst thou have with me?
 - MERCUTIO.
 - "Good King of Cats, nothing but one of your"
@@ -2571,13 +2801,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Will you pluck your sword out of his
 - pilcher by the ears?
 - "Make haste, lest mine be about your ears ere"
-- "it be out.\n\nTYBALT."
+- it be out.
+- TYBALT.
 - "[_Drawing._] I am for you."
 - ROMEO.
 - "Gentle Mercutio, put thy"
-- "rapier up.\n\nMERCUTIO."
+- rapier up.
+- MERCUTIO.
 - "Come, sir, your passado."
-- "[_They fight._]\n\nROMEO."
+- "[_They fight._]"
+- ROMEO.
 - "Draw, Benvolio; beat down their weapons"
 - "."
 - "Gentlemen, for shame, forbear this"
@@ -2600,15 +2833,18 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Marry, ’tis enough."
 - Where is my page?
 - "Go villain, fetch a surgeon."
-- "[_Exit Page._]\n\nROMEO."
+- "[_Exit Page._]"
+- ROMEO.
 - "Courage, man; the hurt cannot be much"
-- ".\n\nMERCUTIO."
+- "."
+- MERCUTIO.
 - "No, ’tis not so deep as a"
 - "well, nor so wide as a church door,"
 - but ’tis
 - "enough, ’twill serve."
 - "Ask for me tomorrow, and you shall find me"
-- "a\ngrave man."
+- a
+- grave man.
 - "I am peppered, I warrant, for this"
 - world. A plague o’ both
 - your houses.
@@ -2628,7 +2864,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I have it, and soundly too."
 - Your houses!
 - "[_Exeunt Mercutio and"
-- "Benvolio._]\n\nROMEO."
+- "Benvolio._]"
+- ROMEO.
 - "This gentleman, the Prince’s near ally,"
 - "My very friend, hath got his mortal hurt"
 - In my behalf; my reputation stain’d
@@ -2643,7 +2880,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "dead,"
 - "That gallant spirit hath aspir’d the clouds,"
 - Which too untimely here did scorn the earth
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - This day’s black fate on mo days doth
 - depend;
 - This but begins the woe others must end.
@@ -2654,14 +2892,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Again in triumph, and Mercutio slain?"
 - "Away to heaven respective lenity,"
 - And fire-ey’d fury be my conduct now
-- "!\nNow, Tybalt, take the ‘"
+- "!"
+- "Now, Tybalt, take the ‘"
 - villain’ back again
 - "That late thou gav’st me, for"
 - Mercutio’s soul
 - "Is but a little way above our heads,"
 - Staying for thine to keep him company.
 - "Either thou or I, or both, must go"
-- "with him.\n\nTYBALT."
+- with him.
+- TYBALT.
 - "Thou wretched boy, that didst consort"
 - "him here,\nShalt with him hence."
 - "ROMEO.\nThis shall determine that."
@@ -2669,7 +2909,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - BENVOLIO.
 - "Romeo, away, be gone!"
 - "The citizens are up, and Tybalt slain"
-- ".\nStand not amaz’d."
+- "."
+- Stand not amaz’d.
 - The Prince will doom thee death
 - If thou art taken.
 - "Hence, be gone, away!"
@@ -2681,7 +2922,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Which way ran he that kill’d Mercutio
 - "?"
 - "Tybalt, that murderer, which way ran"
-- "he?\n\nBENVOLIO."
+- he?
+- BENVOLIO.
 - There lies that Tybalt.
 - FIRST CITIZEN.
 - "Up, sir, go with me."
@@ -2704,7 +2946,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Of my dear kinsman!
 - "Prince, as thou art true,"
 - For blood of ours shed blood of Montague.
-- "O cousin, cousin.\n\nPRINCE."
+- "O cousin, cousin."
+- PRINCE.
 - "Benvolio, who began this bloody fray?"
 - BENVOLIO.
 - "Tybalt, here slain, whom Romeo’s"
@@ -2735,7 +2978,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - And ’twixt them rushes; underneath whose
 - arm
 - An envious thrust from Tybalt hit the
-- "life\nOf stout Mercutio, and then"
+- life
+- "Of stout Mercutio, and then"
 - Tybalt fled.
 - "But by and by comes back to Romeo,"
 - "Who had but newly entertain’d revenge,"
@@ -2745,7 +2989,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - slain;
 - And as he fell did Romeo turn and fly.
 - "This is the truth, or let Benvolio"
-- "die.\n\nLADY CAPULET."
+- die.
+- LADY CAPULET.
 - He is a kinsman to the Montague
 - "."
 - "Affection makes him false, he speaks not true"
@@ -2755,11 +3000,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I beg for justice, which thou, Prince,"
 - must give;
 - "Romeo slew Tybalt, Romeo must"
-- "not live.\n\nPRINCE."
+- not live.
+- PRINCE.
 - "Romeo slew him, he slew"
 - Mercutio.
 - Who now the price of his dear blood doth
-- "owe?\n\nMONTAGUE."
+- owe?
+- MONTAGUE.
 - "Not Romeo, Prince, he was"
 - Mercutio’s friend;
 - "His fault concludes but what the law should end,"
@@ -2782,7 +3029,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ".\n\n [_Exeunt._]"
 - SCENE II.
 - A Room in Capulet’s House.
-- "Enter Juliet.\n\nJULIET."
+- Enter Juliet.
+- JULIET.
 - "Gallop apace, you fiery-footed"
 - "steeds,"
 - Towards Phoebus’ lodging.
@@ -2795,7 +3043,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - unseen.
 - Lovers can see to do their amorous rites
 - "By their own beauties: or, if love"
-- "be blind,\nIt best agrees with night."
+- "be blind,"
+- It best agrees with night.
 - "Come, civil night,"
 - "Thou sober-suited matron, all in"
 - "black,"
@@ -2867,7 +3116,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "If he be slain, say Ay; or if"
 - "not, No."
 - Brief sounds determine of my weal or woe
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - "I saw the wound, I saw it with mine"
 - "eyes,"
 - God save the mark!—here on his
@@ -2875,7 +3125,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "A piteous corse, a bloody"
 - piteous corse;
 - "Pale, pale as ashes, all bedaub’d"
-- "in blood,\nAll in gore-blood."
+- "in blood,"
+- All in gore-blood.
 - I swounded at the sight.
 - JULIET.
 - "O, break, my heart."
@@ -2897,16 +3148,20 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "My dearest cousin, and my dearer lord"
 - "?\nThen dreadful trumpet sound the general doom,"
 - "For who is living, if those two are gone"
-- "?\n\nNURSE."
+- "?"
+- NURSE.
 - "Tybalt is gone, and Romeo banished"
 - ","
 - "Romeo that kill’d him, he is"
 - banished.
-- "JULIET.\nO God!"
+- JULIET.
+- O God!
 - Did Romeo’s hand shed Tybalt’s blood
-- "?\n\nNURSE."
+- "?"
+- NURSE.
 - "It did, it did; alas the day,"
-- "it did.\n\nJULIET."
+- it did.
+- JULIET.
 - "O serpent heart, hid with a flowering face!"
 - Did ever dragon keep so fair a cave?
 - "Beautiful tyrant, fiend angelical,"
@@ -2942,9 +3197,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - crown’d
 - Sole monarch of the universal earth.
 - "O, what a beast was I to chide"
-- "at him!\n\nNURSE."
+- at him!
+- NURSE.
 - Will you speak well of him that kill’d your
-- "cousin?\n\nJULIET."
+- cousin?
+- JULIET.
 - Shall I speak ill of him that is my
 - husband?
 - "Ah, poor my lord, what tongue shall smooth"
@@ -2963,14 +3220,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And Tybalt’s dead, that would have"
 - slain my husband.
 - All this is comfort; wherefore weep I
-- "then?\nSome word there was, worser than"
+- then?
+- "Some word there was, worser than"
 - "Tybalt’s death,"
 - That murder’d me.
 - "I would forget it fain,"
 - "But O, it presses to my memory"
 - Like damned guilty deeds to sinners’ minds.
 - "Tybalt is dead, and Romeo banished"
-- ".\nThat ‘banished,’ that one word ‘"
+- "."
+- "That ‘banished,’ that one word ‘"
 - "banished,’"
 - Hath slain ten thousand Tybalts.
 - Tybalt’s death
@@ -2988,7 +3247,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ‘Romeo is banished’—to
 - speak that word
 - "Is father, mother, Tybalt, Romeo"
-- ", Juliet,\nAll slain, all dead."
+- ", Juliet,"
+- "All slain, all dead."
 - "Romeo is banished,"
 - "There is no end, no limit, measure,"
 - "bound,"
@@ -2997,13 +3257,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Where is my father and my mother, Nurse?"
 - NURSE.
 - Weeping and wailing over Tybalt’s
-- "corse.\nWill you go to them?"
+- corse.
+- Will you go to them?
 - I will bring you thither.
 - JULIET.
 - Wash they his wounds with tears.
 - "Mine shall be spent,"
 - "When theirs are dry, for Romeo’s banishment"
-- ".\nTake up those cords."
+- "."
+- Take up those cords.
 - "Poor ropes, you are beguil’d,"
 - Both you and I; for Romeo is
 - exil’d.
@@ -3013,14 +3275,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Come cords, come Nurse, I’ll to my"
 - "wedding bed,"
 - "And death, not Romeo, take my maidenhead"
-- ".\n\nNURSE."
+- "."
+- NURSE.
 - Hie to your chamber. I’ll find Romeo
 - To comfort you.
 - I wot well where he is.
 - "Hark ye, your Romeo will be here at"
 - night.
 - "I’ll to him, he is hid at Lawrence"
-- "’ cell.\n\nJULIET."
+- ’ cell.
+- JULIET.
 - "O find him, give this ring to my true"
 - "knight,"
 - And bid him come to take his last farewell.
@@ -3034,19 +3298,24 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - parts
 - And thou art wedded to calamity.
 - Enter Romeo.
-- "ROMEO.\nFather, what news?"
+- ROMEO.
+- "Father, what news?"
 - What is the Prince’s doom?
 - "What sorrow craves acquaintance at my hand,"
 - That I yet know not?
 - "FRIAR LAWRENCE.\nToo familiar"
 - Is my dear son with such sour company.
 - I bring thee tidings of the Prince’s doom
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - What less than doomsday is the Prince’s
-- "doom?\n\nFRIAR LAWRENCE."
+- doom?
+- FRIAR LAWRENCE.
 - "A gentler judgment vanish’d from his lips,"
 - "Not body’s death, but body’s banishment"
-- ".\n\nROMEO.\nHa, banishment?"
+- "."
+- ROMEO.
+- "Ha, banishment?"
 - "Be merciful, say death;"
 - "For exile hath more terror in his look,"
 - Much more than death.
@@ -3054,7 +3323,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - FRIAR LAWRENCE.
 - Hence from Verona art thou banished.
 - "Be patient, for the world is broad and wide"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "There is no world without Verona walls,"
 - "But purgatory, torture, hell itself."
 - Hence banished is banish’d from the
@@ -3074,7 +3344,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - And turn’d that black word death to banishment
 - "."
 - "This is dear mercy, and thou see’st"
-- "it not.\n\nROMEO."
+- it not.
+- ROMEO.
 - "’Tis torture, and not mercy."
 - Heaven is here
 - "Where Juliet lives, and every cat and dog,"
@@ -3099,7 +3370,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "so mean,"
 - But banished to kill me? Banished?
 - "O Friar, the damned use that word in"
-- "hell.\nHowlings attends it."
+- hell.
+- Howlings attends it.
 - "How hast thou the heart,"
 - "Being a divine, a ghostly confessor,"
 - "A sin-absolver, and my friend profess’d"
@@ -3107,7 +3379,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - To mangle me with that word banished?
 - FRIAR LAWRENCE.
 - "Thou fond mad man, hear me speak a"
-- "little,\n\nROMEO."
+- "little,"
+- ROMEO.
 - "O, thou wilt speak again of banishment."
 - FRIAR LAWRENCE.
 - I’ll give thee armour to keep off that word
@@ -3119,11 +3392,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Displant a town, reverse a Prince’s doom"
 - ","
 - "It helps not, it prevails not, talk"
-- "no more.\n\nFRIAR LAWRENCE."
+- no more.
+- FRIAR LAWRENCE.
 - "O, then I see that mad men have no"
-- "ears.\n\nROMEO."
+- ears.
+- ROMEO.
 - "How should they, when that wise men have no"
-- "eyes?\n\nFRIAR LAWRENCE."
+- eyes?
+- FRIAR LAWRENCE.
 - Let me dispute with thee of thy estate.
 - ROMEO.
 - Thou canst not speak of that thou dost
@@ -3140,7 +3416,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "[_Knocking within._]"
 - FRIAR LAWRENCE.
 - Arise; one knocks.
-- "Good Romeo, hide thyself.\n\nROMEO."
+- "Good Romeo, hide thyself."
+- ROMEO.
 - "Not I, unless the breath of heartsick"
 - groans
 - Mist-like infold me from the search of
@@ -3156,17 +3433,21 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "come.\n\n [_Knocking._]"
 - Who knocks so hard?
 - "Whence come you, what’s your will?"
-- "NURSE.\n[_Within."
+- NURSE.
+- "[_Within."
 - "_] Let me come in, and you shall know"
 - "my errand.\nI come from Lady Juliet."
 - "FRIAR LAWRENCE.\nWelcome then."
-- "Enter Nurse.\n\nNURSE."
+- Enter Nurse.
+- NURSE.
 - "O holy Friar, O, tell me,"
 - "holy Friar,"
 - "Where is my lady’s lord, where’s Romeo"
-- "?\n\nFRIAR LAWRENCE."
+- "?"
+- FRIAR LAWRENCE.
 - "There on the ground, with his own tears made"
-- "drunk.\n\nNURSE."
+- drunk.
+- NURSE.
 - "O, he is even in my mistress’ case"
 - "."
 - Just in her case! O woeful sympathy!
@@ -3179,10 +3460,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "For Juliet’s sake, for her sake, rise"
 - and stand.
 - Why should you fall into so deep an O?
-- "ROMEO.\nNurse.\n\nNURSE."
+- "ROMEO.\nNurse."
+- NURSE.
 - "Ah sir, ah sir, death’s the end"
 - of all.
-- "ROMEO.\nSpakest thou of Juliet?"
+- ROMEO.
+- Spakest thou of Juliet?
 - How is it with her?
 - "Doth not she think me an old murderer,"
 - Now I have stain’d the childhood of our joy
@@ -3208,7 +3491,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Tell me, that I may sack"
 - "The hateful mansion.\n\n [_Drawing his sword._]"
 - FRIAR LAWRENCE.
-- "Hold thy desperate hand.\nArt thou a man?"
+- Hold thy desperate hand.
+- Art thou a man?
 - Thy form cries out thou art.
 - "Thy tears are womanish, thy wild acts"
 - "denote\nThe unreasonable fury of a beast."
@@ -3249,7 +3533,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ","
 - "Is set afire by thine own ignorance,"
 - And thou dismember’d with thine own defence
-- ".\nWhat, rouse thee, man."
+- "."
+- "What, rouse thee, man."
 - "Thy Juliet is alive,"
 - For whose dear sake thou wast but lately dead.
 - There art thou happy.
@@ -3265,7 +3550,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Thou putt’st up thy Fortune and thy
 - love.
 - "Take heed, take heed, for such die miserable"
-- ".\nGo, get thee to thy love as was"
+- "."
+- "Go, get thee to thy love as was"
 - "decreed,"
 - "Ascend her chamber, hence and comfort her."
 - But look thou stay not till the watch be set
@@ -3281,35 +3567,44 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Commend me to thy lady,"
 - And bid her hasten all the house to bed
 - ",\nWhich heavy sorrow makes them apt unto."
-- "Romeo is coming.\n\nNURSE."
+- Romeo is coming.
+- NURSE.
 - "O Lord, I could have stay’d here all"
-- "the night\nTo hear good counsel."
+- the night
+- To hear good counsel.
 - "O, what learning is!"
 - "My lord, I’ll tell my lady you will"
-- "come.\n\nROMEO."
+- come.
+- ROMEO.
 - "Do so, and bid my sweet prepare to"
-- "chide.\n\nNURSE."
+- chide.
+- NURSE.
 - "Here sir, a ring she bid me give you"
 - ", sir."
 - "Hie you, make haste, for it grows"
-- "very late.\n\n [_Exit._]\n\nROMEO."
+- "very late.\n\n [_Exit._]"
+- ROMEO.
 - How well my comfort is reviv’d by this
-- ".\n\nFRIAR LAWRENCE."
+- "."
+- FRIAR LAWRENCE.
 - "Go hence, good night, and here stands all"
 - "your state:"
 - "Either be gone before the watch be set,"
 - Or by the break of day disguis’d from
-- "hence.\nSojourn in Mantua."
+- hence.
+- Sojourn in Mantua.
 - "I’ll find out your man,"
 - And he shall signify from time to time
 - Every good hap to you that chances here.
 - Give me thy hand; ’tis late;
-- "farewell; good night.\n\nROMEO."
+- farewell; good night.
+- ROMEO.
 - But that a joy past joy calls out on me
 - ","
 - It were a grief so brief to part with thee
 - ".\nFarewell."
-- "[_Exeunt._]\n\nSCENE IV."
+- "[_Exeunt._]"
+- SCENE IV.
 - A Room in Capulet’s House.
 - "Enter Capulet, Lady Capulet and Paris."
 - CAPULET.
@@ -3318,7 +3613,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - That we have had no time to move our daughter
 - "."
 - "Look you, she lov’d her kinsman"
-- "Tybalt dearly,\nAnd so did I."
+- "Tybalt dearly,"
+- And so did I.
 - "Well, we were born to die."
 - ’Tis very late; she’ll not come down
 - tonight.
@@ -3326,12 +3622,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - I would have been abed an hour ago.
 - PARIS.
 - These times of woe afford no tune to woo
-- ".\nMadam, good night."
+- "."
+- "Madam, good night."
 - Commend me to your daughter.
 - LADY CAPULET.
 - "I will, and know her mind early tomorrow;"
 - Tonight she’s mew’d up to her
-- "heaviness.\n\nCAPULET."
+- heaviness.
+- CAPULET.
 - "Sir Paris, I will make a desperate tender"
 - Of my child’s love.
 - I think she will be rul’d
@@ -3345,7 +3643,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "next,"
 - "But, soft, what day is this?"
 - "PARIS.\nMonday, my lord."
-- "CAPULET.\nMonday! Ha, ha!"
+- CAPULET.
+- "Monday! Ha, ha!"
 - "Well, Wednesday is too soon,"
 - "A Thursday let it be; a Thursday, tell"
 - "her,"
@@ -3361,9 +3660,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "."
 - "Therefore we’ll have some half a dozen friends,"
 - And there an end.
-- "But what say you to Thursday?\n\nPARIS."
+- But what say you to Thursday?
+- PARIS.
 - "My lord, I would that Thursday were tomorrow."
-- "CAPULET.\nWell, get you gone."
+- CAPULET.
+- "Well, get you gone."
 - A Thursday be it then.
 - "Go you to Juliet ere you go to bed,"
 - "Prepare her, wife, against this wedding day."
@@ -3382,31 +3683,38 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "It was the nightingale, and not the"
 - "lark,"
 - That pierc’d the fearful hollow of thine
-- "ear;\nNightly she sings on yond"
+- ear;
+- Nightly she sings on yond
 - pomegranate tree.
 - "Believe me, love, it was the"
-- "nightingale.\n\nROMEO."
+- nightingale.
+- ROMEO.
 - "It was the lark, the herald of the"
-- "morn,\nNo nightingale."
+- "morn,"
+- No nightingale.
 - "Look, love, what envious streaks"
 - Do lace the severing clouds in yonder east
-- ".\nNight’s candles are burnt out, and"
+- "."
+- "Night’s candles are burnt out, and"
 - jocund day
 - Stands tiptoe on the misty mountain
 - tops.
 - "I must be gone and live, or stay and"
-- "die.\n\nJULIET."
+- die.
+- JULIET.
 - "Yond light is not daylight, I know it"
 - ", I."
 - It is some meteor that the sun exhales
 - To be to thee this night a torchbearer
 - And light thee on thy way to Mantua.
 - "Therefore stay yet, thou need’st not to"
-- "be gone.\n\nROMEO."
+- be gone.
+- ROMEO.
 - "Let me be ta’en, let me be put"
 - "to death,"
 - "I am content, so thou wilt have it so"
-- ".\nI’ll say yon grey is not the"
+- "."
+- I’ll say yon grey is not the
 - "morning’s eye,"
 - ’Tis but the pale reflex of Cynthia’s brow
 - "."
@@ -3414,7 +3722,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - beat
 - The vaulty heaven so high above our heads.
 - I have more care to stay than will to go
-- ".\nCome, death, and welcome."
+- "."
+- "Come, death, and welcome."
 - Juliet wills it so.
 - "How is’t, my soul?"
 - Let’s talk. It is not day.
@@ -3437,7 +3746,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Hunting thee hence with hunt’s-up to the
 - day.
 - "O now be gone, more light and light it"
-- "grows.\n\nROMEO."
+- grows.
+- ROMEO.
 - "More light and light, more dark and dark our"
 - "woes.\n\n Enter Nurse."
 - "NURSE.\nMadam."
@@ -3445,12 +3755,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - NURSE.
 - Your lady mother is coming to your chamber.
 - "The day is broke, be wary, look about"
-- ".\n\n [_Exit._]\n\nJULIET."
+- ".\n\n [_Exit._]"
+- JULIET.
 - "Then, window, let day in, and let"
-- "life out.\n\nROMEO."
+- life out.
+- ROMEO.
 - "Farewell, farewell, one kiss, and"
 - "I’ll descend.\n\n [_Descends._]"
-- "JULIET.\nArt thou gone so?"
+- JULIET.
+- Art thou gone so?
 - "Love, lord, ay husband, friend,"
 - I must hear from thee every day in the hour
 - ",\nFor in a minute there are many days."
@@ -3459,31 +3772,38 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ROMEO.\nFarewell!"
 - I will omit no opportunity
 - "That may convey my greetings, love, to thee"
-- ".\n\nJULIET."
+- "."
+- JULIET.
 - O thinkest thou we shall ever meet again?
 - ROMEO.
 - "I doubt it not, and all these woes shall"
 - serve
 - For sweet discourses in our time to come.
-- "JULIET.\nO God!"
+- JULIET.
+- O God!
 - I have an ill-divining soul!
 - "Methinks I see thee, now thou art"
 - "so low,"
 - As one dead in the bottom of a tomb.
 - "Either my eyesight fails, or thou"
-- "look’st pale.\n\nROMEO."
+- look’st pale.
+- ROMEO.
 - "And trust me, love, in my eye so"
-- "do you.\nDry sorrow drinks our blood."
+- do you.
+- Dry sorrow drinks our blood.
 - "Adieu, adieu."
 - "[_Exit below._]"
-- "JULIET.\nO Fortune, Fortune!"
+- JULIET.
+- "O Fortune, Fortune!"
 - "All men call thee fickle,"
 - "If thou art fickle, what dost thou with"
-- "him\nThat is renown’d for faith?"
+- him
+- That is renown’d for faith?
 - "Be fickle, Fortune;"
 - "For then, I hope thou wilt not keep him"
 - "long\nBut send him back."
-- "LADY CAPULET.\n[_Within."
+- LADY CAPULET.
+- "[_Within."
 - "_] Ho, daughter, are you up?"
 - JULIET.
 - Who is’t that calls?
@@ -3505,9 +3825,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Therefore have done: some grief shows much of love"
 - ","
 - But much of grief shows still some want of wit
-- ".\n\nJULIET."
+- "."
+- JULIET.
 - Yet let me weep for such a feeling loss
-- ".\n\nLADY CAPULET."
+- "."
+- LADY CAPULET.
 - "So shall you feel the loss, but not the"
 - "friend\nWhich you weep for."
 - JULIET.
@@ -3520,20 +3842,25 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - JULIET.
 - "What villain, madam?"
 - LADY CAPULET.
-- "That same villain Romeo.\n\nJULIET."
+- That same villain Romeo.
+- JULIET.
 - Villain and he be many miles asunder
-- ".\nGod pardon him."
+- "."
+- God pardon him.
 - "I do, with all my heart."
 - And yet no man like he doth grieve
-- "my heart.\n\nLADY CAPULET."
+- my heart.
+- LADY CAPULET.
 - That is because the traitor murderer lives.
 - JULIET.
 - "Ay madam, from the reach of these my"
 - hands.
 - Would none but I might venge my cousin’s
-- "death.\n\nLADY CAPULET."
+- death.
+- LADY CAPULET.
 - "We will have vengeance for it, fear thou not"
-- ".\nThen weep no more."
+- "."
+- Then weep no more.
 - "I’ll send to one in Mantua,"
 - Where that same banish’d runagate doth
 - "live,"
@@ -3559,7 +3886,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Find thou the means, and I’ll find such"
 - a man.
 - "But now I’ll tell thee joyful tidings,"
-- "girl.\n\nJULIET."
+- girl.
+- JULIET.
 - And joy comes well in such a needy time.
 - "What are they, I beseech your"
 - ladyship?
@@ -3569,9 +3897,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "One who to put thee from thy heaviness,"
 - "Hath sorted out a sudden day of joy,"
 - "That thou expects not, nor I look’d not"
-- "for.\n\nJULIET."
+- for.
+- JULIET.
 - "Madam, in happy time, what day is"
-- "that?\n\nLADY CAPULET."
+- that?
+- LADY CAPULET.
 - "Marry, my child, early next Thursday"
 - morn
 - "The gallant, young, and noble gentleman,"
@@ -3583,7 +3913,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - He shall not make me there a joyful bride.
 - "I wonder at this haste, that I must wed"
 - Ere he that should be husband comes to woo
-- ".\nI pray you tell my lord and father,"
+- "."
+- "I pray you tell my lord and father,"
 - "madam,"
 - I will not marry yet; and when I do
 - ", I swear"
@@ -3618,15 +3949,18 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Ay, sir; but she will none, she"
 - gives you thanks.
 - I would the fool were married to her grave.
-- "CAPULET.\nSoft."
+- CAPULET.
+- Soft.
 - "Take me with you, take me with you,"
-- "wife.\nHow, will she none?"
+- wife.
+- "How, will she none?"
 - Doth she not give us thanks?
 - Is she not proud?
 - "Doth she not count her blest,"
 - "Unworthy as she is, that we have wrought"
 - So worthy a gentleman to be her bridegroom
-- "?\n\nJULIET."
+- "?"
+- JULIET.
 - "Not proud you have, but thankful that you have"
 - "."
 - Proud can I never be of what I hate
@@ -3644,7 +3978,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - next
 - "To go with Paris to Saint Peter’s Church,"
 - Or I will drag thee on a hurdle thither
-- ".\nOut, you green-sickness carrion!"
+- "."
+- "Out, you green-sickness carrion!"
 - "Out, you baggage!\nYou tallow-face!"
 - LADY CAPULET.
 - "Fie, fie!"
@@ -3653,13 +3988,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Good father, I beseech you on my"
 - "knees,"
 - Hear me with patience but to speak a word
-- ".\n\nCAPULET."
+- "."
+- CAPULET.
 - "Hang thee young baggage, disobedient wretch!"
 - "I tell thee what,—get thee to church a"
 - "Thursday,"
 - Or never after look me in the face.
 - "Speak not, reply not, do not answer me"
-- ".\nMy fingers itch."
+- "."
+- My fingers itch.
 - "Wife, we scarce thought us blest"
 - That God had lent us but this only child;
 - But now I see this one is one too much
@@ -3668,7 +4005,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Out on her, hilding."
 - "NURSE.\nGod in heaven bless her."
 - "You are to blame, my lord, to rate"
-- "her so.\n\nCAPULET."
+- her so.
+- CAPULET.
 - "And why, my lady wisdom?"
 - "Hold your tongue,"
 - Good prudence; smatter with your
@@ -3681,7 +4019,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Utter your gravity o’er a gossip’s
 - "bowl,\nFor here we need it not."
 - LADY CAPULET.
-- "You are too hot.\n\nCAPULET."
+- You are too hot.
+- CAPULET.
 - "God’s bread, it makes me mad!"
 - "Day, night, hour, ride, time,"
 - "work, play,"
@@ -3720,7 +4059,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Nor what is mine shall never do thee good.
 - "Trust to’t, bethink you,"
 - I’ll not be forsworn.
-- "[_Exit._]\n\nJULIET."
+- "[_Exit._]"
+- JULIET.
 - "Is there no pity sitting in the clouds,"
 - That sees into the bottom of my grief?
 - "O sweet my mother, cast me not away,"
@@ -3733,7 +4073,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - a word.
 - "Do as thou wilt, for I have done with"
 - "thee.\n\n [_Exit._]"
-- "JULIET.\nO God!"
+- JULIET.
+- O God!
 - "O Nurse, how shall this be prevented?"
 - "My husband is on earth, my faith in heaven"
 - ".\nHow shall that faith return again to earth,"
@@ -3744,7 +4085,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Upon so soft a subject as myself.
 - What say’st thou?
 - Hast thou not a word of joy?
-- "Some comfort, Nurse.\n\nNURSE."
+- "Some comfort, Nurse."
+- NURSE.
 - "Faith, here it is."
 - Romeo is banished; and all the
 - world to nothing
@@ -3759,7 +4101,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Romeo’s a dishclout to him
 - ". An eagle, madam,"
 - "Hath not so green, so quick, so"
-- "fair an eye\nAs Paris hath."
+- fair an eye
+- As Paris hath.
 - "Beshrew my very heart,"
 - "I think you are happy in this second match,"
 - "For it excels your first: or if it"
@@ -3784,7 +4127,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - NURSE.
 - "Marry, I will; and this is wisely"
 - "done.\n\n [_Exit._]"
-- "JULIET.\nAncient damnation!"
+- JULIET.
+- Ancient damnation!
 - O most wicked fiend!
 - Is it more sin to wish me thus
 - "forsworn,"
@@ -3803,14 +4147,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Enter Friar Lawrence and Paris.
 - FRIAR LAWRENCE.
 - "On Thursday, sir?"
-- "The time is very short.\n\nPARIS."
+- The time is very short.
+- PARIS.
 - My father Capulet will have it so;
 - And I am nothing slow to slack his haste.
 - FRIAR LAWRENCE.
 - You say you do not know the lady’s mind
 - "."
 - Uneven is the course; I like it not
-- ".\n\nPARIS."
+- "."
+- PARIS.
 - Immoderately she weeps for
 - "Tybalt’s death,"
 - And therefore have I little talk’d of love;
@@ -3822,20 +4168,26 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Which, too much minded by herself alone,"
 - May be put from her by society.
 - Now do you know the reason of this haste.
-- "FRIAR LAWRENCE.\n[_Aside."
+- FRIAR LAWRENCE.
+- "[_Aside."
 - "_] I would I knew not why it should be"
 - slow’d.—
 - "Look, sir, here comes the lady toward my"
-- "cell.\n\n Enter Juliet.\n\nPARIS."
+- "cell.\n\n Enter Juliet."
+- PARIS.
 - "Happily met, my lady and my wife"
-- "!\n\nJULIET."
+- "!"
+- JULIET.
 - "That may be, sir, when I may be"
-- "a wife.\n\nPARIS."
+- a wife.
+- PARIS.
 - "That may be, must be, love, on"
-- "Thursday next.\n\nJULIET."
+- Thursday next.
+- JULIET.
 - What must be shall be.
 - FRIAR LAWRENCE.
-- "That’s a certain text.\n\nPARIS."
+- That’s a certain text.
+- PARIS.
 - Come you to make confession to this father?
 - JULIET.
 - "To answer that, I should confess to you."
@@ -3845,24 +4197,29 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - I will confess to you that I love him.
 - PARIS.
 - "So will ye, I am sure, that you"
-- "love me.\n\nJULIET."
+- love me.
+- JULIET.
 - "If I do so, it will be of more"
 - "price,"
 - Being spoke behind your back than to your face.
 - PARIS.
 - "Poor soul, thy face is much abus’d"
-- "with tears.\n\nJULIET."
+- with tears.
+- JULIET.
 - The tears have got small victory by that;
 - For it was bad enough before their spite.
 - PARIS.
 - Thou wrong’st it more than tears with
-- "that report.\n\nJULIET."
+- that report.
+- JULIET.
 - "That is no slander, sir, which is a"
 - "truth,"
 - "And what I spake, I spake it"
-- "to my face.\n\nPARIS."
+- to my face.
+- PARIS.
 - "Thy face is mine, and thou hast"
-- "slander’d it.\n\nJULIET."
+- slander’d it.
+- JULIET.
 - "It may be so, for it is not mine"
 - own.
 - "Are you at leisure, holy father, now,"
@@ -3871,7 +4228,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "My leisure serves me, pensive daughter, now"
 - ".—"
 - "My lord, we must entreat the time alone"
-- ".\n\nPARIS."
+- "."
+- PARIS.
 - God shield I should disturb devotion!—
 - "Juliet, on Thursday early will I rouse"
 - "ye,"
@@ -3885,7 +4243,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - FRIAR LAWRENCE.
 - "O Juliet, I already know thy grief;"
 - It strains me past the compass of my wits
-- ".\nI hear thou must, and nothing may"
+- "."
+- "I hear thou must, and nothing may"
 - "prorogue it,"
 - On Thursday next be married to this County.
 - JULIET.
@@ -3913,7 +4272,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Be not so long to speak.
 - "I long to die,"
 - If what thou speak’st speak not of remedy
-- ".\n\nFRIAR LAWRENCE."
+- "."
+- FRIAR LAWRENCE.
 - "Hold, daughter."
 - "I do spy a kind of hope,"
 - Which craves as desperate an execution
@@ -3926,12 +4286,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - That cop’st with death himself to scape from
 - it.
 - "And if thou dar’st, I’ll give"
-- "thee remedy.\n\nJULIET."
+- thee remedy.
+- JULIET.
 - "O, bid me leap, rather than marry Paris"
 - ","
 - "From off the battlements of yonder tower,"
 - "Or walk in thievish ways, or bid"
-- "me lurk\nWhere serpents are."
+- me lurk
+- Where serpents are.
 - Chain me with roaring bears;
 - "Or hide me nightly in a charnel-house,"
 - O’er-cover’d quite with dead men’s
@@ -3946,7 +4308,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And I will do it without fear or doubt,"
 - To live an unstain’d wife to my sweet
 - love.
-- "FRIAR LAWRENCE.\nHold then."
+- FRIAR LAWRENCE.
+- Hold then.
 - "Go home, be merry, give consent"
 - To marry Paris. Wednesday is tomorrow;
 - "Tomorrow night look that thou lie alone,"
@@ -3956,7 +4319,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ",\nAnd this distilled liquor drink thou off,"
 - When presently through all thy veins shall run
 - A cold and drowsy humour; for no
-- "pulse\nShall keep his native progress, but"
+- pulse
+- "Shall keep his native progress, but"
 - surcease.
 - "No warmth, no breath shall testify thou livest,"
 - The roses in thy lips and cheeks shall fade
@@ -3996,20 +4360,24 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - In this resolve.
 - I’ll send a friar with speed
 - "To Mantua, with my letters to thy lord"
-- ".\n\nJULIET."
+- "."
+- JULIET.
 - "Love give me strength, and strength shall help afford"
 - ".\nFarewell, dear father."
-- "[_Exeunt._]\n\nSCENE II."
+- "[_Exeunt._]"
+- SCENE II.
 - Hall in Capulet’s House.
 - "Enter Capulet, Lady Capulet, Nurse and"
-- "Servants.\n\nCAPULET."
+- Servants.
+- CAPULET.
 - So many guests invite as here are writ.
 - "[_Exit first Servant._]"
 - "Sirrah, go hire me twenty cunning cooks."
 - SECOND SERVANT.
 - "You shall have none ill, sir; for"
 - I’ll try if they can lick their
-- "fingers.\n\nCAPULET."
+- fingers.
+- CAPULET.
 - How canst thou try them so?
 - SECOND SERVANT.
 - "Marry, sir, ’tis an ill"
@@ -4025,11 +4393,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "NURSE.\nAy, forsooth."
 - CAPULET.
 - "Well, he may chance to do some good on"
-- "her.\nA peevish self-will’d"
+- her.
+- A peevish self-will’d
 - "harlotry it is.\n\n Enter Juliet."
 - NURSE.
 - See where she comes from shrift with merry look
-- ".\n\nCAPULET."
+- "."
+- CAPULET.
 - "How now, my headstrong."
 - Where have you been gadding?
 - JULIET.
@@ -4041,7 +4411,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - To beg your pardon.
 - "Pardon, I beseech you."
 - Henceforward I am ever rul’d by
-- "you.\n\nCAPULET."
+- you.
+- CAPULET.
 - "Send for the County, go tell him of this"
 - "."
 - I’ll have this knot knit up tomorrow morning.
@@ -4049,11 +4420,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I met the youthful lord at Lawrence’ cell,"
 - "And gave him what becomed love I might,"
 - Not stepping o’er the bounds of modesty
-- ".\n\nCAPULET."
+- "."
+- CAPULET.
 - "Why, I am glad on’t."
 - This is well. Stand up.
 - This is as’t should be.
-- "Let me see the County.\nAy, marry."
+- Let me see the County.
+- "Ay, marry."
 - "Go, I say, and fetch him hither"
 - "."
 - "Now afore God, this reverend holy Friar"
@@ -4066,13 +4439,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - As you think fit to furnish me tomorrow?
 - LADY CAPULET.
 - "No, not till Thursday."
-- "There is time enough.\n\nCAPULET."
+- There is time enough.
+- CAPULET.
 - "Go, Nurse, go with her."
 - We’ll to church tomorrow.
 - "[_Exeunt Juliet and Nurse._]"
 - LADY CAPULET.
 - "We shall be short in our provision,"
-- "’Tis now near night.\n\nCAPULET."
+- ’Tis now near night.
+- CAPULET.
 - "Tush, I will stir about,"
 - "And all things shall be well, I warrant thee"
 - ", wife."
@@ -4089,7 +4464,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Since this same wayward girl is so reclaim’d
 - ".\n\n [_Exeunt._]"
 - SCENE III. Juliet’s Chamber.
-- "Enter Juliet and Nurse.\n\nJULIET."
+- Enter Juliet and Nurse.
+- JULIET.
 - "Ay, those attires are best."
 - "But, gentle Nurse,"
 - I pray thee leave me to myself tonight;
@@ -4099,7 +4475,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "and full of sin.\n\n Enter Lady Capulet."
 - LADY CAPULET.
 - "What, are you busy, ho?"
-- "Need you my help?\n\nJULIET."
+- Need you my help?
+- JULIET.
 - "No, madam; we have cull’d"
 - such necessaries
 - As are behoveful for our state tomorrow.
@@ -4114,7 +4491,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - need.
 - "[_Exeunt Lady Capulet and Nurse."
 - "_]"
-- "JULIET.\nFarewell."
+- JULIET.
+- Farewell.
 - God knows when we shall meet again.
 - I have a faint cold fear thrills through my
 - veins
@@ -4131,7 +4509,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "What if it be a poison, which the"
 - Friar
 - Subtly hath minister’d to have me dead
-- ",\nLest in this marriage he should be"
+- ","
+- Lest in this marriage he should be
 - "dishonour’d,"
 - Because he married me before to Romeo?
 - I fear it is.
@@ -4190,9 +4569,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Enter Lady Capulet and Nurse.
 - LADY CAPULET.
 - "Hold, take these keys and fetch more spices,"
-- "Nurse.\n\nNURSE."
+- Nurse.
+- NURSE.
 - They call for dates and quinces in the pastry
-- ".\n\n Enter Capulet.\n\nCAPULET."
+- ".\n\n Enter Capulet."
+- CAPULET.
 - "Come, stir, stir, stir!"
 - "The second cock hath crow’d,"
 - "The curfew bell hath rung, ’"
@@ -4207,12 +4588,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "No, not a whit. What!"
 - I have watch’d ere now
 - "All night for lesser cause, and ne’er"
-- "been sick.\n\nLADY CAPULET."
+- been sick.
+- LADY CAPULET.
 - "Ay, you have been a mouse-hunt in"
 - your time;
 - But I will watch you from such watching now.
 - "[_Exeunt Lady Capulet and Nurse."
-- "_]\n\nCAPULET."
+- "_]"
+- CAPULET.
 - "A jealous-hood, a jealous-hood!"
 - "Enter Servants, with spits, logs and"
 - baskets.
@@ -4224,11 +4607,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "[_Exit First Servant._]"
 - "—Sirrah, fetch drier logs."
 - "Call Peter, he will show thee where they are"
-- ".\n\nSECOND SERVANT."
+- "."
+- SECOND SERVANT.
 - "I have a head, sir, that will find"
 - out logs
 - And never trouble Peter for the matter.
-- "[_Exit._]\n\nCAPULET."
+- "[_Exit._]"
+- CAPULET.
 - Mass and well said; a merry whoreson
 - ", ha."
 - "Thou shalt be loggerhead.—Good faith,"
@@ -4240,13 +4625,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "What, Nurse, I say!"
 - Re-enter Nurse.
 - "Go waken Juliet, go and trim her up"
-- ".\nI’ll go and chat with Paris."
+- "."
+- I’ll go and chat with Paris.
 - "Hie, make haste,"
 - Make haste; the bridegroom he is come
 - "already.\nMake haste I say."
-- "[_Exeunt._]\n\nSCENE V."
+- "[_Exeunt._]"
+- SCENE V.
 - Juliet’s Chamber; Juliet on the bed.
-- "Enter Nurse.\n\nNURSE."
+- Enter Nurse.
+- NURSE.
 - "Mistress! What, mistress! Juliet!"
 - "Fast, I warrant her, she."
 - "Why, lamb, why, lady, fie,"
@@ -4259,7 +4647,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "I warrant,"
 - The County Paris hath set up his rest
 - That you shall rest but little.
-- "God forgive me!\nMarry and amen."
+- God forgive me!
+- Marry and amen.
 - How sound is she asleep!
 - I needs must wake her.
 - "Madam, madam, madam!"
@@ -4281,16 +4670,19 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - What noise is here?
 - "NURSE.\nO lamentable day!"
 - LADY CAPULET.
-- "What is the matter?\n\nNURSE."
+- What is the matter?
+- NURSE.
 - "Look, look! O heavy day!"
 - LADY CAPULET.
 - "O me, O me!"
 - "My child, my only life."
 - "Revive, look up, or I will die"
 - "with thee.\nHelp, help! Call help."
-- "Enter Capulet.\n\nCAPULET."
+- Enter Capulet.
+- CAPULET.
 - "For shame, bring Juliet forth, her lord is"
-- "come.\n\nNURSE."
+- come.
+- NURSE.
 - "She’s dead, deceas’d, she’s"
 - dead; alack the day!
 - LADY CAPULET.
@@ -4305,7 +4697,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Upon the sweetest flower of all the field.
 - "NURSE.\nO lamentable day!"
 - LADY CAPULET.
-- "O woful time!\n\nCAPULET."
+- O woful time!
+- CAPULET.
 - "Death, that hath ta’en her hence to make"
 - "me wail,"
 - Ties up my tongue and will not let me
@@ -4313,7 +4706,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Enter Friar Lawrence and Paris with Musicians.
 - FRIAR LAWRENCE.
 - "Come, is the bride ready to go to church"
-- "?\n\nCAPULET."
+- "?"
+- CAPULET.
 - "Ready to go, but never to return."
 - "O son, the night before thy wedding day"
 - Hath death lain with thy bride.
@@ -4321,14 +4715,17 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Flower as she was, deflowered by"
 - him.
 - "Death is my son-in-law, death is my"
-- "heir;\nMy daughter he hath wedded."
+- heir;
+- My daughter he hath wedded.
 - I will die.
 - "And leave him all; life, living, all"
-- "is death’s.\n\nPARIS."
+- is death’s.
+- PARIS.
 - Have I thought long to see this morning’s face
 - ","
 - And doth it give me such a sight as
-- "this?\n\nLADY CAPULET."
+- this?
+- LADY CAPULET.
 - "Accurs’d, unhappy, wretched, hateful"
 - day.
 - Most miserable hour that e’er time saw
@@ -4337,7 +4734,9 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "child,"
 - "But one thing to rejoice and solace in,"
 - And cruel death hath catch’d it from my sight
-- ".\n\nNURSE.\nO woe!"
+- "."
+- NURSE.
+- O woe!
 - "O woeful, woeful, woeful day"
 - ".\nMost lamentable day, most woeful day"
 - "That ever, ever, I did yet behold!"
@@ -4410,20 +4809,25 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ", Paris and Friar._]"
 - FIRST MUSICIAN.
 - "Faith, we may put up our pipes and"
-- "be gone.\n\nNURSE."
+- be gone.
+- NURSE.
 - "Honest good fellows, ah, put up,"
 - "put up,"
 - For well you know this is a pitiful case
-- ".\n\nFIRST MUSICIAN."
+- "."
+- FIRST MUSICIAN.
 - "Ay, by my troth, the case may"
 - "be amended.\n\n [_Exit Nurse._]"
-- "Enter Peter.\n\nPETER."
+- Enter Peter.
+- PETER.
 - "Musicians, O, musicians, ‘Heart’s"
 - "ease,’ ‘Heart’s ease’, O, and"
 - you
 - "will have me live, play ‘Heart’s ease"
-- ".’\n\nFIRST MUSICIAN."
-- "Why ‘Heart’s ease’?\n\nPETER."
+- ".’"
+- FIRST MUSICIAN.
+- Why ‘Heart’s ease’?
+- PETER.
 - "O musicians, because my heart itself plays ‘My"
 - heart is full’. O play
 - me some merry dump to comfort me.
@@ -4431,7 +4835,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Not a dump we, ’tis no time"
 - to play now.
 - "PETER.\nYou will not then?"
-- "FIRST MUSICIAN.\nNo.\n\nPETER."
+- "FIRST MUSICIAN.\nNo."
+- PETER.
 - I will then give it you soundly.
 - "FIRST MUSICIAN.\nWhat will you give us?"
 - PETER.
@@ -4445,14 +4850,18 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - on your pate. I will
 - carry no crotchets.
 - "I’ll re you, I’ll fa you."
-- "Do you note me?\n\nFIRST MUSICIAN."
+- Do you note me?
+- FIRST MUSICIAN.
 - "And you re us and fa us, you note"
-- "us.\n\nSECOND MUSICIAN."
+- us.
+- SECOND MUSICIAN.
 - "Pray you put up your dagger, and put"
-- "out your wit.\n\nPETER."
+- out your wit.
+- PETER.
 - Then have at you with my wit.
 - I will dry-beat you with an iron wit
-- ", and\nput up my iron dagger."
+- ", and"
+- put up my iron dagger.
 - Answer me like men.
 - ‘When griping griefs the heart doth
 - "wound,"
@@ -4463,11 +4872,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "What say you,\nSimon Catling?"
 - FIRST MUSICIAN.
 - "Marry, sir, because silver hath a sweet"
-- "sound.\n\nPETER.\nPrates."
+- sound.
+- PETER.
+- Prates.
 - "What say you, Hugh Rebeck?"
 - SECOND MUSICIAN.
 - I say ‘silver sound’ because musicians sound for
-- "silver.\n\nPETER.\nPrates too!"
+- silver.
+- PETER.
+- Prates too!
 - "What say you, James Soundpost?"
 - THIRD MUSICIAN.
 - "Faith, I know not what to say."
@@ -4479,14 +4892,17 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "no gold for\nsounding."
 - ‘Then music with her silver sound
 - With speedy help doth lend redress.’
-- "[_Exit._]\n\nFIRST MUSICIAN."
+- "[_Exit._]"
+- FIRST MUSICIAN.
 - What a pestilent knave is this same!
-- "SECOND MUSICIAN.\nHang him, Jack."
+- SECOND MUSICIAN.
+- "Hang him, Jack."
 - "Come, we’ll in here, tarry for"
 - "the mourners, and stay\ndinner."
 - "[_Exeunt._]\n\n\n\nACT V"
 - SCENE I. Mantua. A Street.
-- "Enter Romeo.\n\nROMEO."
+- Enter Romeo.
+- ROMEO.
 - "If I may trust the flattering eye of sleep,"
 - My dreams presage some joyful news at hand.
 - My bosom’s lord sits lightly in his throne
@@ -4509,7 +4925,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - News from Verona!
 - "How now, Balthasar?"
 - Dost thou not bring me letters from the
-- "Friar?\nHow doth my lady?"
+- Friar?
+- How doth my lady?
 - Is my father well?
 - How fares my Juliet? That I ask again;
 - For nothing can be ill if she be well.
@@ -4522,28 +4939,34 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - And presently took post to tell it you.
 - "O pardon me for bringing these ill news,"
 - "Since you did leave it for my office, sir"
-- ".\n\nROMEO.\nIs it even so?"
+- "."
+- ROMEO.
+- Is it even so?
 - "Then I defy you, stars!"
 - Thou know’st my lodging.
 - "Get me ink and paper,"
 - And hire post-horses.
-- "I will hence tonight.\n\nBALTHASAR."
+- I will hence tonight.
+- BALTHASAR.
 - "I do beseech you sir, have patience"
 - "."
 - "Your looks are pale and wild, and do import"
-- "Some misadventure.\n\nROMEO."
+- Some misadventure.
+- ROMEO.
 - "Tush, thou art deceiv’d."
 - "Leave me, and do the thing I bid thee"
 - do.
 - Hast thou no letters to me from the
-- "Friar?\n\nBALTHASAR."
+- Friar?
+- BALTHASAR.
 - "No, my good lord."
 - "ROMEO.\nNo matter. Get thee gone,"
 - And hire those horses.
 - I’ll be with thee straight.
 - "[_Exit Balthasar._]"
 - "Well, Juliet, I will lie with thee tonight"
-- ".\nLet’s see for means."
+- "."
+- Let’s see for means.
 - O mischief thou art swift
 - To enter in the thoughts of desperate men.
 - "I do remember an apothecary,—"
@@ -4578,7 +5001,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Enter Apothecary.
 - APOTHECARY.
 - Who calls so loud?
-- "ROMEO.\nCome hither, man."
+- ROMEO.
+- "Come hither, man."
 - I see that thou art poor.
 - "Hold, there is forty ducats."
 - Let me have
@@ -4596,7 +5020,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Is death to any he that utters them.
 - ROMEO.
 - Art thou so bare and full of wretchedness
-- ",\nAnd fear’st to die?"
+- ","
+- And fear’st to die?
 - "Famine is in thy cheeks,"
 - Need and oppression starveth in thine eyes
 - ","
@@ -4606,7 +5031,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - The world affords no law to make thee rich
 - ;
 - "Then be not poor, but break it and take"
-- "this.\n\nAPOTHECARY."
+- this.
+- APOTHECARY.
 - "My poverty, but not my will consents."
 - ROMEO.
 - "I pay thy poverty, and not thy will."
@@ -4615,28 +5041,32 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And drink it off; and, if you had"
 - the strength
 - "Of twenty men, it would despatch you straight"
-- ".\n\nROMEO."
+- "."
+- ROMEO.
 - "There is thy gold, worse poison to men’s"
 - "souls,"
 - Doing more murder in this loathsome world
 - Than these poor compounds that thou mayst not sell
 - "."
 - "I sell thee poison, thou hast sold me none"
-- ".\nFarewell, buy food, and get"
+- "."
+- "Farewell, buy food, and get"
 - thyself in flesh.
 - "Come, cordial and not poison, go with"
 - me
 - "To Juliet’s grave, for there must I use"
 - "thee.\n\n [_Exeunt._]"
 - SCENE II. Friar Lawrence’s Cell.
-- "Enter Friar John.\n\nFRIAR JOHN."
+- Enter Friar John.
+- FRIAR JOHN.
 - Holy Franciscan Friar!
 - "Brother, ho!\n\n Enter Friar Lawrence."
 - FRIAR LAWRENCE.
 - This same should be the voice of Friar John
 - ".\nWelcome from Mantua. What says Romeo?"
 - "Or, if his mind be writ, give me"
-- "his letter.\n\nFRIAR JOHN."
+- his letter.
+- FRIAR JOHN.
 - "Going to find a barefoot brother out,"
 - "One of our order, to associate me,"
 - "Here in this city visiting the sick,"
@@ -4646,7 +5076,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Seal’d up the doors, and would not"
 - "let us forth,"
 - So that my speed to Mantua there was
-- "stay’d.\n\nFRIAR LAWRENCE."
+- stay’d.
+- FRIAR LAWRENCE.
 - Who bare my letter then to Romeo?
 - FRIAR JOHN.
 - "I could not send it,—here it is again"
@@ -4660,7 +5091,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - May do much danger.
 - "Friar John, go hence,"
 - Get me an iron crow and bring it straight
-- "Unto my cell.\n\nFRIAR JOHN."
+- Unto my cell.
+- FRIAR JOHN.
 - "Brother, I’ll go and bring it thee"
 - ".\n\n [_Exit._]"
 - FRIAR LAWRENCE.
@@ -4677,7 +5109,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - the Capulets.
 - "Enter Paris, and his Page bearing flowers and a"
 - torch.
-- "PARIS.\nGive me thy torch, boy."
+- PARIS.
+- "Give me thy torch, boy."
 - Hence and stand aloof.
 - "Yet put it out, for I would not be"
 - seen.
@@ -4686,15 +5119,18 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Holding thy ear close to the hollow ground;
 - "So shall no foot upon the churchyard tread,"
 - "Being loose, unfirm, with digging up of"
-- "graves,\nBut thou shalt hear it."
+- "graves,"
+- But thou shalt hear it.
 - "Whistle then to me,"
 - As signal that thou hear’st something approach.
 - Give me those flowers.
 - "Do as I bid thee, go."
-- "PAGE.\n[_Aside."
+- PAGE.
+- "[_Aside."
 - "_] I am almost afraid to stand alone"
 - Here in the churchyard; yet I will adventure
-- ".\n\n [_Retires._]\n\nPARIS."
+- ".\n\n [_Retires._]"
+- PARIS.
 - "Sweet flower, with flowers thy bridal bed I"
 - strew.
 - "O woe, thy canopy is dust and stones"
@@ -4708,11 +5144,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - The boy gives warning something doth approach.
 - "What cursed foot wanders this way tonight,"
 - To cross my obsequies and true love’s
-- "rite?\nWhat, with a torch!"
+- rite?
+- "What, with a torch!"
 - "Muffle me, night, awhile."
 - "[_Retires._]"
 - "Enter Romeo and Balthasar with a torch,"
-- "mattock, &c.\n\nROMEO."
+- "mattock, &c."
+- ROMEO.
 - Give me that mattock and the wrenching
 - iron.
 - "Hold, take this letter; early in the morning"
@@ -4738,14 +5176,17 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - BALTHASAR.
 - "I will be gone, sir, and not trouble"
 - you.
-- "ROMEO.\nSo shalt thou show me friendship."
+- ROMEO.
+- So shalt thou show me friendship.
 - Take thou that.
 - "Live, and be prosperous, and farewell, good"
-- "fellow.\n\nBALTHASAR."
+- fellow.
+- BALTHASAR.
 - "For all this same, I’ll hide me"
 - hereabout.
 - "His looks I fear, and his intents I doubt"
-- ".\n\n [_Retires_]\n\nROMEO."
+- ".\n\n [_Retires_]"
+- ROMEO.
 - "Thou detestable maw, thou womb"
 - "of death,"
 - Gorg’d with the dearest morsel
@@ -4753,13 +5194,15 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Thus I enforce thy rotten jaws to open,"
 - "[_Breaking open the door of the monument._]"
 - "And in despite, I’ll cram thee with more"
-- "food.\n\nPARIS."
+- food.
+- PARIS.
 - This is that banish’d haughty Montague
 - "That murder’d my love’s cousin,—with which"
 - "grief,"
 - "It is supposed, the fair creature died,—"
 - And here is come to do some villanous
-- "shame\nTo the dead bodies."
+- shame
+- To the dead bodies.
 - I will apprehend him.
 - "[_Advances._]"
 - "Stop thy unhallow’d toil, vile"
@@ -4768,7 +5211,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Condemned villain, I do apprehend thee"
 - "."
 - "Obey, and go with me, for thou"
-- "must die.\n\nROMEO."
+- must die.
+- ROMEO.
 - I must indeed; and therefore came I hither
 - "."
 - "Good gentle youth, tempt not a desperate man."
@@ -4785,17 +5229,21 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - A madman’s mercy bid thee run away.
 - "PARIS.\nI do defy thy conjuration,"
 - And apprehend thee for a felon here.
-- "ROMEO.\nWilt thou provoke me?"
+- ROMEO.
+- Wilt thou provoke me?
 - "Then have at thee, boy!"
 - "[_They fight._]"
-- "PAGE.\nO lord, they fight!"
+- PAGE.
+- "O lord, they fight!"
 - I will go call the watch.
-- "[_Exit._]\n\nPARIS."
+- "[_Exit._]"
+- PARIS.
 - "O, I am slain! [_Falls."
 - "_] If thou be merciful,"
 - "Open the tomb, lay me with Juliet."
 - "[_Dies._]"
-- "ROMEO.\nIn faith, I will."
+- ROMEO.
+- "In faith, I will."
 - Let me peruse this face.
 - "Mercutio’s kinsman, noble County"
 - Paris!
@@ -4805,7 +5253,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Said he not so?
 - Or did I dream it so?
 - "Or am I mad, hearing him talk of Juliet"
-- ",\nTo think it was so?"
+- ","
+- To think it was so?
 - "O, give me thy hand,"
 - One writ with me in sour misfortune’s book
 - "."
@@ -4850,7 +5299,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "O, here"
 - Will I set up my everlasting rest;
 - And shake the yoke of inauspicious
-- "stars\nFrom this world-wearied flesh."
+- stars
+- From this world-wearied flesh.
 - "Eyes, look your last."
 - "Arms, take your last embrace!"
 - "And, lips, O you"
@@ -4874,14 +5324,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Have my old feet stumbled at graves?
 - Who’s there?
 - "Who is it that consorts, so late,"
-- "the dead?\n\nBALTHASAR."
+- the dead?
+- BALTHASAR.
 - "Here’s one, a friend, and one that"
 - knows you well.
 - FRIAR LAWRENCE.
 - Bliss be upon you.
 - "Tell me, good my friend,"
 - What torch is yond that vainly lends his
-- "light\nTo grubs and eyeless skulls?"
+- light
+- To grubs and eyeless skulls?
 - "As I discern,"
 - It burneth in the Capels’ monument.
 - BALTHASAR.
@@ -4936,11 +5388,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Hath thwarted our intents.
 - "Come, come away."
 - Thy husband in thy bosom there lies dead
-- ";\nAnd Paris too."
+- ;
+- And Paris too.
 - "Come, I’ll dispose of thee"
 - Among a sisterhood of holy nuns.
 - "Stay not to question, for the watch is coming"
-- ".\nCome, go, good Juliet."
+- "."
+- "Come, go, good Juliet."
 - I dare no longer stay.
 - JULIET.
 - "Go, get thee hence, for I will not"
@@ -4949,7 +5403,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - A cup clos’d in my true love’s hand
 - "?"
 - "Poison, I see, hath been his timeless"
-- "end.\nO churl."
+- end.
+- O churl.
 - "Drink all, and left no friendly drop"
 - To help me after?
 - I will kiss thy lips.
@@ -4957,10 +5412,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "them,"
 - To make me die with a restorative.
 - "[_Kisses him._]"
-- "Thy lips are warm!\n\nFIRST WATCH."
+- Thy lips are warm!
+- FIRST WATCH.
 - "[_Within._] Lead, boy."
 - Which way?
-- "JULIET.\nYea, noise?"
+- JULIET.
+- "Yea, noise?"
 - Then I’ll be brief. O happy dagger.
 - "[_Snatching Romeo’s dagger._]"
 - "This is thy sheath. [_stabs"
@@ -4968,9 +5425,11 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - die.
 - "[_Falls on Romeo’s body and dies."
 - "_]\n\n Enter Watch with the Page of Paris."
-- "PAGE.\nThis is the place."
+- PAGE.
+- This is the place.
 - "There, where the torch doth burn."
-- "FIRST WATCH.\nThe ground is bloody."
+- FIRST WATCH.
+- The ground is bloody.
 - Search about the churchyard.
 - "Go, some of you, whoe’er"
 - you find attach.
@@ -4988,13 +5447,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - But the true ground of all these piteous
 - "woes\nWe cannot without circumstance descry."
 - Re-enter some of the Watch with Balthasar
-- ".\n\nSECOND WATCH.\nHere’s Romeo’s man."
+- "."
+- SECOND WATCH.
+- Here’s Romeo’s man.
 - We found him in the churchyard.
 - FIRST WATCH.
 - Hold him in safety till the Prince come hither
 - "."
 - Re-enter others of the Watch with Friar Lawrence
-- ".\n\nTHIRD WATCH."
+- "."
+- THIRD WATCH.
 - "Here is a Friar that trembles,"
 - "sighs, and weeps."
 - We took this mattock and this spade
@@ -5009,35 +5471,42 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Enter Capulet, Lady Capulet and others."
 - CAPULET.
 - What should it be that they so shriek abroad
-- "?\n\nLADY CAPULET."
+- "?"
+- LADY CAPULET.
 - "O the people in the street cry Romeo,"
 - "Some Juliet, and some Paris, and all run"
 - With open outcry toward our monument.
 - PRINCE.
 - What fear is this which startles in our ears
-- "?\n\nFIRST WATCH."
+- "?"
+- FIRST WATCH.
 - "Sovereign, here lies the County Paris slain"
 - ","
 - "And Romeo dead, and Juliet, dead before,"
-- "Warm and new kill’d.\n\nPRINCE."
+- Warm and new kill’d.
+- PRINCE.
 - "Search, seek, and know how this foul murder"
-- "comes.\n\nFIRST WATCH."
+- comes.
+- FIRST WATCH.
 - "Here is a Friar, and slaughter’d"
 - "Romeo’s man,"
 - With instruments upon them fit to open
 - These dead men’s tombs.
-- "CAPULET.\nO heaven!"
+- CAPULET.
+- O heaven!
 - "O wife, look how our daughter bleeds!"
 - "This dagger hath mista’en, for lo,"
 - his house
 - "Is empty on the back of Montague,"
 - And it mis-sheathed in my daughter’s
 - bosom.
-- "LADY CAPULET.\nO me!"
+- LADY CAPULET.
+- O me!
 - This sight of death is as a bell
 - That warns my old age to a
 - sepulchre.
-- "Enter Montague and others.\n\nPRINCE."
+- Enter Montague and others.
+- PRINCE.
 - "Come, Montague, for thou art early up"
 - ","
 - To see thy son and heir more early down.
@@ -5073,7 +5542,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Myself condemned and myself excus’d.
 - PRINCE.
 - Then say at once what thou dost know in this
-- ".\n\nFRIAR LAWRENCE."
+- "."
+- FRIAR LAWRENCE.
 - "I will be brief, for my short date of"
 - breath
 - Is not so long as is a tedious tale.
@@ -5107,7 +5577,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ","
 - Being the time the potion’s force should cease.
 - "But he which bore my letter, Friar John"
-- ",\nWas stay’d by accident; and"
+- ","
+- Was stay’d by accident; and
 - yesternight
 - Return’d my letter back. Then all alone
 - At the prefixed hour of her waking
@@ -5150,7 +5621,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Where is the County’s Page that rais’d the
 - watch?
 - "Sirrah, what made your master in this place"
-- "?\n\nPAGE."
+- "?"
+- PAGE.
 - He came with flowers to strew his lady’s
 - "grave,"
 - "And bid me stand aloof, and so I"
@@ -5168,7 +5640,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Of a poor ’pothecary, and"
 - therewithal
 - "Came to this vault to die, and lie"
-- "with Juliet.\nWhere be these enemies?"
+- with Juliet.
+- Where be these enemies?
 - "Capulet, Montague,"
 - See what a scourge is laid upon your hate
 - ","
@@ -5177,7 +5650,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "And I, for winking at your discords"
 - "too,"
 - Have lost a brace of kinsmen.
-- "All are punish’d.\n\nCAPULET."
+- All are punish’d.
+- CAPULET.
 - "O brother Montague, give me thy hand."
 - "This is my daughter’s jointure, for no"
 - "more\nCan I demand."
@@ -5221,10 +5695,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - and may not be used if you charge for an
 - "eBook, except by following"
 - "the terms of the trademark license, including paying royalties"
-- "for use\nof the Project Gutenberg trademark."
+- for use
+- of the Project Gutenberg trademark.
 - If you do not charge anything for
 - "copies of this eBook, complying with the trademark license"
-- "is very\neasy."
+- is very
+- easy.
 - You may use this eBook for nearly any purpose such
 - as creation
 - "of derivative works, reports, performances and research."
@@ -5232,7 +5708,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Gutenberg eBooks may be modified and printed and given
 - away--you may
 - do practically ANYTHING in the United States with eBooks
-- "not protected\nby U.S. copyright law."
+- not protected
+- by U.S. copyright law.
 - Redistribution is subject to the trademark
 - "license, especially commercial redistribution.\n\nSTART: FULL LICENSE"
 - THE FULL PROJECT GUTENBERG LICENSE
@@ -5250,18 +5727,21 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "at\nwww.gutenberg.org/license."
 - Section 1.
 - General Terms of Use and Redistributing Project
-- "Gutenberg-tm electronic works\n\n1.A."
+- Gutenberg-tm electronic works
+- 1.A.
 - By reading or using any part of this Project Gutenberg
 - "-tm"
 - "electronic work, you indicate that you have read"
 - ", understand, agree to"
 - and accept all the terms of this license and intellectual
-- "property\n(trademark/copyright) agreement."
+- property
+- (trademark/copyright) agreement.
 - If you do not agree to abide by all
 - "the terms of this agreement, you must cease using"
 - and return or
 - destroy all copies of Project Gutenberg-tm electronic works in
-- "your\npossession."
+- your
+- possession.
 - If you paid a fee for obtaining a copy of
 - or access to a
 - Project Gutenberg-tm electronic work and you do not agree
@@ -5280,7 +5760,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - things that you can do with most Project Gutenberg-tm
 - electronic works
 - even without complying with the full terms of this agreement
-- ". See\nparagraph 1.C below."
+- ". See"
+- paragraph 1.C below.
 - There are a lot of things you can do with
 - Project
 - Gutenberg-tm electronic works if you follow the terms
@@ -5288,14 +5769,16 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - agreement and help preserve free future access to Project
 - Gutenberg-tm
 - electronic works. See paragraph 1.
-- "E below.\n\n1.C."
+- E below.
+- 1.C.
 - "The Project Gutenberg Literary Archive Foundation (\"the"
 - "Foundation\" or PGLAF), owns a compilation"
 - copyright in the collection
 - of Project Gutenberg-tm electronic works.
 - Nearly all the individual
 - works in the collection are in the public domain in
-- "the United\nStates."
+- the United
+- States.
 - If an individual work is unprotected by copyright law in
 - the
 - United States and you are located in the United States
@@ -5351,7 +5834,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - This eBook is for the use of anyone anywhere in
 - the United States and
 - most other parts of the world at no cost and
-- "with almost no\n  restrictions whatsoever."
+- with almost no
+- restrictions whatsoever.
 - "You may copy it, give it away or re"
 - "-use it"
 - under the terms of the Project Gutenberg License included with
@@ -5399,7 +5883,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "License terms from this work, or any files containing"
 - a part of this
 - work or any other work associated with Project Gutenberg-tm
-- ".\n\n1.E.5."
+- "."
+- 1.E.5.
 - "Do not copy, display, perform, distribute or"
 - redistribute this
 - "electronic work, or any part of this electronic"
@@ -5429,11 +5914,13 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Vanilla ASCII\" or other form."
 - Any alternate format must include the
 - full Project Gutenberg-tm License as specified in paragraph
-- "1.E.1.\n\n1.E.7."
+- 1.E.1.
+- 1.E.7.
 - "Do not charge a fee for access to, viewing"
 - ", displaying,"
 - "performing, copying or distributing any Project Gutenberg-tm"
-- "works\nunless you comply with paragraph 1."
+- works
+- unless you comply with paragraph 1.
 - E.8 or 1.E.9.
 - 1.E.8.
 - You may charge a reasonable fee for copies of or
@@ -5449,7 +5936,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "to the owner of the Project Gutenberg-tm trademark,"
 - but he has
 - agreed to donate royalties under this paragraph to the
-- "Project\n  Gutenberg Literary Archive Foundation."
+- Project
+- Gutenberg Literary Archive Foundation.
 - Royalty payments must be paid
 - within 60 days following each date on which you
 - prepare (or are
@@ -5465,7 +5953,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - you in writing (or by e-mail) within
 - 30 days of receipt that s/he
 - does not agree to the terms of the full Project
-- "Gutenberg-tm\n  License."
+- Gutenberg-tm
+- License.
 - You must require such a user to return or destroy
 - all
 - copies of the works possessed in a physical medium and
@@ -5489,7 +5978,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "are set forth in this agreement, you must obtain"
 - permission in writing
 - "from the Project Gutenberg Literary Archive Foundation, the manager"
-- "of\nthe Project Gutenberg-tm trademark."
+- of
+- the Project Gutenberg-tm trademark.
 - Contact the Foundation as set
 - "forth in Section 3 below.\n\n1.F."
 - 1.F.1.
@@ -5497,7 +5987,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "effort to identify, do copyright research on,"
 - transcribe and proofread
 - works not protected by U.S. copyright law in
-- "creating the Project\nGutenberg-tm collection."
+- creating the Project
+- Gutenberg-tm collection.
 - "Despite these efforts, Project Gutenberg-tm"
 - "electronic works, and the medium on which they"
 - "may be stored, may"
@@ -5522,7 +6013,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Gutenberg-tm electronic work under this agreement,"
 - disclaim all
 - "liability to you for damages, costs and expenses"
-- ", including legal\nfees."
+- ", including legal"
+- fees.
 - YOU AGREE THAT YOU HAVE NO REMEDIES
 - "FOR NEGLIGENCE, STRICT"
 - "LIABILITY, BREACH OF WARRANTY OR BREACH"
@@ -5546,10 +6038,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - written explanation to the person you received the work from
 - ". If you"
 - "received the work on a physical medium, you must"
-- "return the medium\nwith your written explanation."
+- return the medium
+- with your written explanation.
 - The person or entity that provided you
 - with the defective work may elect to provide a replacement
-- "copy in\nlieu of a refund."
+- copy in
+- lieu of a refund.
 - "If you received the work electronically, the person"
 - or entity providing it to you may choose to give
 - you a second
@@ -5560,17 +6054,20 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - without further opportunities to fix the problem.
 - 1.F.4.
 - Except for the limited right of replacement or refund set
-- "forth\nin paragraph 1."
+- forth
+- in paragraph 1.
 - "F.3, this work is provided to you"
 - "'AS-IS', WITH NO"
 - "OTHER WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED,"
 - INCLUDING BUT NOT
 - LIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY
-- "PURPOSE.\n\n1.F.5."
+- PURPOSE.
+- 1.F.5.
 - Some states do not allow disclaimers of certain
 - implied
 - warranties or the exclusion or limitation of certain
-- "types of\ndamages."
+- types of
+- damages.
 - If any disclaimer or limitation set forth in this agreement
 - violates the law of the state applicable to this
 - "agreement, the"
@@ -5600,7 +6097,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "alteration, modification, or"
 - additions or deletions to any Project Gutenberg-tm
 - "work, and (c) any"
-- "Defect you cause.\n\nSection 2."
+- Defect you cause.
+- Section 2.
 - Information about the Mission of Project Gutenberg-tm
 - Project Gutenberg-tm is synonymous with the free distribution of
 - electronic works in formats readable by the widest variety
@@ -5631,7 +6129,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - 501(c)(3) educational corporation organized under the
 - laws of the
 - state of Mississippi and granted tax exempt status by the
-- "Internal\nRevenue Service."
+- Internal
+- Revenue Service.
 - "The Foundation's EIN or federal tax identification"
 - number is 64-6221541.
 - Contributions to the Project Gutenberg Literary
@@ -5663,10 +6162,12 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - status with the IRS.
 - The Foundation is committed to complying with the laws regulating
 - charities and charitable donations in all 50 states
-- "of the United\nStates."
+- of the United
+- States.
 - Compliance requirements are not uniform and it takes a
 - "considerable effort, much paperwork and many fees to"
-- "meet and keep up\nwith these requirements."
+- meet and keep up
+- with these requirements.
 - We do not solicit donations in locations
 - where we have not received written confirmation of compliance.
 - To SEND
@@ -5690,12 +6191,14 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "ways including checks, online payments and credit card donations"
 - ". To"
 - "donate, please visit: www.gutenberg.org"
-- "/donate\n\nSection 5."
+- /donate
+- Section 5.
 - General Information About Project Gutenberg-tm electronic works
 - Professor Michael S.
 - Hart was the originator of the Project
 - Gutenberg-tm concept of a library of electronic works
-- "that could be\nfreely shared with anyone."
+- that could be
+- freely shared with anyone.
 - "For forty years, he produced and"
 - distributed Project Gutenberg-tm eBooks with only a loose network
 - "of\nvolunteer support."
