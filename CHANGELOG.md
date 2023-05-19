@@ -8,6 +8,11 @@
   - `huggingface -> tokenizers`
   - `tiktoken -> tiktoken-rs`
 
+### Features
+
+- Moved from recursive approach to iterative approach to avoid stack overflow issues.
+- Relax MSRV to 1.60.0
+
 ## v0.2.2
 
 Add all features to docs.rs
