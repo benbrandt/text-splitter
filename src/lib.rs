@@ -359,12 +359,26 @@ where
         )
     }
 
-    /// Generate chunk for a given range, applying trimming settings.
+    /// Generate the next chunk, applying trimming settings.
     /// Returns final byte offset and str.
     /// Will return `None` if given an invalid range.
-    fn chunk(&self, range: Range<usize>) -> Option<(usize, &'text str)> {
-        let start = range.start;
-        let chunk = self.text.get(range)?;
+    fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
+        let start = self.cursor;
+
+        // Consume as many as we can fit
+        for str in self.next_sections()? {
+            let chunk = self.text.get(start..self.cursor + str.len())?;
+            // If this doesn't fit, as log as it isn't our first one, end the check here,
+            // we have a chunk.
+            if !self.validate_chunk(chunk) && start != self.cursor {
+                break;
+            }
+
+            self.cursor += str.len();
+        }
+
+        let chunk = self.text.get(start..self.cursor)?;
+
         // Trim whitespace if user requested it
         Some(if self.trim_chunks {
             // Figure out how many bytes we lose trimming the beginning
@@ -373,6 +387,37 @@ where
         } else {
             (start, chunk)
         })
+    }
+
+    /// Find the ideal next sections, breaking up the next section if it
+    /// too large to fit within the chunk size
+    fn next_sections(&self) -> Option<impl Iterator<Item = &'text str>> {
+        let mut sections = self
+            .semantic_level
+            .chunks(self.text.get(self.cursor..)?)
+            .peekable();
+
+        // Check if we need to split it up first
+        let mut current_level = self.semantic_level;
+        loop {
+            match (sections.peek(), current_level.fallback()) {
+                // Break early, nothing to do here
+                (None, _) => return None,
+                // If we can't break up further, exit loop
+                (Some(_), None) => break,
+                // If this is a valid chunk, we are fine
+                (Some(str), _) if self.validate_chunk(str) => {
+                    break;
+                }
+                // Otherwise break up the text with the fallback
+                (Some(str), Some(fallback)) => {
+                    sections = fallback.chunks(str).peekable();
+                    current_level = fallback;
+                }
+            }
+        }
+
+        Some(sections)
     }
 }
 
@@ -389,56 +434,12 @@ where
                 return None;
             }
 
-            // Start with the top-level breaks
-            let start = self.cursor;
-
-            let mut it = self
-                .semantic_level
-                .chunks(self.text.get(start..)?)
-                .peekable();
-
-            // Check if we need to split it up first
-            let mut current_level = self.semantic_level;
-            loop {
-                match (it.peek(), current_level.fallback()) {
-                    // Break early, nothing to do here
-                    (None, _) => return None,
-                    // If we can't break up further, exit loop
-                    (Some(_), None) => break,
-                    // If this is a valid chunk, we are fine
-                    (Some(str), _) if self.validate_chunk(str) => {
-                        break;
-                    }
-                    // Otherwise break up the text with the fallback
-                    (Some(str), Some(fallback)) => {
-                        it = fallback.chunks(str).peekable();
-                        current_level = fallback;
-                    }
-                }
+            match self.next_chunk()? {
+                // Make sure we didn't get an empty chunk. Should only happen in
+                // cases where we trim.
+                (_, chunk) if chunk.is_empty() => continue,
+                c => return Some(c),
             }
-
-            // Consume as many as we can fit
-            for str in it {
-                let chunk = self.text.get(start..self.cursor + str.len())?;
-                // If this doesn't fit, as log as it isn't our first one, end the check here,
-                // we have a chunk.
-                if !self.validate_chunk(chunk) && start != self.cursor {
-                    break;
-                }
-
-                self.cursor += str.len();
-            }
-
-            let (start, chunk) = self.chunk(start..self.cursor)?;
-
-            // Make sure we didn't get an empty chunk. Should only happen in
-            // cases where we trim.
-            if chunk.is_empty() {
-                continue;
-            }
-
-            // Return a chunk if we have one
-            return Some((start, chunk));
         }
     }
 }
