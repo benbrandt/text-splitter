@@ -236,7 +236,7 @@ where
         TextChunks::new(
             chunk_size,
             &self.chunk_validator,
-            SemanticLevel::DoubleLineBreak,
+            SemanticLevel::LineBreak(2),
             text,
             self.trim_chunks,
         )
@@ -267,12 +267,9 @@ enum SemanticLevel {
     /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
     /// Falls back to [`Self::Word`]
     Sentence,
-    /// Split by single linebreak, either `\n`, `\r`, or `\r\n`.
-    /// Falls back to [`Self::Sentence`]
-    LineBreak,
-    /// Split by 2 or more linebreaks, either `\n`, `\r`, or `\r\n`.
-    /// Falls back to [`Self::LineBreak`]
-    DoubleLineBreak,
+    /// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
+    /// Falls back to the next lower number, or else [`Self::Sentence`]
+    LineBreak(usize),
 }
 
 impl SemanticLevel {
@@ -283,8 +280,8 @@ impl SemanticLevel {
             Self::GraphemeCluster => Some(Self::Char),
             Self::Word => Some(Self::GraphemeCluster),
             Self::Sentence => Some(Self::Word),
-            Self::LineBreak => Some(Self::Sentence),
-            Self::DoubleLineBreak => Some(Self::LineBreak),
+            Self::LineBreak(1) => Some(Self::Sentence),
+            Self::LineBreak(_) => Some(Self::LineBreak(1)),
         }
     }
 
@@ -298,8 +295,8 @@ impl SemanticLevel {
             Self::GraphemeCluster => text.graphemes(true),
             Self::Word => text.split_word_bounds(),
             Self::Sentence => text.split_sentence_bounds(),
-            Self::LineBreak => split_str_by_regex_separator(text, &LINEBREAK),
-            Self::DoubleLineBreak => split_str_by_regex_separator(text, &DOUBLE_LINEBREAK),
+            Self::LineBreak(1) => split_str_by_regex_separator(text, &LINEBREAK),
+            Self::LineBreak(_) => split_str_by_regex_separator(text, &DOUBLE_LINEBREAK),
         }
     }
 }
@@ -716,7 +713,7 @@ mod tests {
     #[test]
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
-        let chunks = TextChunks::new(10, &Characters, SemanticLevel::DoubleLineBreak, text, true)
+        let chunks = TextChunks::new(10, &Characters, SemanticLevel::LineBreak(2), text, true)
             .collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],
