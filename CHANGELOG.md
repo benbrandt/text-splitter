@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.3.1
+
+### What's New
+
+- Handle more levels of newlines. Will now find the largest newline sequence in the text, and then work back from there, treating each consecutive newline sequence length as its own semantic level.
+
 ## v0.3.0
 
 ### Breaking Changes
