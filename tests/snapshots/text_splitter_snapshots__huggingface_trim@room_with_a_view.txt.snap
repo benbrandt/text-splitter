@@ -29,7 +29,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - ROOM WITH A VIEW
 - "***\n\n\n\n\n[Illustration]"
 - A Room With A View
-- "By E. M. Forster\n\n\n\n\nCONTENTS"
+- By E. M. Forster
+- CONTENTS
 - "Part One.\n Chapter I. The Bertolini"
 - Chapter II.
 - In Santa Croce with No Baedeker
@@ -64,7 +65,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Honeychurch, Freddy, and The Servants"
 - Chapter XIX. Lying to Mr. Emerson
 - Chapter XX. The End of the Middle Ages
-- "PART ONE\n\n\n\n\nChapter I The Bertolini"
+- PART ONE
+- Chapter I The Bertolini
 - “The Signora had no business to do it
 - ",” said Miss Bartlett, “no business at"
 - all.
@@ -4424,7 +4426,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "“Go to bed at once, dear."
 - You need all the rest you can get.”
 - In the morning they left for Rome.
-- "PART TWO\n\n\n\n\nChapter VIII Medieval"
+- PART TWO
+- Chapter VIII Medieval
 - The drawing-room curtains at Windy Corner had
 - "been pulled to meet, for the carpet was new"
 - and deserved protection from the August sun.

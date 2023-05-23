@@ -437,8 +437,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "strive to "
 - "mend.\n\n"
 - " [_Exit._]"
-- "\n\n\n\nACT I"
-- "\n\n"
+- "\n\n\n\n"
+- "ACT I\n\n"
 - "SCENE I. "
 - "A public "
 - "place.\n\n"
@@ -12918,8 +12918,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - have power
 - " to die.\n\n"
 - " [_Exit._]"
-- "\n\n\n\nACT IV"
-- "\n\n"
+- "\n\n\n\n"
+- "ACT IV\n\n"
 - "SCENE I. "
 - "Friar "
 - Lawrence’s
