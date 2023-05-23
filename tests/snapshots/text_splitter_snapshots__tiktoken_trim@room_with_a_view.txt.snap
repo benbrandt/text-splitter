@@ -25,7 +25,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - EBOOK A ROOM WITH A VIEW ***
 - "[Illustration]"
 - A Room With A View
-- "By E. M. Forster\n\n\n\n\nCONTENTS"
+- By E. M. Forster
+- CONTENTS
 - "Part One.\n Chapter I. The Bertolini"
 - Chapter II.
 - In Santa Croce with No Baedeker
@@ -60,7 +61,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Honeychurch, Freddy, and The Servants"
 - Chapter XIX. Lying to Mr. Emerson
 - Chapter XX. The End of the Middle Ages
-- "PART ONE\n\n\n\n\nChapter I The Bertolini"
+- PART ONE
+- Chapter I The Bertolini
 - "“The Signora had no business to do it,”"
 - "said Miss Bartlett, “no business at all"
 - "."
@@ -2383,7 +2385,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Leaning her elbows on the parapet,"
 - "she contemplated the River Arno,"
 - whose roar was suggesting some unexpected melody to her ears
-- ".\n\n\n\n\nChapter V Possibilities of a Pleasant Outing"
+- "."
+- Chapter V Possibilities of a Pleasant Outing
 - It was a family saying that “you never knew
 - which way Charlotte Bartlett would turn.”
 - She was perfectly pleasant and sensible over Lucy’s adventure
@@ -6326,7 +6329,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "Lucy was much annoyed, and replied as follows"
 - ":"
 - "“BEAUCHAMP MANSIONS,"
-- "S.W.\n\n\n\n\n“DEAR CHARLOTTE,"
+- S.W.
+- "“DEAR CHARLOTTE,"
 - “Many thanks for your warning. When Mr.
 - "Emerson forgot himself on the mountain, you made"
 - "me promise not to tell mother, because you said"

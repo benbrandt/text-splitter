@@ -32,7 +32,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - ROMEO AND JULIET *
 - "**"
 - THE TRAGEDY OF ROMEO
-- "AND JULIET\n\n\n\nby William Shakespeare"
+- AND JULIET
+- by William Shakespeare
 - "Contents\n\nTHE PROLOGUE."
 - "ACT I\nScene I. A public place."
 - Scene II. A Street.
@@ -72,7 +73,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Scene II. Friar Lawrence’s Cell.
 - Scene III.
 - A churchyard; in it a Monument belonging to the
-- "Capulets.\n\n\n\n\n Dramatis Personæ"
+- Capulets.
+- Dramatis Personæ
 - "ESCALUS, Prince of Verona."
 - "MERCUTIO, kinsman to the Prince"
 - ", and friend to Romeo."
@@ -143,7 +145,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "The which, if you with patient ears attend,"
 - "What here shall miss, our toil shall"
 - strive to mend.
-- "[_Exit._]\n\n\n\nACT I"
+- "[_Exit._]"
+- ACT I
 - SCENE I. A public place.
 - Enter Sampson and Gregory armed with swords and
 - bucklers.
@@ -2804,7 +2807,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "short work,"
 - "For, by your leaves, you shall not stay"
 - "alone\nTill holy church incorporate two in one."
-- "[_Exeunt._]\n\n\n\nACT III"
+- "[_Exeunt._]"
+- ACT III
 - SCENE I. A public Place.
 - "Enter Mercutio, Benvolio"
 - ", Page and Servants."
@@ -4374,7 +4378,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - I’ll to the Friar to know his
 - remedy.
 - "If all else fail, myself have power to die"
-- ".\n\n [_Exit._]\n\n\n\nACT IV"
+- ".\n\n [_Exit._]"
+- ACT IV
 - SCENE I.
 - Friar Lawrence’s Cell.
 - Enter Friar Lawrence and Paris.
@@ -5170,7 +5175,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Hang him, Jack."
 - "Come, we’ll in here, tarry"
 - "for the mourners, and stay\ndinner."
-- "[_Exeunt._]\n\n\n\nACT V"
+- "[_Exeunt._]"
+- ACT V
 - SCENE I. Mantua.
 - "A Street.\n\n Enter Romeo."
 - ROMEO.

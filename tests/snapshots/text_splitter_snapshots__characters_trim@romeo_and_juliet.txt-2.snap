@@ -13,8 +13,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Title: Romeo and Juliet\n\nAuthor: William Shakespeare"
 - "Release Date: November, 1998 [eBook #1513]\n[Most recently updated: May 11, 2022]\n\nLanguage: English"
 - "Produced by: the PG Shakespeare Team, a team of about twenty Project Gutenberg volunteers."
-- "*** START OF THE PROJECT GUTENBERG EBOOK ROMEO AND JULIET ***\n\n\n\n\nTHE TRAGEDY OF ROMEO AND JULIET"
-- "by William Shakespeare\n\n\nContents\n\nTHE PROLOGUE."
+- "*** START OF THE PROJECT GUTENBERG EBOOK ROMEO AND JULIET ***"
+- THE TRAGEDY OF ROMEO AND JULIET
+- by William Shakespeare
+- "Contents\n\nTHE PROLOGUE."
 - "ACT I\nScene I. A public place.\nScene II. A Street.\nScene III. Room in Capulet’s House."
 - "Scene IV. A Street.\nScene V. A Hall in Capulet’s House."
 - "ACT II\nCHORUS.\nScene I. An open place adjoining Capulet’s Garden.\nScene II. Capulet’s Garden."
@@ -27,7 +29,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Scene III. Juliet’s Chamber.\nScene IV. Hall in Capulet’s House."
 - Scene V. Juliet’s Chamber; Juliet on the bed.
 - "ACT V\nScene I. Mantua. A Street.\nScene II. Friar Lawrence’s Cell."
-- "Scene III. A churchyard; in it a Monument belonging to the Capulets.\n\n\n\n\n Dramatis Personæ"
+- Scene III. A churchyard; in it a Monument belonging to the Capulets.
+- Dramatis Personæ
 - "ESCALUS, Prince of Verona.\nMERCUTIO, kinsman to the Prince, and friend to Romeo."
 - "PARIS, a young Nobleman, kinsman to the Prince.\nPage to Paris."
 - "MONTAGUE, head of a Veronese family at feud with the Capulets.\nLADY MONTAGUE, wife to Montague."
@@ -49,8 +52,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "The fearful passage of their death-mark’d love,\nAnd the continuance of their parents’ rage,"
 - "Which, but their children’s end, nought could remove,\nIs now the two hours’ traffic of our stage;"
 - "The which, if you with patient ears attend,\nWhat here shall miss, our toil shall strive to mend."
-- "[_Exit._]\n\n\n\nACT I\n\nSCENE I. A public place."
-- Enter Sampson and Gregory armed with swords and bucklers.
+- "[_Exit._]"
+- "ACT I\n\nSCENE I. A public place.\n\n Enter Sampson and Gregory armed with swords and bucklers."
 - "SAMPSON.\nGregory, on my word, we’ll not carry coals.\n\nGREGORY.\nNo, for then we should be colliers."
 - "SAMPSON.\nI mean, if we be in choler, we’ll draw."
 - "GREGORY.\nAy, while you live, draw your neck out o’ the collar."
@@ -229,9 +232,10 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "The lady widow of Utruvio;\nSignior Placentio and his lovely nieces;"
 - "Mercutio and his brother Valentine;\nMine uncle Capulet, his wife, and daughters;"
 - "My fair niece Rosaline and Livia;\nSignior Valentio and his cousin Tybalt;"
-- "Lucio and the lively Helena. _\n\n\nA fair assembly. [_Gives back the paper_] Whither should they come?"
-- "SERVANT.\nUp.\n\nROMEO.\nWhither to supper?\n\nSERVANT.\nTo our house.\n\nROMEO.\nWhose house?"
-- "SERVANT.\nMy master’s.\n\nROMEO.\nIndeed I should have ask’d you that before."
+- Lucio and the lively Helena. _
+- "A fair assembly. [_Gives back the paper_] Whither should they come?\n\nSERVANT.\nUp."
+- "ROMEO.\nWhither to supper?\n\nSERVANT.\nTo our house.\n\nROMEO.\nWhose house?\n\nSERVANT.\nMy master’s."
+- "ROMEO.\nIndeed I should have ask’d you that before."
 - "SERVANT.\nNow I’ll tell you without asking. My master is the great rich Capulet,"
 - "and if you be not of the house of Montagues, I pray come and crush a\ncup of wine. Rest you merry."
 - "[_Exit._]"
@@ -463,7 +467,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "Prodigious birth of love it is to me,\nThat I must love a loathed enemy."
 - "NURSE.\nWhat’s this? What’s this?\n\nJULIET.\nA rhyme I learn’d even now\nOf one I danc’d withal."
 - "[_One calls within, ‘Juliet’._]\n\nNURSE.\nAnon, anon!\nCome let’s away, the strangers all are gone."
-- "[_Exeunt._]\n\n\n\nACT II\n\n Enter Chorus."
+- "[_Exeunt._]"
+- "ACT II\n\n Enter Chorus."
 - "CHORUS.\nNow old desire doth in his deathbed lie,\nAnd young affection gapes to be his heir;"
 - "That fair for which love groan’d for and would die,\nWith tender Juliet match’d, is now not fair."
 - "Now Romeo is belov’d, and loves again,\nAlike bewitched by the charm of looks;"
@@ -1579,7 +1584,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "‘Then music with her silver sound\n      With speedy help doth lend redress.’\n\n [_Exit._]"
 - "FIRST MUSICIAN.\nWhat a pestilent knave is this same!"
 - "SECOND MUSICIAN.\nHang him, Jack. Come, we’ll in here, tarry for the mourners, and stay\ndinner."
-- "[_Exeunt._]\n\n\n\nACT V\n\nSCENE I. Mantua. A Street.\n\n Enter Romeo."
+- "[_Exeunt._]"
+- "ACT V\n\nSCENE I. Mantua. A Street.\n\n Enter Romeo."
 - "ROMEO.\nIf I may trust the flattering eye of sleep,\nMy dreams presage some joyful news at hand."
 - "My bosom’s lord sits lightly in his throne;\nAnd all this day an unaccustom’d spirit"
 - "Lifts me above the ground with cheerful thoughts.\nI dreamt my lady came and found me dead,—"

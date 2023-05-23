@@ -237,13 +237,10 @@ where
     }
 }
 
-// Lazy so that we don't have to compile them more than once
-static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
-
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
-#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 enum SemanticLevel {
     /// Split by individual chars. May be larger than a single byte,
     /// but we don't go lower so we always have valid UTF str's.
@@ -262,35 +259,79 @@ enum SemanticLevel {
     LineBreak(usize),
 }
 
-impl SemanticLevel {
-    /// Find the maximum linebreak level from a given text
-    fn linebreaks(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> + '_ {
-        LINEBREAKS.find_iter(text).map(|m| {
-            let range = m.range();
-            let level = text
-                .get(range.start..range.end)
-                .unwrap()
-                .graphemes(true)
-                .count();
-            (
-                match level {
-                    0 => Self::Sentence,
-                    n => Self::LineBreak(n),
-                },
-                range,
-            )
-        })
+// Lazy so that we don't have to compile them more than once
+static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
+
+/// Captures information about linebreaks for a given text, and their
+/// various semantic levels.
+#[derive(Debug)]
+struct LineBreaks {
+    /// Range of each line break and its precalculated semantic level
+    line_breaks: Vec<(SemanticLevel, Range<usize>)>,
+    /// Maximum number of linebreaks in a given text
+    max_level: SemanticLevel,
+}
+
+impl LineBreaks {
+    /// Generate linebreaks for a given text
+    fn new(text: &str) -> Self {
+        let linebreaks = LINEBREAKS
+            .find_iter(text)
+            .map(|m| {
+                let range = m.range();
+                let level = text
+                    .get(range.start..range.end)
+                    .unwrap()
+                    .graphemes(true)
+                    .count();
+                (
+                    match level {
+                        0 => SemanticLevel::Sentence,
+                        n => SemanticLevel::LineBreak(n),
+                    },
+                    range,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        let max_level = *linebreaks
+            .iter()
+            .map(|(l, _)| l)
+            .max_by_key(|level| match level {
+                SemanticLevel::LineBreak(n) => n,
+                _ => &0,
+            })
+            .unwrap_or(&SemanticLevel::Sentence);
+
+        Self {
+            line_breaks: linebreaks,
+            max_level,
+        }
     }
 
-    /// Increase semantic level by 1
-    fn next(self) -> Self {
-        match self {
-            Self::Char => Self::GraphemeCluster,
-            Self::GraphemeCluster => Self::Word,
-            Self::Word => Self::Sentence,
-            Self::Sentence => Self::LineBreak(1),
-            Self::LineBreak(n) => Self::LineBreak(n + 1),
-        }
+    /// Retrieve ranges for all linebreaks of a given level after an offset
+    fn ranges(
+        &self,
+        offset: usize,
+        level: SemanticLevel,
+    ) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
+        self.line_breaks
+            .iter()
+            .filter(move |(l, sep)| l >= &level && sep.start >= offset)
+    }
+
+    /// Return a unique, sorted list of all line break levels present before the next max level
+    fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = SemanticLevel> + '_ {
+        self.line_breaks
+            .iter()
+            // Only start taking them from the offset
+            .filter(|(_, sep)| sep.start >= offset)
+            // Stop once we hit the first of the max level
+            .take_while(|(l, _)| l < &self.max_level)
+            .map(|(l, _)| l)
+            .sorted()
+            .dedup()
+            .copied()
     }
 }
 
@@ -308,9 +349,7 @@ where
     cursor: usize,
     /// Ranges where linebreaks occur. Save to optimize how many regex
     /// passes we need to do.
-    linebreak_ranges: Vec<(SemanticLevel, Range<usize>)>,
-    /// Largest Semantic Level we are splitting by
-    max_semantic_level: SemanticLevel,
+    line_breaks: LineBreaks,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// Whether or not chunks should be trimmed
@@ -329,21 +368,11 @@ where
         text: &'text str,
         trim_chunks: bool,
     ) -> Self {
-        let linebreak_ranges = SemanticLevel::linebreaks(text).collect::<Vec<_>>();
-        let max_semantic_level = *linebreak_ranges
-            .iter()
-            .map(|(l, _)| l)
-            .max_by_key(|level| match level {
-                SemanticLevel::LineBreak(n) => n,
-                _ => &0,
-            })
-            .unwrap_or(&SemanticLevel::Sentence);
         Self {
             cursor: 0,
             chunk_size,
             chunk_validator,
-            linebreak_ranges,
-            max_semantic_level,
+            line_breaks: LineBreaks::new(text),
             text,
             trim_chunks,
         }
@@ -396,7 +425,10 @@ where
 
     /// Split a given text into iterator over each semantic chunk
     #[auto_enum(Iterator)]
-    fn chunks(&self, semantic_level: SemanticLevel) -> impl Iterator<Item = &'text str> + '_ {
+    fn semantic_chunks(
+        &self,
+        semantic_level: SemanticLevel,
+    ) -> impl Iterator<Item = &'text str> + '_ {
         let text = self.text.get(self.cursor..).unwrap();
         match semantic_level {
             SemanticLevel::Char => text
@@ -405,20 +437,12 @@ where
             SemanticLevel::GraphemeCluster => text.graphemes(true),
             SemanticLevel::Word => text.split_word_bounds(),
             SemanticLevel::Sentence => text.split_sentence_bounds(),
-            SemanticLevel::LineBreak(n) => split_str_by_separator(
+            SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
                 true,
-                self.linebreak_ranges
-                    .iter()
-                    .filter(|(_, sep)| sep.start >= self.cursor)
-                    .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor)
-                    .filter(move |range| {
-                        text.get(range.start..range.end)
-                            .unwrap()
-                            .graphemes(true)
-                            .count()
-                            == n
-                    }),
+                self.line_breaks
+                    .ranges(self.cursor, semantic_level)
+                    .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor),
             ),
         }
     }
@@ -428,14 +452,21 @@ where
     /// on huge chunks
     fn next_sections(&self) -> Option<impl Iterator<Item = &'text str> + '_> {
         let mut semantic_level = SemanticLevel::Char;
+        // Next levels to try. Will stop at max level. We check only levels in the next max level
+        // chunk so we don't bypass it if not all levels are present in every chunk.
+        let levels = [
+            SemanticLevel::GraphemeCluster,
+            SemanticLevel::Word,
+            SemanticLevel::Sentence,
+            self.line_breaks.max_level,
+        ]
+        .into_iter()
+        .chain(self.line_breaks.levels_in_next_max_chunk(self.cursor))
+        .sorted()
+        .dedup();
 
-        loop {
-            let next_level = semantic_level.next();
-            // Don't need to keep checking if we've already validated the max level
-            if next_level > self.max_semantic_level {
-                break;
-            }
-            match self.chunks(next_level).next() {
+        for current_level in levels {
+            match self.semantic_chunks(current_level).next() {
                 // Break early, nothing to do here
                 None => return None,
                 // If this no longer fits, we use the level we are at. Or if we already
@@ -445,12 +476,12 @@ where
                 }
                 // Otherwise break up the text with the next level
                 Some(_) => {
-                    semantic_level = next_level;
+                    semantic_level = current_level;
                 }
             }
         }
 
-        Some(self.chunks(semantic_level))
+        Some(self.semantic_chunks(semantic_level))
     }
 }
 
@@ -734,13 +765,14 @@ mod tests {
     #[test]
     fn correctly_determines_newlines() {
         let text = "\r\n\r\ntext\n\n\ntext2";
-        let ranges = SemanticLevel::linebreaks(text).collect::<Vec<_>>();
+        let linebreaks = LineBreaks::new(text);
         assert_eq!(
             vec![
-                (SemanticLevel::LineBreak(3), 0..4),
+                (SemanticLevel::LineBreak(2), 0..4),
                 (SemanticLevel::LineBreak(3), 8..11)
             ],
-            ranges
+            linebreaks.line_breaks
         );
+        assert_eq!(SemanticLevel::LineBreak(3), linebreaks.max_level);
     }
 }
