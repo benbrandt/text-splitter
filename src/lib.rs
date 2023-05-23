@@ -55,12 +55,11 @@ To preserve as much semantic meaning within a chunk as possible, a recursive app
 
 The boundaries used to split the text if using the top-level `chunks` method, in descending length:
 
-1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
-2. 1 newline
-3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-5. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-6. Characters
+1. Descending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level.
+2. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+4. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+5. Characters
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
@@ -188,12 +187,11 @@ where
     ///
     /// The boundaries used to split the text if using the top-level `split` method, in descending length:
     ///
-    /// 1. 2 or more newlines (Newline is `\r\n`, `\n`, or `\r`)
-    /// 2. 1 newline
-    /// 3. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    /// 4. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    /// 5. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-    /// 6. Characters
+    /// 1. Descending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level.
+    /// 2. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 4. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 5. Characters
     ///
     /// Splitting doesn't occur below the character level, otherwise you could get partial
     /// bytes of a char, which may not be a valid unicode str.
