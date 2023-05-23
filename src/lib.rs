@@ -233,27 +233,17 @@ where
         text: &'text str,
         chunk_size: usize,
     ) -> TextChunks<'text, 'splitter, V> {
-        TextChunks::new(
-            chunk_size,
-            &self.chunk_validator,
-            SemanticLevel::LineBreak(2),
-            text,
-            self.trim_chunks,
-        )
+        TextChunks::new(chunk_size, &self.chunk_validator, text, self.trim_chunks)
     }
 }
 
 // Lazy so that we don't have to compile them more than once
-/// Any sequence of 2 or more newlines
-static DOUBLE_LINEBREAK: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"(\r\n){2,}|\r{2,}|\n{2,}").unwrap());
-/// Fallback for anything else
-static LINEBREAK: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r|\n)+").unwrap());
+static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 enum SemanticLevel {
     /// Split by individual chars. May be larger than a single byte,
     /// but we don't go lower so we always have valid UTF str's.
@@ -273,30 +263,33 @@ enum SemanticLevel {
 }
 
 impl SemanticLevel {
-    /// Optional fallback, if available, if the current level is too large
-    fn fallback(self) -> Option<Self> {
-        match self {
-            Self::Char => None,
-            Self::GraphemeCluster => Some(Self::Char),
-            Self::Word => Some(Self::GraphemeCluster),
-            Self::Sentence => Some(Self::Word),
-            Self::LineBreak(1) => Some(Self::Sentence),
-            Self::LineBreak(_) => Some(Self::LineBreak(1)),
-        }
+    /// Find the maximum linebreak level from a given text
+    fn linebreaks(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> + '_ {
+        LINEBREAKS.find_iter(text).map(|m| {
+            let range = m.range();
+            let level = text
+                .get(range.start..range.end)
+                .unwrap()
+                .graphemes(true)
+                .count();
+            (
+                match level {
+                    0 => Self::Sentence,
+                    n => Self::LineBreak(n),
+                },
+                range,
+            )
+        })
     }
 
-    /// Split a given text into iterator over each semantic chunk
-    #[auto_enum(Iterator)]
-    fn chunks(self, text: &str) -> impl Iterator<Item = &str> {
+    /// Increase semantic level by 1
+    fn next(self) -> Self {
         match self {
-            Self::Char => text
-                .char_indices()
-                .map(|(i, c)| text.get(i..i + c.len_utf8()).expect("char should be valid")),
-            Self::GraphemeCluster => text.graphemes(true),
-            Self::Word => text.split_word_bounds(),
-            Self::Sentence => text.split_sentence_bounds(),
-            Self::LineBreak(1) => split_str_by_regex_separator(text, &LINEBREAK),
-            Self::LineBreak(_) => split_str_by_regex_separator(text, &DOUBLE_LINEBREAK),
+            Self::Char => Self::GraphemeCluster,
+            Self::GraphemeCluster => Self::Word,
+            Self::Word => Self::Sentence,
+            Self::Sentence => Self::LineBreak(1),
+            Self::LineBreak(n) => Self::LineBreak(n + 1),
         }
     }
 }
@@ -313,8 +306,11 @@ where
     chunk_validator: &'validator V,
     /// Current byte offset in the `text`
     cursor: usize,
+    /// Ranges where linebreaks occur. Save to optimize how many regex
+    /// passes we need to do.
+    linebreak_ranges: Vec<(SemanticLevel, Range<usize>)>,
     /// Largest Semantic Level we are splitting by
-    semantic_level: SemanticLevel,
+    max_semantic_level: SemanticLevel,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// Whether or not chunks should be trimmed
@@ -330,15 +326,24 @@ where
     fn new(
         chunk_size: usize,
         chunk_validator: &'validator V,
-        semantic_level: SemanticLevel,
         text: &'text str,
         trim_chunks: bool,
     ) -> Self {
+        let linebreak_ranges = SemanticLevel::linebreaks(text).collect::<Vec<_>>();
+        let max_semantic_level = *linebreak_ranges
+            .iter()
+            .map(|(l, _)| l)
+            .max_by_key(|level| match level {
+                SemanticLevel::LineBreak(n) => n,
+                _ => &0,
+            })
+            .unwrap_or(&SemanticLevel::Sentence);
         Self {
             cursor: 0,
             chunk_size,
             chunk_validator,
-            semantic_level,
+            linebreak_ranges,
+            max_semantic_level,
             text,
             trim_chunks,
         }
@@ -362,17 +367,20 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
 
+        let mut end = self.cursor;
         // Consume as many as we can fit
         for str in self.next_sections()? {
-            let chunk = self.text.get(start..self.cursor + str.len())?;
+            let chunk = self.text.get(start..end + str.len())?;
             // If this doesn't fit, as log as it isn't our first one, end the check here,
             // we have a chunk.
-            if !self.validate_chunk(chunk) && start != self.cursor {
+            if !self.validate_chunk(chunk) && start != end {
                 break;
             }
 
-            self.cursor += str.len();
+            end += str.len();
         }
+
+        self.cursor = end;
 
         let chunk = self.text.get(start..self.cursor)?;
 
@@ -386,35 +394,63 @@ where
         })
     }
 
-    /// Find the ideal next sections, breaking up the next section if it
-    /// too large to fit within the chunk size
-    fn next_sections(&self) -> Option<impl Iterator<Item = &'text str>> {
-        let mut sections = self
-            .semantic_level
-            .chunks(self.text.get(self.cursor..)?)
-            .peekable();
+    /// Split a given text into iterator over each semantic chunk
+    #[auto_enum(Iterator)]
+    fn chunks(&self, semantic_level: SemanticLevel) -> impl Iterator<Item = &'text str> + '_ {
+        let text = self.text.get(self.cursor..).unwrap();
+        match semantic_level {
+            SemanticLevel::Char => text
+                .char_indices()
+                .map(|(i, c)| text.get(i..i + c.len_utf8()).expect("char should be valid")),
+            SemanticLevel::GraphemeCluster => text.graphemes(true),
+            SemanticLevel::Word => text.split_word_bounds(),
+            SemanticLevel::Sentence => text.split_sentence_bounds(),
+            SemanticLevel::LineBreak(n) => split_str_by_separator(
+                text,
+                true,
+                self.linebreak_ranges
+                    .iter()
+                    .filter(|(_, sep)| sep.start >= self.cursor)
+                    .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor)
+                    .filter(move |range| {
+                        text.get(range.start..range.end)
+                            .unwrap()
+                            .graphemes(true)
+                            .count()
+                            == n
+                    }),
+            ),
+        }
+    }
 
-        // Check if we need to split it up first
-        let mut current_level = self.semantic_level;
+    /// Find the ideal next sections, breaking it up until we find the largest chunk.
+    /// Increasing length of chunk until we find biggest size to minimize validation time
+    /// on huge chunks
+    fn next_sections(&self) -> Option<impl Iterator<Item = &'text str> + '_> {
+        let mut semantic_level = SemanticLevel::Char;
+
         loop {
-            match (sections.peek(), current_level.fallback()) {
+            let next_level = semantic_level.next();
+            // Don't need to keep checking if we've already validated the max level
+            if next_level > self.max_semantic_level {
+                break;
+            }
+            match self.chunks(next_level).next() {
                 // Break early, nothing to do here
-                (None, _) => return None,
-                // If we can't break up further, exit loop
-                (Some(_), None) => break,
-                // If this is a valid chunk, we are fine
-                (Some(str), _) if self.validate_chunk(str) => {
+                None => return None,
+                // If this no longer fits, we use the level we are at. Or if we already
+                // have the rest of the string
+                Some(str) if !self.validate_chunk(str) || self.text.get(self.cursor..)? == str => {
                     break;
                 }
-                // Otherwise break up the text with the fallback
-                (Some(str), Some(fallback)) => {
-                    sections = fallback.chunks(str).peekable();
-                    current_level = fallback;
+                // Otherwise break up the text with the next level
+                Some(_) => {
+                    semantic_level = next_level;
                 }
             }
         }
 
-        Some(sections)
+        Some(self.chunks(semantic_level))
     }
 }
 
@@ -439,15 +475,6 @@ where
             }
         }
     }
-}
-
-/// Generate iter of str indices from a regex separator. These won't be
-/// batched yet in case further fallbacks are needed.
-fn split_str_by_regex_separator<'sep, 'text: 'sep>(
-    text: &'text str,
-    separator: &'sep Regex,
-) -> impl Iterator<Item = &'text str> + 'sep {
-    split_str_by_separator(text, true, separator.find_iter(text).map(|sep| sep.range()))
 }
 
 /// Given a list of separator ranges, construct the sections of the text
@@ -502,15 +529,9 @@ mod tests {
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let chunks = TextChunks::new(
-            text.chars().count(),
-            &Characters,
-            SemanticLevel::Char,
-            &text,
-            false,
-        )
-        .map(|(_, c)| c)
-        .collect::<Vec<_>>();
+        let chunks = TextChunks::new(text.chars().count(), &Characters, &text, false)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
         assert_eq!(vec![&text], chunks);
     }
 
@@ -522,15 +543,9 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let chunks = TextChunks::new(
-            max_chunk_size,
-            &Characters,
-            SemanticLevel::Char,
-            &text,
-            false,
-        )
-        .map(|(_, c)| c)
-        .collect::<Vec<_>>();
+        let chunks = TextChunks::new(max_chunk_size, &Characters, &text, false)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
 
         assert!(chunks.iter().all(|c| c.chars().count() <= max_chunk_size));
 
@@ -550,7 +565,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let text = "";
-        let chunks = TextChunks::new(100, &Characters, SemanticLevel::Char, text, false)
+        let chunks = TextChunks::new(100, &Characters, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert!(chunks.is_empty());
@@ -559,7 +574,7 @@ mod tests {
     #[test]
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
-        let chunks = TextChunks::new(1, &Characters, SemanticLevel::Char, text, false)
+        let chunks = TextChunks::new(1, &Characters, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -577,7 +592,7 @@ mod tests {
     #[test]
     fn custom_len_function() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::new(2, &Str, SemanticLevel::Char, text, false)
+        let chunks = TextChunks::new(2, &Str, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -586,7 +601,7 @@ mod tests {
     #[test]
     fn handles_char_bigger_than_len() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::new(1, &Str, SemanticLevel::Char, text, false)
+        let chunks = TextChunks::new(1, &Str, text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         // We can only go so small
@@ -597,7 +612,7 @@ mod tests {
     fn chunk_by_graphemes() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::new(3, &Characters, SemanticLevel::GraphemeCluster, text, false)
+        let chunks = TextChunks::new(3, &Characters, text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         // \r\n is grouped together not separated
@@ -608,8 +623,7 @@ mod tests {
     fn trim_char_indices() {
         let text = " a b ";
 
-        let chunks =
-            TextChunks::new(1, &Characters, SemanticLevel::Char, text, true).collect::<Vec<_>>();
+        let chunks = TextChunks::new(1, &Characters, text, true).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
     }
 
@@ -617,7 +631,7 @@ mod tests {
     fn graphemes_fallback_to_chars() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::new(1, &Characters, SemanticLevel::GraphemeCluster, text, false)
+        let chunks = TextChunks::new(1, &Characters, text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -630,8 +644,7 @@ mod tests {
     fn trim_grapheme_indices() {
         let text = "\r\na̐éö̲\r\n";
 
-        let chunks = TextChunks::new(3, &Characters, SemanticLevel::GraphemeCluster, text, true)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(3, &Characters, text, true).collect::<Vec<_>>();
         assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
     }
 
@@ -639,7 +652,7 @@ mod tests {
     fn chunk_by_words() {
         let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
 
-        let chunks = TextChunks::new(10, &Characters, SemanticLevel::Word, text, false)
+        let chunks = TextChunks::new(10, &Characters, text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -658,7 +671,7 @@ mod tests {
     #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
-        let chunks = TextChunks::new(2, &Characters, SemanticLevel::Word, text, false)
+        let chunks = TextChunks::new(2, &Characters, text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
@@ -667,8 +680,7 @@ mod tests {
     #[test]
     fn trim_word_indices() {
         let text = "Some text from a document";
-        let chunks =
-            TextChunks::new(10, &Characters, SemanticLevel::Word, text, true).collect::<Vec<_>>();
+        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (10, "from a"), (17, "document")],
             chunks
@@ -678,7 +690,7 @@ mod tests {
     #[test]
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::new(21, &Characters, SemanticLevel::Sentence, text, false)
+        let chunks = TextChunks::new(21, &Characters, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -690,7 +702,7 @@ mod tests {
     #[test]
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::new(16, &Characters, SemanticLevel::Sentence, text, false)
+        let chunks = TextChunks::new(16, &Characters, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -702,8 +714,7 @@ mod tests {
     #[test]
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
-        let chunks = TextChunks::new(10, &Characters, SemanticLevel::Sentence, text, true)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text."), (11, "From a"), (18, "document.")],
             chunks
@@ -713,11 +724,23 @@ mod tests {
     #[test]
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
-        let chunks = TextChunks::new(10, &Characters, SemanticLevel::LineBreak(2), text, true)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],
             chunks
+        );
+    }
+
+    #[test]
+    fn correctly_determines_newlines() {
+        let text = "\r\n\r\ntext\n\n\ntext2";
+        let ranges = SemanticLevel::linebreaks(text).collect::<Vec<_>>();
+        assert_eq!(
+            vec![
+                (SemanticLevel::LineBreak(3), 0..4),
+                (SemanticLevel::LineBreak(3), 8..11)
+            ],
+            ranges
         );
     }
 }
