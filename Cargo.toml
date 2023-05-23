@@ -36,9 +36,12 @@ more-asserts = "0.3.1"
 tokenizers = ["dep:tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 
+# Tokenizers and indirect deps can cause slow runtime
+[profile.dev.package."*"]
+opt-level = 1
+
 [profile.dev.package.insta]
 opt-level = 3
 
 [profile.dev.package.similar]
 opt-level = 3
-
