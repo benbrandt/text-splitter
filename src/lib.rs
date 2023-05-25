@@ -99,11 +99,15 @@ use unicode_segmentation::UnicodeSegmentation;
 mod characters;
 #[cfg(feature = "tokenizers")]
 mod huggingface;
+#[cfg(feature = "markdown")]
+mod markdown_splitter;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 mod tokenizer;
 
 pub use characters::Characters;
+#[cfg(feature = "markdown")]
+pub use markdown_splitter::MarkdownSplitter;
 pub use tokenizer::TokenCount;
 
 /// Determines if a given piece of text is still a valid chunk.
