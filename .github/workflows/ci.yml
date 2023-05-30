@@ -63,6 +63,9 @@ jobs:
         # Check that all feature combinations work
         run: cargo hack --feature-powerset check
 
+      - name: Check semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+
   msrv:
     runs-on: ubuntu-latest
     # we use a matrix here just because env can't be used in job names
