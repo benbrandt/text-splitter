@@ -230,7 +230,7 @@ where
         &'splitter self,
         text: &'text str,
         chunk_size: usize,
-    ) -> TextChunks<'text, 'splitter, V> {
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
         TextChunks::new(chunk_size, &self.chunk_validator, text, self.trim_chunks)
     }
 }
@@ -335,7 +335,7 @@ impl LineBreaks {
 
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
-pub struct TextChunks<'text, 'validator, V>
+struct TextChunks<'text, 'validator, V>
 where
     V: ChunkValidator,
 {
