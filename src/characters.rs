@@ -1,4 +1,4 @@
-use crate::ChunkValidator;
+use crate::ChunkSize;
 
 /// Used for splitting a piece of text into chunks based on the number of
 /// characters in each chunk.
@@ -11,16 +11,14 @@ use crate::ChunkValidator;
 #[derive(Debug)]
 pub struct Characters;
 
-impl ChunkValidator for Characters {
-    /// Determine if the given chunk still fits within the specified max chunk
-    /// size, based on characters.
+impl ChunkSize for Characters {
+    /// Determine the size of a given chunk to use for validation.
     ///
     /// ```
-    /// use text_splitter::{Characters, ChunkValidator};
+    /// use text_splitter::{Characters, ChunkSize};
     ///
-    /// assert!(Characters.validate_chunk("hello", 10));
-    /// ```
-    fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool {
-        chunk.chars().count() <= chunk_size
+    /// assert_eq!(Characters.chunk_size("hello"), 5);
+    fn chunk_size(&self, chunk: &str) -> usize {
+        chunk.chars().count()
     }
 }

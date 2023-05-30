@@ -31,7 +31,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 ```rust
 use text_splitter::TextSplitter;
-// Can also use tiktoken-rs, or anything that implements the TokenCount
+// Can also use tiktoken-rs, or anything that implements the ChunkSize
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
@@ -101,28 +101,40 @@ mod characters;
 mod huggingface;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
-mod tokenizer;
 
 pub use characters::Characters;
-pub use tokenizer::TokenCount;
+
+/// Determines the size of a given chunk.
+pub trait ChunkSize {
+    /// Determine the size of a given chunk to use for validation
+    fn chunk_size(&self, chunk: &str) -> usize;
+}
 
 /// Determines if a given piece of text is still a valid chunk.
-pub trait ChunkValidator {
+#[derive(Debug)]
+struct ChunkValidator<S: ChunkSize>(S);
+
+impl<S> ChunkValidator<S>
+where
+    S: ChunkSize,
+{
     /// Determine if the given chunk still fits within the specified max chunk
     /// size.
-    fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool;
+    fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool {
+        self.0.chunk_size(chunk) <= chunk_size
+    }
 }
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 #[derive(Debug)]
-pub struct TextSplitter<V>
+pub struct TextSplitter<S>
 where
-    V: ChunkValidator,
+    S: ChunkSize,
 {
     /// Method of determining chunk sizes.
-    chunk_validator: V,
+    chunk_validator: ChunkValidator<S>,
     /// Whether or not all chunks should have whitespace trimmed.
     /// If `false`, joining all chunks should return the original string.
     /// If `true`, all chunks will have whitespace removed from beginning and end.
@@ -135,9 +147,9 @@ impl Default for TextSplitter<Characters> {
     }
 }
 
-impl<V> TextSplitter<V>
+impl<S> TextSplitter<S>
 where
-    V: ChunkValidator,
+    S: ChunkSize,
 {
     /// Creates a new [`TextSplitter`].
     ///
@@ -148,9 +160,9 @@ where
     /// let splitter = TextSplitter::new(Characters);
     /// ```
     #[must_use]
-    pub fn new(chunk_validator: V) -> Self {
+    pub fn new(chunk_size: S) -> Self {
         Self {
-            chunk_validator,
+            chunk_validator: ChunkValidator(chunk_size),
             trim_chunks: false,
         }
     }
@@ -335,14 +347,14 @@ impl LineBreaks {
 
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
-struct TextChunks<'text, 'validator, V>
+struct TextChunks<'text, 'validator, S>
 where
-    V: ChunkValidator,
+    S: ChunkSize,
 {
     /// Size of the chunks to generate
     chunk_size: usize,
     /// How to validate chunk sizes
-    chunk_validator: &'validator V,
+    chunk_validator: &'validator ChunkValidator<S>,
     /// Current byte offset in the `text`
     cursor: usize,
     /// Ranges where linebreaks occur. Save to optimize how many regex
@@ -354,15 +366,15 @@ where
     trim_chunks: bool,
 }
 
-impl<'text, 'validator, V> TextChunks<'text, 'validator, V>
+impl<'text, 'validator, S> TextChunks<'text, 'validator, S>
 where
-    V: ChunkValidator,
+    S: ChunkSize,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
     fn new(
         chunk_size: usize,
-        chunk_validator: &'validator V,
+        chunk_validator: &'validator ChunkValidator<S>,
         text: &'text str,
         trim_chunks: bool,
     ) -> Self {
@@ -483,9 +495,9 @@ where
     }
 }
 
-impl<'text, 'validator, V> Iterator for TextChunks<'text, 'validator, V>
+impl<'text, 'validator, S> Iterator for TextChunks<'text, 'validator, S>
 where
-    V: ChunkValidator,
+    S: ChunkSize,
 {
     type Item = (usize, &'text str);
 
@@ -558,9 +570,14 @@ mod tests {
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let chunks = TextChunks::new(text.chars().count(), &Characters, &text, false)
-            .map(|(_, c)| c)
-            .collect::<Vec<_>>();
+        let chunks = TextChunks::new(
+            text.chars().count(),
+            &ChunkValidator(Characters),
+            &text,
+            false,
+        )
+        .map(|(_, c)| c)
+        .collect::<Vec<_>>();
         assert_eq!(vec![&text], chunks);
     }
 
@@ -572,7 +589,7 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let chunks = TextChunks::new(max_chunk_size, &Characters, &text, false)
+        let chunks = TextChunks::new(max_chunk_size, &ChunkValidator(Characters), &text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
 
@@ -594,7 +611,7 @@ mod tests {
     #[test]
     fn empty_string() {
         let text = "";
-        let chunks = TextChunks::new(100, &Characters, text, false)
+        let chunks = TextChunks::new(100, &ChunkValidator(Characters), text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert!(chunks.is_empty());
@@ -603,7 +620,7 @@ mod tests {
     #[test]
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
-        let chunks = TextChunks::new(1, &Characters, text, false)
+        let chunks = TextChunks::new(1, &ChunkValidator(Characters), text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -612,16 +629,16 @@ mod tests {
     // Just for testing
     struct Str;
 
-    impl ChunkValidator for Str {
-        fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool {
-            chunk.len() <= chunk_size
+    impl ChunkSize for Str {
+        fn chunk_size(&self, chunk: &str) -> usize {
+            chunk.len()
         }
     }
 
     #[test]
     fn custom_len_function() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::new(2, &Str, text, false)
+        let chunks = TextChunks::new(2, &ChunkValidator(Str), text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -630,7 +647,7 @@ mod tests {
     #[test]
     fn handles_char_bigger_than_len() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::new(1, &Str, text, false)
+        let chunks = TextChunks::new(1, &ChunkValidator(Str), text, false)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         // We can only go so small
@@ -641,7 +658,7 @@ mod tests {
     fn chunk_by_graphemes() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::new(3, &Characters, text, false)
+        let chunks = TextChunks::new(3, &ChunkValidator(Characters), text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         // \r\n is grouped together not separated
@@ -652,7 +669,8 @@ mod tests {
     fn trim_char_indices() {
         let text = " a b ";
 
-        let chunks = TextChunks::new(1, &Characters, text, true).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(1, &ChunkValidator(Characters), text, true).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
     }
 
@@ -660,7 +678,7 @@ mod tests {
     fn graphemes_fallback_to_chars() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::new(1, &Characters, text, false)
+        let chunks = TextChunks::new(1, &ChunkValidator(Characters), text, false)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -673,7 +691,8 @@ mod tests {
     fn trim_grapheme_indices() {
         let text = "\r\na̐éö̲\r\n";
 
-        let chunks = TextChunks::new(3, &Characters, text, true).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(3, &ChunkValidator(Characters), text, true).collect::<Vec<_>>();
         assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
     }
 
@@ -681,7 +700,7 @@ mod tests {
     fn chunk_by_words() {
         let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
 
-        let chunks = TextChunks::new(10, &Characters, text, false)
+        let chunks = TextChunks::new(10, &ChunkValidator(Characters), text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -700,7 +719,7 @@ mod tests {
     #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
-        let chunks = TextChunks::new(2, &Characters, text, false)
+        let chunks = TextChunks::new(2, &ChunkValidator(Characters), text, false)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
@@ -709,7 +728,8 @@ mod tests {
     #[test]
     fn trim_word_indices() {
         let text = "Some text from a document";
-        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(10, &ChunkValidator(Characters), text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (10, "from a"), (17, "document")],
             chunks
@@ -719,7 +739,7 @@ mod tests {
     #[test]
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::new(21, &Characters, text, false)
+        let chunks = TextChunks::new(21, &ChunkValidator(Characters), text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -731,7 +751,7 @@ mod tests {
     #[test]
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::new(16, &Characters, text, false)
+        let chunks = TextChunks::new(16, &ChunkValidator(Characters), text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -743,7 +763,8 @@ mod tests {
     #[test]
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
-        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(10, &ChunkValidator(Characters), text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text."), (11, "From a"), (18, "document.")],
             chunks
@@ -753,7 +774,8 @@ mod tests {
     #[test]
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
-        let chunks = TextChunks::new(10, &Characters, text, true).collect::<Vec<_>>();
+        let chunks =
+            TextChunks::new(10, &ChunkValidator(Characters), text, true).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],
             chunks
