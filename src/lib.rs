@@ -87,7 +87,11 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
 )]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use core::{cmp::Ordering, iter::once, ops::Range};
+use core::{
+    cmp::Ordering,
+    iter::once,
+    ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
+};
 
 use auto_enums::auto_enum;
 use either::Either;
@@ -157,8 +161,72 @@ pub trait ChunkCapacity {
 }
 
 impl ChunkCapacity for usize {
-    fn end(&self) -> Self {
+    fn end(&self) -> usize {
         *self
+    }
+}
+
+impl ChunkCapacity for Range<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(self.start)
+    }
+
+    fn end(&self) -> usize {
+        (if self.end > 0 { self.end - 1 } else { 0 }).max(self.start)
+    }
+}
+
+impl ChunkCapacity for RangeFrom<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(self.start)
+    }
+
+    fn end(&self) -> usize {
+        usize::MAX
+    }
+}
+
+impl ChunkCapacity for RangeFull {
+    fn start(&self) -> Option<usize> {
+        Some(usize::MIN)
+    }
+
+    fn end(&self) -> usize {
+        usize::MAX
+    }
+}
+
+impl ChunkCapacity for RangeInclusive<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(*self.start())
+    }
+
+    fn end(&self) -> usize {
+        *self.end()
+    }
+}
+
+impl ChunkCapacity for RangeTo<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(usize::MIN)
+    }
+
+    fn end(&self) -> usize {
+        if self.end > 0 {
+            self.end - 1
+        } else {
+            0
+        }
+    }
+}
+
+impl ChunkCapacity for RangeToInclusive<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(usize::MIN)
+    }
+
+    fn end(&self) -> usize {
+        self.end
     }
 }
 
@@ -434,13 +502,13 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn check_capacity(&self, chunk: &str) -> Ordering {
+    fn check_capacity(&self, chunk: &str) -> (usize, Ordering) {
         let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
         });
-        self.chunk_capacity.fits(chunk_size)
+        (chunk_size, self.chunk_capacity.fits(chunk_size))
     }
 
     /// Generate the next chunk, applying trimming settings.
@@ -450,16 +518,30 @@ where
         let start = self.cursor;
 
         let mut end = self.cursor;
+        // Track change in chunk size
+        let (mut chunk_size, mut fits) = (0, Ordering::Less);
         // Consume as many as we can fit
         for str in self.next_sections()? {
             let chunk = self.text.get(start..end + str.len())?;
-            // If this doesn't fit, as log as it isn't our first one, end the check here,
-            // we have a chunk.
-            if start != end && self.check_capacity(chunk).is_gt() {
-                break;
+            // Cache prev chunk size before replacing
+            let (prev_chunk_size, prev_fits) = (chunk_size, fits);
+            (chunk_size, fits) = self.check_capacity(chunk);
+
+            // Progress if this is our first item (we need to move forward at least one)
+            // or if it still fits in the capacity.
+            if start == end || fits.is_le() {
+                end += str.len();
             }
 
-            end += str.len();
+            // If we are now beyond the first item, and it is too large, end here.
+            if start != end
+                && (fits.is_gt()
+                    // For tokenizers, it is possible that the next string still may be the same amount of tokens.
+                    // Check if both are equal, but we added to the chunk size, which we don't want for ranges.
+                    || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
+            {
+                break;
+            }
         }
 
         self.cursor = end;
@@ -514,7 +596,8 @@ where
             let str = self.semantic_chunks(level).next()?;
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str {
+            let (_, fits) = self.check_capacity(str);
+            if fits.is_gt() || self.text.get(self.cursor..)? == str {
                 break;
             }
             // Otherwise break up the text with the next level
@@ -824,5 +907,62 @@ mod tests {
         assert_eq!(4.fits(Characters.chunk_size(chunk)), Ordering::Greater);
         assert_eq!(5.fits(Characters.chunk_size(chunk)), Ordering::Equal);
         assert_eq!(6.fits(Characters.chunk_size(chunk)), Ordering::Less);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range() {
+        let chunk = "12345";
+
+        assert_eq!((0..0).fits(Characters.chunk_size(chunk)), Ordering::Greater);
+        assert_eq!((0..5).fits(Characters.chunk_size(chunk)), Ordering::Greater);
+        assert_eq!((5..6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((6..100).fits(Characters.chunk_size(chunk)), Ordering::Less);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range_from() {
+        let chunk = "12345";
+
+        assert_eq!((0..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((5..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((6..).fits(Characters.chunk_size(chunk)), Ordering::Less);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range_full() {
+        let chunk = "12345";
+
+        assert_eq!((..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range_inclusive() {
+        let chunk = "12345";
+
+        assert_eq!(
+            (0..=4).fits(Characters.chunk_size(chunk)),
+            Ordering::Greater
+        );
+        assert_eq!((5..=6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((4..=5).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((6..=100).fits(Characters.chunk_size(chunk)), Ordering::Less);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range_to() {
+        let chunk = "12345";
+
+        assert_eq!((..0).fits(Characters.chunk_size(chunk)), Ordering::Greater);
+        assert_eq!((..5).fits(Characters.chunk_size(chunk)), Ordering::Greater);
+        assert_eq!((..6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+    }
+
+    #[test]
+    fn check_chunk_capacity_for_range_to_inclusive() {
+        let chunk = "12345";
+
+        assert_eq!((..=4).fits(Characters.chunk_size(chunk)), Ordering::Greater);
+        assert_eq!((..=5).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!((..=6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
     }
 }

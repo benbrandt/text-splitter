@@ -1,7 +1,8 @@
 use std::fs;
 
+use more_asserts::assert_le;
 use once_cell::sync::Lazy;
-use text_splitter::TextSplitter;
+use text_splitter::{Characters, ChunkSizer, TextSplitter};
 use tiktoken_rs::{cl100k_base, CoreBPE};
 use tokenizers::Tokenizer;
 
@@ -15,8 +16,27 @@ fn characters_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
+            for chunk in chunks.iter() {
+                assert_le!(Characters.chunk_size(chunk), chunk_size);
+            }
             insta::assert_yaml_snapshot!(chunks);
         }
+    });
+}
+
+#[test]
+fn characters_range() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        let splitter = TextSplitter::default();
+        let chunks = splitter.chunks(&text, 500..=2000).collect::<Vec<_>>();
+
+        assert_eq!(chunks.join(""), text);
+        for chunk in chunks.iter() {
+            assert_le!(Characters.chunk_size(chunk), 2000);
+        }
+        insta::assert_yaml_snapshot!(chunks);
     });
 }
 
@@ -47,6 +67,9 @@ fn huggingface_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
+            for chunk in chunks.iter() {
+                assert_le!(HUGGINGFACE_TOKENIZER.chunk_size(chunk), chunk_size);
+            }
             insta::assert_yaml_snapshot!(chunks);
         }
     });
@@ -78,6 +101,9 @@ fn tiktoken_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
+            for chunk in chunks.iter() {
+                assert_le!(TIKTOKEN_TOKENIZER.chunk_size(chunk), chunk_size);
+            }
             insta::assert_yaml_snapshot!(chunks);
         }
     });

@@ -15,7 +15,7 @@ impl ChunkSizer for Characters {
     /// Determine the size of a given chunk to use for validation.
     ///
     /// ```
-    /// use text_splitter::{Characters, ChunkSize};
+    /// use text_splitter::{Characters, ChunkSizer};
     ///
     /// assert_eq!(Characters.chunk_size("hello"), 5);
     fn chunk_size(&self, chunk: &str) -> usize {
