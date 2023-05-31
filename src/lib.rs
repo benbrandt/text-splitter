@@ -333,18 +333,30 @@ impl LineBreaks {
             .filter(move |(l, sep)| l >= &level && sep.start >= offset)
     }
 
-    /// Return a unique, sorted list of all line break levels present before the next max level
+    /// Return a unique, sorted list of all line break levels present before the next max level, added
+    /// to all of the base semantic levels, in order from smallest to largest
     fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = SemanticLevel> + '_ {
-        self.line_breaks
+        let line_break_levels = self
+            .line_breaks
             .iter()
             // Only start taking them from the offset
             .filter(|(_, sep)| sep.start >= offset)
             // Stop once we hit the first of the max level
             .take_while(|(l, _)| l < &self.max_level)
             .map(|(l, _)| l)
-            .sorted()
-            .dedup()
-            .copied()
+            .copied();
+
+        [
+            SemanticLevel::Char,
+            SemanticLevel::GraphemeCluster,
+            SemanticLevel::Word,
+            SemanticLevel::Sentence,
+            self.max_level,
+        ]
+        .into_iter()
+        .chain(line_break_levels)
+        .sorted()
+        .dedup()
     }
 }
 
@@ -464,36 +476,21 @@ where
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
     fn next_sections(&self) -> Option<impl Iterator<Item = &'text str> + '_> {
-        let mut semantic_level = SemanticLevel::Char;
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
-        let levels = [
-            SemanticLevel::GraphemeCluster,
-            SemanticLevel::Word,
-            SemanticLevel::Sentence,
-            self.line_breaks.max_level,
-        ]
-        .into_iter()
-        .chain(self.line_breaks.levels_in_next_max_chunk(self.cursor))
-        .sorted()
-        .dedup();
+        let mut levels = self.line_breaks.levels_in_next_max_chunk(self.cursor);
+        // Get starting level
+        let mut semantic_level = levels.next()?;
 
-        for current_level in levels {
-            match self.semantic_chunks(current_level).next() {
-                // Break early, nothing to do here
-                None => return None,
-                // If this no longer fits, we use the level we are at. Or if we already
-                // have the rest of the string
-                Some(str)
-                    if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str =>
-                {
-                    break;
-                }
-                // Otherwise break up the text with the next level
-                Some(_) => {
-                    semantic_level = current_level;
-                }
+        for level in levels {
+            let str = self.semantic_chunks(level).next()?;
+            // If this no longer fits, we use the level we are at. Or if we already
+            // have the rest of the string
+            if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str {
+                break;
             }
+            // Otherwise break up the text with the next level
+            semantic_level = level;
         }
 
         Some(self.semantic_chunks(semantic_level))
