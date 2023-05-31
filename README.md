@@ -26,11 +26,11 @@ let splitter = TextSplitter::default()
 let chunks = splitter.chunks("your document text", max_characters);
 ```
 
-### By Tokens
+### With Huggingface Tokenizer
 
 ```rust
 use text_splitter::TextSplitter;
-// Can also use tiktoken-rs, or anything that implements the ChunkSizer
+// Can also use anything else that implements the ChunkSizer
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
@@ -41,6 +41,43 @@ let splitter = TextSplitter::new(tokenizer)
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_tokens);
+```
+
+### With Tiktoken Tokenizer
+
+```rust
+use text_splitter::TextSplitter;
+// Can also use anything else that implements the ChunkSizer
+// trait from the text_splitter crate.
+use tiktoken_rs::cl100k_base;
+
+let tokenizer = cl100k_base().unwrap();
+let max_tokens = 1000;
+let splitter = TextSplitter::new(tokenizer)
+    // Optionally can also have the splitter trim whitespace for you
+    .with_trim_chunks(true);
+
+let chunks = splitter.chunks("your document text", max_tokens);
+```
+
+### Using a Range for Chunk Capacity
+
+You also have the option of specifying your chunk capacity as a range.
+
+Once a chunk has reached a length that falls within the range it will be returned.
+
+It is always possible that a chunk may be returned that is less than the `start` value, as adding the next piece of text may have made it larger than the `end` capacity.
+
+```rust
+use text_splitter::{Characters, TextSplitter};
+
+// Maximum number of characters in a chunk. Will fill up the
+// chunk until it is somewhere in this range.
+let max_characters = 500..2000;
+// Default implementation uses character count for chunk size
+let splitter = TextSplitter::default().with_trim_chunks(true);
+
+let chunks = splitter.chunks("your document text", max_characters);
 ```
 
 ## Method
