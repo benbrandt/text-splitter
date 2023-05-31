@@ -31,7 +31,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 ```rust
 use text_splitter::TextSplitter;
-// Can also use tiktoken-rs, or anything that implements the ChunkSize
+// Can also use tiktoken-rs, or anything that implements the ChunkSizer
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
@@ -105,7 +105,7 @@ mod tiktoken;
 pub use characters::Characters;
 
 /// Determines the size of a given chunk.
-pub trait ChunkSize {
+pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
     fn chunk_size(&self, chunk: &str) -> usize;
 }
@@ -168,10 +168,10 @@ impl ChunkCapacity for usize {
 #[derive(Debug)]
 pub struct TextSplitter<S>
 where
-    S: ChunkSize,
+    S: ChunkSizer,
 {
     /// Method of determining chunk sizes.
-    chunk_size: S,
+    chunk_sizer: S,
     /// Whether or not all chunks should have whitespace trimmed.
     /// If `false`, joining all chunks should return the original string.
     /// If `true`, all chunks will have whitespace removed from beginning and end.
@@ -186,7 +186,7 @@ impl Default for TextSplitter<Characters> {
 
 impl<S> TextSplitter<S>
 where
-    S: ChunkSize,
+    S: ChunkSizer,
 {
     /// Creates a new [`TextSplitter`].
     ///
@@ -197,9 +197,9 @@ where
     /// let splitter = TextSplitter::new(Characters);
     /// ```
     #[must_use]
-    pub fn new(chunk_size: S) -> Self {
+    pub fn new(chunk_sizer: S) -> Self {
         Self {
-            chunk_size,
+            chunk_sizer,
             trim_chunks: false,
         }
     }
@@ -279,7 +279,7 @@ where
         text: &'text str,
         chunk_capacity: impl ChunkCapacity + 'splitter,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::new(chunk_capacity, &self.chunk_size, text, self.trim_chunks)
+        TextChunks::new(chunk_capacity, &self.chunk_sizer, text, self.trim_chunks)
     }
 }
 
@@ -395,15 +395,15 @@ impl LineBreaks {
 
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
-struct TextChunks<'text, 'validator, C, S>
+struct TextChunks<'text, 'sizer, C, S>
 where
     C: ChunkCapacity,
-    S: ChunkSize,
+    S: ChunkSizer,
 {
     /// Size of the chunks to generate
     chunk_capacity: C,
     /// How to validate chunk sizes
-    chunk_size: &'validator S,
+    chunk_sizer: &'sizer S,
     /// Current byte offset in the `text`
     cursor: usize,
     /// Ranges where linebreaks occur. Save to optimize how many regex
@@ -415,23 +415,18 @@ where
     trim_chunks: bool,
 }
 
-impl<'text, 'validator, C, S> TextChunks<'text, 'validator, C, S>
+impl<'text, 'sizer, C, S> TextChunks<'text, 'sizer, C, S>
 where
     C: ChunkCapacity,
-    S: ChunkSize,
+    S: ChunkSizer,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
-    fn new(
-        chunk_capacity: C,
-        chunk_size: &'validator S,
-        text: &'text str,
-        trim_chunks: bool,
-    ) -> Self {
+    fn new(chunk_capacity: C, chunk_sizer: &'sizer S, text: &'text str, trim_chunks: bool) -> Self {
         Self {
             cursor: 0,
             chunk_capacity,
-            chunk_size,
+            chunk_sizer,
             line_breaks: LineBreaks::new(text),
             text,
             trim_chunks,
@@ -440,7 +435,7 @@ where
 
     /// Is the given text within the chunk size?
     fn check_capacity(&self, chunk: &str) -> Ordering {
-        let chunk_size = self.chunk_size.chunk_size(if self.trim_chunks {
+        let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
@@ -530,10 +525,10 @@ where
     }
 }
 
-impl<'text, 'validator, C, S> Iterator for TextChunks<'text, 'validator, C, S>
+impl<'text, 'sizer, C, S> Iterator for TextChunks<'text, 'sizer, C, S>
 where
     C: ChunkCapacity,
-    S: ChunkSize,
+    S: ChunkSizer,
 {
     type Item = (usize, &'text str);
 
@@ -660,7 +655,7 @@ mod tests {
     // Just for testing
     struct Str;
 
-    impl ChunkSize for Str {
+    impl ChunkSizer for Str {
         fn chunk_size(&self, chunk: &str) -> usize {
             chunk.len()
         }

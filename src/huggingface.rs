@@ -1,8 +1,8 @@
 use tokenizers::Tokenizer;
 
-use crate::ChunkSize;
+use crate::ChunkSizer;
 
-impl ChunkSize for Tokenizer {
+impl ChunkSizer for Tokenizer {
     /// Returns the number of tokens in a given text after tokenization.
     ///
     /// # Panics
