@@ -92,3 +92,29 @@ fn random_chunk_size() {
         }
     }
 }
+
+#[test]
+fn random_chunk_range() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    for _ in 0..100 {
+        let a = Faker.fake::<Option<usize>>();
+        let b = Faker.fake::<Option<usize>>();
+        let splitter = TextSplitter::default();
+
+        let chunks = match (a, b) {
+            (None, None) => splitter.chunks(&text, ..).collect::<Vec<_>>(),
+            (None, Some(b)) => splitter.chunks(&text, ..b).collect::<Vec<_>>(),
+            (Some(a), None) => splitter.chunks(&text, a..).collect::<Vec<_>>(),
+            (Some(a), Some(b)) if b < a => splitter.chunks(&text, b..a).collect::<Vec<_>>(),
+            (Some(a), Some(b)) => splitter.chunks(&text, a..=b).collect::<Vec<_>>(),
+        };
+
+        assert_eq!(chunks.join(""), text);
+        let max = a.unwrap_or(usize::MIN).max(b.unwrap_or(usize::MAX));
+        for chunk in chunks {
+            let chars = chunk.chars().count();
+            assert_le!(chars, max);
+        }
+    }
+}
