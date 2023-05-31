@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.4.0
+
+### What's New
+
+#### New Chunk Capacity (can now size chunks with Ranges)
+
+New `ChunkCapacity` trait. When calling `splitter.chunks()` or `splitter.chunk_indices()`, the `chunk_size` argument has been replaced with `chunk_capacity`, which can be anything that implements the `ChunkCapacity` trait. This means that now the following can all be passed in:
+
+- `usize`
+- `Range<usize>`
+- `RangeFrom<usize>`
+- `RangeFull`
+- `RangeInclusive<usize>`
+- `RangeTo<usize>`
+- `RangeToInclusive<usize>`
+
+This is helpful for cases where you do have a maximum chunk size, but you don't necessarily want to fill it up all the way every time. This can be helpful in embedding cases, where you have some maximum context size, but you don't necessarily want to muddy the embeddings with lots of neighboring semantic elements. You can use a range to express this now, and the chunks will stop filling up once they have reached a size within the range.
+
+#### Simplified Chunk Sizing traits
+
+Simplified `ChunkSizer` trait that allows for various calculations of chunk size. No longer requires full validation logic, since that now happens within the `TextSplitter` itself.
+
+### Breaking Changes
+
+- `ChunkValidator` trait removed. Instead `impl ChunkSizer` instead, which just requires calculating chunk_size and not the full validation logic.
+- `TokenCount` trait removed. You can just use `ChunkSizer` directly instead.
+- Internal `TextChunks` iterator is no longer `pub`.
+
 ## v0.3.1
 
 ### What's New

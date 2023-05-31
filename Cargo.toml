@@ -1,6 +1,6 @@
 [package]
 name = "text-splitter"
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens (when used with large language models)."
@@ -21,8 +21,8 @@ rustdoc-args = ["--cfg", "docsrs"]
 auto_enums = "0.8.0"
 either = "1.8.1"
 itertools = "0.10.5"
-once_cell = "1.17.1"
-regex = "1.8.1"
+once_cell = "1.17.2"
+regex = "1.8.3"
 tiktoken-rs = { version = "0.4.2", optional = true }
 tokenizers = { version = "0.13.3", optional = true }
 unicode-segmentation = "1.10.1"
