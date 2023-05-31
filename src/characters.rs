@@ -1,4 +1,4 @@
-use crate::ChunkSize;
+use crate::ChunkSizer;
 
 /// Used for splitting a piece of text into chunks based on the number of
 /// characters in each chunk.
@@ -11,7 +11,7 @@ use crate::ChunkSize;
 #[derive(Debug)]
 pub struct Characters;
 
-impl ChunkSize for Characters {
+impl ChunkSizer for Characters {
     /// Determine the size of a given chunk to use for validation.
     ///
     /// ```

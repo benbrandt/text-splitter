@@ -1,8 +1,8 @@
 use tiktoken_rs::CoreBPE;
 
-use crate::ChunkSize;
+use crate::ChunkSizer;
 
-impl ChunkSize for CoreBPE {
+impl ChunkSizer for CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
     ///
     /// # Panics

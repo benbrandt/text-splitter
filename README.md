@@ -30,7 +30,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 ```rust
 use text_splitter::TextSplitter;
-// Can also use tiktoken-rs, or anything that implements the ChunkSize
+// Can also use tiktoken-rs, or anything that implements the ChunkSizer
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
