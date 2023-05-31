@@ -87,7 +87,7 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
 )]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use core::{iter::once, ops::Range};
+use core::{cmp::Ordering, iter::once, ops::Range};
 
 use auto_enums::auto_enum;
 use either::Either;
@@ -118,10 +118,13 @@ impl<S> ChunkValidator<S>
 where
     S: ChunkSize,
 {
-    /// Determine if the given chunk still fits within the specified max chunk
-    /// size.
-    fn validate_chunk(&self, chunk: &str, chunk_size: usize) -> bool {
-        self.0.chunk_size(chunk) <= chunk_size
+    /// Determine if the chunk fits within the given capacity.
+    ///
+    /// - `Ordering::Less` indicates more could be added
+    /// - `Ordering::Equal` indicates the chunk is within the capacity range
+    /// - `Ordering::Greater` indicates the chunk is larger than the capacity
+    fn check_capacity(&self, chunk: &str, chunk_capacity: usize) -> Ordering {
+        self.0.chunk_size(chunk).cmp(&chunk_capacity)
     }
 }
 
@@ -389,8 +392,8 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn validate_chunk(&self, chunk: &str) -> bool {
-        self.chunk_validator.validate_chunk(
+    fn check_capacity(&self, chunk: &str) -> Ordering {
+        self.chunk_validator.check_capacity(
             if self.trim_chunks {
                 chunk.trim()
             } else {
@@ -412,7 +415,7 @@ where
             let chunk = self.text.get(start..end + str.len())?;
             // If this doesn't fit, as log as it isn't our first one, end the check here,
             // we have a chunk.
-            if !self.validate_chunk(chunk) && start != end {
+            if start != end && self.check_capacity(chunk).is_gt() {
                 break;
             }
 
@@ -481,7 +484,9 @@ where
                 None => return None,
                 // If this no longer fits, we use the level we are at. Or if we already
                 // have the rest of the string
-                Some(str) if !self.validate_chunk(str) || self.text.get(self.cursor..)? == str => {
+                Some(str)
+                    if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str =>
+                {
                     break;
                 }
                 // Otherwise break up the text with the next level
@@ -794,5 +799,15 @@ mod tests {
             linebreaks.line_breaks
         );
         assert_eq!(SemanticLevel::LineBreak(3), linebreaks.max_level);
+    }
+
+    #[test]
+    fn check_chunk_capacity() {
+        let chunk = "12345";
+        let validator = ChunkValidator(Characters);
+
+        assert_eq!(validator.check_capacity(chunk, 4), Ordering::Greater);
+        assert_eq!(validator.check_capacity(chunk, 5), Ordering::Equal);
+        assert_eq!(validator.check_capacity(chunk, 6), Ordering::Less);
     }
 }
