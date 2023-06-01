@@ -46,14 +46,16 @@ fn characters_range() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        let splitter = TextSplitter::default();
-        let chunks = splitter.chunks(&text, 500..=2000).collect::<Vec<_>>();
+        for range in [500..=2000, 200..=1000] {
+            let splitter = TextSplitter::default();
+            let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
-        assert_eq!(chunks.join(""), text);
-        for chunk in chunks.iter() {
-            assert_le!(Characters.chunk_size(chunk), 2000);
+            assert_eq!(chunks.join(""), text);
+            for chunk in chunks.iter() {
+                assert_le!(Characters.chunk_size(chunk), range.end());
+            }
+            insta::assert_yaml_snapshot!(chunks);
         }
-        insta::assert_yaml_snapshot!(chunks);
     });
 }
 
@@ -62,13 +64,15 @@ fn characters_range_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        let splitter = TextSplitter::default().with_trim_chunks(true);
-        let chunks = splitter.chunks(&text, 500..=2000).collect::<Vec<_>>();
+        for range in [500..=2000, 200..=1000] {
+            let splitter = TextSplitter::default().with_trim_chunks(true);
+            let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
-        for chunk in chunks.iter() {
-            assert_le!(Characters.chunk_size(chunk), 2000);
+            for chunk in chunks.iter() {
+                assert_le!(Characters.chunk_size(chunk), range.end());
+            }
+            insta::assert_yaml_snapshot!(chunks);
         }
-        insta::assert_yaml_snapshot!(chunks);
     });
 }
 
