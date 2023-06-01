@@ -78,6 +78,16 @@ fn trim_paragraphs() {
 }
 
 #[test]
+fn chunk_capacity_range() {
+    let text = "12345\n12345";
+    let splitter = TextSplitter::default();
+    let chunks = splitter.chunks(text, 5..10).collect::<Vec<_>>();
+
+    // \n goes in the second chunk because capacity is reached after first paragraph.
+    assert_eq!(vec!["12345", "\n12345"], chunks);
+}
+
+#[test]
 fn random_chunk_size() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 

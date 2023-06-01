@@ -564,12 +564,6 @@ where
             let (prev_chunk_size, prev_fits) = (chunk_size, fits);
             (chunk_size, fits) = self.check_capacity(chunk);
 
-            // Progress if this is our first item (we need to move forward at least one)
-            // or if it still fits in the capacity.
-            if start == end || fits.is_le() {
-                end += str.len();
-            }
-
             // If we are now beyond the first item, and it is too large, end here.
             if start != end
                 && (fits.is_gt()
@@ -579,6 +573,10 @@ where
             {
                 break;
             }
+
+            // Progress if this is our first item (we need to move forward at least one)
+            // or if it still fits in the capacity.
+            end += str.len();
         }
 
         self.cursor = end;
