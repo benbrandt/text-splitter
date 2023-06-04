@@ -3,7 +3,7 @@
 #
 #    maturin generate-ci -m Cargo.toml -o ../../.github/workflows/python.yml --pytest github
 #
-name: CI
+name: Python
 
 on:
   push:
@@ -40,6 +40,7 @@ jobs:
           args: --release --out dist
           sccache: "true"
           manylinux: auto
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
@@ -86,6 +87,7 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist
           sccache: "true"
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
@@ -116,6 +118,7 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist
           sccache: "true"
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v3
         with:
@@ -139,6 +142,7 @@ jobs:
         with:
           command: sdist
           args: --out dist
+          working-directory: bindings/python
       - name: Upload sdist
         uses: actions/upload-artifact@v3
         with:
@@ -161,3 +165,4 @@ jobs:
         with:
           command: upload
           args: --skip-existing *
+          working-directory: bindings/python
