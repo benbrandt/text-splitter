@@ -12,6 +12,8 @@ on:
       - master
     tags:
       - "*"
+    paths:
+      - "bindings/python/**"
   pull_request:
   workflow_dispatch:
 
