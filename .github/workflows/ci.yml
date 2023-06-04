@@ -9,6 +9,8 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - "bindings/**"
 
 env:
   CARGO_TERM_COLOR: always
