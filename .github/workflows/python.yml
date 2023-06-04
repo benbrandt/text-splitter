@@ -11,10 +11,10 @@ on:
       - main
       - master
     tags:
-      - "*"
+      - "python-v*"
+  pull_request:
     paths:
       - "bindings/python/**"
-  pull_request:
   workflow_dispatch:
 
 defaults:
