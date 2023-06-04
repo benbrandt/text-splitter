@@ -8,7 +8,7 @@ repository = "https://github.com/benbrandt/text-splitter"
 license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
-exclude = ["/tests/snapshots/**", "/tests/inputs/**"]
+exclude = ["/tests/snapshots/**", "/tests/inputs/**", "/bindings/**"]
 rust-version = "1.60.0"
 
 [package.metadata.docs.rs]

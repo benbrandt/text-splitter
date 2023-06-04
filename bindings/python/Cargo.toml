@@ -1,0 +1,18 @@
+[package]
+name = "text-splitter-py"
+version = "0.1.0"
+authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
+edition = "2021"
+description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens (when used with large language models)."
+repository = "https://github.com/benbrandt/text-splitter"
+license = "MIT"
+keywords = ["text", "split", "tokenizer", "nlp", "ai"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "text_splitter"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.19.0", features = ["abi3-py37"] }
+text-splitter = "0.4.0"
