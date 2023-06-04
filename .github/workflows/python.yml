@@ -45,7 +45,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wheels
-          path: dist
+          path: bindings/python/dist
+          if-no-files-found: error
       - name: pytest
         if: ${{ startsWith(matrix.target, 'x86_64') }}
         shell: bash
@@ -77,7 +78,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wheels
-          path: dist
+          path: bindings/python/dist
+          if-no-files-found: error
       - name: pytest
         if: ${{ !startsWith(matrix.target, 'aarch64') }}
         shell: bash
@@ -108,7 +110,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wheels
-          path: dist
+          path: bindings/python/dist
+          if-no-files-found: error
       - name: pytest
         if: ${{ !startsWith(matrix.target, 'aarch64') }}
         shell: bash
@@ -132,7 +135,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: wheels
-          path: dist
+          path: bindings/python/dist
+          if-no-files-found: error
 
   release:
     name: Release
