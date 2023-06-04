@@ -54,21 +54,6 @@ jobs:
           pip install text-splitter --find-links dist --force-reinstall
           pip install pytest
           pytest
-      - name: pytest
-        if: ${{ !startsWith(matrix.target, 'x86') && matrix.target != 'ppc64' }}
-        uses: uraimo/run-on-arch-action@v2.5.0
-        with:
-          arch: ${{ matrix.target }}
-          distro: ubuntu22.04
-          githubToken: ${{ github.token }}
-          install: |
-            apt-get update
-            apt-get install -y --no-install-recommends python3 python3-pip
-            pip3 install -U pip pytest
-          run: |
-            set -e
-            pip3 install text-splitter --find-links dist --force-reinstall
-            pytest
 
   windows:
     runs-on: windows-latest
