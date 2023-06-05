@@ -1,3 +1,5 @@
 {
-  "rust-analyzer.linkedProjects": ["./bindings/python/Cargo.toml"]
+  "rust-analyzer.linkedProjects": [
+    "./bindings/python/Cargo.toml"
+  ]
 }
