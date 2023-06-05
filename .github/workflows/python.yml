@@ -13,8 +13,6 @@ on:
     tags:
       - "python-v*"
   pull_request:
-    paths:
-      - "bindings/python/**"
   workflow_dispatch:
 
 defaults:
