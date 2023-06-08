@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.2
+
+Fix bad release
+
 ## v0.1.1
 
 Fix bad release

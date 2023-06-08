@@ -282,7 +282,7 @@ dependencies = [
 
 [[package]]
 name = "text-splitter-py"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "pyo3",
  "text-splitter",
