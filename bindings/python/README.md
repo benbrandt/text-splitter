@@ -1,6 +1,6 @@
 # text-splitter
 
-[![Licence](https://img.shields.io/crates/l/text-splitter)](https://github.com/benbrandt/text-splitter/blob/main/LICENSE.txt)
+[![Documentation Status](https://readthedocs.org/projects/text-splitter/badge/?version=latest)](https://text-splitter.readthedocs.io/en/latest/?badge=latest) [![Licence](https://img.shields.io/crates/l/text-splitter)](https://github.com/benbrandt/text-splitter/blob/main/LICENSE.txt)
 
 Large language models (LLMs) can be used for many tasks, but often have a limited context size that can be smaller than documents you might want to use. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
 
