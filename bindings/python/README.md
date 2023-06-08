@@ -37,11 +37,7 @@ splitter = CharacterTextSplitter()
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks(
-    "your document text",
-    chunk_capacity_start=200,
-    chunk_capacity_end=1000
-)
+chunks = splitter.chunks("your document text", chunk_capacity=(200, 1000))
 ```
 
 ## Method
