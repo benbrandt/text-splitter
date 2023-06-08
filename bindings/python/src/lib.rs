@@ -19,25 +19,26 @@ use pyo3::prelude::*;
 
 /// Custom chunk capacity for python to make it easier to work
 /// with python arguments
-#[derive(Debug)]
-struct PyChunkCapacity {
-    start: Option<usize>,
-    end: usize,
-}
-
-impl PyChunkCapacity {
-    fn new(start: Option<usize>, end: usize) -> Self {
-        Self { start, end }
-    }
+#[derive(Debug, FromPyObject)]
+enum PyChunkCapacity {
+    #[pyo3(transparent, annotation = "int")]
+    Int(usize),
+    #[pyo3(annotation = "tuple[int, int]")]
+    IntTuple(usize, usize),
 }
 
 impl ChunkCapacity for PyChunkCapacity {
     fn start(&self) -> Option<usize> {
-        self.start
+        match self {
+            Self::Int(_) => None,
+            Self::IntTuple(start, _) => Some(*start),
+        }
     }
 
     fn end(&self) -> usize {
-        self.end
+        match self {
+            Self::Int(end) | Self::IntTuple(_, end) => *end,
+        }
     }
 }
 
@@ -73,11 +74,7 @@ splitter = CharacterTextSplitter()
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks(
-    "your document text",
-    chunk_capacity_start=200,
-    chunk_capacity_end=1000
-)
+chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
 ```
 **/
 #[pyclass]
@@ -125,15 +122,9 @@ impl CharacterTextSplitter {
     fn chunks<'text, 'splitter: 'text>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity_end: usize,
-        chunk_capacity_start: Option<usize>,
+        chunk_capacity: PyChunkCapacity,
     ) -> Vec<&'text str> {
-        self.splitter
-            .chunks(
-                text,
-                PyChunkCapacity::new(chunk_capacity_start, chunk_capacity_end),
-            )
-            .collect()
+        self.splitter.chunks(text, chunk_capacity).collect()
     }
 }
 
