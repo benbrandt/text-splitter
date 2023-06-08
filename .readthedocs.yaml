@@ -12,9 +12,5 @@ build:
     rust: "1.61"
   commands:
     - pip install pdoc
+    - pip install bindings/python
     - pdoc text_splitter -o $READTHEDOCS_OUTPUT/html/
-
-python:
-  install:
-    - method: pip
-      path: bindings/python
