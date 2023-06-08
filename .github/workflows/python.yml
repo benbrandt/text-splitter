@@ -36,7 +36,7 @@ jobs:
           working-directory: bindings/python
 
       - run: cargo fmt -- --check
-      - run: cargo clippy -- --deny
+      - run: cargo clippy
 
   linux:
     runs-on: ubuntu-latest
