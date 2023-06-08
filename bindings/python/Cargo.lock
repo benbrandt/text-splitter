@@ -269,6 +269,8 @@ checksum = "fd1ba337640d60c3e96bc6f0638a939b9c9a7f2c316a1598c279828b3d1dc8c5"
 [[package]]
 name = "text-splitter"
 version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1823cf3044a693df3e664e0acb8bc8a53689d847ff47a7ea430a2b8477120338"
 dependencies = [
  "auto_enums",
  "either",
