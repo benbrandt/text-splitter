@@ -32,6 +32,8 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: bindings/python
 
       - run: cargo fmt -- --check
       - run: cargo clippy --deny
