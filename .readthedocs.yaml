@@ -10,6 +10,9 @@ build:
   tools:
     python: "3"
     rust: "1.61"
+  commands:
+    - pip install pdoc
+    - pdoc text_splitter -o $READTHEDOCS_OUTPUT/html/
 
 python:
   install:

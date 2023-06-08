@@ -13,6 +13,7 @@ classifiers = [
 
 [project.optional-dependencies]
 test = ["pytest", "black"]
+docs = ["pdoc"]
 
 
 [tool.maturin]
