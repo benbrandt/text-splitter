@@ -12,6 +12,9 @@ on:
       - master
     tags:
       - "python-v*"
+    paths:
+      - "bindings/python/**"
+      - ".github/workflows/python.yml"
   pull_request:
   workflow_dispatch:
 
@@ -52,6 +55,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+      - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: bindings/python
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -86,6 +92,9 @@ jobs:
         with:
           python-version: "3.10"
           architecture: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: bindings/python
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -118,6 +127,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+      - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: bindings/python
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -144,6 +156,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: Swatinem/rust-cache@v1
+        with:
+          working-directory: bindings/python
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:

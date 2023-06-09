@@ -6,11 +6,13 @@ on:
       - main
     paths-ignore:
       - "bindings/**"
+      - ".github/workflows/python.yml"
   pull_request:
     branches:
       - main
     paths-ignore:
       - "bindings/**"
+      - ".github/workflows/python.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
