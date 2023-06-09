@@ -14,8 +14,11 @@
 // pyo3 uses this
 #![allow(elided_lifetimes_in_paths)]
 
-use pyo3::prelude::*;
+use std::str::FromStr;
+
+use pyo3::{exceptions::PyException, prelude::*};
 use text_splitter::{Characters, ChunkCapacity, TextSplitter};
+use tokenizers::Tokenizer;
 
 /// Custom chunk capacity for python to make it easier to work
 /// with python arguments
@@ -128,6 +131,62 @@ impl CharacterTextSplitter {
     }
 }
 
+#[pyclass]
+struct HuggingFaceTokenizerTextSplitter {
+    splitter: TextSplitter<Tokenizer>,
+}
+
+#[pymethods]
+impl HuggingFaceTokenizerTextSplitter {
+    /// Specify whether chunks should have whitespace trimmed from the
+    /// beginning and end or not.
+    ///
+    /// If `False` (default), joining all chunks should return the original
+    /// string.
+    /// If `True`, all chunks will have whitespace removed from beginning and end.
+    #[new]
+    #[pyo3(signature = (tokenizer, trim_chunks=false))]
+    fn new(tokenizer: &PyAny, trim_chunks: bool) -> PyResult<Self> {
+        // Get the json out so we can reconstruct the tokenizer on the Rust side
+        let json = tokenizer.call_method0("to_str")?.extract::<&str>()?;
+        let tokenizer =
+            Tokenizer::from_str(json).map_err(|e| PyException::new_err(format!("{e}")))?;
+
+        Ok(Self {
+            splitter: TextSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
+        })
+    }
+
+    /// Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+    ///
+    /// ## Method
+    ///
+    /// To preserve as much semantic meaning within a chunk as possible, a recursive approach is used, starting at larger semantic units and, if that is too large, breaking it up into the next largest unit. Here is an example of the steps used:
+    ///
+    /// 1. Split the text by a given level
+    /// 2. For each section, does it fit within the chunk size?
+    ///   a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+    ///   b. No. Split by the next level and repeat.
+    ///
+    /// The boundaries used to split the text if using the top-level `split` method, in descending length:
+    ///
+    /// 1. Descending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level.
+    /// 2. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 4. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 5. Characters
+    ///
+    /// Splitting doesn't occur below the character level, otherwise you could get partial
+    /// bytes of a char, which may not be a valid unicode str.
+    fn chunks<'text, 'splitter: 'text>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> Vec<&'text str> {
+        self.splitter.chunks(text, chunk_capacity).collect()
+    }
+}
+
 /**
 # text-splitter
 
@@ -205,5 +264,6 @@ A big thank you to the unicode-rs team for their [unicode-segmentation](https://
 #[pymodule]
 fn semantic_text_splitter(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<CharacterTextSplitter>()?;
+    m.add_class::<HuggingFaceTokenizerTextSplitter>()?;
     Ok(())
 }
