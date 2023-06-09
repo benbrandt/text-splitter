@@ -7,7 +7,7 @@ class CharacterTextSplitter:
     ### By Number of Characters
 
     ```python
-    from text_splitter import CharacterTextSplitter
+    from semantic_text_splitter import CharacterTextSplitter
 
     # Maximum number of characters in a chunk
     max_characters = 1000
@@ -26,7 +26,7 @@ class CharacterTextSplitter:
     It is always possible that a chunk may be returned that is less than the `start` value, as adding the next piece of text may have made it larger than the `end` capacity.
 
     ```python
-    from text_splitter import CharacterTextSplitter
+    from semantic_text_splitter import CharacterTextSplitter
 
     # Optionally can also have the splitter trim whitespace for you
     splitter = CharacterTextSplitter()

@@ -1,4 +1,4 @@
-from text_splitter import CharacterTextSplitter
+from semantic_text_splitter import CharacterTextSplitter
 
 
 def test_chunks():
