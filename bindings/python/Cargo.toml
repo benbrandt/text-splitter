@@ -1,6 +1,6 @@
 [package]
 name = "semantic-text-splitter"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens (when used with large language models)."

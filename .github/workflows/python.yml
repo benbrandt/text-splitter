@@ -71,7 +71,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install text-splitter --find-links dist --force-reinstall
+          pip install semantic-text-splitter --find-links dist --force-reinstall
           pip install pytest
           pytest
 
@@ -104,7 +104,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install text-splitter --find-links dist --force-reinstall
+          pip install semantic-text-splitter --find-links dist --force-reinstall
           pip install pytest
           pytest
 
@@ -136,7 +136,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install text-splitter --find-links dist --force-reinstall
+          pip install semantic-text-splitter --find-links dist --force-reinstall
           pip install pytest
           pytest
 

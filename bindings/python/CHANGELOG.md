@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.4
+
+Fifth time is the charm?
+
 ## v0.1.3
 
 Rename package to `semantic-text-splitter` so it can actually be uploaded to PyPi.
