@@ -133,6 +133,7 @@ jobs:
       - uses: Swatinem/rust-cache@v1
         with:
           working-directory: bindings/python
+      - run: xcode-select --install
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
