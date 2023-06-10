@@ -62,6 +62,7 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
+          before-script-linux: yum install -y openssl-devel
           args: --release --out dist
           sccache: "true"
           manylinux: auto
