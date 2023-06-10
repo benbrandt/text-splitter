@@ -1,6 +1,6 @@
-# text-splitter
+# semantic-text-splitter
 
-[![Documentation Status](https://readthedocs.org/projects/text-splitter/badge/?version=latest)](https://text-splitter.readthedocs.io/en/latest/?badge=latest) [![Licence](https://img.shields.io/crates/l/text-splitter)](https://github.com/benbrandt/text-splitter/blob/main/LICENSE.txt)
+[![Documentation Status](https://readthedocs.org/projects/semantic-text-splitter/badge/?version=stable)](https://semantic-text-splitter.readthedocs.io/en/stable/?badge=stable) [![Licence](https://img.shields.io/crates/l/text-splitter)](https://github.com/benbrandt/text-splitter/blob/main/LICENSE.txt)
 
 Large language models (LLMs) can be used for many tasks, but often have a limited context size that can be smaller than documents you might want to use. To use documents of larger length, you often have to split your text into chunks to fit within this context size.
 
@@ -15,8 +15,8 @@ from semantic_text_splitter import CharacterTextSplitter
 
 # Maximum number of characters in a chunk
 max_characters = 1000
-# Optionally can also have the splitter trim whitespace for you
-splitter = CharacterTextSplitter(trim_chunks=True)
+# Optionally can also have the splitter not trim whitespace for you
+splitter = CharacterTextSplitter(trim_chunks=False)
 
 chunks = splitter.chunks("your document text", max_characters)
 ```
