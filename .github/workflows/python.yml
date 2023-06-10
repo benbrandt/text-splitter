@@ -16,6 +16,9 @@ on:
       - "bindings/python/**"
       - ".github/workflows/python.yml"
   pull_request:
+    paths:
+      - "bindings/python/**"
+      - ".github/workflows/python.yml"
   workflow_dispatch:
 
 concurrency:
