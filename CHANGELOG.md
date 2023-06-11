@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.1
+
+### What's New
+
+- Removed unnecessary features for `tokenizers` crate to make cross-compilation easier (since tokenizer training helpers aren't needed).
+
 ## v0.4.0
 
 ### What's New
