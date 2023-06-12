@@ -12,7 +12,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "black"]
+test = ["pytest", "black", "tokenizers"]
 docs = ["pdoc"]
 
 
