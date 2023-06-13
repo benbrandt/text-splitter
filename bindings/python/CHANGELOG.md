@@ -1,8 +1,25 @@
 # Changelog
 
+## v0.2.1
+
+### What's New
+
+- Support Open AI Tiktoken tokenizers. So you can now give an OpenAI model name to tokenize the text for when calculating chunk sizes.
+
+```python
+from semantic_text_splitter import TiktokenTextSplitter
+
+# Maximum number of tokens in a chunk
+max_tokens = 1000
+# Optionally can also have the splitter not trim whitespace for you
+splitter = TiktokenTextSplitter("gpt-3.5-turbo", trim_chunks=False)
+
+chunks = splitter.chunks("your document text", max_tokens)
+```
+
 ## v0.2.0
 
-## What's New
+### What's New
 
 - New `HuggingFaceTextSplitter`, which allows for using Hugging Face's `tokenizers` package to count chunks by tokens with a tokenizer of your choice.
 
@@ -19,7 +36,7 @@ splitter = HuggingFaceTextSplitter(tokenizer, trim_chunks=False)
 chunks = splitter.chunks("your document text", max_characters)
 ```
 
-## Breaking Changes
+### Breaking Changes
 
 - `trim_chunks` now defaults to `True` instead of `False`. For most use cases, this is the desired behavior, especially with chunk ranges.
 

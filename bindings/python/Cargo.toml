@@ -1,6 +1,6 @@
 [package]
 name = "semantic-text-splitter"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens (when used with large language models)."
@@ -15,7 +15,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.19.0", features = ["abi3-py37"] }
-text-splitter = { version = "0.4.1", features = ["tokenizers"] }
+text-splitter = { version = "0.4.1", features = ["tiktoken-rs", "tokenizers"] }
+tiktoken-rs = "0.4.2"
 tokenizers = { version = "0.13.3", default_features = false, features = [
     "onig",
 ] }
