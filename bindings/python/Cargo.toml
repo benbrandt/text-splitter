@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = { version = "0.19.0", features = ["abi3-py37"] }
 text-splitter = { version = "0.4.1", features = ["tiktoken-rs", "tokenizers"] }
-tiktoken-rs = "0.4.2"
+tiktoken-rs = "0.5.0"
 tokenizers = { version = "0.13.3", default_features = false, features = [
     "onig",
 ] }
