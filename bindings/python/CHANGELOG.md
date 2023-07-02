@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2
+
+### What's New
+
+- Update to v0.4.2 of `text-splitter` to support `tiktoken-rs@0.5.0`
+
 ## v0.2.1
 
 ### What's New
