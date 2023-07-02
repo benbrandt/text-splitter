@@ -29,6 +29,8 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 ### With Huggingface Tokenizer
 
+Requires the `tokenizers` feature to be activated.
+
 ```rust
 use text_splitter::TextSplitter;
 // Can also use anything else that implements the ChunkSizer
@@ -45,6 +47,8 @@ let chunks = splitter.chunks("your document text", max_tokens);
 ```
 
 ### With Tiktoken Tokenizer
+
+Requires the `tiktoken-rs` feature to be activated.
 
 ```rust
 use text_splitter::TextSplitter;

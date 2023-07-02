@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.2
+
+### What's New
+
+- Loosen version requirement for peer dependencies (specifically `tiktoken-rs` now supports `>=v02.0, <0.6.0`)
+
 ## v0.4.1
 
 ### What's New
