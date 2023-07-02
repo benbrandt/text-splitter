@@ -97,3 +97,17 @@ jobs:
           toolchain: ${{ matrix.msrv }}
       - name: cargo +${{ matrix.msrv }} check
         run: cargo check
+
+  minimal-versions:
+    name: Check minimal versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+      - uses: Swatinem/rust-cache@v1
+
+      - run: cargo update --workspace -Zdirect-minimal-versions
+      - run: cargo test --workspace --all-features
