@@ -109,5 +109,5 @@ jobs:
           toolchain: nightly
       - uses: Swatinem/rust-cache@v1
 
-      - run: cargo generate-lockfile -Z minimal-versions
+      - run: cargo generate-lockfile -Z direct-minimal-versions
       - run: cargo test --locked --workspace --all-features
