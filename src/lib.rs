@@ -271,6 +271,61 @@ impl ChunkCapacity for RangeToInclusive<usize> {
     }
 }
 
+/// If a semantic level is too big for the current chunk capacity, we move down a level.
+/// However, the default greedy algorithm will try and fill up chunks as much as possible,
+/// meaning the first few chunks will be large, potentially leaving a very small chunk at
+/// the end.
+///
+/// The point of this struct is to try and convert the chunk capacity into a range that
+/// will allow for chunks to be finished sooner than normal to create a more balanced set
+/// for the top-level semantic level.
+struct BalancedChunkCapacity {
+    start: Option<usize>,
+    end: usize,
+}
+
+impl BalancedChunkCapacity {
+    /// Takes the current `chunk_capacity`, as well as the size of the chunk of text that is
+    /// to large and smaller, balanced chunks at a lower level are desired.
+    ///
+    /// If the `chunk_capacity` is a range, then the lower range will be kept if it is
+    /// smaller than the calculated balanced start range.
+    #[allow(clippy::cast_precision_loss)]
+    fn new<C>(chunk_capacity: &C, chunk_size: usize) -> Self
+    where
+        C: ChunkCapacity,
+    {
+        let end = chunk_capacity.end();
+
+        // Round up to the nearest number of segments we need to have a more even split
+        let segments = (chunk_size as f64 / end as f64).ceil();
+        // Find the chunk size that is closest to this number of segments
+        #[allow(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
+        let lower_bound = (chunk_size as f64 / segments).ceil() as usize;
+
+        let start = if lower_bound == end {
+            None
+        } else if let Some(s) = chunk_capacity.start() {
+            // Preserve the original start if it is already lower
+            Some(lower_bound.min(s))
+        } else {
+            Some(lower_bound)
+        };
+
+        Self { start, end }
+    }
+}
+
+impl ChunkCapacity for BalancedChunkCapacity {
+    fn start(&self) -> Option<usize> {
+        self.start
+    }
+
+    fn end(&self) -> usize {
+        self.end
+    }
+}
+
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
@@ -1003,5 +1058,32 @@ mod tests {
         assert_eq!((..=4).fits(Characters.chunk_size(chunk)), Ordering::Greater);
         assert_eq!((..=5).fits(Characters.chunk_size(chunk)), Ordering::Equal);
         assert_eq!((..=6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+    }
+
+    #[test]
+    fn balanced_chunk_capacity_finds_better_start() {
+        let chunk_capacity = 9;
+        let balanced = BalancedChunkCapacity::new(&chunk_capacity, 10);
+
+        assert_eq!(chunk_capacity.end(), balanced.end());
+        assert_eq!(balanced.start(), Some(5));
+    }
+
+    #[test]
+    fn balanced_capacity_doesnt_change_if_already_optimal() {
+        let chunk_capacity = 10;
+        let balanced = BalancedChunkCapacity::new(&chunk_capacity, 10);
+
+        assert_eq!(chunk_capacity.end(), balanced.end());
+        assert_eq!(chunk_capacity.start(), balanced.start());
+    }
+
+    #[test]
+    fn balanced_capacity_preserves_lower_range_if_lower() {
+        let chunk_capacity = 2..=10;
+        let balanced = BalancedChunkCapacity::new(&chunk_capacity, 9);
+
+        assert_eq!(10, balanced.end());
+        assert_eq!(Some(2), balanced.start());
     }
 }
