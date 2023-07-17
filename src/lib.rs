@@ -598,13 +598,22 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn check_capacity(&self, chunk: &str) -> (usize, Ordering) {
+    fn check_capacity(
+        &self,
+        chunk: &str,
+        chunk_capacity_override: Option<&BalancedChunkCapacity>,
+    ) -> (usize, Ordering) {
         let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
         });
-        (chunk_size, self.chunk_capacity.fits(chunk_size))
+        let fits = if let Some(capacity) = chunk_capacity_override {
+            capacity.fits(chunk_size)
+        } else {
+            self.chunk_capacity.fits(chunk_size)
+        };
+        (chunk_size, fits)
     }
 
     /// Generate the next chunk, applying trimming settings.
@@ -617,11 +626,12 @@ where
         // Track change in chunk size
         let (mut chunk_size, mut fits) = (0, Ordering::Less);
         // Consume as many as we can fit
-        for str in self.next_sections()? {
+        let (chunk_capacity, sections) = self.next_sections()?;
+        for str in sections {
             let chunk = self.text.get(start..end + str.len())?;
             // Cache prev chunk size before replacing
             let (prev_chunk_size, prev_fits) = (chunk_size, fits);
-            (chunk_size, fits) = self.check_capacity(chunk);
+            (chunk_size, fits) = self.check_capacity(chunk, chunk_capacity.as_ref());
 
             // If we are now beyond the first item, and it is too large, end here.
             if start != end
@@ -679,26 +689,33 @@ where
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
-    fn next_sections(&self) -> Option<impl Iterator<Item = &'text str> + '_> {
+    fn next_sections(
+        &self,
+    ) -> Option<(
+        Option<BalancedChunkCapacity>,
+        impl Iterator<Item = &'text str> + '_,
+    )> {
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
         let mut levels = self.line_breaks.levels_in_next_max_chunk(self.cursor);
         // Get starting level
         let mut semantic_level = levels.next()?;
+        let mut chunk_capacity = None;
 
         for level in levels {
             let str = self.semantic_chunks(level).next()?;
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            let (_, fits) = self.check_capacity(str);
+            let (chunk_size, fits) = self.check_capacity(str, None);
             if fits.is_gt() || self.text.get(self.cursor..)? == str {
+                chunk_capacity = Some(BalancedChunkCapacity::new(&self.chunk_capacity, chunk_size));
                 break;
             }
             // Otherwise break up the text with the next level
             semantic_level = level;
         }
 
-        Some(self.semantic_chunks(semantic_level))
+        Some((chunk_capacity, self.semantic_chunks(semantic_level)))
     }
 }
 
@@ -906,12 +923,12 @@ mod tests {
             .collect::<Vec<_>>();
         assert_eq!(
             vec![
-                "The quick ",
-                "(\"brown\") ",
-                "fox can't ",
-                "jump 32.3 ",
-                "feet, ",
-                "right?"
+                "The quick",
+                " (\"brown\"",
+                ") fox ",
+                "can't jump",
+                " 32.3 feet",
+                ", right?"
             ],
             chunks
         );
@@ -955,7 +972,7 @@ mod tests {
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
-            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+            vec!["Mr. Fox jumped. ", "[...] ", "The dog was", " too lazy."],
             chunks
         );
     }

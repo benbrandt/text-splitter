@@ -58,10 +58,10 @@ fn double_newline_fallsback_to_single_and_sentences() {
     let chunks = splitter.chunks(text, 18).collect::<Vec<_>>();
     assert_eq!(
         vec![
-            "Mr. Fox jumped.\n",
-            "[...]\r\n\r\n",
-            "The dog was too ",
-            "lazy. ",
+            "Mr. Fox jumped.",
+            "\n[...]\r\n\r\n",
+            "The dog was",
+            " too lazy. ",
             "It just sat there."
         ],
         chunks
@@ -127,4 +127,14 @@ fn random_chunk_range() {
             assert_le!(chars, max);
         }
     }
+}
+
+#[test]
+fn balanced_splitting() {
+    let text = "1234567890";
+    let splitter = TextSplitter::default();
+
+    let chunks = splitter.chunks(text, 9).collect::<Vec<_>>();
+    // Default would be greedy and do ["123456789", "0"]
+    assert_eq!(chunks, vec!["12345", "67890"]);
 }
