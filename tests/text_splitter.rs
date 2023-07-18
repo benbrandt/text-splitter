@@ -138,3 +138,13 @@ fn balanced_splitting() {
     // Default would be greedy and do ["123456789", "0"]
     assert_eq!(chunks, vec!["12345", "67890"]);
 }
+
+#[test]
+fn balanced_splitting_doesnt_introduce_extra_splits_if_possible() {
+    let text = "1234 1234567 1";
+    let splitter = TextSplitter::default();
+
+    let chunks = splitter.chunks(text, 11).collect::<Vec<_>>();
+    // Naive balancing would end up with ["1234 ", "1234567", " 1"]
+    assert_eq!(chunks, vec!["1234 ", "1234567 1"]);
+}

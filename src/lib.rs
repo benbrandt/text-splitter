@@ -279,50 +279,71 @@ impl ChunkCapacity for RangeToInclusive<usize> {
 /// The point of this struct is to try and convert the chunk capacity into a range that
 /// will allow for chunks to be finished sooner than normal to create a more balanced set
 /// for the top-level semantic level.
-struct BalancedChunkCapacity {
-    start: Option<usize>,
-    end: usize,
+struct BalancedChunkCapacity<'capacity, C>
+where
+    C: ChunkCapacity,
+{
+    /// Chunk capacity we are trying to balance out
+    chunk_capacity: &'capacity C,
+    /// Chunk size of the next semantic level that is too large to fit in a chunk
+    size_of_next_level: usize,
+    /// How much of the current level have we consumed so far?
+    consumed: usize,
 }
 
-impl BalancedChunkCapacity {
+impl<'capacity, C> BalancedChunkCapacity<'capacity, C>
+where
+    C: ChunkCapacity,
+{
     /// Takes the current `chunk_capacity`, as well as the size of the chunk of text that is
     /// to large and smaller, balanced chunks at a lower level are desired.
     ///
     /// If the `chunk_capacity` is a range, then the lower range will be kept if it is
     /// smaller than the calculated balanced start range.
-    #[allow(clippy::cast_precision_loss)]
-    fn new<C>(chunk_capacity: &C, chunk_size: usize) -> Self
-    where
-        C: ChunkCapacity,
-    {
-        let end = chunk_capacity.end();
+    fn new(chunk_capacity: &'capacity C, size_of_next_level: usize) -> Self {
+        Self {
+            chunk_capacity,
+            size_of_next_level,
+            consumed: 0,
+        }
+    }
+
+    fn set_consumed(&mut self, consumed: usize) {
+        self.consumed = consumed;
+    }
+}
+
+impl<C> ChunkCapacity for BalancedChunkCapacity<'_, C>
+where
+    C: ChunkCapacity,
+{
+    fn start(&self) -> Option<usize> {
+        let end = self.end();
+
+        let remaining = self.size_of_next_level - self.consumed;
+
+        // If the rest will fit in a chunk, stop balancing from here.
+        if remaining <= end {
+            return self.chunk_capacity.start();
+        }
 
         // Round up to the nearest number of segments we need to have a more even split
-        let segments = (chunk_size as f64 / end as f64).ceil();
+        let segments = remaining / end + usize::from((remaining % end) > 0);
         // Find the chunk size that is closest to this number of segments
-        #[allow(clippy::cast_sign_loss, clippy::cast_possible_truncation)]
-        let lower_bound = (chunk_size as f64 / segments).ceil() as usize;
+        let lower_bound = remaining / segments + usize::from((remaining % segments) > 0);
 
-        let start = if lower_bound == end {
+        if lower_bound == end {
             None
-        } else if let Some(s) = chunk_capacity.start() {
+        } else if let Some(s) = self.chunk_capacity.start() {
             // Preserve the original start if it is already lower
             Some(lower_bound.min(s))
         } else {
             Some(lower_bound)
-        };
-
-        Self { start, end }
-    }
-}
-
-impl ChunkCapacity for BalancedChunkCapacity {
-    fn start(&self) -> Option<usize> {
-        self.start
+        }
     }
 
     fn end(&self) -> usize {
-        self.end
+        self.chunk_capacity.end()
     }
 }
 
@@ -601,7 +622,7 @@ where
     fn check_capacity(
         &self,
         chunk: &str,
-        chunk_capacity_override: Option<&BalancedChunkCapacity>,
+        chunk_capacity_override: Option<&BalancedChunkCapacity<'_, C>>,
     ) -> (usize, Ordering) {
         let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
             chunk.trim()
@@ -626,7 +647,7 @@ where
         // Track change in chunk size
         let (mut chunk_size, mut fits) = (0, Ordering::Less);
         // Consume as many as we can fit
-        let (chunk_capacity, sections) = self.next_sections()?;
+        let (mut chunk_capacity, sections) = self.next_sections()?;
         for str in sections {
             let chunk = self.text.get(start..end + str.len())?;
             // Cache prev chunk size before replacing
@@ -641,6 +662,10 @@ where
                     || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
             {
                 break;
+            }
+
+            if let Some(capacity) = chunk_capacity.as_mut() {
+                capacity.set_consumed(chunk_size);
             }
 
             // Progress if this is our first item (we need to move forward at least one)
@@ -692,7 +717,7 @@ where
     fn next_sections(
         &self,
     ) -> Option<(
-        Option<BalancedChunkCapacity>,
+        Option<BalancedChunkCapacity<'_, C>>,
         impl Iterator<Item = &'text str> + '_,
     )> {
         // Next levels to try. Will stop at max level. We check only levels in the next max level
