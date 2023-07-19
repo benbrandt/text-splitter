@@ -326,7 +326,7 @@ where
             + usize::from((self.size_of_next_level % segments) > 0);
 
         if lower_bound == end {
-            None
+            self.chunk_capacity.start()
         } else if let Some(s) = self.chunk_capacity.start() {
             // Preserve the original start if it is already lower
             Some(lower_bound.min(s))
