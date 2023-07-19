@@ -287,8 +287,6 @@ where
     chunk_capacity: &'capacity C,
     /// Chunk size of the next semantic level that is too large to fit in a chunk
     size_of_next_level: usize,
-    /// How much of the current level have we consumed so far?
-    consumed: usize,
 }
 
 impl<'capacity, C> BalancedChunkCapacity<'capacity, C>
@@ -304,12 +302,7 @@ where
         Self {
             chunk_capacity,
             size_of_next_level,
-            consumed: 0,
         }
-    }
-
-    fn set_consumed(&mut self, consumed: usize) {
-        self.consumed = consumed;
     }
 }
 
@@ -320,17 +313,17 @@ where
     fn start(&self) -> Option<usize> {
         let end = self.end();
 
-        let remaining = self.size_of_next_level - self.consumed;
-
         // If the rest will fit in a chunk, stop balancing from here.
-        if remaining <= end {
+        if self.size_of_next_level <= end {
             return self.chunk_capacity.start();
         }
 
         // Round up to the nearest number of segments we need to have a more even split
-        let segments = remaining / end + usize::from((remaining % end) > 0);
+        let segments =
+            self.size_of_next_level / end + usize::from((self.size_of_next_level % end) > 0);
         // Find the chunk size that is closest to this number of segments
-        let lower_bound = remaining / segments + usize::from((remaining % segments) > 0);
+        let lower_bound = self.size_of_next_level / segments
+            + usize::from((self.size_of_next_level % segments) > 0);
 
         if lower_bound == end {
             None
@@ -647,7 +640,7 @@ where
         // Track change in chunk size
         let (mut chunk_size, mut fits) = (0, Ordering::Less);
         // Consume as many as we can fit
-        let (mut chunk_capacity, sections) = self.next_sections()?;
+        let (chunk_capacity, sections) = self.next_sections()?;
         for str in sections {
             let chunk = self.text.get(start..end + str.len())?;
             // Cache prev chunk size before replacing
@@ -662,10 +655,6 @@ where
                     || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
             {
                 break;
-            }
-
-            if let Some(capacity) = chunk_capacity.as_mut() {
-                capacity.set_consumed(chunk_size);
             }
 
             // Progress if this is our first item (we need to move forward at least one)
