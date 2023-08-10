@@ -85,7 +85,7 @@ fn huggingface_default() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in [10, 100, 1000] {
-            let splitter = TextSplitter::new(HUGGINGFACE_TOKENIZER.clone());
+            let splitter = TextSplitter::new(&*HUGGINGFACE_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
@@ -103,7 +103,7 @@ fn huggingface_trim() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in [10, 100, 1000] {
-            let splitter = TextSplitter::new(HUGGINGFACE_TOKENIZER.clone()).with_trim_chunks(true);
+            let splitter = TextSplitter::new(&*HUGGINGFACE_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
@@ -122,7 +122,7 @@ fn tiktoken_default() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in [10, 100, 1000] {
-            let splitter = TextSplitter::new(TIKTOKEN_TOKENIZER.clone());
+            let splitter = TextSplitter::new(&*TIKTOKEN_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
@@ -140,7 +140,7 @@ fn tiktoken_trim() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in [10, 100, 1000] {
-            let splitter = TextSplitter::new(TIKTOKEN_TOKENIZER.clone()).with_trim_chunks(true);
+            let splitter = TextSplitter::new(&*TIKTOKEN_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
