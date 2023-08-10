@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.3
+
+### What's New
+
+- Support `impl ChunkSizer` for `&Tokenizer` and `&CoreBPE`, allowing for generating chunks based off of a reference to a tokenizer as well, instead of requiring ownership.
+
 ## v0.4.2
 
 ### What's New
