@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.3
+
+### What's New
+
+- Update to v0.4.4 of `text-splitter` to support `tokenizers@0.14.0`
+- Update `tokenizers` and `tiktoken-rs` to latest versions
+
 ## v0.2.2
 
 ### What's New
