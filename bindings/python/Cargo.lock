@@ -695,7 +695,7 @@ dependencies = [
  "pyo3",
  "text-splitter",
  "tiktoken-rs",
- "tokenizers",
+ "tokenizers 0.14.0",
 ]
 
 [[package]]
@@ -793,7 +793,7 @@ dependencies = [
  "once_cell",
  "regex",
  "tiktoken-rs",
- "tokenizers",
+ "tokenizers 0.13.4",
  "unicode-segmentation",
 ]
 
@@ -837,6 +837,37 @@ name = "tokenizers"
 version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aea68938177975ab09da68552b720eac941779ff386baceaf77e0f5f9cea645f"
+dependencies = [
+ "aho-corasick 0.7.20",
+ "derive_builder",
+ "esaxx-rs",
+ "getrandom",
+ "itertools 0.9.0",
+ "lazy_static",
+ "log",
+ "macro_rules_attribute",
+ "monostate",
+ "onig",
+ "paste",
+ "rand",
+ "rayon",
+ "rayon-cond",
+ "regex",
+ "regex-syntax",
+ "serde",
+ "serde_json",
+ "spm_precompiled",
+ "thiserror",
+ "unicode-normalization-alignments",
+ "unicode-segmentation",
+ "unicode_categories",
+]
+
+[[package]]
+name = "tokenizers"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12b515a66453a4d68f03398054f7204fd0dde6b93d3f20ea90b08025ab49b499"
 dependencies = [
  "aho-corasick 0.7.20",
  "derive_builder",
