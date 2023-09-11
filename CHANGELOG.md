@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## v0.4.4
 
 ### What's New
 
+- Support `tokenizers` crate v0.14.0
 - Minimum Supported Rust Version is now 1.61.0
 
 ## v0.4.3
