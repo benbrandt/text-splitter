@@ -9,7 +9,7 @@ license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
 exclude = ["/tests/snapshots/**", "/tests/inputs/**", "/bindings/**"]
-rust-version = "1.60.0"
+rust-version = "1.61.0"
 
 [package.metadata.docs.rs]
 all-features = true
