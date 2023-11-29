@@ -560,34 +560,36 @@ where
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
+        let mut end_offset = self.cursor;
+        let section_lengths: Vec<usize> = self.next_sections()?.map(|(_, s)| s.len()).collect();
 
-        let mut end = self.cursor;
-        // Track change in chunk size
-        let (mut chunk_size, mut fits) = (0, Ordering::Less);
-        // Consume as many as we can fit
-        for (offset, str) in self.next_sections()? {
-            let chunk = self.text.get(start..offset + str.len())?;
-            // Cache prev chunk size before replacing
-            let (prev_chunk_size, prev_fits) = (chunk_size, fits);
-            (chunk_size, fits) = self.check_capacity(chunk);
+        // Search for the largest chunk that satisfies the capacity requirements
+        let mut low = 0;
+        let mut high = section_lengths.len() - 1;
+        let mut found_offset = end_offset;
 
-            // If we are now beyond the first item, and it is too large, end here.
-            if start != end
-                && (fits.is_gt()
-                    // For tokenizers, it is possible that the next string still may be the same amount of tokens.
-                    // Check if both are equal, but we added to the chunk size, which we don't want for ranges.
-                    || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
-            {
+        while low <= high {
+            let mid = low + (high - low) / 2;
+            end_offset = section_lengths.iter().take(mid + 1).sum::<usize>() + start;
+            let candidate = self.text.get(start..end_offset).expect("Tried to seek to invalid offset");
+            let (_, fits) = self.check_capacity(candidate);
+
+            // If we're too big on our smallest run, we must return at least one section
+            if mid == 0 && fits.is_gt() {
+                found_offset = end_offset;
                 break;
             }
 
-            // Progress if this is our first item (we need to move forward at least one)
-            // or if it still fits in the capacity.
-            end = offset + str.len();
+            if fits.is_eq() || fits.is_lt() {
+                low = mid + 1;
+                found_offset = end_offset;
+            } else {
+                high = mid - 1;
+            }
         }
 
-        self.cursor = end;
-
+        self.cursor = found_offset;
+        // Empty input will return None from here
         let chunk = self.text.get(start..self.cursor)?;
 
         // Trim whitespace if user requested it
