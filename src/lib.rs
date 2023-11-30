@@ -605,15 +605,18 @@ where
     fn semantic_chunks(
         &self,
         semantic_level: SemanticLevel,
-    ) -> impl Iterator<Item = &'text str> + '_ {
+    ) -> impl Iterator<Item = (usize, &'text str)> + '_ {
         let text = self.text.get(self.cursor..).unwrap();
         match semantic_level {
-            SemanticLevel::Char => text
-                .char_indices()
-                .map(|(i, c)| text.get(i..i + c.len_utf8()).expect("char should be valid")),
-            SemanticLevel::GraphemeCluster => text.graphemes(true),
-            SemanticLevel::Word => text.split_word_bounds(),
-            SemanticLevel::Sentence => text.split_sentence_bounds(),
+            SemanticLevel::Char => text.char_indices().map(|(i, c)| {
+                (
+                    i,
+                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
+                )
+            }),
+            SemanticLevel::GraphemeCluster => text.grapheme_indices(true),
+            SemanticLevel::Word => text.split_word_bound_indices(),
+            SemanticLevel::Sentence => text.split_sentence_bound_indices(),
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
                 true,
@@ -633,20 +636,30 @@ where
         let mut levels = self.line_breaks.levels_in_next_max_chunk(self.cursor);
         // Get starting level
         let mut semantic_level = levels.next()?;
+        // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
+        let mut max_offset = None;
 
         for level in levels {
-            let str = self.semantic_chunks(level).next()?;
+            let (offset, str) = self.semantic_chunks(level).next()?;
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
             let (_, fits) = self.check_capacity(str);
             if fits.is_gt() || self.text.get(self.cursor..)? == str {
+                max_offset = Some(offset + str.len());
                 break;
             }
             // Otherwise break up the text with the next level
             semantic_level = level;
         }
 
-        Some(self.semantic_chunks(semantic_level))
+        Some(
+            self.semantic_chunks(semantic_level)
+                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+                // so we should be safe to break once we reach it.
+                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max))
+                .map(|(_, str)| str),
+        )
     }
 }
 
@@ -679,7 +692,7 @@ fn split_str_by_separator(
     text: &str,
     separator_is_own_chunk: bool,
     separator_ranges: impl Iterator<Item = Range<usize>>,
-) -> impl Iterator<Item = &str> {
+) -> impl Iterator<Item = (usize, &str)> {
     let mut cursor = 0;
     let mut final_match = false;
     separator_ranges
@@ -689,10 +702,11 @@ fn split_str_by_separator(
             // First time we hit None, return the final section of the text
             None => {
                 final_match = true;
-                text.get(cursor..).map(|t| Either::Left(once(t)))
+                text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
             }
             // Return text preceding match + the match
             Some(range) if separator_is_own_chunk => {
+                let offset = cursor;
                 let prev_section = text
                     .get(cursor..range.start)
                     .expect("invalid character sequence");
@@ -700,16 +714,19 @@ fn split_str_by_separator(
                     .get(range.start..range.end)
                     .expect("invalid character sequence");
                 cursor = range.end;
-                Some(Either::Right([prev_section, separator].into_iter()))
+                Some(Either::Right(
+                    [(offset, prev_section), (range.start, separator)].into_iter(),
+                ))
             }
             // Return just the text preceding the match
             Some(range) => {
+                let offset = cursor;
                 let prev_section = text
                     .get(cursor..range.start)
                     .expect("invalid character sequence");
                 // Separator will be part of the next chunk
                 cursor = range.start;
-                Some(Either::Left(once(prev_section)))
+                Some(Either::Left(once((offset, prev_section))))
             }
         })
         .flatten()
