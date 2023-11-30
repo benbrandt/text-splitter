@@ -565,8 +565,8 @@ where
         // Track change in chunk size
         let (mut chunk_size, mut fits) = (0, Ordering::Less);
         // Consume as many as we can fit
-        for str in self.next_sections()? {
-            let chunk = self.text.get(start..end + str.len())?;
+        for (offset, str) in self.next_sections()? {
+            let chunk = self.text.get(start..offset + str.len())?;
             // Cache prev chunk size before replacing
             let (prev_chunk_size, prev_fits) = (chunk_size, fits);
             (chunk_size, fits) = self.check_capacity(chunk);
@@ -583,7 +583,7 @@ where
 
             // Progress if this is our first item (we need to move forward at least one)
             // or if it still fits in the capacity.
-            end += str.len();
+            end = offset + str.len();
         }
 
         self.cursor = end;
@@ -610,27 +610,34 @@ where
         match semantic_level {
             SemanticLevel::Char => text.char_indices().map(|(i, c)| {
                 (
-                    i,
+                    self.cursor + i,
                     text.get(i..i + c.len_utf8()).expect("char should be valid"),
                 )
             }),
-            SemanticLevel::GraphemeCluster => text.grapheme_indices(true),
-            SemanticLevel::Word => text.split_word_bound_indices(),
-            SemanticLevel::Sentence => text.split_sentence_bound_indices(),
+            SemanticLevel::GraphemeCluster => text
+                .grapheme_indices(true)
+                .map(|(i, str)| (self.cursor + i, str)),
+            SemanticLevel::Word => text
+                .split_word_bound_indices()
+                .map(|(i, str)| (self.cursor + i, str)),
+            SemanticLevel::Sentence => text
+                .split_sentence_bound_indices()
+                .map(|(i, str)| (self.cursor + i, str)),
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
                 true,
                 self.line_breaks
                     .ranges(self.cursor, semantic_level)
                     .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor),
-            ),
+            )
+            .map(|(i, str)| (self.cursor + i, str)),
         }
     }
 
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
-    fn next_sections(&self) -> Option<impl Iterator<Item = &'text str> + '_> {
+    fn next_sections(&self) -> Option<impl Iterator<Item = (usize, &'text str)> + '_> {
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
         let mut levels = self.line_breaks.levels_in_next_max_chunk(self.cursor);
@@ -657,8 +664,7 @@ where
                 // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
                 // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
                 // so we should be safe to break once we reach it.
-                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max))
-                .map(|(_, str)| str),
+                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max)),
         )
     }
 }
