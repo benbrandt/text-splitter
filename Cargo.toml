@@ -30,6 +30,7 @@ tokenizers = { version = ">=0.13.3, <0.16.0", default_features = false, features
 unicode-segmentation = "1.10.1"
 
 [dev-dependencies]
+criterion = "0.5.1"
 fake = "2.9.1"
 insta = { version = "1.34.0", features = ["glob", "yaml"] }
 tokenizers = { version = ">=0.13.3, <0.16.0", default-features = false, features = [
@@ -37,6 +38,10 @@ tokenizers = { version = ">=0.13.3, <0.16.0", default-features = false, features
     "http",
 ] }
 more-asserts = "0.3.1"
+
+[[bench]]
+name = "chunk_size"
+harness = false
 
 [features]
 tokenizers = ["dep:tokenizers"]
