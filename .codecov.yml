@@ -1,6 +1,7 @@
 ignore:
   - "tests" # we also don't care about coverage of test code
   - "bindings"
+  - "benches"
 coverage:
   status:
     # ref: https://docs.codecov.com/docs/commit-status
