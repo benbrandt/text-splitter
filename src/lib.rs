@@ -546,13 +546,13 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn check_capacity(&self, chunk: &str) -> (usize, Ordering) {
+    fn check_capacity(&self, chunk: &str) -> Ordering {
         let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
             chunk.trim()
         } else {
             chunk
         });
-        (chunk_size, self.chunk_capacity.fits(chunk_size))
+        self.chunk_capacity.fits(chunk_size)
     }
 
     /// Generate the next chunk, applying trimming settings.
@@ -560,30 +560,55 @@ where
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
-
         let mut end = self.cursor;
-        // Track change in chunk size
-        let (mut chunk_size, mut fits) = (0, Ordering::Less);
-        // Consume as many as we can fit
-        for (offset, str) in self.next_sections()? {
-            let chunk = self.text.get(start..offset + str.len())?;
-            // Cache prev chunk size before replacing
-            let (prev_chunk_size, prev_fits) = (chunk_size, fits);
-            (chunk_size, fits) = self.check_capacity(chunk);
+        let mut equals_found = 0;
 
-            // If we are now beyond the first item, and it is too large, end here.
-            if start != end
-                && (fits.is_gt()
-                    // For tokenizers, it is possible that the next string still may be the same amount of tokens.
-                    // Check if both are equal, but we added to the chunk size, which we don't want for ranges.
-                    || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
-            {
+        let sections = self.next_sections()?.collect::<Vec<_>>();
+        let mut low = 0;
+        let mut high = if sections.is_empty() {
+            0
+        } else {
+            sections.len() - 1
+        };
+
+        while low <= high {
+            let mid = low + (high - low) / 2;
+            let (offset, str) = sections[mid];
+            let text_end = offset + str.len();
+            let chunk = self.text.get(start..text_end)?;
+            let fits = self.check_capacity(chunk);
+
+            match fits {
+                Ordering::Less => {
+                    // We got further than the last one, so update end
+                    if text_end > end {
+                        end = text_end;
+                    }
+                }
+                Ordering::Equal => {
+                    // If we found a smaller equals use it. Or if this is the first equals we found
+                    if text_end < end || equals_found == 0 {
+                        end = text_end;
+                    }
+                    equals_found += 1;
+                }
+                Ordering::Greater => {
+                    // If we're too big on our smallest run, we must return at least one section
+                    if mid == 0 && start == end {
+                        end = text_end;
+                    }
+                }
+            };
+
+            // Adjust search area
+            if fits.is_lt() {
+                low = mid + 1;
+            } else if mid > 0 {
+                high = mid - 1;
+            } else {
+                // Nothing to adjust
                 break;
             }
-
-            // Progress if this is our first item (we need to move forward at least one)
-            // or if it still fits in the capacity.
-            end = offset + str.len();
         }
 
         self.cursor = end;
@@ -650,8 +675,7 @@ where
             let (offset, str) = self.semantic_chunks(level).next()?;
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            let (_, fits) = self.check_capacity(str);
-            if fits.is_gt() || self.text.get(self.cursor..)? == str {
+            if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str {
                 max_offset = Some(offset + str.len());
                 break;
             }
@@ -664,7 +688,8 @@ where
                 // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
                 // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
                 // so we should be safe to break once we reach it.
-                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max)),
+                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max))
+                .filter(|(_, str)| !str.is_empty()),
         )
     }
 }
