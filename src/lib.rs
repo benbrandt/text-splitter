@@ -679,7 +679,6 @@ where
                 .map(|(i, str)| (self.cursor + i, str)),
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
-                true,
                 self.line_breaks
                     .ranges(self.cursor, semantic_level)
                     .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor),
@@ -753,7 +752,6 @@ where
 /// Given a list of separator ranges, construct the sections of the text
 fn split_str_by_separator(
     text: &str,
-    separator_is_own_chunk: bool,
     separator_ranges: impl Iterator<Item = Range<usize>>,
 ) -> impl Iterator<Item = (usize, &str)> {
     let mut cursor = 0;
@@ -768,7 +766,7 @@ fn split_str_by_separator(
                 text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
             }
             // Return text preceding match + the match
-            Some(range) if separator_is_own_chunk => {
+            Some(range) => {
                 let offset = cursor;
                 let prev_section = text
                     .get(cursor..range.start)
@@ -780,16 +778,6 @@ fn split_str_by_separator(
                 Some(Either::Right(
                     [(offset, prev_section), (range.start, separator)].into_iter(),
                 ))
-            }
-            // Return just the text preceding the match
-            Some(range) => {
-                let offset = cursor;
-                let prev_section = text
-                    .get(cursor..range.start)
-                    .expect("invalid character sequence");
-                // Separator will be part of the next chunk
-                cursor = range.start;
-                Some(Either::Left(once((offset, prev_section))))
             }
         })
         .flatten()
