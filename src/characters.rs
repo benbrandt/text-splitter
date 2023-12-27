@@ -1,4 +1,6 @@
-use crate::ChunkSizer;
+use std::ops::Range;
+
+use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
 /// Used for splitting a piece of text into chunks based on the number of
 /// characters in each chunk.
@@ -11,14 +13,26 @@ use crate::ChunkSizer;
 #[derive(Debug)]
 pub struct Characters;
 
+impl Characters {
+    fn encoded_offsets(chunk: &str) -> impl Iterator<Item = Range<usize>> + '_ {
+        chunk.char_indices().map(|(i, c)| i..(i + c.len_utf8()))
+    }
+}
+
 impl ChunkSizer for Characters {
     /// Determine the size of a given chunk to use for validation.
-    ///
-    /// ```
-    /// use text_splitter::{Characters, ChunkSizer};
-    ///
-    /// assert_eq!(Characters.chunk_size("hello"), 5);
-    fn chunk_size(&self, chunk: &str) -> usize {
-        chunk.chars().count()
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+        ChunkSize::from_offsets(Self::encoded_offsets(chunk), capacity)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn returns_offsets() {
+        let offsets = Characters::encoded_offsets("eé").collect::<Vec<_>>();
+        assert_eq!(offsets, vec![0..1, 1..3]);
     }
 }

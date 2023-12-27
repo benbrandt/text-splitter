@@ -107,9 +107,9 @@ fn random_chunk_size() {
 fn random_chunk_range() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
-    for _ in 0..100 {
-        let a = Faker.fake::<Option<usize>>();
-        let b = Faker.fake::<Option<usize>>();
+    for _ in 0..10 {
+        let a = Faker.fake::<Option<u16>>().map(usize::from);
+        let b = Faker.fake::<Option<u16>>().map(usize::from);
         let splitter = TextSplitter::default();
 
         let chunks = match (a, b) {

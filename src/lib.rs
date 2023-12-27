@@ -152,10 +152,38 @@ mod tiktoken;
 
 pub use characters::Characters;
 
+/// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
+/// determined by the sizer, as well as the max byte offset of the text that
+/// would fit within the given `ChunkCapacity`.
+#[derive(Debug, Default, PartialEq)]
+pub struct ChunkSize {
+    /// Size of the chunk, in units used by the sizer.
+    size: usize,
+    /// max byte offset of the text that fit within the given `ChunkCapacity`.
+    max_chunk_size_offset: usize,
+}
+
+impl ChunkSize {
+    /// Generate a chunk size from an iterator of byte ranges for each encoded
+    /// element in the chunk.
+    fn from_offsets(
+        offsets: impl Iterator<Item = Range<usize>>,
+        capacity: &impl ChunkCapacity,
+    ) -> Self {
+        offsets.fold(Self::default(), |mut acc, range| {
+            acc.size += 1;
+            if acc.size <= capacity.end() {
+                acc.max_chunk_size_offset = range.end;
+            }
+            acc
+        })
+    }
+}
+
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str) -> usize;
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;
 }
 
 /// Describes the largest valid chunk size(s) that can be generated.
@@ -186,20 +214,20 @@ pub trait ChunkCapacity {
     /// - `Ordering::Less` indicates more could be added
     /// - `Ordering::Equal` indicates the chunk is within the capacity range
     /// - `Ordering::Greater` indicates the chunk is larger than the capacity
-    fn fits(&self, chunk_size: usize) -> Ordering {
+    fn fits(&self, chunk_size: &ChunkSize) -> Ordering {
         let end = self.end();
 
         match self.start() {
             Some(start) => {
-                if chunk_size < start {
+                if chunk_size.size < start {
                     Ordering::Less
-                } else if chunk_size > end {
+                } else if chunk_size.size > end {
                     Ordering::Greater
                 } else {
                     Ordering::Equal
                 }
             }
-            None => chunk_size.cmp(&end),
+            None => chunk_size.size.cmp(&end),
         }
     }
 }
@@ -216,7 +244,7 @@ impl ChunkCapacity for Range<usize> {
     }
 
     fn end(&self) -> usize {
-        (if self.end > 0 { self.end - 1 } else { 0 }).max(self.start)
+        self.end.saturating_sub(1).max(self.start)
     }
 }
 
@@ -256,11 +284,7 @@ impl ChunkCapacity for RangeTo<usize> {
     }
 
     fn end(&self) -> usize {
-        if self.end > 0 {
-            self.end - 1
-        } else {
-            0
-        }
+        self.end.saturating_sub(1)
     }
 }
 
@@ -545,14 +569,23 @@ where
         }
     }
 
-    /// Is the given text within the chunk size?
-    fn check_capacity(&self, chunk: &str) -> (usize, Ordering) {
-        let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
-            chunk.trim()
+    /// If trim chunks is on, trim the str and adjust the offset
+    fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
+        if self.trim_chunks {
+            // Figure out how many bytes we lose trimming the beginning
+            let diff = chunk.len() - chunk.trim_start().len();
+            (offset + diff, chunk.trim())
         } else {
-            chunk
-        });
-        (chunk_size, self.chunk_capacity.fits(chunk_size))
+            (offset, chunk)
+        }
+    }
+
+    /// Is the given text within the chunk size?
+    fn check_capacity(&self, offset: usize, chunk: &str) -> (Ordering, ChunkSize) {
+        let (offset, chunk) = self.trim_chunk(offset, chunk);
+        let mut chunk_size = self.chunk_sizer.chunk_size(chunk, &self.chunk_capacity);
+        chunk_size.max_chunk_size_offset += offset;
+        (self.chunk_capacity.fits(&chunk_size), chunk_size)
     }
 
     /// Generate the next chunk, applying trimming settings.
@@ -560,30 +593,51 @@ where
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
-
         let mut end = self.cursor;
-        // Track change in chunk size
-        let (mut chunk_size, mut fits) = (0, Ordering::Less);
-        // Consume as many as we can fit
-        for (offset, str) in self.next_sections()? {
-            let chunk = self.text.get(start..offset + str.len())?;
-            // Cache prev chunk size before replacing
-            let (prev_chunk_size, prev_fits) = (chunk_size, fits);
-            (chunk_size, fits) = self.check_capacity(chunk);
+        let mut equals_found = 0;
 
-            // If we are now beyond the first item, and it is too large, end here.
-            if start != end
-                && (fits.is_gt()
-                    // For tokenizers, it is possible that the next string still may be the same amount of tokens.
-                    // Check if both are equal, but we added to the chunk size, which we don't want for ranges.
-                    || (fits.is_eq() && prev_fits.is_eq() && chunk_size > prev_chunk_size))
-            {
+        let sections = self.next_sections()?.collect::<Vec<_>>();
+        let mut low = 0;
+        let mut high = sections.len().saturating_sub(1);
+
+        while low <= high {
+            let mid = low + (high - low) / 2;
+            let (offset, str) = sections[mid];
+            let text_end = offset + str.len();
+            let chunk = self.text.get(start..text_end)?;
+            let (fits, _) = self.check_capacity(start, chunk);
+
+            match fits {
+                Ordering::Less => {
+                    // We got further than the last one, so update end
+                    if text_end > end {
+                        end = text_end;
+                    }
+                }
+                Ordering::Equal => {
+                    // If we found a smaller equals use it. Or if this is the first equals we found
+                    if text_end < end || equals_found == 0 {
+                        end = text_end;
+                    }
+                    equals_found += 1;
+                }
+                Ordering::Greater => {
+                    // If we're too big on our smallest run, we must return at least one section
+                    if mid == 0 && start == end {
+                        end = text_end;
+                    }
+                }
+            };
+
+            // Adjust search area
+            if fits.is_lt() {
+                low = mid + 1;
+            } else if mid > 0 {
+                high = mid - 1;
+            } else {
+                // Nothing to adjust
                 break;
             }
-
-            // Progress if this is our first item (we need to move forward at least one)
-            // or if it still fits in the capacity.
-            end = offset + str.len();
         }
 
         self.cursor = end;
@@ -625,7 +679,6 @@ where
                 .map(|(i, str)| (self.cursor + i, str)),
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
-                true,
                 self.line_breaks
                     .ranges(self.cursor, semantic_level)
                     .map(|(_, sep)| sep.start - self.cursor..sep.end - self.cursor),
@@ -644,15 +697,15 @@ where
         // Get starting level
         let mut semantic_level = levels.next()?;
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
-        let mut max_offset = None;
+        let mut max_encoded_offset = None;
 
         for level in levels {
-            let (offset, str) = self.semantic_chunks(level).next()?;
+            let (_, str) = self.semantic_chunks(level).next()?;
+            let (fits, chunk_size) = self.check_capacity(self.cursor, str);
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            let (_, fits) = self.check_capacity(str);
             if fits.is_gt() || self.text.get(self.cursor..)? == str {
-                max_offset = Some(offset + str.len());
+                max_encoded_offset = Some(chunk_size.max_chunk_size_offset);
                 break;
             }
             // Otherwise break up the text with the next level
@@ -664,7 +717,10 @@ where
                 // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
                 // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
                 // so we should be safe to break once we reach it.
-                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max)),
+                .take_while_inclusive(move |(offset, _)| {
+                    max_encoded_offset.map_or(true, |max| offset < &max)
+                })
+                .filter(|(_, str)| !str.is_empty()),
         )
     }
 }
@@ -696,7 +752,6 @@ where
 /// Given a list of separator ranges, construct the sections of the text
 fn split_str_by_separator(
     text: &str,
-    separator_is_own_chunk: bool,
     separator_ranges: impl Iterator<Item = Range<usize>>,
 ) -> impl Iterator<Item = (usize, &str)> {
     let mut cursor = 0;
@@ -711,7 +766,7 @@ fn split_str_by_separator(
                 text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
             }
             // Return text preceding match + the match
-            Some(range) if separator_is_own_chunk => {
+            Some(range) => {
                 let offset = cursor;
                 let prev_section = text
                     .get(cursor..range.start)
@@ -723,16 +778,6 @@ fn split_str_by_separator(
                 Some(Either::Right(
                     [(offset, prev_section), (range.start, separator)].into_iter(),
                 ))
-            }
-            // Return just the text preceding the match
-            Some(range) => {
-                let offset = cursor;
-                let prev_section = text
-                    .get(cursor..range.start)
-                    .expect("invalid character sequence");
-                // Separator will be part of the next chunk
-                cursor = range.start;
-                Some(Either::Left(once((offset, prev_section))))
             }
         })
         .flatten()
@@ -804,8 +849,11 @@ mod tests {
     struct Str;
 
     impl ChunkSizer for Str {
-        fn chunk_size(&self, chunk: &str) -> usize {
-            chunk.len()
+        fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+            ChunkSize::from_offsets(
+                chunk.as_bytes().iter().enumerate().map(|(i, _)| (i..i)),
+                capacity,
+            )
         }
     }
 
@@ -969,35 +1017,62 @@ mod tests {
     fn check_chunk_capacity() {
         let chunk = "12345";
 
-        assert_eq!(4.fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!(5.fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!(6.fits(Characters.chunk_size(chunk)), Ordering::Less);
+        assert_eq!(
+            4.fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(5.fits(&Characters.chunk_size(chunk, &..)), Ordering::Equal);
+        assert_eq!(6.fits(&Characters.chunk_size(chunk, &..)), Ordering::Less);
     }
 
     #[test]
     fn check_chunk_capacity_for_range() {
         let chunk = "12345";
 
-        assert_eq!((0..0).fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!((0..5).fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!((5..6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((6..100).fits(Characters.chunk_size(chunk)), Ordering::Less);
+        assert_eq!(
+            (0..0).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(
+            (0..5).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(
+            (5..6).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (6..100).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Less
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_from() {
         let chunk = "12345";
 
-        assert_eq!((0..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((5..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((6..).fits(Characters.chunk_size(chunk)), Ordering::Less);
+        assert_eq!(
+            (0..).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (5..).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (6..).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Less
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_full() {
         let chunk = "12345";
 
-        assert_eq!((..).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!(
+            (..).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
     }
 
     #[test]
@@ -1005,29 +1080,89 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            (0..=4).fits(Characters.chunk_size(chunk)),
+            (0..=4).fits(&Characters.chunk_size(chunk, &..)),
             Ordering::Greater
         );
-        assert_eq!((5..=6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((4..=5).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((6..=100).fits(Characters.chunk_size(chunk)), Ordering::Less);
+        assert_eq!(
+            (5..=6).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (4..=5).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (6..=100).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Less
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_to() {
         let chunk = "12345";
 
-        assert_eq!((..0).fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!((..5).fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!((..6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!(
+            (..0).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(
+            (..5).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(
+            (..6).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_to_inclusive() {
         let chunk = "12345";
 
-        assert_eq!((..=4).fits(Characters.chunk_size(chunk)), Ordering::Greater);
-        assert_eq!((..=5).fits(Characters.chunk_size(chunk)), Ordering::Equal);
-        assert_eq!((..=6).fits(Characters.chunk_size(chunk)), Ordering::Equal);
+        assert_eq!(
+            (..=4).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Greater
+        );
+        assert_eq!(
+            (..=5).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+        assert_eq!(
+            (..=6).fits(&Characters.chunk_size(chunk, &..)),
+            Ordering::Equal
+        );
+    }
+
+    #[test]
+    fn chunk_size_from_offsets() {
+        let offsets = [0..1, 1..2, 2..3];
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1);
+        assert_eq!(
+            ChunkSize {
+                size: offsets.len(),
+                max_chunk_size_offset: 1
+            },
+            chunk_size
+        );
+    }
+
+    #[test]
+    fn chunk_size_from_empty_offsets() {
+        let offsets = [];
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1);
+        assert_eq!(ChunkSize::default(), chunk_size);
+    }
+
+    #[test]
+    fn chunk_size_from_small_offsets() {
+        let offsets = [0..1, 1..2, 2..3];
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &4);
+        assert_eq!(
+            ChunkSize {
+                size: offsets.len(),
+                max_chunk_size_offset: 3
+            },
+            chunk_size
+        );
     }
 }

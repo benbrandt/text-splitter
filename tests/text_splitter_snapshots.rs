@@ -1,8 +1,7 @@
 use std::fs;
 
-use more_asserts::assert_le;
 use once_cell::sync::Lazy;
-use text_splitter::{Characters, ChunkSizer, TextSplitter};
+use text_splitter::{Characters, ChunkCapacity, ChunkSizer, TextSplitter};
 use tiktoken_rs::{cl100k_base, CoreBPE};
 use tokenizers::Tokenizer;
 
@@ -17,7 +16,9 @@ fn characters_default() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in chunks.iter() {
-                assert_le!(Characters.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&Characters.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -34,7 +35,9 @@ fn characters_trim() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
-                assert_le!(Characters.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&Characters.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -52,7 +55,7 @@ fn characters_range() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in chunks.iter() {
-                assert_le!(Characters.chunk_size(chunk), range.end());
+                assert!(range.fits(&Characters.chunk_size(chunk, &range)).is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -69,7 +72,7 @@ fn characters_range_trim() {
             let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
-                assert_le!(Characters.chunk_size(chunk), range.end());
+                assert!(range.fits(&Characters.chunk_size(chunk, &range)).is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -90,7 +93,9 @@ fn huggingface_default() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in chunks.iter() {
-                assert_le!(HUGGINGFACE_TOKENIZER.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&HUGGINGFACE_TOKENIZER.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -107,7 +112,9 @@ fn huggingface_trim() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
-                assert_le!(HUGGINGFACE_TOKENIZER.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&HUGGINGFACE_TOKENIZER.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -127,7 +134,9 @@ fn tiktoken_default() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in chunks.iter() {
-                assert_le!(TIKTOKEN_TOKENIZER.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&TIKTOKEN_TOKENIZER.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
@@ -144,7 +153,9 @@ fn tiktoken_trim() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             for chunk in chunks.iter() {
-                assert_le!(TIKTOKEN_TOKENIZER.chunk_size(chunk), chunk_size);
+                assert!(chunk_size
+                    .fits(&TIKTOKEN_TOKENIZER.chunk_size(chunk, &chunk_size))
+                    .is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
         }
