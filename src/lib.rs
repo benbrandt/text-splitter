@@ -138,6 +138,7 @@ use core::{
 };
 
 use auto_enums::auto_enum;
+use derive_more::{Deref, DerefMut, From};
 use either::Either;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
@@ -152,8 +153,41 @@ mod tiktoken;
 
 pub use characters::Characters;
 
+/// Contains start and end byte offsets for an encoded unit of text in a chunk, calculated by
+/// a [`ChunkSizer`].
+///
+/// Each offset is an exclusive range.
+#[derive(Debug, Default, Deref, DerefMut, Eq, From, PartialEq)]
+pub struct EncodedOffsets(Vec<Range<usize>>);
+
+impl EncodedOffsets {
+    /// Since the offsets are calculated relative to the text given, this offsets them to be
+    /// relative to the entire text
+    fn adjust_offset(&mut self, base_offset: usize) {
+        for range in self.iter_mut() {
+            range.end += base_offset;
+            range.start += base_offset;
+        }
+    }
+
+    /// Get the max offset for a given chunk capacity
+    fn max_offset(&self, capacity: &impl ChunkCapacity) -> Option<usize> {
+        let capacity_end = capacity.end();
+        let end_index = if capacity_end > 0 {
+            capacity_end - 1
+        } else {
+            capacity_end
+        };
+        self.0.get(end_index).or(self.0.last()).map(|r| r.end)
+    }
+}
+
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
+    /// Return offsets for each unit of text used to calculate chunk size.
+    /// Should return an exclusive byte range for each element counted.
+    fn encoded_offsets(&self, chunk: &str) -> EncodedOffsets;
+
     /// Determine the size of a given chunk to use for validation
     fn chunk_size(&self, chunk: &str) -> usize;
 }
@@ -545,14 +579,23 @@ where
         }
     }
 
-    /// Is the given text within the chunk size?
-    fn check_capacity(&self, chunk: &str) -> Ordering {
-        let chunk_size = self.chunk_sizer.chunk_size(if self.trim_chunks {
-            chunk.trim()
+    /// If trim chunks is on, trim the str and adjust the offset
+    fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
+        if self.trim_chunks {
+            // Figure out how many bytes we lose trimming the beginning
+            let diff = chunk.len() - chunk.trim_start().len();
+            (offset + diff, chunk.trim())
         } else {
-            chunk
-        });
-        self.chunk_capacity.fits(chunk_size)
+            (offset, chunk)
+        }
+    }
+
+    /// Is the given text within the chunk size?
+    fn check_capacity(&self, offset: usize, chunk: &str) -> (Ordering, EncodedOffsets) {
+        let (offset, chunk) = self.trim_chunk(offset, chunk);
+        let mut offsets = self.chunk_sizer.encoded_offsets(chunk);
+        offsets.adjust_offset(offset);
+        (self.chunk_capacity.fits(offsets.len()), offsets)
     }
 
     /// Generate the next chunk, applying trimming settings.
@@ -576,7 +619,7 @@ where
             let (offset, str) = sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
-            let fits = self.check_capacity(chunk);
+            let (fits, _) = self.check_capacity(start, chunk);
 
             match fits {
                 Ordering::Less => {
@@ -669,14 +712,15 @@ where
         // Get starting level
         let mut semantic_level = levels.next()?;
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
-        let mut max_offset = None;
+        let mut max_encoded_offset = None;
 
         for level in levels {
-            let (offset, str) = self.semantic_chunks(level).next()?;
+            let (_, str) = self.semantic_chunks(level).next()?;
+            let (fits, offsets) = self.check_capacity(self.cursor, str);
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            if self.check_capacity(str).is_gt() || self.text.get(self.cursor..)? == str {
-                max_offset = Some(offset + str.len());
+            if fits.is_gt() || self.text.get(self.cursor..)? == str {
+                max_encoded_offset = offsets.max_offset(&self.chunk_capacity);
                 break;
             }
             // Otherwise break up the text with the next level
@@ -688,7 +732,9 @@ where
                 // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
                 // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
                 // so we should be safe to break once we reach it.
-                .take_while(move |(offset, _)| max_offset.map_or(true, |max| offset < &max))
+                .take_while_inclusive(move |(offset, _)| {
+                    max_encoded_offset.map_or(true, |max| offset < &max)
+                })
                 .filter(|(_, str)| !str.is_empty()),
         )
     }
@@ -829,6 +875,16 @@ mod tests {
     struct Str;
 
     impl ChunkSizer for Str {
+        fn encoded_offsets(&self, chunk: &str) -> EncodedOffsets {
+            chunk
+                .as_bytes()
+                .iter()
+                .enumerate()
+                .map(|(i, _)| (i..i))
+                .collect::<Vec<_>>()
+                .into()
+        }
+
         fn chunk_size(&self, chunk: &str) -> usize {
             chunk.len()
         }
