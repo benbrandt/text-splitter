@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.3.0
+
+### What's New
+
+- Update to `v0.5.0` of `text-splitter` for significant performance improvements for generating chunks with the `tokenizers` or `tiktoken-rs` crates by applying binary search when attempting to find the next matching chunk size.
+
+### Breaking Changes
+
+- Minimum Python version is now 3.8.
+- Due to using binary search, there are some slight differences at the edges of chunks where the algorithm was a little greedier before. If two candidates would tokenize to the same amount of tokens that fit within the capacity, it will now choose the shorter text. Due to the nature of of tokenizers, this happens more often with whitespace at the end of a chunk, and rarely effects users who have set `trim_chunks=true`. It is a tradeoff, but would have made the binary search code much more complicated to keep the exact same behavior.
+
 ## v0.2.4
 
 ### What's New
