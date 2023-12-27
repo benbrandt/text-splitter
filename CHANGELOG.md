@@ -8,7 +8,8 @@
 
 ### Breaking Changes
 
-- Minimum required version of `tiktoken-rs` is now `0.4.1`
+- Minimum required version of `tokenizers` is now `0.15.0`
+- Minimum required version of `tiktoken-rs` is now `0.5.6`
 - Due to using binary search, there are some slight differences at the edges of chunks where the algorithm was a little greedier before. If two candidates would tokenize to the same amount of tokens that fit within the capacity, it will now choose the shorter text. Due to the nature of of tokenizers, this happens more often with whitespace at the end of a chunk, and rarely effects users who have set `with_trim_chunks(true)`. It is a tradeoff, but would have made the binary search code much more complicated to keep the exact same behavior.
 - The `chunk_size` method on `ChunkSizer` now needs to accept a `ChunkCapacity` argument, and return a `ChunkSize` struct instead of a `usize`. This was to help support the new binary search method in chunking, and should only affect users who implemented custom `ChunkSizer`s and weren't using one of the provided ones.
     - New signature: `fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;`
