@@ -1,51 +1,37 @@
+use std::ops::Range;
+
 use tokenizers::Tokenizer;
 
-use crate::{ChunkSizer, EncodedOffsets};
+use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
 impl ChunkSizer for Tokenizer {
-    /// Return offsets for each unit of text used to calculate chunk size.
-    /// Should return an exclusive byte range for each element counted.
-    fn encoded_offsets(&self, chunk: &str) -> EncodedOffsets {
-        encoded_offsets(self, chunk)
-    }
-
     /// Returns the number of tokens in a given text after tokenization.
     ///
     /// # Panics
     ///
     /// Will panic if you don't have a byte-level tokenizer and the splitter
     /// encounters text it can't tokenize.
-    fn chunk_size(&self, chunk: &str) -> usize {
-        chunk_size(self, chunk)
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+        ChunkSize::from_offsets(encoded_offsets(self, chunk), capacity)
     }
 }
 
 impl ChunkSizer for &Tokenizer {
-    /// Return offsets for each unit of text used to calculate chunk size.
-    /// Should return an exclusive byte range for each element counted.
-    fn encoded_offsets(&self, chunk: &str) -> EncodedOffsets {
-        encoded_offsets(self, chunk)
-    }
-
     /// Returns the number of tokens in a given text after tokenization.
     ///
     /// # Panics
     ///
     /// Will panic if you don't have a byte-level tokenizer and the splitter
     /// encounters text it can't tokenize.
-    fn chunk_size(&self, chunk: &str) -> usize {
-        chunk_size(self, chunk)
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+        ChunkSize::from_offsets(encoded_offsets(self, chunk), capacity)
     }
 }
 
-fn chunk_size(tokenizer: &Tokenizer, chunk: &str) -> usize {
-    tokenizer
-        .encode(chunk, false)
-        .map(|enc| enc.len())
-        .expect("Unable to tokenize the following string {str}")
-}
-
-fn encoded_offsets(tokenizer: &Tokenizer, chunk: &str) -> EncodedOffsets {
+fn encoded_offsets<'text>(
+    tokenizer: &Tokenizer,
+    chunk: &'text str,
+) -> impl Iterator<Item = Range<usize>> + 'text {
     let encoding = tokenizer
         .encode(chunk, false)
         .expect("Unable to tokenize the following string {chunk}");
@@ -72,7 +58,7 @@ fn encoded_offsets(tokenizer: &Tokenizer, chunk: &str) -> EncodedOffsets {
         }
     }
 
-    offsets.into()
+    offsets.into_iter()
 }
 
 #[cfg(test)]
@@ -81,15 +67,15 @@ mod tests {
 
     #[test]
     fn returns_offsets() {
-        let tokenizer = &Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
-        let offsets = tokenizer.encoded_offsets(" An apple a");
-        assert_eq!(offsets, vec![0..3, 3..9, 9..11].into());
+        let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+        let offsets = encoded_offsets(&tokenizer, " An apple a").collect::<Vec<_>>();
+        assert_eq!(offsets, vec![0..3, 3..9, 9..11]);
     }
 
     #[test]
     fn returns_offsets_handles_prefix() {
-        let tokenizer = &Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
-        let offsets = tokenizer.encoded_offsets("An apple a");
-        assert_eq!(offsets, vec![0..2, 2..8, 8..10].into());
+        let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+        let offsets = encoded_offsets(&tokenizer, "An apple a").collect::<Vec<_>>();
+        assert_eq!(offsets, vec![0..2, 2..8, 8..10]);
     }
 }
