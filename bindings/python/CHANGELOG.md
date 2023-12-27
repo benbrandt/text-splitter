@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1
+
+Fix broken Github release
+
 ## v0.3.0
 
 ### What's New
