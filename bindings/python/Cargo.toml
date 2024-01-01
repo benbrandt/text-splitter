@@ -14,7 +14,7 @@ name = "semantic_text_splitter"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.20.0", features = ["abi3-py38"] }
+pyo3 = { version = "0.20.1", features = ["abi3-py38"] }
 text-splitter = { version = "0.5.0", features = ["tiktoken-rs", "tokenizers"] }
 tiktoken-rs = "0.5.8"
 tokenizers = { version = "0.15.0", default_features = false, features = [
