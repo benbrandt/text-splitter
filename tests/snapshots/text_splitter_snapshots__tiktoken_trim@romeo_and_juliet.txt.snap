@@ -2134,8 +2134,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - fishified!
 - Now is he for the numbers that Petrarch flowed
 - "in. Laura, to"
-- "his lady, was but a kitchen wench,"
-- "—marry, she had a better love to"
+- "his lady, was but a kitchen wench,—"
+- "marry, she had a better love to"
 - "berhyme her: Dido a dowdy"
 - ; Cleopatra a gypsy; Helen and
 - Hero hildings
@@ -4460,8 +4460,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "."
 - "I’ll not to bed tonight, let me alone"
 - "."
-- I’ll play the housewife for this once.
-- "—What, ho!—"
+- I’ll play the housewife for this once.—
+- "What, ho!—"
 - "They are all forth: well, I will walk"
 - myself
 - "To County Paris, to prepare him up"
@@ -5763,8 +5763,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - work by people who
 - agree to be bound by the terms of this agreement
 - ". There are a few"
-- things that you can do with most Project Gutenberg-
-- tm electronic works
+- things that you can do with most Project Gutenberg-tm
+- electronic works
 - even without complying with the full terms of this agreement
 - ". See"
 - paragraph 1.C below.
@@ -5828,8 +5828,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - 1.E.1.
 - "The following sentence, with active links to, or"
 - other
-- "immediate access to, the full Project Gutenberg-"
-- tm License must appear
+- "immediate access to, the full Project Gutenberg-tm"
+- License must appear
 - prominently whenever any copy of a Project Gutenberg
 - "-tm work (any work"
 - "on which the phrase \"Project Gutenberg\" appears,"
@@ -5888,8 +5888,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - Gutenberg-tm
 - "License terms from this work, or any files containing"
 - a part of this
-- work or any other work associated with Project Gutenberg-
-- tm.
+- work or any other work associated with Project Gutenberg-tm
+- "."
 - 1.E.5.
 - "Do not copy, display, perform, distribute or"
 - redistribute this
@@ -5924,8 +5924,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - 1.E.7.
 - "Do not charge a fee for access to, viewing"
 - ", displaying,"
-- "performing, copying or distributing any Project Gutenberg-"
-- tm works
+- "performing, copying or distributing any Project Gutenberg-tm"
+- works
 - unless you comply with paragraph 1.
 - E.8 or 1.E.9.
 - 1.E.8.
@@ -6101,8 +6101,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - (a) distribution of this
 - "or any Project Gutenberg-tm work, (b)"
 - "alteration, modification, or"
-- additions or deletions to any Project Gutenberg-
-- "tm work, and (c) any"
+- additions or deletions to any Project Gutenberg-tm
+- "work, and (c) any"
 - Defect you cause.
 - Section 2.
 - Information about the Mission of Project Gutenberg-tm

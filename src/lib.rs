@@ -692,6 +692,18 @@ where
                             end = text_end;
                         }
                     }
+                    // We didn't tokenize this section yet
+                    None => {
+                        let chunk = self.text.get(start..text_end)?;
+                        let size = self.check_capacity(start, chunk);
+                        if size.size <= chunk_size.size {
+                            if text_end > end {
+                                end = text_end;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
                     _ => break,
                 }
             }
