@@ -661,8 +661,8 @@ input_file: tests/inputs/text/romeo_and_juliet.txt
 - "is:"
 - "Shut up in prison, kept without my food"
 - ","
-- Whipp’d and tormented and—God-
-- "den, good fellow."
+- Whipp’d and tormented and—God-den
+- ", good fellow."
 - SERVANT.
 - God gi’ go-den.
 - "I pray, sir, can you read?"

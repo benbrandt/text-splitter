@@ -1450,8 +1450,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "fit, because life was a tangle or a"
 - "wind,\nor a Yes, or something!"
 - "“I’m very sorry,” she cried."
-- "“You’ll think me unfeeling, but—"
-- but—” Then she became matronly.
+- "“You’ll think me unfeeling, but—but"
+- —” Then she became matronly.
 - "“Oh, but your son wants employment."
 - Has he no particular hobby?
 - "Why, I myself have worries, but I can"
@@ -1878,10 +1878,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "she liked plain speaking, and meeting different grades of"
 - thought.
 - She thought they were commercial travellers—‘
-- drummers’ was the word she used—
-- and all through dinner she tried to prove that England
-- ", our great and beloved country, rests on nothing"
-- but commerce.
+- drummers’ was the word she used—and
+- "all through dinner she tried to prove that England,"
+- "our great and beloved country, rests on nothing but"
+- commerce.
 - "Teresa was very much annoyed, and left the"
 - "table before the cheese, saying as she did so"
 - ": ‘There, Miss Lavish, is one"
@@ -2397,9 +2397,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "."
 - They had been stopped at the Dazio coming back
 - ", and the young officials there, who seemed"
-- impudent and _désœuvré_
-- ", had tried to search their reticules for"
-- provisions. It might have been most unpleasant.
+- "impudent and _désœuvré_,"
+- had tried to search their reticules for provisions
+- ". It might have been most unpleasant."
 - Fortunately Miss Lavish was a match for any one
 - "."
 - "For good or for evil, Lucy was left to"
@@ -5011,8 +5011,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - she gave them ere she kicked the drawing-room door
 - ". Mr. Beebe chirruped."
 - "Freddy was at his wittiest,"
-- referring to Cecil as the “Fiasco”
-- —family honoured pun on fiance. Mrs.
+- referring to Cecil as the “Fiasco”—
+- family honoured pun on fiance. Mrs.
 - "Honeychurch, amusing and portly, promised"
 - well as a mother-in-law.
 - "As for Lucy and Cecil, for whom the temple"
@@ -5756,9 +5756,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - "was not exactly of their _milieu_, they"
 - "liked her, and it did not seem to matter"
 - ". When Mr."
-- "Honeychurch died, he had the satisfaction—"
-- which few honest solicitors despise—of leaving
-- his family rooted in the best society obtainable.
+- "Honeychurch died, he had the satisfaction—which"
+- few honest solicitors despise—of leaving his
+- family rooted in the best society obtainable.
 - The best obtainable.
 - "Certainly many of the immigrants were rather dull,"
 - and Lucy realized this more vividly since her return
@@ -6246,9 +6246,9 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Therefore Cecil was welcome to bring the Emersons into
 - the neighbourhood.
 - "But, as I say, this took a little"
-- "thinking, and—so illogical are girls—"
-- the event remained rather greater and rather more dreadful than
-- it should have done.
+- "thinking, and—so illogical are girls—the"
+- event remained rather greater and rather more dreadful than it
+- should have done.
 - She was glad that a visit to Mrs.
 - Vyse now fell due; the tenants moved into
 - Cissie Villa while she was safe in the
@@ -6729,8 +6729,8 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - Bertolini down here?”
 - “I did not. Miss Lavish told me.”
 - "“When I was a young man, I always meant"
-- to write a ‘History of Coincidence.
-- "’”\n\nNo enthusiasm."
+- to write a ‘History of Coincidence.’
+- "”\n\nNo enthusiasm."
 - "“Though, as a matter of fact,"
 - coincidences are much rarer than we suppose
 - "."
@@ -6961,10 +6961,10 @@ input_file: tests/inputs/text/room_with_a_view.txt
 - They followed him up the bank attempting the tense yet
 - nonchalant expression that is suitable for ladies on
 - such occasions.
-- "“Well, _I_ can’t help it,"
-- "” said a voice close ahead, and Freddy"
-- reared a freckled face and a pair
-- of snowy shoulders out of the fronds.
+- "“Well, _I_ can’t help it,”"
+- "said a voice close ahead, and Freddy reared"
+- a freckled face and a pair of snowy
+- shoulders out of the fronds.
 - "“I can’t be trodden on, can I"
 - "?”"
 - "“Good gracious me, dear; so it’s"
