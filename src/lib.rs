@@ -623,7 +623,7 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
         let mut end = self.cursor;
-        let mut equals_found = 0;
+        let mut equals_found = false;
 
         let sections = self.next_sections()?.collect::<Vec<_>>();
         let mut sizes = sections
@@ -652,11 +652,11 @@ where
                 }
                 Ordering::Equal => {
                     // If we found a smaller equals use it. Or if this is the first equals we found
-                    if text_end < end || equals_found == 0 {
+                    if text_end < end || !equals_found {
                         end = text_end;
                         successful_index = Some(mid);
                     }
-                    equals_found += 1;
+                    equals_found = true;
                 }
                 Ordering::Greater => {
                     // If we're too big on our smallest run, we must return at least one section
