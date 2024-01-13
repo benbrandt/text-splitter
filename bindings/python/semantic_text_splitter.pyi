@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, Union
+from typing import Any, Callable, List, Tuple, Union
 
 class CharacterTextSplitter:
     """Plain-text splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
@@ -231,6 +231,89 @@ class TiktokenTextSplitter:
     """
 
     def __init__(self, model: str, trim_chunks: bool = True) -> None: ...
+    def chunks(
+        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
+    ) -> List[str]:
+        """Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+
+        ## Method
+
+        To preserve as much semantic meaning within a chunk as possible, a recursive approach is used, starting at larger semantic units and, if that is too large, breaking it up into the next largest unit. Here is an example of the steps used:
+
+        1. Split the text by a given level
+        2. For each section, does it fit within the chunk size?
+        a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
+        b. No. Split by the next level and repeat.
+
+        The boundaries used to split the text if using the top-level `split` method, in descending length:
+
+        1. Descending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level.
+        2. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+        3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+        4. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+        5. Characters
+
+        Splitting doesn't occur below the character level, otherwise you could get partial
+        bytes of a char, which may not be a valid unicode str.
+
+        Args:
+            text (str): Text to split.
+            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+
+        Returns:
+            A list of strings, one for each chunk. If `trim_chunks` was specified in the text
+            splitter, then each chunk will already be trimmed as well.
+        """
+
+
+class CustomTextSplitter:
+    """Text splitter based on a custom callback. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
+
+    ### By Number of Tokens
+
+    ```python
+    from semantic_text_splitter import CustomTextSplitter
+
+    # Maximum number of tokens in a chunk
+    max_tokens = 1000
+    # Optionally can also have the splitter not trim whitespace for you
+    splitter = CustomTextSplitter(lambda text: len(text))
+
+    chunks = splitter.chunks("your document text", max_tokens)
+    ```
+
+    ### Using a Range for Chunk Capacity
+
+    You also have the option of specifying your chunk capacity as a range.
+
+    Once a chunk has reached a length that falls within the range it will be returned.
+
+    It is always possible that a chunk may be returned that is less than the `start` value, as adding the next piece of text may have made it larger than the `end` capacity.
+
+    ```python
+    from semantic_text_splitter import CustomTextSplitter
+
+    # Optionally can also have the splitter trim whitespace for you
+    splitter = CustomTextSplitter(lambda text: len(text))
+
+    # Maximum number of tokens in a chunk. Will fill up the
+    # chunk until it is somewhere in this range.
+    chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+    ```
+
+    Args:
+        callback (Callable[[str], int]): A lambda or other function that can be called. It will be
+            provided a piece of text, and it should return an integer value for the size.
+        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            beginning and end or not. If False, joining all chunks will return the original
+            string. Defaults to True.
+    """
+
+    def __init__(self, callback: Callable[[str], int], trim_chunks: bool = True) -> None: ...
     def chunks(
         self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
     ) -> List[str]:

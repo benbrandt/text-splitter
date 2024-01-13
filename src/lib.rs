@@ -160,28 +160,38 @@ pub struct ChunkSize {
     /// Whether or not the entire chunk fits within the `ChunkCapacity`
     fits: Ordering,
     /// max byte offset of the text that fit within the given `ChunkCapacity`.
-    max_chunk_size_offset: usize,
+    max_chunk_size_offset: Option<usize>,
     /// Size of the chunk, in units used by the sizer.
     size: usize,
 }
 
 impl ChunkSize {
+    /// Generate a chunk size from a given size. Will not be able to compute the
+    /// max byte offset that fits within the capacity.
+    pub fn from_size(size: usize, capacity: &impl ChunkCapacity) -> Self {
+        Self {
+            fits: capacity.fits(size),
+            max_chunk_size_offset: None,
+            size,
+        }
+    }
+
     /// Generate a chunk size from an iterator of byte ranges for each encoded
     /// element in the chunk.
-    fn from_offsets(
+    pub fn from_offsets(
         offsets: impl Iterator<Item = Range<usize>>,
         capacity: &impl ChunkCapacity,
     ) -> Self {
         let mut chunk_size = offsets.fold(
             Self {
                 fits: Ordering::Less,
-                max_chunk_size_offset: 0,
+                max_chunk_size_offset: None,
                 size: 0,
             },
             |mut acc, range| {
                 acc.size += 1;
                 if acc.size <= capacity.end() {
-                    acc.max_chunk_size_offset = range.end;
+                    acc.max_chunk_size_offset = Some(range.end);
                 }
                 acc
             },
@@ -601,7 +611,9 @@ where
     fn check_capacity(&self, offset: usize, chunk: &str) -> ChunkSize {
         let (offset, chunk) = self.trim_chunk(offset, chunk);
         let mut chunk_size = self.chunk_sizer.chunk_size(chunk, &self.chunk_capacity);
-        chunk_size.max_chunk_size_offset += offset;
+        if let Some(max_chunk_size_offset) = chunk_size.max_chunk_size_offset.as_mut() {
+            *max_chunk_size_offset += offset;
+        }
         chunk_size
     }
 
@@ -722,7 +734,7 @@ where
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
             if chunk_size.fits.is_gt() || self.text.get(self.cursor..)? == str {
-                max_encoded_offset = Some(chunk_size.max_chunk_size_offset);
+                max_encoded_offset = chunk_size.max_chunk_size_offset;
                 break;
             }
             // Otherwise break up the text with the next level
@@ -1116,7 +1128,7 @@ mod tests {
             ChunkSize {
                 fits: Ordering::Greater,
                 size: offsets.len(),
-                max_chunk_size_offset: 1
+                max_chunk_size_offset: Some(1)
             },
             chunk_size
         );
@@ -1130,7 +1142,7 @@ mod tests {
             ChunkSize {
                 fits: Ordering::Less,
                 size: offsets.len(),
-                max_chunk_size_offset: 0
+                max_chunk_size_offset: None
             },
             chunk_size
         );
@@ -1144,7 +1156,7 @@ mod tests {
             ChunkSize {
                 fits: Ordering::Less,
                 size: offsets.len(),
-                max_chunk_size_offset: 3
+                max_chunk_size_offset: Some(3)
             },
             chunk_size
         );

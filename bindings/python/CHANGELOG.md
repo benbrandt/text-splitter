@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.1 and beyond
+
+See main CHANGELOG.md for the repo.
+
 ## v0.3.1
 
 Fix broken Github release

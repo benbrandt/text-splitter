@@ -3,6 +3,7 @@ from semantic_text_splitter import (
     CharacterTextSplitter,
     HuggingFaceTextSplitter,
     TiktokenTextSplitter,
+    CustomTextSplitter,
 )
 from tokenizers import Tokenizer
 
@@ -86,3 +87,9 @@ def test_tiktoken_trim():
 def test_tiktoken_model_error():
     with pytest.raises(Exception):
         TiktokenTextSplitter("random-model-name")
+
+
+def test_custom():
+    splitter = CustomTextSplitter(lambda x: len(x))
+    text = "123\n123"
+    assert splitter.chunks(text=text, chunk_capacity=3) == ["123", "123"]
