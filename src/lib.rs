@@ -626,9 +626,13 @@ where
         let mut equals_found = 0;
 
         let sections = self.next_sections()?.collect::<Vec<_>>();
+        let mut sizes = sections
+            .iter()
+            .map(|_| None)
+            .collect::<Vec<Option<ChunkSize>>>();
         let mut low = 0;
         let mut high = sections.len().saturating_sub(1);
-        let mut last_chunk_size = None;
+        let mut successful_index = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
@@ -636,20 +640,21 @@ where
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.check_capacity(start, chunk);
-
-            last_chunk_size = Some(chunk_size);
+            sizes[mid] = Some(chunk_size);
 
             match chunk_size.fits {
                 Ordering::Less => {
                     // We got further than the last one, so update end
                     if text_end > end {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
                 }
                 Ordering::Equal => {
                     // If we found a smaller equals use it. Or if this is the first equals we found
                     if text_end < end || equals_found == 0 {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
                     equals_found += 1;
                 }
@@ -657,6 +662,7 @@ where
                     // If we're too big on our smallest run, we must return at least one section
                     if mid == 0 && start == end {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
                 }
             };
@@ -672,19 +678,21 @@ where
             }
         }
 
-        // Sometimes with tokenization, we can get a bigger chunk for
-        // the same amount of tokens.
-        if let Some(last_chunk_size) = last_chunk_size {
-            if last_chunk_size.fits.is_le() {
-                for (offset, str) in sections.iter().skip(low.min(high)) {
-                    let text_end = offset + str.len();
-                    let chunk = self.text.get(start..text_end)?;
-                    let chunk_size = self.check_capacity(start, chunk);
-                    if text_end >= end && chunk_size.size <= last_chunk_size.size {
-                        end = text_end;
-                    } else {
-                        break;
+        // Sometimes with tokenization, we can get a bigger chunk for the same amount of tokens.
+        if let Some((successful_index, chunk_size)) =
+            successful_index.and_then(|successful_index| {
+                Some((successful_index, sizes.get(successful_index)?.as_ref()?))
+            })
+        {
+            for (size, (offset, str)) in sizes.iter().zip(sections).skip(successful_index) {
+                let text_end = offset + str.len();
+                match size {
+                    Some(size) if size.size <= chunk_size.size => {
+                        if text_end > end {
+                            end = text_end;
+                        }
                     }
+                    _ => break,
                 }
             }
         }
