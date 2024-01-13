@@ -629,10 +629,9 @@ where
         let mut low = 0;
         let mut high = sections.len().saturating_sub(1);
         let mut last_chunk_size = None;
-        let mut mid = low + (high - low) / 2;
 
         while low <= high {
-            mid = low + (high - low) / 2;
+            let mid = low + (high - low) / 2;
             let (offset, str) = sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
@@ -677,7 +676,7 @@ where
         // the same amount of tokens.
         if let Some(last_chunk_size) = last_chunk_size {
             if last_chunk_size.fits.is_le() {
-                for (offset, str) in sections.iter().skip(mid) {
+                for (offset, str) in sections.iter().skip(low.min(high)) {
                     let text_end = offset + str.len();
                     let chunk = self.text.get(start..text_end)?;
                     let chunk_size = self.check_capacity(start, chunk);
