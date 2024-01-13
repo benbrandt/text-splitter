@@ -155,7 +155,7 @@ pub use characters::Characters;
 /// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
 /// determined by the sizer, as well as the max byte offset of the text that
 /// would fit within the given `ChunkCapacity`.
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct ChunkSize {
     /// Whether or not the entire chunk fits within the `ChunkCapacity`
     fits: Ordering,
@@ -628,6 +628,7 @@ where
         let sections = self.next_sections()?.collect::<Vec<_>>();
         let mut low = 0;
         let mut high = sections.len().saturating_sub(1);
+        let mut last_chunk_size = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
@@ -635,6 +636,8 @@ where
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.check_capacity(start, chunk);
+
+            last_chunk_size = Some(chunk_size);
 
             match chunk_size.fits {
                 Ordering::Less => {
@@ -666,6 +669,23 @@ where
             } else {
                 // Nothing to adjust
                 break;
+            }
+        }
+
+        // Sometimes with tokenization, we can get a bigger chunk for
+        // the same amount of tokens.
+        if let Some(last_chunk_size) = last_chunk_size {
+            if last_chunk_size.fits.is_eq() {
+                for (offset, str) in sections.iter().skip(high) {
+                    let text_end = offset + str.len();
+                    let chunk = self.text.get(start..text_end)?;
+                    let chunk_size = self.check_capacity(start, chunk);
+                    if chunk_size.fits.is_eq() && chunk_size.size <= last_chunk_size.size {
+                        end = text_end;
+                    } else {
+                        break;
+                    }
+                }
             }
         }
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.5.1 and beyond
+## v0.6.0 and beyond
 
 See main CHANGELOG.md for the repo.
 
