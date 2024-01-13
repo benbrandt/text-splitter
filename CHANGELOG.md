@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.5.1
+
+### What's New
+
+- Python bindings and Rust crate now have the same version number.
+
+#### Rust
+
+- Constructors for `ChunkSize` are now public, so you can more easily create your own `ChunkSize` structs for your own custom `ChunkSizer` implementation.
+
+#### Python
+
+- New `CustomTextSplitter` that accepts a custom callback with the signature of `(str) -> int`. Allows for custom chunk sizing on the Python side.
+
 ## v0.5.0
 
 ### What's New
