@@ -6,6 +6,8 @@
 
 - Chunk behavior should now be the same as prior to v0.5.0. Once binary search finds the optimal chunk, we now check the next few sections as long as the chunk size doesn't change. This should result in the same behavior as before, but with the performance improvements of binary search.
 
+## v0.5.1
+
 ### What's New
 
 - Python bindings and Rust crate now have the same version number.
