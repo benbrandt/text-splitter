@@ -646,7 +646,7 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "semantic-text-splitter"
-version = "0.5.1"
+version = "0.6.0"
 dependencies = [
  "pyo3",
  "text-splitter",
@@ -739,7 +739,7 @@ checksum = "69758bda2e78f098e4ccb393021a0963bb3442eac05f135c30f61b7370bbafae"
 
 [[package]]
 name = "text-splitter"
-version = "0.5.1"
+version = "0.6.0"
 dependencies = [
  "auto_enums",
  "either",

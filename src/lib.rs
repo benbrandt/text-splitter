@@ -155,7 +155,7 @@ pub use characters::Characters;
 /// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
 /// determined by the sizer, as well as the max byte offset of the text that
 /// would fit within the given `ChunkCapacity`.
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct ChunkSize {
     /// Whether or not the entire chunk fits within the `ChunkCapacity`
     fits: Ordering,
@@ -623,11 +623,16 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         let start = self.cursor;
         let mut end = self.cursor;
-        let mut equals_found = 0;
+        let mut equals_found = false;
 
         let sections = self.next_sections()?.collect::<Vec<_>>();
+        let mut sizes = sections
+            .iter()
+            .map(|_| None)
+            .collect::<Vec<Option<ChunkSize>>>();
         let mut low = 0;
         let mut high = sections.len().saturating_sub(1);
+        let mut successful_index = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
@@ -635,25 +640,29 @@ where
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.check_capacity(start, chunk);
+            sizes[mid] = Some(chunk_size);
 
             match chunk_size.fits {
                 Ordering::Less => {
                     // We got further than the last one, so update end
                     if text_end > end {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
                 }
                 Ordering::Equal => {
                     // If we found a smaller equals use it. Or if this is the first equals we found
-                    if text_end < end || equals_found == 0 {
+                    if text_end < end || !equals_found {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
-                    equals_found += 1;
+                    equals_found = true;
                 }
                 Ordering::Greater => {
                     // If we're too big on our smallest run, we must return at least one section
                     if mid == 0 && start == end {
                         end = text_end;
+                        successful_index = Some(mid);
                     }
                 }
             };
@@ -666,6 +675,37 @@ where
             } else {
                 // Nothing to adjust
                 break;
+            }
+        }
+
+        // Sometimes with tokenization, we can get a bigger chunk for the same amount of tokens.
+        if let Some((successful_index, chunk_size)) =
+            successful_index.and_then(|successful_index| {
+                Some((successful_index, sizes.get(successful_index)?.as_ref()?))
+            })
+        {
+            for (size, (offset, str)) in sizes.iter().zip(sections).skip(successful_index) {
+                let text_end = offset + str.len();
+                match size {
+                    Some(size) if size.size <= chunk_size.size => {
+                        if text_end > end {
+                            end = text_end;
+                        }
+                    }
+                    // We didn't tokenize this section yet
+                    None => {
+                        let chunk = self.text.get(start..text_end)?;
+                        let size = self.check_capacity(start, chunk);
+                        if size.size <= chunk_size.size {
+                            if text_end > end {
+                                end = text_end;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    _ => break,
+                }
             }
         }
 
