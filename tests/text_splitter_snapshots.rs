@@ -8,6 +8,48 @@ use tiktoken_rs::{cl100k_base, CoreBPE};
 use tokenizers::Tokenizer;
 
 #[test]
+fn random_chunk_size() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    for _ in 0..100 {
+        let max_characters = Faker.fake();
+        let splitter = TextSplitter::default();
+        let chunks = splitter.chunks(&text, max_characters).collect::<Vec<_>>();
+
+        assert_eq!(chunks.join(""), text);
+        for chunk in chunks {
+            assert_le!(chunk.chars().count(), max_characters);
+        }
+    }
+}
+
+#[test]
+fn random_chunk_range() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    for _ in 0..10 {
+        let a = Faker.fake::<Option<u16>>().map(usize::from);
+        let b = Faker.fake::<Option<u16>>().map(usize::from);
+        let splitter = TextSplitter::default();
+
+        let chunks = match (a, b) {
+            (None, None) => splitter.chunks(&text, ..).collect::<Vec<_>>(),
+            (None, Some(b)) => splitter.chunks(&text, ..b).collect::<Vec<_>>(),
+            (Some(a), None) => splitter.chunks(&text, a..).collect::<Vec<_>>(),
+            (Some(a), Some(b)) if b < a => splitter.chunks(&text, b..a).collect::<Vec<_>>(),
+            (Some(a), Some(b)) => splitter.chunks(&text, a..=b).collect::<Vec<_>>(),
+        };
+
+        assert_eq!(chunks.join(""), text);
+        let max = a.unwrap_or(usize::MIN).max(b.unwrap_or(usize::MAX));
+        for chunk in chunks {
+            let chars = chunk.chars().count();
+            assert_le!(chars, max);
+        }
+    }
+}
+
+#[test]
 fn characters_default() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
@@ -168,4 +210,17 @@ fn tiktoken_trim() {
             insta::assert_yaml_snapshot!(chunks);
         }
     });
+}
+
+#[cfg(feature = "tokenizers")]
+#[test]
+fn huggingface_small_chunk_behavior() {
+    let tokenizer =
+        tokenizers::Tokenizer::from_file("./tests/tokenizers/huggingface.json").unwrap();
+    let splitter = TextSplitter::new(tokenizer);
+
+    let text = "notokenexistsforthisword";
+    let chunks = splitter.chunks(text, 5).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["notokenexistsforth", "isword"]);
 }
