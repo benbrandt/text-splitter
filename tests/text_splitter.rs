@@ -10,10 +10,6 @@
     unused
 )]
 
-use std::fs;
-
-use fake::{Fake, Faker};
-use more_asserts::assert_le;
 use text_splitter::TextSplitter;
 
 #[test]

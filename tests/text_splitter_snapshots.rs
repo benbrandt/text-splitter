@@ -1,5 +1,7 @@
 use std::fs;
 
+use fake::{Fake, Faker};
+use more_asserts::assert_le;
 use once_cell::sync::Lazy;
 use text_splitter::{Characters, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
