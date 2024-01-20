@@ -787,7 +787,7 @@ where
                 // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
                 // so we should be safe to break once we reach it.
                 .take_while_inclusive(move |(offset, _)| {
-                    max_encoded_offset.map_or(true, |max| offset < &max)
+                    max_encoded_offset.map_or(true, |max| offset <= &max)
                 })
                 .filter(|(_, str)| !str.is_empty()),
         )

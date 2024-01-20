@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.1
+
+### Fixes
+
+- Fix error in section filtering that didn't fix the chunk behavior regression from v0.5.0 in very tiny chunk capacities. For most commonly used chunk sizes, this shouldn't have been an issue.
+
 ## v0.6.0
 
 ### Breaking Changes
