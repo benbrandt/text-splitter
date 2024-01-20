@@ -2,7 +2,9 @@ use std::fs;
 
 use once_cell::sync::Lazy;
 use text_splitter::{Characters, ChunkSizer, TextSplitter};
+#[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};
+#[cfg(feature = "tokenizers")]
 use tokenizers::Tokenizer;
 
 #[test]
@@ -75,9 +77,11 @@ fn characters_range_trim() {
     });
 }
 
+#[cfg(feature = "tokenizers")]
 static HUGGINGFACE_TOKENIZER: Lazy<Tokenizer> =
     Lazy::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
 
+#[cfg(feature = "tokenizers")]
 #[test]
 fn huggingface_default() {
     insta::glob!("inputs/text/*.txt", |path| {
@@ -99,6 +103,7 @@ fn huggingface_default() {
     });
 }
 
+#[cfg(feature = "tokenizers")]
 #[test]
 fn huggingface_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
@@ -119,8 +124,10 @@ fn huggingface_trim() {
     });
 }
 
+#[cfg(feature = "tiktoken-rs")]
 static TIKTOKEN_TOKENIZER: Lazy<CoreBPE> = Lazy::new(|| cl100k_base().unwrap());
 
+#[cfg(feature = "tiktoken-rs")]
 #[test]
 fn tiktoken_default() {
     insta::glob!("inputs/text/*.txt", |path| {
@@ -142,6 +149,7 @@ fn tiktoken_default() {
     });
 }
 
+#[cfg(feature = "tiktoken-rs")]
 #[test]
 fn tiktoken_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
