@@ -133,7 +133,7 @@ fn random_chunk_range() {
 #[test]
 fn huggingface_small_chunk_behavior() {
     let tokenizer =
-        tokenizers::Tokenizer::from_file("./tests/tokenizers/alpha-03-128k.json").unwrap();
+        tokenizers::Tokenizer::from_file("./tests/tokenizers/huggingface.json").unwrap();
     let splitter = TextSplitter::new(tokenizer);
 
     let text = "notokenexistsforthisword";
