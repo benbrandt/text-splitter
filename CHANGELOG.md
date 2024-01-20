@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.6.2
+
+- Re-release of v0.6.1 because of wrong version tag in Python package
+
 ## v0.6.1
 
 ### Fixes
