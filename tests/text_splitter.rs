@@ -128,3 +128,16 @@ fn random_chunk_range() {
         }
     }
 }
+
+#[cfg(feature = "tokenizers")]
+#[test]
+fn huggingface_small_chunk_behavior() {
+    let tokenizer =
+        tokenizers::Tokenizer::from_file("./tests/tokenizers/huggingface.json").unwrap();
+    let splitter = TextSplitter::new(tokenizer);
+
+    let text = "notokenexistsforthisword";
+    let chunks = splitter.chunks(text, 5).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["notokenexistsforth", "isword"]);
+}
