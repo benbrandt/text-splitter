@@ -31,7 +31,20 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 ### With Huggingface Tokenizer
 
-Requires the `tokenizers` feature to be activated.
+
+<details>
+<summary>
+Requires the `tokenizers` feature to be activated and direct declaration of the dependency. The example below, using `from_pretrained()`, also requires tokenizers's `http` feature enabled. 
+
+Click to show Cargo.toml.
+</summary>
+
+```toml
+[dependencies]
+text-splitter = { version = "0.6", features = ["tokenizers"] }
+tokenizers = { version = "0.15", features = ["http"] }
+```
+</details>
 
 ```rust
 use text_splitter::TextSplitter;
@@ -50,8 +63,18 @@ println!("{}", chunks.count())
 ```
 
 ### With Tiktoken Tokenizer
+<details>
+<summary>
+Requires the `tiktoken-rs` feature to be activated and direct declaration of the dependency.
 
-Requires the `tiktoken-rs` feature to be activated.
+Click to show Cargo.toml.
+</summary>
+
+```toml
+text-splitter = { version = "0.6", features = ["tiktoken-rs"] }
+tiktoken-rs = "0.5"
+```
+</details>
 
 ```rust
 use text_splitter::TextSplitter;
