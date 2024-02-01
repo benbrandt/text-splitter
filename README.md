@@ -34,7 +34,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 
 <details>
 <summary>
-Requires the `tokenizers` feature to be activated and direct declaration of the dependency. The example below, using `from_pretrained()`, also requires tokenizers's `http` feature enabled. 
+Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled. 
 
 Click to show Cargo.toml.
 </summary>
@@ -65,7 +65,7 @@ println!("{}", chunks.count())
 ### With Tiktoken Tokenizer
 <details>
 <summary>
-Requires the `tiktoken-rs` feature to be activated and direct declaration of the dependency.
+Requires the `tiktoken-rs` feature to be activated and adding `tiktoken-rs` to dependencies.
 
 Click to show Cargo.toml.
 </summary>
