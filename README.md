@@ -27,6 +27,7 @@ let splitter = TextSplitter::default()
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_characters);
+println!("{}", chunks.count())
 ```
 
 ### With Huggingface Tokenizer
