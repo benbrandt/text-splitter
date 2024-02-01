@@ -46,6 +46,7 @@ let splitter = TextSplitter::new(tokenizer)
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_tokens);
+println!("{}", chunks.count())
 ```
 
 ### With Tiktoken Tokenizer
@@ -65,6 +66,7 @@ let splitter = TextSplitter::new(tokenizer)
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_tokens);
+println!("{}", chunks.count())
 ```
 
 ### Using a Range for Chunk Capacity
@@ -85,6 +87,7 @@ let max_characters = 500..2000;
 let splitter = TextSplitter::default().with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_characters);
+println!("{}", chunks.count())
 ```
 
 ## Method
