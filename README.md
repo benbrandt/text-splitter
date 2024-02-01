@@ -27,11 +27,23 @@ let splitter = TextSplitter::default()
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_characters);
+println!("{}", chunks.count())
 ```
 
 ### With Huggingface Tokenizer
 
-Requires the `tokenizers` feature to be activated.
+Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled. 
+<details>
+<summary>
+Click to show Cargo.toml.
+</summary>
+
+```toml
+[dependencies]
+text-splitter = { version = "0.6", features = ["tokenizers"] }
+tokenizers = { version = "0.15", features = ["http"] }
+```
+</details>
 
 ```rust
 use text_splitter::TextSplitter;
@@ -46,11 +58,23 @@ let splitter = TextSplitter::new(tokenizer)
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_tokens);
+println!("{}", chunks.count())
 ```
 
 ### With Tiktoken Tokenizer
 
-Requires the `tiktoken-rs` feature to be activated.
+Requires the `tiktoken-rs` feature to be activated and adding `tiktoken-rs` to dependencies.
+
+<details>
+<summary>
+Click to show Cargo.toml.
+</summary>
+
+```toml
+text-splitter = { version = "0.6", features = ["tiktoken-rs"] }
+tiktoken-rs = "0.5"
+```
+</details>
 
 ```rust
 use text_splitter::TextSplitter;
@@ -65,6 +89,7 @@ let splitter = TextSplitter::new(tokenizer)
     .with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_tokens);
+println!("{}", chunks.count())
 ```
 
 ### Using a Range for Chunk Capacity
@@ -85,6 +110,7 @@ let max_characters = 500..2000;
 let splitter = TextSplitter::default().with_trim_chunks(true);
 
 let chunks = splitter.chunks("your document text", max_characters);
+println!("{}", chunks.count())
 ```
 
 ## Method
