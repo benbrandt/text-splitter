@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::fs;
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};

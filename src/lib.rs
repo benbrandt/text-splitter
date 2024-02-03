@@ -1,16 +1,4 @@
 #![doc = include_str!("../README.md")]
-#![warn(
-    clippy::cargo,
-    clippy::pedantic,
-    future_incompatible,
-    missing_debug_implementations,
-    missing_docs,
-    nonstandard_style,
-    rust_2018_compatibility,
-    rust_2018_idioms,
-    rust_2021_compatibility,
-    unused
-)]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
 use core::{

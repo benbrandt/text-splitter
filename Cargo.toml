@@ -56,6 +56,20 @@ harness = false
 tokenizers = ["dep:tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 
+[lints.rust]
+future_incompatible = "warn"
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+nonstandard_style = "warn"
+rust_2018_compatibility = "warn"
+rust_2018_idioms = "warn"
+rust_2021_compatibility = "warn"
+unused = "warn"
+
+[lints.clippy]
+cargo = "warn"
+pedantic = "warn"
+
 # Tokenizers and indirect deps can cause slow runtime
 [profile.dev.package."*"]
 opt-level = 1

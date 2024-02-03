@@ -61,7 +61,7 @@ fn characters_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(Characters.chunk_size(chunk, &chunk_size).fits().is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
@@ -78,7 +78,7 @@ fn characters_trim() {
             let splitter = TextSplitter::default().with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(Characters.chunk_size(chunk, &chunk_size).fits().is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
@@ -96,7 +96,7 @@ fn characters_range() {
             let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(Characters.chunk_size(chunk, &range).fits().is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
@@ -113,7 +113,7 @@ fn characters_range_trim() {
             let splitter = TextSplitter::default().with_trim_chunks(true);
             let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(Characters.chunk_size(chunk, &range).fits().is_le());
             }
             insta::assert_yaml_snapshot!(chunks);
@@ -136,7 +136,7 @@ fn huggingface_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(HUGGINGFACE_TOKENIZER
                     .chunk_size(chunk, &chunk_size)
                     .fits()
@@ -157,7 +157,7 @@ fn huggingface_trim() {
             let splitter = TextSplitter::new(&*HUGGINGFACE_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(HUGGINGFACE_TOKENIZER
                     .chunk_size(chunk, &chunk_size)
                     .fits()
@@ -182,7 +182,7 @@ fn tiktoken_default() {
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(TIKTOKEN_TOKENIZER
                     .chunk_size(chunk, &chunk_size)
                     .fits()
@@ -203,7 +203,7 @@ fn tiktoken_trim() {
             let splitter = TextSplitter::new(&*TIKTOKEN_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
-            for chunk in chunks.iter() {
+            for chunk in &chunks {
                 assert!(TIKTOKEN_TOKENIZER
                     .chunk_size(chunk, &chunk_size)
                     .fits()
