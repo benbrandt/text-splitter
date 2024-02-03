@@ -17,10 +17,14 @@ use unicode_segmentation::UnicodeSegmentation;
 mod characters;
 #[cfg(feature = "tokenizers")]
 mod huggingface;
+#[cfg(feature = "markdown")]
+mod markdown;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 
 pub use characters::Characters;
+#[cfg(feature = "markdown")]
+pub use markdown::MarkdownSplitter;
 
 /// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
 /// determined by the sizer, as well as the max byte offset of the text that
