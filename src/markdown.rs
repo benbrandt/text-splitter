@@ -4,7 +4,7 @@ Semantic splitting of Markdown documents. Tries to use as many semantic units fr
 as possible, eventually falling back to the normal [`TextSplitter`] method.
 */
 
-use crate::{Characters, ChunkSizer, TextSplitter};
+use crate::{Characters, ChunkCapacity, ChunkSizer, LineBreaks, TextChunks};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -16,15 +16,17 @@ pub struct MarkdownSplitter<S>
 where
     S: ChunkSizer,
 {
-    /// Base text splitter to use
-    text_splitter: TextSplitter<S>,
+    /// Method of determining chunk sizes.
+    chunk_sizer: S,
+    /// Whether or not all chunks should have whitespace trimmed.
+    /// If `false`, joining all chunks should return the original string.
+    /// If `true`, all chunks will have whitespace removed from beginning and end.
+    trim_chunks: bool,
 }
 
 impl Default for MarkdownSplitter<Characters> {
     fn default() -> Self {
-        Self {
-            text_splitter: TextSplitter::default(),
-        }
+        Self::new(Characters)
     }
 }
 
@@ -43,7 +45,8 @@ where
     #[must_use]
     pub fn new(chunk_sizer: S) -> Self {
         Self {
-            text_splitter: TextSplitter::new(chunk_sizer),
+            chunk_sizer,
+            trim_chunks: false,
         }
     }
 
@@ -61,7 +64,7 @@ where
     /// ```
     #[must_use]
     pub fn with_trim_chunks(mut self, trim_chunks: bool) -> Self {
-        self.text_splitter = self.text_splitter.with_trim_chunks(trim_chunks);
+        self.trim_chunks = trim_chunks;
         self
     }
 
@@ -98,9 +101,9 @@ where
     pub fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_size: usize,
+        chunk_capacity: impl ChunkCapacity + 'splitter,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        self.chunk_indices(text, chunk_size).map(|(_, t)| t)
+        self.chunk_indices(text, chunk_capacity).map(|(_, t)| t)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -119,8 +122,13 @@ where
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_size: usize,
+        chunk_capacity: impl ChunkCapacity + 'splitter,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        self.text_splitter.chunk_indices(text, chunk_size)
+        TextChunks::<_, S, LineBreaks>::new(
+            chunk_capacity,
+            &self.chunk_sizer,
+            text,
+            self.trim_chunks,
+        )
     }
 }
