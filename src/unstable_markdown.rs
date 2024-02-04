@@ -45,7 +45,7 @@ where
     /// Creates a new [`MarkdownSplitter`].
     ///
     /// ```
-    /// use text_splitter::{Characters, MarkdownSplitter};
+    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
     ///
     /// // Characters is the default, so you can also do `MarkdownSplitter::default()`
     /// let splitter = MarkdownSplitter::new(Characters);
@@ -66,7 +66,7 @@ where
     /// If `true`, all chunks will have whitespace removed from beginning and end.
     ///
     /// ```
-    /// use text_splitter::{Characters, MarkdownSplitter};
+    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default().with_trim_chunks(true);
     /// ```
@@ -98,13 +98,13 @@ where
     /// 3. Progress through the `TextSplitter::chunks` method.
     ///
     /// ```
-    /// use text_splitter::{Characters, MarkdownSplitter};
+    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
+    /// assert_eq!(vec!["Some text\n", "\nfrom a\n", "document"], chunks);
     /// ```
     pub fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
@@ -120,13 +120,13 @@ where
     /// See [`MarkdownSplitter::chunks`] for more information.
     ///
     /// ```
-    /// use text_splitter::{Characters, MarkdownSplitter};
+    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
+    /// assert_eq!(vec![(0, "Some text\n"), (10, "\nfrom a\n"), (18, "document")], chunks);
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
