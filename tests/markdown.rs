@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 #[cfg(feature = "markdown")]
-use text_splitter::MarkdownSplitter;
+use text_splitter::unstable_markdown::MarkdownSplitter;
 
 #[cfg(feature = "markdown")]
 #[test]
