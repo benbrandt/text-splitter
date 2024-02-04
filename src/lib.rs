@@ -358,7 +358,7 @@ struct LineBreaks {
 impl LineBreaks {
     /// Generate linebreaks for a given text
     fn new(text: &str) -> Self {
-        let linebreaks = LINEBREAKS
+        let line_breaks = LINEBREAKS
             .find_iter(text)
             .map(|m| {
                 let range = m.range();
@@ -377,7 +377,7 @@ impl LineBreaks {
             })
             .collect::<Vec<_>>();
 
-        let max_level = *linebreaks
+        let max_level = *line_breaks
             .iter()
             .map(|(l, _)| l)
             .max_by_key(|level| match level {
@@ -387,7 +387,7 @@ impl LineBreaks {
             .unwrap_or(&SemanticLevel::Sentence);
 
         Self {
-            line_breaks: linebreaks,
+            line_breaks,
             max_level,
         }
     }
