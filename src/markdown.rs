@@ -4,7 +4,12 @@ Semantic splitting of Markdown documents. Tries to use as many semantic units fr
 as possible, eventually falling back to the normal [`TextSplitter`] method.
 */
 
-use crate::{Characters, ChunkCapacity, ChunkSizer, LineBreaks, TextChunks};
+use std::ops::Range;
+
+use auto_enums::auto_enum;
+use unicode_segmentation::UnicodeSegmentation;
+
+use crate::{Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -124,11 +129,88 @@ where
         text: &'text str,
         chunk_capacity: impl ChunkCapacity + 'splitter,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::<_, S, LineBreaks>::new(
-            chunk_capacity,
-            &self.chunk_sizer,
-            text,
-            self.trim_chunks,
-        )
+        TextChunks::<_, S, Markdown>::new(chunk_capacity, &self.chunk_sizer, text, self.trim_chunks)
+    }
+}
+
+/// Different semantic levels that text can be split by.
+/// Each level provides a method of splitting text into chunks of a given level
+/// as well as a fallback in case a given fallback is too large.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+enum SemanticLevel {
+    /// Split by individual chars. May be larger than a single byte,
+    /// but we don't go lower so we always have valid UTF str's.
+    Char,
+    /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
+    /// Falls back to [`Self::Char`]
+    GraphemeCluster,
+    /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// Falls back to [`Self::GraphemeCluster`]
+    Word,
+    /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// Falls back to [`Self::Word`]
+    Sentence,
+}
+
+/// Captures information about markdown structure for a given text, and their
+/// various semantic levels.
+#[derive(Debug)]
+struct Markdown {
+    /// Range of each semantic markdown item and its precalculated semantic level
+    ranges: Vec<(SemanticLevel, Range<usize>)>,
+    /// Maximum element level in a given text
+    max_level: SemanticLevel,
+}
+
+impl SemanticSplit for Markdown {
+    type Level = SemanticLevel;
+
+    const PERSISTENT_LEVELS: &'static [Self::Level] = &[
+        SemanticLevel::Char,
+        SemanticLevel::GraphemeCluster,
+        SemanticLevel::Word,
+        SemanticLevel::Sentence,
+    ];
+
+    fn new(text: &str) -> Self {
+        Self {
+            ranges: vec![],
+            max_level: SemanticLevel::Sentence,
+        }
+    }
+
+    fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
+        self.ranges.iter()
+    }
+
+    fn max_level(&self) -> Self::Level {
+        self.max_level
+    }
+
+    /// Split a given text into iterator over each semantic chunk
+    #[auto_enum(Iterator)]
+    fn semantic_chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        offset: usize,
+        text: &'text str,
+        semantic_level: Self::Level,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+        match semantic_level {
+            SemanticLevel::Char => text.char_indices().map(move |(i, c)| {
+                (
+                    offset + i,
+                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
+                )
+            }),
+            SemanticLevel::GraphemeCluster => text
+                .grapheme_indices(true)
+                .map(move |(i, str)| (offset + i, str)),
+            SemanticLevel::Word => text
+                .split_word_bound_indices()
+                .map(move |(i, str)| (offset + i, str)),
+            SemanticLevel::Sentence => text
+                .split_sentence_bound_indices()
+                .map(move |(i, str)| (offset + i, str)),
+        }
     }
 }
