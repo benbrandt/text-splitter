@@ -20,7 +20,7 @@ exclude = [
     "*.yml",
     "*.yaml"
 ]
-rust-version = "1.65.0"
+rust-version = "1.75.0"
 
 [package.metadata.docs.rs]
 all-features = true
