@@ -7,9 +7,12 @@ as possible, eventually falling back to the normal [`TextSplitter`] method.
 use std::ops::Range;
 
 use auto_enums::auto_enum;
+use pulldown_cmark::{Event, Parser};
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks};
+use crate::{
+    split_str_by_separator, Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks,
+};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -150,6 +153,8 @@ enum SemanticLevel {
     /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
     /// Falls back to [`Self::Word`]
     Sentence,
+    /// thematic break/horizontal rule
+    Rule,
 }
 
 /// Captures information about markdown structure for a given text, and their
@@ -173,10 +178,22 @@ impl SemanticSplit for Markdown {
     ];
 
     fn new(text: &str) -> Self {
-        Self {
-            ranges: vec![],
-            max_level: SemanticLevel::Sentence,
-        }
+        let ranges = Parser::new(text)
+            .into_offset_iter()
+            .filter_map(|(event, range)| match event {
+                Event::Rule => Some((SemanticLevel::Rule, range)),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+
+        let max_level = ranges
+            .iter()
+            .map(|(level, _)| level)
+            .max()
+            .copied()
+            .unwrap_or(SemanticLevel::Sentence);
+
+        Self { ranges, max_level }
     }
 
     fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
@@ -211,6 +228,39 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
+            SemanticLevel::Rule => split_str_by_separator(
+                text,
+                self.ranges_after_offset(offset, semantic_level)
+                    .map(move |(_, sep)| sep.start - offset..sep.end - offset),
+            )
+            .map(move |(i, str)| (offset + i, str)),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_no_markdown_separators() {
+        let markdown = Markdown::new("Some text without any markdown separators");
+
+        assert_eq!(
+            Vec::<&(SemanticLevel, Range<usize>)>::new(),
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Sentence, markdown.max_level());
+    }
+
+    #[test]
+    fn test_with_rule() {
+        let markdown = Markdown::new("Some text\n\n---\n\nwith a rule");
+
+        assert_eq!(
+            vec![&(SemanticLevel::Rule, 11..15)],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Rule, markdown.max_level());
     }
 }

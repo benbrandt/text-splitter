@@ -9,7 +9,7 @@ use text_splitter::MarkdownSplitter;
 #[cfg(feature = "markdown")]
 #[test]
 fn random_chunk_size() {
-    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+    let text = fs::read_to_string("tests/inputs/markdown/markdown_basics.md").unwrap();
 
     for _ in 0..10 {
         let max_characters = Faker.fake();
@@ -26,7 +26,7 @@ fn random_chunk_size() {
 #[cfg(feature = "markdown")]
 #[test]
 fn random_chunk_indices_increase() {
-    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+    let text = fs::read_to_string("tests/inputs/markdown/markdown_basics.md").unwrap();
 
     for _ in 0..10 {
         let max_characters = Faker.fake::<usize>();
@@ -52,4 +52,26 @@ fn fallsback_to_normal_text_split_if_no_markdown_content() {
         ["Some text\n", "\nfrom a\n", "document"].to_vec(),
         chunks
     );
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn split_by_rule() {
+    let splitter = MarkdownSplitter::default();
+    let text = "Some text\n\n---\n\nwith a rule";
+    let chunk_size = 12;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(["Some text\n\n", "---\n", "\nwith a rule"].to_vec(), chunks);
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn split_by_rule_trim() {
+    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let text = "Some text\n\n---\n\nwith a rule";
+    let chunk_size = 12;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(["Some text", "---", "with a rule"].to_vec(), chunks);
 }
