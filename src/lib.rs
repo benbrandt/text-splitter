@@ -352,23 +352,52 @@ enum SemanticLevel {
 /// to sentences, to linebreaks.
 /// For something like Markdown, this would also include things like headers,
 /// lists, and code blocks.
-trait SemanticSplitter {
+trait SemanticSplit {
     /// Internal type used to represent the level of semantic splitting.
-    type Level: Copy;
+    type Level: Copy + Ord + PartialOrd + 'static;
+
+    /// Levels that are always considered in splitting text, because they are always present.
+    const PERSISTENT_LEVELS: &'static [Self::Level];
 
     /// Generate a new instance from a given text.
     fn new(text: &str) -> Self;
 
+    /// Retrieve ranges for each semantic level in the entire text
+    fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_;
+
+    /// Maximum level of semantic splitting in the text
+    fn max_level(&self) -> Self::Level;
+
     /// Retrieve ranges for all sections of a given level after an offset
-    fn ranges(
+    fn ranges_after_offset(
         &self,
         offset: usize,
         level: Self::Level,
-    ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_;
+    ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
+        self.ranges()
+            .filter(move |(l, sep)| l >= &level && sep.start >= offset)
+    }
 
     /// Return a unique, sorted list of all line break levels present before the next max level, added
     /// to all of the base semantic levels, in order from smallest to largest
-    fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_;
+    fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_ {
+        let existing_levels = self
+            .ranges()
+            // Only start taking them from the offset
+            .filter(|(_, sep)| sep.start >= offset)
+            // Stop once we hit the first of the max level
+            .take_while(|(l, _)| l < &self.max_level())
+            .map(|(l, _)| l)
+            .copied();
+
+        Self::PERSISTENT_LEVELS
+            .iter()
+            .copied()
+            .chain(once(self.max_level()))
+            .chain(existing_levels)
+            .sorted()
+            .dedup()
+    }
 
     /// Split a given text into iterator over each semantic chunk
     fn semantic_chunks<'splitter, 'text: 'splitter>(
@@ -392,8 +421,15 @@ struct LineBreaks {
     max_level: SemanticLevel,
 }
 
-impl SemanticSplitter for LineBreaks {
+impl SemanticSplit for LineBreaks {
     type Level = SemanticLevel;
+
+    const PERSISTENT_LEVELS: &'static [Self::Level] = &[
+        SemanticLevel::Char,
+        SemanticLevel::GraphemeCluster,
+        SemanticLevel::Word,
+        SemanticLevel::Sentence,
+    ];
 
     /// Generate linebreaks for a given text
     fn new(text: &str) -> Self {
@@ -431,41 +467,14 @@ impl SemanticSplitter for LineBreaks {
         }
     }
 
-    /// Retrieve ranges for all linebreaks of a given level after an offset
-    fn ranges(
-        &self,
-        offset: usize,
-        level: SemanticLevel,
-    ) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
-        self.line_breaks
-            .iter()
-            .filter(move |(l, sep)| l >= &level && sep.start >= offset)
+    /// Retrieve ranges for all sections of a given level after an offset
+    fn ranges(&self) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
+        self.line_breaks.iter()
     }
 
-    /// Return a unique, sorted list of all line break levels present before the next max level, added
-    /// to all of the base semantic levels, in order from smallest to largest
-    fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = SemanticLevel> + '_ {
-        let line_break_levels = self
-            .line_breaks
-            .iter()
-            // Only start taking them from the offset
-            .filter(|(_, sep)| sep.start >= offset)
-            // Stop once we hit the first of the max level
-            .take_while(|(l, _)| l < &self.max_level)
-            .map(|(l, _)| l)
-            .copied();
-
-        [
-            SemanticLevel::Char,
-            SemanticLevel::GraphemeCluster,
-            SemanticLevel::Word,
-            SemanticLevel::Sentence,
-            self.max_level,
-        ]
-        .into_iter()
-        .chain(line_break_levels)
-        .sorted()
-        .dedup()
+    /// Maximum level of semantic splitting in the text
+    fn max_level(&self) -> SemanticLevel {
+        self.max_level
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -494,7 +503,7 @@ impl SemanticSplitter for LineBreaks {
                 .map(move |(i, str)| (offset + i, str)),
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
-                self.ranges(offset, semantic_level)
+                self.ranges_after_offset(offset, semantic_level)
                     .map(move |(_, sep)| sep.start - offset..sep.end - offset),
             )
             .map(move |(i, str)| (offset + i, str)),
@@ -508,7 +517,7 @@ struct TextChunks<'text, 'sizer, C, S, Sp>
 where
     C: ChunkCapacity,
     S: ChunkSizer,
-    Sp: SemanticSplitter,
+    Sp: SemanticSplit,
 {
     /// Size of the chunks to generate
     chunk_capacity: C,
@@ -517,7 +526,7 @@ where
     /// Current byte offset in the `text`
     cursor: usize,
     /// Splitter used for determining semantic levels.
-    semantic_splitter: Sp,
+    semantic_split: Sp,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// Whether or not chunks should be trimmed
@@ -528,7 +537,7 @@ impl<'sizer, 'text: 'sizer, C, S, Sp> TextChunks<'text, 'sizer, C, S, Sp>
 where
     C: ChunkCapacity,
     S: ChunkSizer,
-    Sp: SemanticSplitter,
+    Sp: SemanticSplit,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
@@ -537,7 +546,7 @@ where
             cursor: 0,
             chunk_capacity,
             chunk_sizer,
-            semantic_splitter: Sp::new(text),
+            semantic_split: Sp::new(text),
             text,
             trim_chunks,
         }
@@ -676,7 +685,7 @@ where
     fn next_sections(&'sizer self) -> Option<impl Iterator<Item = (usize, &'text str)> + 'sizer> {
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
-        let mut levels = self.semantic_splitter.levels_in_next_max_chunk(self.cursor);
+        let mut levels = self.semantic_split.levels_in_next_max_chunk(self.cursor);
         // Get starting level
         let mut semantic_level = levels.next()?;
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
@@ -709,9 +718,9 @@ where
 
     fn semantic_chunks(
         &'sizer self,
-        level: <Sp as SemanticSplitter>::Level,
+        level: <Sp as SemanticSplit>::Level,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'sizer {
-        self.semantic_splitter.semantic_chunks(
+        self.semantic_split.semantic_chunks(
             self.cursor,
             self.text.get(self.cursor..).unwrap(),
             level,
@@ -723,7 +732,7 @@ impl<'sizer, 'text: 'sizer, C, S, Sp> Iterator for TextChunks<'text, 'sizer, C, 
 where
     C: ChunkCapacity,
     S: ChunkSizer,
-    Sp: SemanticSplitter,
+    Sp: SemanticSplit,
 {
     type Item = (usize, &'text str);
 
