@@ -681,7 +681,7 @@ where
             match self.next_chunk()? {
                 // Make sure we didn't get an empty chunk. Should only happen in
                 // cases where we trim.
-                (_, chunk) if chunk.is_empty() => continue,
+                (_, "") => continue,
                 c => return Some(c),
             }
         }
