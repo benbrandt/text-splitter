@@ -153,6 +153,8 @@ enum SemanticLevel {
     /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
     /// Falls back to [`Self::Word`]
     Sentence,
+    /// Single line break, which isn't necessarily a new element in Markdown
+    SoftBreak,
     /// thematic break/horizontal rule
     Rule,
 }
@@ -181,8 +183,16 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new(text)
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
+                Event::Start(_)
+                | Event::End(_)
+                | Event::Text(_)
+                | Event::Code(_)
+                | Event::Html(_)
+                | Event::FootnoteReference(_)
+                | Event::HardBreak
+                | Event::TaskListMarker(_) => None,
+                Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
-                _ => None,
             })
             .collect::<Vec<_>>();
 
@@ -228,7 +238,7 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::Rule => split_str_by_separator(
+            SemanticLevel::Rule | SemanticLevel::SoftBreak => split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
                     .map(move |(_, sep)| sep.start - offset..sep.end - offset),
@@ -427,6 +437,17 @@ mod tests {
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::Sentence, markdown.max_level());
+    }
+
+    #[test]
+    fn test_softbreak() {
+        let markdown = Markdown::new("Some text\nwith a softbreak");
+
+        assert_eq!(
+            vec![&(SemanticLevel::SoftBreak, 9..10)],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::SoftBreak, markdown.max_level());
     }
 
     #[test]

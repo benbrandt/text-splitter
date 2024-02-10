@@ -851,7 +851,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - " or tabs "
 - "is "
 - considered
-- "\nblank.) "
+- "\n"
+- "blank.) "
 - "Normal "
 - paragraphs
 - " should "
@@ -1698,7 +1699,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Markdown "
 - will allow
 - " you to be"
-- "\nlazy:\n\n"
+- "\n"
+- "lazy:\n\n"
 - "    *   "
 - "This is a "
 - "list item "
@@ -2742,8 +2744,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "more "
 - "markup "
 - than there
-- "\nis text.\n"
 - "\n"
+- "is text.\n\n"
 - "With "
 - "Markdown's"
 - " reference"
@@ -3398,7 +3400,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - definitely
 - " won't "
 - "fool all "
-- "of\nthem. "
+- "of\n"
+- "them. "
 - "It's "
 - "better "
 - "than "

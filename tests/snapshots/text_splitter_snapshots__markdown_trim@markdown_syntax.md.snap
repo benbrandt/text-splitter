@@ -1658,7 +1658,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - sequence
 - at the
 - beginning
-- "of a\nline."
+- of a
+- line.
 - To avoid
 - "this, you"
 - can
@@ -2239,7 +2240,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - not* case
 - sensitive.
 - E.g. these
-- "two\nlinks:"
+- two
+- "links:"
 - "[link text"
 - "][a]"
 - "[link text"
@@ -2810,7 +2812,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - easy to
 - include
 - example
-- "HTML\ntags."
+- HTML
+- tags.
 - Markdown
 - will turn
 - "this:"
