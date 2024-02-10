@@ -7,7 +7,7 @@ as possible, eventually falling back to the normal [`TextSplitter`] method.
 use std::ops::Range;
 
 use auto_enums::auto_enum;
-use pulldown_cmark::{Event, Parser};
+use pulldown_cmark::{Event, Options, Parser};
 use unicode_segmentation::UnicodeSegmentation;
 
 use crate::{
@@ -156,6 +156,10 @@ enum SemanticLevel {
     /// Single line break, which isn't necessarily a new element in Markdown
     /// Falls back to [`Self::Sentence`]
     SoftBreak,
+    /// An inline element that is within a larger element such as a paragraph, but
+    /// more specific than a sentence.
+    /// Falls back to [`Self::Sentence`]
+    InlineElement,
     /// Hard line break (two newlines), which signifies a new element in Markdown
     /// Falls back to [`Self::SoftBreak`]
     HardBreak,
@@ -184,16 +188,16 @@ impl SemanticSplit for Markdown {
     ];
 
     fn new(text: &str) -> Self {
-        let ranges = Parser::new(text)
+        let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
-            .filter_map(|(event, range)| match event {
+            .filter_map(|(event, range)| match dbg!(event) {
                 Event::Start(_)
                 | Event::End(_)
                 | Event::Text(_)
                 | Event::Code(_)
                 | Event::Html(_)
-                | Event::FootnoteReference(_)
-                | Event::TaskListMarker(_) => None,
+                | Event::FootnoteReference(_) => None,
+                Event::TaskListMarker(_) => Some((SemanticLevel::InlineElement, range)),
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
@@ -242,14 +246,15 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::SoftBreak | SemanticLevel::HardBreak | SemanticLevel::Rule => {
-                split_str_by_separator(
-                    text,
-                    self.ranges_after_offset(offset, semantic_level)
-                        .map(move |(_, sep)| sep.start - offset..sep.end - offset),
-                )
-                .map(move |(i, str)| (offset + i, str))
-            }
+            SemanticLevel::InlineElement
+            | SemanticLevel::SoftBreak
+            | SemanticLevel::HardBreak
+            | SemanticLevel::Rule => split_str_by_separator(
+                text,
+                self.ranges_after_offset(offset, semantic_level)
+                    .map(move |(_, sep)| sep.start - offset..sep.end - offset),
+            )
+            .map(move |(i, str)| (offset + i, str)),
         }
     }
 }
@@ -443,6 +448,20 @@ mod tests {
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::Sentence, markdown.max_level());
+    }
+
+    #[test]
+    fn test_checklist() {
+        let markdown = Markdown::new("- [ ] incomplete task\n- [x] completed task");
+
+        assert_eq!(
+            vec![
+                &(SemanticLevel::InlineElement, 2..5),
+                &(SemanticLevel::InlineElement, 24..27)
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::InlineElement, markdown.max_level());
     }
 
     #[test]
