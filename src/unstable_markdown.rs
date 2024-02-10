@@ -154,7 +154,11 @@ enum SemanticLevel {
     /// Falls back to [`Self::Word`]
     Sentence,
     /// Single line break, which isn't necessarily a new element in Markdown
+    /// Falls back to [`Self::Sentence`]
     SoftBreak,
+    /// Hard line break (two newlines), which signifies a new element in Markdown
+    /// Falls back to [`Self::SoftBreak`]
+    HardBreak,
     /// thematic break/horizontal rule
     Rule,
 }
@@ -189,9 +193,9 @@ impl SemanticSplit for Markdown {
                 | Event::Code(_)
                 | Event::Html(_)
                 | Event::FootnoteReference(_)
-                | Event::HardBreak
                 | Event::TaskListMarker(_) => None,
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
+                Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
             })
             .collect::<Vec<_>>();
@@ -238,12 +242,14 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::Rule | SemanticLevel::SoftBreak => split_str_by_separator(
-                text,
-                self.ranges_after_offset(offset, semantic_level)
-                    .map(move |(_, sep)| sep.start - offset..sep.end - offset),
-            )
-            .map(move |(i, str)| (offset + i, str)),
+            SemanticLevel::SoftBreak | SemanticLevel::HardBreak | SemanticLevel::Rule => {
+                split_str_by_separator(
+                    text,
+                    self.ranges_after_offset(offset, semantic_level)
+                        .map(move |(_, sep)| sep.start - offset..sep.end - offset),
+                )
+                .map(move |(i, str)| (offset + i, str))
+            }
         }
     }
 }
@@ -448,6 +454,17 @@ mod tests {
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::SoftBreak, markdown.max_level());
+    }
+
+    #[test]
+    fn test_hardbreak() {
+        let markdown = Markdown::new("Some text\\\nwith a hardbreak");
+
+        assert_eq!(
+            vec![&(SemanticLevel::HardBreak, 9..11)],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::HardBreak, markdown.max_level());
     }
 
     #[test]
