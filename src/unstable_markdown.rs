@@ -176,9 +176,9 @@ impl Level for SemanticLevel {
             | SemanticLevel::Word
             | SemanticLevel::Sentence
             | SemanticLevel::SoftBreak
-            | SemanticLevel::InlineElement(_)
             | SemanticLevel::HardBreak
             | SemanticLevel::Rule => SemanticSplitPosition::Own,
+            SemanticLevel::InlineElement(p) => *p,
         }
     }
 }
