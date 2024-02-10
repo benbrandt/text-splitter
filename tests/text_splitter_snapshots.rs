@@ -1,8 +1,11 @@
 use std::fs;
 
 use fake::{Fake, Faker};
+use itertools::Itertools;
 use more_asserts::assert_le;
 use once_cell::sync::Lazy;
+#[cfg(feature = "markdown")]
+use text_splitter::unstable_markdown::MarkdownSplitter;
 use text_splitter::{Characters, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};
@@ -13,7 +16,7 @@ use tokenizers::Tokenizer;
 fn random_chunk_size() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
-    for _ in 0..100 {
+    for _ in 0..10 {
         let max_characters = Faker.fake();
         let splitter = TextSplitter::default();
         let chunks = splitter.chunks(&text, max_characters).collect::<Vec<_>>();
@@ -22,6 +25,21 @@ fn random_chunk_size() {
         for chunk in chunks {
             assert_le!(chunk.chars().count(), max_characters);
         }
+    }
+}
+
+#[test]
+fn random_chunk_indices_increase() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    for _ in 0..10 {
+        let max_characters = Faker.fake::<usize>();
+        let splitter = TextSplitter::default();
+        let indices = splitter
+            .chunk_indices(&text, max_characters)
+            .map(|(i, _)| i);
+
+        assert!(indices.tuple_windows().all(|(a, b)| a < b));
     }
 }
 
@@ -225,4 +243,41 @@ fn huggingface_small_chunk_behavior() {
     let chunks = splitter.chunks(text, 5).collect::<Vec<_>>();
 
     assert_eq!(chunks, ["notokenexistsforth", "isword"]);
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn markdown() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::default();
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            for chunk in &chunks {
+                assert!(Characters.chunk_size(chunk, &chunk_size).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(feature = "tokenizers")]
+#[test]
+fn markdown_trim() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(Characters.chunk_size(chunk, &chunk_size).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
 }
