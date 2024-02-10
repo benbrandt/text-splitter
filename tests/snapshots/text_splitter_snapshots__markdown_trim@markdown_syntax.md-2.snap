@@ -35,8 +35,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "characters, which punctuation characters have been carefully chosen so"
 - "as to look like what they mean. E.g., asterisks around a word actually"
 - "look like \\*emphasis\\*. Markdown lists look like, well, lists. Even"
-- "blockquotes look like quoted passages of text, assuming you've ever"
-- "used email.\n\n\n\n<h3 id=\"html\">Inline HTML</h3>"
+- "blockquotes look like quoted passages of text, assuming you've ever\nused email."
+- "<h3 id=\"html\">Inline HTML</h3>"
 - "Markdown's syntax is intended for one purpose: to be used as a"
 - "format for *writing* for the web.\n\nMarkdown is not a replacement for HTML, or even close to it. Its"
 - "syntax is very small, corresponding only to a very small subset of"
@@ -64,8 +64,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "`<a>` or `<img>`"
 - "tags instead of Markdown's"
 - "link or image syntax, go right ahead."
-- "Unlike block-level HTML tags, Markdown syntax *is* processed within"
-- "span-level tags.\n\n\n<h3 id=\"autoescape\">Automatic Escaping for Special Characters</h3>"
+- "Unlike block-level HTML tags, Markdown syntax *is* processed within\nspan-level tags."
+- "<h3 id=\"autoescape\">Automatic Escaping for Special Characters</h3>"
 - "In HTML, there are two characters that demand special treatment: `<`\nand `&`"
 - ". Left angle brackets are used to start tags; ampersands are"
 - used to denote HTML entities. If you want to use them as literal
@@ -142,8 +142,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "This is the second list item.\n\t>\n\t> Here's some example code:\n\t>"
 - ">     return shell_exec(\"echo $input | $markdown_script\");"
 - Any decent text editor should make email-style quoting easy. For
-- "example, with BBEdit, you can make a selection and choose Increase"
-- "Quote Level from the Text menu.\n\n\n<h3 id=\"list\">Lists</h3>"
+- "example, with BBEdit, you can make a selection and choose Increase\nQuote Level from the Text menu."
+- "<h3 id=\"list\">Lists</h3>"
 - Markdown supports ordered (numbered) and unordered (bulleted) lists.
 - "Unordered lists use asterisks, pluses, and hyphens -- interchangably"
 - "-- as list markers:\n\n    *   Red\n    *   Green\n    *   Blue\n\nis equivalent to:\n\n    +   Red"
@@ -305,8 +305,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "is text.\n\nWith Markdown's reference-style links, a source document much more"
 - "closely resembles the final output, as rendered in a browser. By"
 - "allowing you to move the markup-related metadata out of the paragraph,"
-- you can add links without interrupting the narrative flow of your
-- "prose.\n\n\n<h3 id=\"em\">Emphasis</h3>\n\nMarkdown treats asterisks (`*`) and underscores (`_`"
+- "you can add links without interrupting the narrative flow of your\nprose.\n\n\n<h3 id=\"em\">Emphasis</h3>"
+- "Markdown treats asterisks (`*`) and underscores (`_`"
 - ") as indicators of\nemphasis. Text wrapped with one `*` or `_` will be wrapped with an\nHTML `<em>`"
 - "tag; double `*`'s or `_`'s will be wrapped with an HTML\n`<strong>`"
 - "tag. E.g., this input:\n\n    *single asterisks*\n\n    _single underscores_\n\n    **double asterisks**"
@@ -341,7 +341,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "<p>Please don't use any <code>&lt;blink&gt;</code> tags.</p>\n\nYou can write this:"
 - "`&#8212;` is the decimal-encoded equivalent of `&mdash;`.\n\nto produce:"
 - "<p><code>&amp;#8212;</code> is the decimal-encoded\n    equivalent of <code>&amp;mdash;</code>.</p>"
-- "<h3 id=\"img\">Images</h3>\n\nAdmittedly, it's fairly difficult to devise a \"natural\" syntax for"
+- "<h3 id=\"img\">Images</h3>"
+- "Admittedly, it's fairly difficult to devise a \"natural\" syntax for"
 - placing images into a plain text document format.
 - Markdown uses an image syntax that is intended to resemble the syntax
 - "for links, allowing for two styles: *inline* and *reference*.\n\nInline image syntax looks like this:"

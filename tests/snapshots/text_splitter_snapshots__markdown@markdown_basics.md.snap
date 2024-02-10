@@ -62,7 +62,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "Web Form\">"
 - Dingus</a>
 - "</li>\n"
-- "</ul>\n\n\n"
+- "</ul>\n"
+- "\n\n"
 - "Getting "
 - "the Gist "
 - "of "
