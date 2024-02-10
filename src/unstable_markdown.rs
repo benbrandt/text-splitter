@@ -240,7 +240,183 @@ impl SemanticSplit for Markdown {
 
 #[cfg(test)]
 mod tests {
+    use std::cmp::min;
+
+    use fake::{Fake, Faker};
+
     use super::*;
+
+    #[test]
+    fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
+        let text = Faker.fake::<String>();
+        let chunks =
+            TextChunks::<_, _, Markdown>::new(text.chars().count(), &Characters, &text, false)
+                .map(|(_, c)| c)
+                .collect::<Vec<_>>();
+        assert_eq!(vec![&text], chunks);
+    }
+
+    #[test]
+    fn returns_two_chunks_if_text_is_longer_than_max_chunk_size() {
+        let text1 = Faker.fake::<String>();
+        let text2 = Faker.fake::<String>();
+        let text = format!("{text1}{text2}");
+        // Round up to one above half so it goes to 2 chunks
+        let max_chunk_size = text.chars().count() / 2 + 1;
+
+        let chunks = TextChunks::<_, _, Markdown>::new(max_chunk_size, &Characters, &text, false)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+
+        assert!(chunks.iter().all(|c| c.chars().count() <= max_chunk_size));
+
+        // Check that beginning of first chunk and text 1 matches
+        let len = min(text1.len(), chunks[0].len());
+        assert_eq!(text1[..len], chunks[0][..len]);
+        // Check that end of second chunk and text 2 matches
+        let len = min(text2.len(), chunks[1].len());
+        assert_eq!(
+            text2[(text2.len() - len)..],
+            chunks[1][chunks[1].len() - len..]
+        );
+
+        assert_eq!(chunks.join(""), text);
+    }
+
+    #[test]
+    fn empty_string() {
+        let text = "";
+        let chunks = TextChunks::<_, _, Markdown>::new(100, &Characters, text, false)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert!(chunks.is_empty());
+    }
+
+    #[test]
+    fn can_handle_unicode_characters() {
+        let text = "éé"; // Char that is more than one byte
+        let chunks = TextChunks::<_, _, Markdown>::new(1, &Characters, text, false)
+            .map(|(_, c)| c)
+            .collect::<Vec<_>>();
+        assert_eq!(vec!["é", "é"], chunks);
+    }
+
+    #[test]
+    fn chunk_by_graphemes() {
+        let text = "a̐éö̲\r\n";
+
+        let chunks = TextChunks::<_, _, Markdown>::new(3, &Characters, text, false)
+            .map(|(_, g)| g)
+            .collect::<Vec<_>>();
+        // \r\n is grouped together not separated
+        assert_eq!(vec!["a̐é", "ö̲", "\r\n"], chunks);
+    }
+
+    #[test]
+    fn trim_char_indices() {
+        let text = " a b ";
+
+        let chunks =
+            TextChunks::<_, _, Markdown>::new(1, &Characters, text, true).collect::<Vec<_>>();
+        assert_eq!(vec![(1, "a"), (3, "b")], chunks);
+    }
+
+    #[test]
+    fn graphemes_fallback_to_chars() {
+        let text = "a̐éö̲\r\n";
+
+        let chunks = TextChunks::<_, _, Markdown>::new(1, &Characters, text, false)
+            .map(|(_, g)| g)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["a", "\u{310}", "é", "ö", "\u{332}", "\r", "\n"],
+            chunks
+        );
+    }
+
+    #[test]
+    fn trim_grapheme_indices() {
+        let text = "\r\na̐éö̲\r\n";
+
+        let chunks =
+            TextChunks::<_, _, Markdown>::new(3, &Characters, text, true).collect::<Vec<_>>();
+        assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
+    }
+
+    #[test]
+    fn chunk_by_words() {
+        let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
+
+        let chunks = TextChunks::<_, _, Markdown>::new(10, &Characters, text, false)
+            .map(|(_, w)| w)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec![
+                "The quick ",
+                "(\"brown\") ",
+                "fox can't ",
+                "jump 32.3 ",
+                "feet, ",
+                "right?"
+            ],
+            chunks
+        );
+    }
+
+    #[test]
+    fn words_fallback_to_graphemes() {
+        let text = "Thé quick\r\n";
+        let chunks = TextChunks::<_, _, Markdown>::new(2, &Characters, text, false)
+            .map(|(_, w)| w)
+            .collect::<Vec<_>>();
+        assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
+    }
+
+    #[test]
+    fn trim_word_indices() {
+        let text = "Some text from a document";
+        let chunks =
+            TextChunks::<_, _, Markdown>::new(10, &Characters, text, true).collect::<Vec<_>>();
+        assert_eq!(
+            vec![(0, "Some text"), (10, "from a"), (17, "document")],
+            chunks
+        );
+    }
+
+    #[test]
+    fn chunk_by_sentences() {
+        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let chunks = TextChunks::<_, _, Markdown>::new(21, &Characters, text, false)
+            .map(|(_, s)| s)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too lazy."],
+            chunks
+        );
+    }
+
+    #[test]
+    fn sentences_falls_back_to_words() {
+        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let chunks = TextChunks::<_, _, Markdown>::new(16, &Characters, text, false)
+            .map(|(_, s)| s)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+            chunks
+        );
+    }
+
+    #[test]
+    fn trim_sentence_indices() {
+        let text = "Some text. From a document.";
+        let chunks =
+            TextChunks::<_, _, Markdown>::new(10, &Characters, text, true).collect::<Vec<_>>();
+        assert_eq!(
+            vec![(0, "Some text."), (11, "From a"), (18, "document.")],
+            chunks
+        );
+    }
 
     #[test]
     fn test_no_markdown_separators() {
