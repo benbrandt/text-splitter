@@ -207,11 +207,11 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match dbg!(event) {
-                Event::Start(_)
-                | Event::End(_)
-                | Event::Text(_)
-                | Event::Code(_)
-                | Event::Html(_) => None,
+                Event::Start(_) | Event::End(_) | Event::Html(_) | Event::Text(_) => None,
+                Event::Code(_) => Some((
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    range,
+                )),
                 Event::FootnoteReference(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
                     range,
@@ -508,6 +508,23 @@ mod tests {
         );
         assert_eq!(
             SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_inline_code() {
+        let markdown = Markdown::new("`bash`");
+
+        assert_eq!(
+            vec![&(
+                SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                0..6
+            ),],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
             markdown.max_level()
         );
     }

@@ -475,10 +475,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - ", pluses, "
 - "and "
 - "hyphens (`"
-- "*`,\n"
-- "`+`, and `"
-- "-`) as "
-- "list "
+- "*`,\n`+`"
+- ", and `-`)"
+- " as list "
 - "markers. "
 - "These "
 - "three "
@@ -859,8 +858,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - " (`&`) and"
 - " angle "
 - brackets (
-- "`<` or\n"
-- "`>`) will "
+- "`<` or\n`>`"
+- ") will "
 - automatica
 - "lly be "
 - translated
@@ -944,8 +943,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "Just like "
 - "with code "
 - "spans, `&`"
-- ", `<`,\n"
-- "and `>` "
+- ", `<`"
+- ",\nand `>`"
+- " "
 - characters
 - " will be "
 - "escaped "
