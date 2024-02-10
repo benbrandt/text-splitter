@@ -11,7 +11,8 @@ use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
 use crate::{
-    split_str_by_separator, Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks,
+    split_str_by_separator, Characters, ChunkCapacity, ChunkSizer, Level, SemanticSplit,
+    SemanticSplitPosition, TextChunks,
 };
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
@@ -163,6 +164,13 @@ enum SemanticLevel {
     LineBreak(usize),
 }
 
+impl Level for SemanticLevel {
+    /// All of these levels should be treated as their own chunk
+    fn split_position(&self) -> SemanticSplitPosition {
+        SemanticSplitPosition::Own
+    }
+}
+
 // Lazy so that we don't have to compile them more than once
 static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
@@ -259,7 +267,7 @@ impl SemanticSplit for LineBreaks {
             SemanticLevel::LineBreak(_) => split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
-                    .map(move |(_, sep)| sep.start - offset..sep.end - offset),
+                    .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),
             )
             .map(move |(i, str)| (offset + i, str)),
         }
