@@ -105,7 +105,7 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec!["Some text", "\n\nfrom a\n", "document"], chunks);
+    /// assert_eq!(vec!["Some text\n", "\n", "from a\n", "document"], chunks);
     /// ```
     pub fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
@@ -127,7 +127,7 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec![(0, "Some text"), (9, "\n\nfrom a\n"), (18, "document")], chunks);
+    /// assert_eq!(vec![(0, "Some text\n"), (10, "\n"), (11, "from a\n"), (18, "document")], chunks);
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
