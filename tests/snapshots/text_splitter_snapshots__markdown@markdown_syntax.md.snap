@@ -137,8 +137,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Automatic "
 - "Links](#"
 - "autolink)\n"
-- "\n\n**Note:"
-- "** This "
+- "\n\n"
+- "**Note:** "
+- "This "
 - "document "
 - "is itself "
 - "written "
@@ -2318,10 +2319,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - m/  (
 - "Optional "
 - Title Here
-- ")\n\n**Note:"
-- "** There "
-- is a known
-- " bug in "
+- ")\n\n"
+- "**Note:** "
+- There is a
+- " known bug"
+- " in "
 - Markdown.p
 - "l 1.0.1 "
 - "which "

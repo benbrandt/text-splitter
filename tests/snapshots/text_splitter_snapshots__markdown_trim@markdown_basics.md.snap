@@ -140,8 +140,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - and
 - translate
 - it to
-- "XHTML.\n\n**"
-- "Note:**"
+- XHTML.
+- "**Note:**"
 - This
 - document
 - is itself

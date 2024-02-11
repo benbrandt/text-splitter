@@ -211,10 +211,12 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
-                Event::Start(Tag::Emphasis) | Event::Code(_) | Event::Html(_) => Some((
-                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
-                    range,
-                )),
+                Event::Start(Tag::Emphasis | Tag::Strong) | Event::Code(_) | Event::Html(_) => {
+                    Some((
+                        SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                        range,
+                    ))
+                }
                 Event::Text(_) => Some((SemanticLevel::Text, range)),
                 Event::FootnoteReference(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
@@ -227,7 +229,23 @@ impl SemanticSplit for Markdown {
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
-                Event::Start(_) | Event::End(_) => None,
+                Event::Start(
+                    Tag::Paragraph
+                    | Tag::Heading(_, _, _)
+                    | Tag::BlockQuote
+                    | Tag::CodeBlock(_)
+                    | Tag::List(_)
+                    | Tag::Item
+                    | Tag::FootnoteDefinition(_)
+                    | Tag::Table(_)
+                    | Tag::TableHead
+                    | Tag::TableRow
+                    | Tag::TableCell
+                    | Tag::Strikethrough
+                    | Tag::Link(_, _, _)
+                    | Tag::Image(_, _, _),
+                )
+                | Event::End(_) => None,
             })
             .collect::<Vec<_>>();
 
@@ -548,6 +566,26 @@ mod tests {
                     0..10
                 ),
                 &(SemanticLevel::Text, 1..9),
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_strong() {
+        let markdown = Markdown::new("**emphasis**");
+
+        assert_eq!(
+            vec![
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..12
+                ),
+                &(SemanticLevel::Text, 2..10),
             ],
             markdown.ranges().collect::<Vec<_>>()
         );

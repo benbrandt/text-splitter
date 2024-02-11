@@ -2152,10 +2152,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - m/  (
 - Optional
 - Title Here
-- ")\n\n**Note:"
-- "** There"
-- is a known
-- bug in
+- )
+- "**Note:**"
+- There is a
+- known bug
+- in
 - Markdown.p
 - l 1.0.1
 - which
