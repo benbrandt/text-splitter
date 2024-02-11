@@ -1,8 +1,9 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use core::{
+use std::{
     cmp::Ordering,
+    fmt,
     iter::once,
     ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
 };
@@ -218,7 +219,7 @@ trait Level {
 /// lists, and code blocks.
 trait SemanticSplit {
     /// Internal type used to represent the level of semantic splitting.
-    type Level: Copy + std::fmt::Debug + Level + Ord + PartialOrd + 'static;
+    type Level: Copy + fmt::Debug + Level + Ord + PartialOrd + 'static;
 
     /// Levels that are always considered in splitting text, because they are always present.
     const PERSISTENT_LEVELS: &'static [Self::Level];
