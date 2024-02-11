@@ -72,9 +72,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - the number of hashes equals the resulting
 - HTML header level.
 - "Blockquotes are indicated using email-style '`>`'"
-- "angle brackets.\n\nMarkdown:\n\n    A First Level Header"
-- "====================\n\n    A Second Level Header"
-- "---------------------"
+- "angle brackets.\n\nMarkdown:"
+- "A First Level Header\n    ===================="
+- "A Second Level Header\n    ---------------------"
 - Now is the time for all good men to come
 - to
 - the aid of their country. This is just a
@@ -129,16 +129,16 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "+   Booze.\n\nand this:"
 - "-   Candy.\n    -   Gum."
 - "-   Booze."
-- "all produce the same output:\n\n    <ul>"
-- "<li>Candy.</li>"
+- "all produce the same output:"
+- "<ul>\n    <li>Candy.</li>"
 - "<li>Gum.</li>"
 - "<li>Booze.</li>"
 - "</ul>"
 - "Ordered (numbered) lists use regular numbers,"
 - "followed by periods, as\nlist markers:"
-- 1.  Red
-- 2.  Green
-- "3.  Blue\n\nOutput:"
+- "1.  Red\n    2."
+- "Green\n    3.  Blue"
+- "Output:"
 - "<ol>"
 - "<li>Red</li>"
 - "<li>Green</li>"
@@ -150,7 +150,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - You can create multi-paragraph list items by
 - indenting
 - the paragraphs by 4 spaces or 1 tab
-- ":\n\n    *   A list item."
+- ":"
+- "*   A list item."
 - With multiple paragraphs.
 - "*   Another item in the list.\n\nOutput:"
 - "<ul>"

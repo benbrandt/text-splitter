@@ -4,7 +4,8 @@ expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---
 - "# Headers"
-- "\n\n```\n"
+- "\n\n"
+- "```\n"
 - "# h1 "
 - Heading 8-
 - ")\n"
@@ -53,8 +54,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\n------\n\n"
 - "------\n"
 - "\n# "
-- Emphasis
-- "\n\n```\n"
+- "Emphasis\n\n"
+- "```\n"
 - "Emphasis, "
 - "aka "
 - "italics, "
@@ -145,9 +146,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - Strikethro
 - "ugh~~\n\n"
 - "------\n"
-- "\n# Lists"
-- "\n\n```\n"
-- "1. "
+- "\n# Lists\n\n"
+- "```\n1. "
 - "First "
 - "ordered "
 - "list item\n"
@@ -463,7 +463,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "------\n"
 - "\n# "
 - Task lists
-- "\n\n```\n"
+- "\n\n"
+- "```\n"
 - "- [x] "
 - "Finish my "
 - "changes\n"
@@ -557,7 +558,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "the "
 - "Markdown "
 - character.
-- "\n\n```\n"
+- "\n\n"
+- "```\n"
 - "Let's "
 - "rename \\*"
 - our-new-
@@ -573,8 +575,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - old-
 - "project\\*."
 - "\n\n------\n"
-- "\n# Links"
-- "\n\n```\n"
+- "\n# Links\n\n"
+- "```\n"
 - "[I'm an "
 - inline-
 - style link
@@ -777,7 +779,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - ".com\n\n"
 - "------\n"
 - "\n# Images"
-- "\n\n```\n"
+- "\n\n"
+- "```\n"
 - "Here's our"
 - " logo ("
 - "hover to "
@@ -955,7 +958,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - markdown-
 - it-
 - "footnote)\n"
-- "\n```\n"
+- "\n"
+- "```\n"
 - Footnote 1
 - " link[^"
 - "first].\n\n"
@@ -1020,7 +1024,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Code and "
 - "Syntax "
 - Highlighti
-- "ng\n\n```\n"
+- "ng\n\n"
+- "```\n"
 - "Inline `"
 - "code` has "
 - "`back-"
@@ -1032,7 +1037,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "`back-"
 - "ticks "
 - "around` it"
-- ".\n\n```c#\n"
+- ".\n\n"
+- "```c#\n"
 - "using "
 - System.IO.
 - Compressio
@@ -1293,7 +1299,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "```\n\n"
 - "------\n"
 - "\n# Tables"
-- "\n\n```\n"
+- "\n\n"
+- "```\n"
 - Colons can
 - " be used "
 - "to align "
@@ -1622,7 +1629,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\n------\n"
 - "\n# "
 - Blockquote
-- "s\n\n```\n"
+- "s\n\n"
+- "```\n"
 - "> "
 - Blockquote
 - s are very
@@ -1739,8 +1747,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "------\n"
 - "\n# "
 - "Inline "
-- "HTML\n\n```\n"
-- "<dl>\n"
+- "HTML\n\n"
+- "```\n<dl>\n"
 - "  <dt>"
 - Definition
 - " list</dt>"
@@ -1868,9 +1876,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\" height=\""
 - "180\" "
 - "border=\"10"
-- "\">\n</a>\n"
-- "\n```\n"
-- "[!["
+- "\">\n</a>\n\n"
+- "```\n[!["
 - "IMAGE ALT "
 - "TEXT HERE]"
 - "(http://"

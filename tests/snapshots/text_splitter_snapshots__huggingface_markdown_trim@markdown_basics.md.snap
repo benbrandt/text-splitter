@@ -154,13 +154,15 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "hyphens (`*`,"
 - "`+`, and `-`) as"
 - list markers. These three markers are
-- "interchangable; this:\n\n    *   Candy."
-- "*   Gum.\n    *   Booze."
-- "this:\n\n    +   Candy.\n    +   Gum."
+- "interchangable; this:"
+- "*   Candy.\n    *   Gum."
+- "*   Booze.\n\nthis:"
+- "+   Candy.\n    +   Gum."
 - "+   Booze.\n\nand this:"
 - "-   Candy.\n    -   Gum."
 - "-   Booze."
-- "all produce the same output:\n\n    <ul>"
+- "all produce the same output:"
+- "<ul>"
 - "<li>Candy.</li"
 - ">"
 - "<li>Gum.</"
@@ -170,7 +172,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "Ordered (numbered) lists use regular numbers,"
 - "followed by periods, as\nlist markers:"
 - "1.  Red\n    2.  Green\n    3.  Blue"
-- "Output:\n\n    <ol>"
+- "Output:"
+- "<ol>"
 - "<li>Red</li>"
 - "<li>Green</li>"
 - "<li>Blue</li>"
@@ -182,8 +185,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - You can create multi-paragraph list items by
 - indenting
 - the paragraphs by 4 spaces or 1 tab
-- ":\n\n    *   A list item."
-- With multiple paragraphs.
+- ":"
+- "*   A list item.\n\n        With multiple paragraphs."
 - "*   Another item in the list.\n\nOutput:"
 - "<ul>"
 - "<li><p>A list item"

@@ -246,9 +246,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "But if you write:\n\n    AT&T"
 - "Markdown will translate it to:"
 - AT&amp;T
-- "Similarly, because Markdown supports [inline"
-- "HTML](#html), if"
-- you use
+- "Similarly, because Markdown supports"
+- "[inline HTML](#html"
+- "), if you use"
 - angle brackets as delimiters for
 - "HTML tags, Markdown will treat them"
 - "as\nsuch. But if you write:"
@@ -325,7 +325,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Atx-style headers use 1-6
 - "hash characters at the start of the line,"
 - corresponding to header levels 1-6.
-- "For example:\n\n    # This is an H1"
+- "For example:"
+- "# This is an H1"
 - "## This is an H2"
 - "###### This is an"
 - "H6\n\nOptionally, you may \"close"
@@ -395,8 +396,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Blockquotes can be nested (
 - i.e. a blockquote-
 - in-a-blockquote) by
-- "adding additional levels of `>`"
-- ":"
+- "adding additional levels of `>`:"
 - "> This is the first level of quoting"
 - ".\n    >"
 - "> > This is nested blockquote"
@@ -424,8 +424,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "pluses, and hyphens --"
 - "interchangably\n-- as list markers:"
 - "*   Red\n    *   Green\n    *   Blue\n\nis equivalent to:"
-- "+   Red\n    +   Green\n    +   Blue\n\nand:\n\n    -   Red"
-- "-   Green\n    -   Blue"
+- "+   Red\n    +   Green\n    +   Blue\n\nand:"
+- "-   Red\n    -   Green\n    -   Blue"
 - "Ordered lists use numbers followed by periods:"
 - "1.  Bird\n    2.  McHale"
 - "3.  Parish\n\nIt'"
@@ -441,12 +441,13 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "<li>Parish</li>"
 - "</ol>"
 - If you instead wrote the list in Markdown like
-- "this:\n\n    1.  Bird"
-- "1.  McHale\n    1.  Parish"
-- "or even:\n\n    3. Bird"
-- "1. McHale\n    8. Parish\n\nyou"
-- "'d get the exact same HTML output"
-- ". The point is, if you want to,"
+- "this:"
+- "1.  Bird\n    1.  McHale"
+- "1.  Parish\n\nor even:"
+- "3. Bird\n    1. McHale"
+- "8. Parish\n\nyou'"
+- d get the exact same HTML output.
+- "The point is, if you want to,"
 - you can use ordinal numbers in your ordered
 - "Markdown lists, so that"
 - the numbers in your source match the numbers in your
@@ -502,11 +503,13 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "`<p>` tags in the"
 - HTML output.
 - "For example, this input:\n\n    *   Bird\n    *   Magic"
-- "will turn into:\n\n    <ul>"
+- "will turn into:"
+- "<ul>"
 - "<li>Bird</li>"
 - "<li>Magic</li>"
-- "</ul>\n\nBut this:\n\n    *   Bird"
-- "*   Magic\n\nwill turn into:\n\n    <ul>"
+- "</ul>\n\nBut this:"
+- "*   Bird\n\n    *   Magic\n\nwill turn into:"
+- "<ul>"
 - "<li><p>Bird</"
 - p></li>
 - "<li><p>Magic</"
@@ -565,8 +568,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - an ordered list by
 - "accident, by writing something like this:"
 - 1986. What a great season.
-- "In other words, a *number-period-"
-- space* sequence at the beginning of a
+- "In other words, a"
+- "*number-period-space* sequence at the"
+- beginning of a
 - line.
 - "To avoid this, you can backslash-escape"
 - "the period:"
@@ -748,7 +752,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "spaces, and\npunctuation --"
 - but they are *not*
 - case sensitive. E.g. these two
-- "links:\n\n\t[link text][a]"
+- "links:"
+- "[link text][a]"
 - "[link text][A]\n\nare equivalent."
 - The *implicit link name* shortcut allows
 - you to omit the name of the
@@ -884,9 +889,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Emphasis can be used in the middle of
 - "a word:"
 - un*frigging*believable
-- "But if you surround an `*` or `"
-- "_` with spaces, it'll be treated"
-- as a
+- "But if you surround an `*` or"
+- "`_` with spaces, it'll be"
+- treated as a
 - literal asterisk or underscore.
 - To produce a literal asterisk or
 - underscore at a position where it
@@ -980,9 +985,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "the image, and an optional `title` attribute"
 - "enclosed in double\n    or single quotes."
 - "Reference-style image syntax looks like this:"
-- "![Alt text][id]\n\nWhere \""
-- "id\" is the name of a defined image reference"
-- ". Image references"
+- "![Alt text][id]"
+- "Where \"id\""
+- is the name of a defined image reference.
+- Image references
 - "are defined using syntax identical to link references:"
 - "[id]: url/to/image"
 - "\"Optional title attribute\""
@@ -1066,11 +1072,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "this:"
 - "\\*literal asterisks\\*"
 - Markdown provides backslash escapes for the following characters
-- ":\n\n    \\   backslash\n    `   backtick"
-- "*   asterisk\n    _   underscore"
-- "{}  curly braces\n    []  square brackets"
-- "()  parentheses\n    #   hash mark"
-- "+\tplus sign"
+- ":"
+- "\\   backslash\n    `   backtick\n    *   asterisk"
+- "_   underscore\n    {}  curly braces"
+- "[]  square brackets\n    ()  parentheses"
+- "#   hash mark\n\t+\tplus sign"
 - "-\tminus sign (hyphen)"
 - ".   dot\n    !   exclamation mark"
 

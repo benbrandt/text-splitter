@@ -3,7 +3,8 @@ source: tests/text_splitter_snapshots.rs
 expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---
-- "# Headers\n\n```"
+- "# Headers"
+- "```"
 - "# h1 Heading 8-)"
 - "## h2 Heading"
 - "### h3 Heading"
@@ -26,7 +27,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Alt-H1\n======"
 - "Alt-H2\n------"
 - "------"
-- "# Emphasis\n\n```"
+- "# Emphasis"
+- "```"
 - "Emphasis, aka italics, with *"
 - asterisks* or
 - _underscores_.
@@ -60,8 +62,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - _This is italic text_
 - ~~Strikethrough~~
 - "------"
-- "# Lists\n\n```"
-- "1. First ordered list item\n2. Another item"
+- "# Lists"
+- "```\n1. First ordered list item"
+- 2. Another item
 - ⋅⋅* Unordered sub-list.
 - "1."
 - "Actual numbers don't matter, just that"
@@ -152,7 +155,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "- Nulla volutpat"
 - "aliquam velit\n+ Very easy!"
 - "------"
-- "# Task lists\n\n```"
+- "# Task lists"
+- "```"
 - "- [x] Finish my changes"
 - "- [ ] Push my commits to"
 - GitHub
@@ -182,14 +186,16 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "# Ignoring Markdown formatting"
 - You can tell GitHub to ignore (
 - "or escape) Markdown formatting by using \\"
-- "before the Markdown character.\n\n```"
+- before the Markdown character.
+- "```"
 - "Let's rename \\*our-new"
 - "-project\\* to \\*our-old"
 - "-project\\*.\n```\n\nLet'"
 - "s rename \\*our-new-project"
 - "\\* to \\*our-old-project"
 - "\\*.\n\n------"
-- "# Links\n\n```"
+- "# Links"
+- "```"
 - "[I'm an inline-style link"
 - "](https://"
 - www.google.com)
@@ -259,7 +265,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[link text itself]: http://"
 - www.reddit.com
 - "------"
-- "# Images\n\n```"
+- "# Images"
+- "```"
 - "Here's our logo (hover to see"
 - "the title text):\n\nInline-style:"
 - "!["
@@ -374,8 +381,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - return new List<int>(new
 - "int[] { 1, 2, 3"
 - "})\n        }\n    }\n}\n```"
-- "```css"
-- "@font-face {"
+- "```css\n@font-face {"
 - "font-family: Chunkfive;"
 - "src: url('"
 - "Chunkfive.otf')"
@@ -408,7 +414,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "console.log('undefined')"
 - ";\n  }\n}"
 - export  $initHighlight;
-- "```\n\n```php"
+- "```"
+- "```php"
 - "require_once 'Zend/Uri/"
 - "Http.php';"
 - "namespace Location\\Web;\n\ninterface Factory\n{"
@@ -450,7 +457,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - __halt_compiler () ; datahere
 - "datahere\ndatahere */\ndatahere"
 - "```\n\n------"
-- "# Tables\n\n```"
+- "# Tables"
+- "```"
 - Colons can be used to align columns.
 - "| Tables        | Are           | Cool  |"
 - "| ---------"
@@ -560,7 +568,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| Backtick | `         |"
 - "| Pipe     | \\|        |"
 - "------"
-- "# Blockquotes\n\n```"
+- "# Blockquotes"
+- "```"
 - "> Blockquotes are very handy in email"
 - to emulate reply text.
 - "> This line is part of the same quote."
@@ -594,8 +603,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "each other...\n> > >"
 - "...or with spaces between arrows."
 - "------"
-- "# Inline HTML\n\n```"
-- "<dl>"
+- "# Inline HTML"
+- "```\n<dl>"
 - "<dt>Definition list</"
 - dt>
 - "<dd>Is something people use sometimes."
@@ -620,15 +629,16 @@ input_file: tests/inputs/markdown/github_flavored.md
 - em>.</dd>
 - "</dl>"
 - "------"
-- "# Horizontal Rules\n\n```"
-- "Three or more...\n\n---"
-- "Hyphens\n\n***"
+- "# Horizontal Rules"
+- "```\nThree or more..."
+- "---\n\nHyphens\n\n***"
 - "Asterisks\n\n___\n\nUnderscores"
 - "```\n\nThree or more..."
 - "---\n\nHyphens\n\n***"
 - "Asterisks\n\n___\n\nUnderscores"
 - "------"
-- "# YouTube Videos\n\n```"
+- "# YouTube Videos"
+- "```"
 - "<a href=\"http:/"
 - /www.youtube.com/watch
 - "?"
@@ -661,8 +671,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "TEXT HERE\" width=\""
 - "240\" height=\"180\" border=\""
 - "10\">\n</a>"
-- "```"
-- "[!["
+- "```\n[!["
 - IMAGE ALT TEXT
 - "HERE](http://"
 - img.youtube.com/

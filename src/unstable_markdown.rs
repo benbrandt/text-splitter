@@ -235,12 +235,12 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::TableRow | Tag::Item) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Own), range))
                 }
-                Event::Start(Tag::List(_) | Tag::Table(_) | Tag::FootnoteDefinition(_))
+                Event::Start(
+                    Tag::List(_) | Tag::Table(_) | Tag::CodeBlock(_) | Tag::FootnoteDefinition(_),
+                )
                 | Event::HardBreak => Some((SemanticLevel::Block, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
-                Event::Start(
-                    Tag::Paragraph | Tag::Heading(_, _, _) | Tag::BlockQuote | Tag::CodeBlock(_),
-                )
+                Event::Start(Tag::Paragraph | Tag::Heading(_, _, _) | Tag::BlockQuote)
                 | Event::End(_) => None,
             })
             .collect::<Vec<_>>();
@@ -742,6 +742,17 @@ mod tests {
                 &(SemanticLevel::Block, 0..18),
                 &(SemanticLevel::Text, 10..18)
             ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
+    }
+
+    #[test]
+    fn test_code_block() {
+        let markdown = Markdown::new("```\ncode\n```");
+
+        assert_eq!(
+            vec![&(SemanticLevel::Block, 0..12), &(SemanticLevel::Text, 4..9)],
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::Block, markdown.max_level());

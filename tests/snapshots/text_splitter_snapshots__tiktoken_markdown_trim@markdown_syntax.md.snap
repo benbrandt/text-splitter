@@ -131,10 +131,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "to add extra (unwanted) `<p>`"
 - tags around HTML block-level tags.
 - "For example, to add an HTML table to a"
-- "Markdown article:\n\n    This is a regular paragraph."
-- "<table>\n        <tr>"
-- "<td>Foo</td>\n        </tr>"
-- "</table>\n\n    This is another regular paragraph."
+- "Markdown article:"
+- "This is a regular paragraph.\n\n    <table>"
+- "<tr>\n            <td>Foo</td>"
+- "</tr>\n    </table>"
+- This is another regular paragraph.
 - Note that Markdown formatting syntax is not processed within block
 - "-level\nHTML tags. E.g., you can"
 - "'t use Markdown-style `*emphasis*` inside"
@@ -194,7 +195,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - and Markdown will leave it alone.
 - "But if you write:\n\n    AT&T"
 - "Markdown will translate it to:"
-- "AT&amp;T\n\nSimilarly, because Markdown supports"
+- AT&amp;T
+- "Similarly, because Markdown supports"
 - "[inline HTML](#html)"
 - ", if you use"
 - "angle brackets as delimiters for HTML tags, Markdown"
@@ -256,10 +258,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - ".\n\nSetext-style headers are \"underlined\""
 - using equal signs (for first-level
 - headers) and dashes (for second-level headers).
-- "For example:\n\n    This is an H1"
-- "=============\n\n    This is an H2"
-- "-------------\n\nAny number of underlining `=`"
-- "'s or `-`"
+- "For example:"
+- "This is an H1\n    ============="
+- "This is an H2\n    -------------"
+- "Any number of underlining `=`'s or"
+- "`-`"
 - "'s will work."
 - Atx-style headers use 1-6 hash
 - "characters at the start of the line,"
@@ -320,8 +323,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "."
 - Blockquotes can be nested (i.e. a
 - blockquote-in-a-blockquote) by
-- "adding additional levels of `>`"
-- ":"
+- "adding additional levels of `>`:"
 - "> This is the first level of quoting."
 - ">\n    > > This is nested blockquote."
 - ">\n    > Back to the first level."
@@ -346,18 +348,18 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - bulleted) lists.
 - "Unordered lists use asterisks, pluses,"
 - "and hyphens -- interchangably\n--"
-- "as list markers:\n\n    *   Red"
-- "*   Green\n    *   Blue"
-- "is equivalent to:\n\n    +   Red"
-- "+   Green\n    +   Blue"
-- "and:\n\n    -   Red"
-- "-   Green\n    -   Blue"
+- "as list markers:"
+- "*   Red\n    *   Green"
+- "*   Blue\n\nis equivalent to:"
+- "+   Red\n    +   Green"
+- "+   Blue\n\nand:"
+- "-   Red\n    -   Green"
+- "-   Blue"
 - "Ordered lists use numbers followed by periods:"
-- 1.  Bird
-- 2.  McHale
-- "3.  Parish\n\nIt'"
-- s important to note that the actual numbers you use
-- to mark the
+- "1.  Bird\n    2."
+- "McHale\n    3.  Parish"
+- "It's important to note that the actual numbers you"
+- use to mark the
 - list have no effect on the HTML output Markdown produces
 - ". The HTML"
 - "Markdown produces from the above list is:"
@@ -367,12 +369,13 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "<li>Parish</li>"
 - "</ol>"
 - If you instead wrote the list in Markdown like this
-- ":\n\n    1.  Bird"
-- 1.  McHale
-- "1.  Parish\n\nor even:"
-- 3. Bird
-- 1. McHale
-- "8. Parish\n\nyou'"
+- ":"
+- "1.  Bird\n    1."
+- "McHale\n    1.  Parish"
+- "or even:"
+- "3. Bird\n    1."
+- "McHale\n    8. Parish"
+- "you'"
 - d get the exact same HTML output.
 - "The point is, if you want to,"
 - you can use ordinal numbers in your ordered Markdown lists
@@ -418,12 +421,14 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "If list items are separated by blank lines, Markdown"
 - "will wrap the\nitems in `<p>`"
 - tags in the HTML output.
-- "For example, this input:\n\n    *   Bird"
-- "*   Magic\n\nwill turn into:"
+- "For example, this input:"
+- "*   Bird\n    *   Magic"
+- "will turn into:"
 - "<ul>\n    <li>Bird</li>"
 - "<li>Magic</li>\n    </ul>"
-- "But this:\n\n    *   Bird"
-- "*   Magic\n\nwill turn into:"
+- "But this:"
+- "*   Bird\n\n    *   Magic"
+- "will turn into:"
 - "<ul>"
 - "<li><p>Bird</p></li>"
 - "<li><p>Magic</p></li>"
@@ -634,7 +639,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "spaces, and\npunctuation -- but they are"
 - "*not*"
 - case sensitive. E.g. these two
-- "links:\n\n\t[link text][a]"
+- "links:"
+- "[link text][a]"
 - "[link text][A]\n\nare equivalent.\n\nThe"
 - "*implicit link name* shortcut allows you to omit"
 - the name of the
@@ -744,9 +750,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Emphasis can be used in the middle of a
 - "word:"
 - un*frigging*believable
-- "But if you surround an `*` or `_"
-- "` with spaces, it'll be treated as a"
-- literal asterisk or underscore.
+- "But if you surround an `*` or"
+- "`_` with spaces, it'll be treated"
+- "as a\nliteral asterisk or underscore."
 - To produce a literal asterisk or underscore at a
 - position where it
 - "would otherwise be used as an emphasis delimiter, you"
@@ -826,7 +832,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "the image, and an optional `title` attribute"
 - "enclosed in double\n    or single quotes."
 - "Reference-style image syntax looks like this:"
-- "![Alt text][id]\n\nWhere \"id\""
+- "![Alt text][id]"
+- "Where \"id\""
 - is the name of a defined image reference.
 - Image references
 - "are defined using syntax identical to link references:"

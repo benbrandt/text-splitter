@@ -1151,8 +1151,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - adding
 - additional
 - levels of
-- "`>`"
-- ":"
+- "`>`:"
 - "> This is"
 - the first
 - level of
