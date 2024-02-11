@@ -368,8 +368,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - use
 - asterisks
 - "- Or"
-- "minuses\n+"
-- Or pluses
+- minuses
+- + Or
+- pluses
 - "1."
 - Make my
 - changes
@@ -379,10 +380,12 @@ input_file: tests/inputs/markdown/github_flavored.md
 - formatting
 - "- Make the"
 - headings
-- "bigger\n2."
+- bigger
+- "2."
 - Push my
 - commits to
-- "GitHub\n3."
+- GitHub
+- "3."
 - Open a
 - pull
 - request
@@ -400,10 +403,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - line with
 - "`+`, `-`,"
 - "or `*`"
-- +
-- Sub-lists
-- are made
-- by
+- + Sub-
+- lists are
+- made by
 - indenting
 - "2 spaces:"
 - "- Marker"
@@ -411,12 +413,13 @@ input_file: tests/inputs/markdown/github_flavored.md
 - change
 - forces new
 - list start
-- ":\n    *"
-- Ac
+- ":"
+- "* Ac"
 - tristique
 - libero
 - volutpat
-- "at\n    +"
+- at
+- +
 - Facilisis
 - in pretium
 - nisl
@@ -424,8 +427,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "- Nulla"
 - volutpat
 - aliquam
-- "velit\n+"
-- Very easy!
+- velit
+- + Very
+- easy!
 - "------"
 - "#"
 - Task lists
@@ -467,14 +471,14 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "item\n```"
 - "- [x]"
 - Finish my
-- "changes\n-"
-- "[ ] Push"
+- changes
+- "- [ ] Push"
 - my commits
 - to GitHub
 - "- [ ] Open"
 - a pull
-- "request\n-"
-- "[x] @"
+- request
+- "- [x] @"
 - "mentions,"
 - "#refs, ["
 - "links](),"
@@ -495,8 +499,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "- [ ] this"
 - is a
 - complete
-- "item\n-"
-- "[ ] this"
+- item
+- "- [ ] this"
 - is an
 - incomplete
 - item

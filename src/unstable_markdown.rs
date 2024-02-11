@@ -232,7 +232,7 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::TableHead) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Next), range))
                 }
-                Event::Start(Tag::TableRow) => {
+                Event::Start(Tag::TableRow | Tag::Item) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Own), range))
                 }
                 Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
@@ -243,7 +243,6 @@ impl SemanticSplit for Markdown {
                     | Tag::BlockQuote
                     | Tag::CodeBlock(_)
                     | Tag::List(_)
-                    | Tag::Item
                     | Tag::FootnoteDefinition(_)
                     | Tag::Table(_),
                 )
@@ -502,11 +501,13 @@ mod tests {
 
         assert_eq!(
             vec![
+                &(SemanticLevel::Item(SemanticSplitPosition::Own), 0..22),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     2..5
                 ),
                 &(SemanticLevel::Text, 6..21),
+                &(SemanticLevel::Item(SemanticSplitPosition::Own), 22..42),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     24..27
@@ -516,7 +517,7 @@ mod tests {
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(
-            SemanticLevel::InlineElement(SemanticSplitPosition::Next),
+            SemanticLevel::Item(SemanticSplitPosition::Own),
             markdown.max_level()
         );
     }
