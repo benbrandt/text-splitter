@@ -1690,7 +1690,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "spaces "
 - "between "
 - "arrows.\n"
-- "```\n\n> "
+- "```\n\n"
+- "> "
 - Blockquote
 - s are very
 - " handy in "
@@ -1703,13 +1704,14 @@ input_file: tests/inputs/markdown/github_flavored.md
 - " the same "
 - "quote.\n\n"
 - "Quote "
-- "break.\n\n> "
-- "This is a "
-- "very long "
-- "line that "
-- will still
-- " be quoted"
-- " properly "
+- "break.\n\n"
+- "> This is "
+- "a very "
+- "long line "
+- "that will "
+- "still be "
+- "quoted "
+- "properly "
 - "when it "
 - "wraps. "
 - "Oh boy "
@@ -1727,21 +1729,24 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "**Markdown"
 - "** into a "
 - blockquote
-- ".\n\n> "
+- ".\n\n"
+- "> "
 - Blockquote
 - s can also
 - " be nested"
-- "...\n>> ..."
-- "by using "
+- "...\n>"
+- "> ...by "
+- "using "
 - additional
 - " greater-"
 - than signs
 - " right "
 - "next to "
 - each other
-- "...\n> > > "
-- "...or with"
-- " spaces "
+- "...\n> > "
+- "> ...or "
+- "with "
+- "spaces "
 - "between "
 - "arrows.\n\n"
 - "------\n"

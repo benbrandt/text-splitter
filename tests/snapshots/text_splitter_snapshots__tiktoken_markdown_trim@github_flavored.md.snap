@@ -462,20 +462,21 @@ input_file: tests/inputs/markdown/github_flavored.md
 - ">> ...by using additional greater-than signs right next"
 - to each other...
 - "> > > ...or with spaces between arrows."
-- "```\n\n>"
-- Blockquotes are very handy in email to emulate reply
-- "text.\n>"
+- "```"
+- "> Blockquotes are very handy in email to emulate"
+- "reply text.\n>"
 - This line is part of the same quote.
-- "Quote break.\n\n>"
-- This is a very long line that will still be
-- "quoted properly when it wraps. Oh boy let'"
-- s keep writing to make sure this is long enough
+- Quote break.
+- "> This is a very long line that will still"
+- be quoted properly when it wraps. Oh boy let
+- "'s keep writing to make sure this is long enough"
 - "to actually wrap for everyone. Oh, you can"
 - "*put* **Markdown** into a blockquote"
-- ".\n\n> Blockquotes can also be nested...\n>>"
-- "...by using additional greater-than signs right next to"
-- "each other...\n> > > ..."
-- "or with spaces between arrows.\n\n------"
+- "."
+- "> Blockquotes can also be nested..."
+- ">> ...by using additional greater-than signs right next"
+- "to each other...\n> >"
+- "> ...or with spaces between arrows.\n\n------"
 - "# Inline HTML"
 - "```\n<dl>"
 - "<dt>Definition list</dt>"
