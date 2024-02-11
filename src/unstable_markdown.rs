@@ -235,16 +235,11 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::TableRow | Tag::Item) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Own), range))
                 }
-                Event::Start(Tag::List(_) | Tag::Table(_)) | Event::HardBreak => {
-                    Some((SemanticLevel::Block, range))
-                }
+                Event::Start(Tag::List(_) | Tag::Table(_) | Tag::FootnoteDefinition(_))
+                | Event::HardBreak => Some((SemanticLevel::Block, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
                 Event::Start(
-                    Tag::Paragraph
-                    | Tag::Heading(_, _, _)
-                    | Tag::BlockQuote
-                    | Tag::CodeBlock(_)
-                    | Tag::FootnoteDefinition(_),
+                    Tag::Paragraph | Tag::Heading(_, _, _) | Tag::BlockQuote | Tag::CodeBlock(_),
                 )
                 | Event::End(_) => None,
             })
@@ -732,6 +727,20 @@ mod tests {
                 &(SemanticLevel::Text, 0..9),
                 &(SemanticLevel::Block, 9..11),
                 &(SemanticLevel::Text, 11..27)
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
+    }
+
+    #[test]
+    fn test_footnote_def() {
+        let markdown = Markdown::new("[^first]: Footnote");
+
+        assert_eq!(
+            vec![
+                &(SemanticLevel::Block, 0..18),
+                &(SemanticLevel::Text, 10..18)
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
