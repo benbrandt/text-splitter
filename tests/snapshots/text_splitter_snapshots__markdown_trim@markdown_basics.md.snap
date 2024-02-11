@@ -216,7 +216,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - styles of
 - "headers: *"
 - Setext*
-- and *atx*.
+- and *atx*
+- "."
 - Setext-
 - style
 - headers
@@ -546,8 +547,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - creating
 - "links: *"
 - inline*
-- "and\n*"
-- reference*
+- and
+- "*reference"
+- "*"
 - "."
 - With both
 - "styles,"

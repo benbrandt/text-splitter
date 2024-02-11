@@ -7,7 +7,7 @@ as possible, eventually falling back to the normal [`TextSplitter`] method.
 use std::ops::Range;
 
 use auto_enums::auto_enum;
-use pulldown_cmark::{Event, Options, Parser};
+use pulldown_cmark::{Event, Options, Parser, Tag};
 use unicode_segmentation::UnicodeSegmentation;
 
 use crate::{
@@ -211,12 +211,11 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
-                Event::Start(_) | Event::End(_) => None,
-                Event::Text(_) => Some((SemanticLevel::Text, range)),
-                Event::Code(_) | Event::Html(_) => Some((
+                Event::Start(Tag::Emphasis) | Event::Code(_) | Event::Html(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     range,
                 )),
+                Event::Text(_) => Some((SemanticLevel::Text, range)),
                 Event::FootnoteReference(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
                     range,
@@ -228,6 +227,7 @@ impl SemanticSplit for Markdown {
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
+                Event::Start(_) | Event::End(_) => None,
             })
             .collect::<Vec<_>>();
 
@@ -529,6 +529,26 @@ mod tests {
                 SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                 0..6
             ),],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_emphasis() {
+        let markdown = Markdown::new("*emphasis*");
+
+        assert_eq!(
+            vec![
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..10
+                ),
+                &(SemanticLevel::Text, 1..9),
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(

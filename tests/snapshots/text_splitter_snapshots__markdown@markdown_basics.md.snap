@@ -593,8 +593,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "creating "
 - "links: *"
 - "inline* "
-- "and\n*"
-- reference*
+- "and\n"
+- "*reference"
+- "*"
 - ". "
 - "With both "
 - "styles, "

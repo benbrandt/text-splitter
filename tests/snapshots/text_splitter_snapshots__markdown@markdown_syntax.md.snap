@@ -2416,8 +2416,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "][A]\n\n"
 - "are "
 - equivalent
-- ".\n\nThe *"
-- "implicit "
+- ".\n\nThe "
+- "*implicit "
 - link name*
 - " shortcut "
 - allows you
