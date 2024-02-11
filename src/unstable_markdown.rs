@@ -160,8 +160,6 @@ enum SemanticLevel {
     InlineElement(SemanticSplitPosition),
     /// A row/item within a table or list
     Item(SemanticSplitPosition),
-    /// Hard line break (two newlines), which signifies a new element in Markdown
-    HardBreak,
     /// Block-level element, such as a paragraph, quote, code block, etc.
     Block,
     /// thematic break/horizontal rule
@@ -177,7 +175,6 @@ impl Level for SemanticLevel {
             | SemanticLevel::Sentence
             | SemanticLevel::SoftBreak
             | SemanticLevel::Text
-            | SemanticLevel::HardBreak
             | SemanticLevel::Block
             | SemanticLevel::Rule => SemanticSplitPosition::Own,
             SemanticLevel::InlineElement(p) | SemanticLevel::Item(p) => *p,
@@ -238,15 +235,15 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::TableRow | Tag::Item) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Own), range))
                 }
-                Event::HardBreak => Some((SemanticLevel::HardBreak, range)),
-                Event::Start(Tag::Table(_)) => Some((SemanticLevel::Block, range)),
+                Event::Start(Tag::List(_) | Tag::Table(_)) | Event::HardBreak => {
+                    Some((SemanticLevel::Block, range))
+                }
                 Event::Rule => Some((SemanticLevel::Rule, range)),
                 Event::Start(
                     Tag::Paragraph
                     | Tag::Heading(_, _, _)
                     | Tag::BlockQuote
                     | Tag::CodeBlock(_)
-                    | Tag::List(_)
                     | Tag::FootnoteDefinition(_),
                 )
                 | Event::End(_) => None,
@@ -299,7 +296,6 @@ impl SemanticSplit for Markdown {
             | SemanticLevel::SoftBreak
             | SemanticLevel::InlineElement(_)
             | SemanticLevel::Item(_)
-            | SemanticLevel::HardBreak
             | SemanticLevel::Block
             | SemanticLevel::Rule => split_str_by_separator(
                 text,
@@ -505,6 +501,7 @@ mod tests {
 
         assert_eq!(
             vec![
+                &(SemanticLevel::Block, 0..42),
                 &(SemanticLevel::Item(SemanticSplitPosition::Own), 0..22),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
@@ -520,10 +517,7 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(
-            SemanticLevel::Item(SemanticSplitPosition::Own),
-            markdown.max_level()
-        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -736,12 +730,12 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Text, 0..9),
-                &(SemanticLevel::HardBreak, 9..11),
+                &(SemanticLevel::Block, 9..11),
                 &(SemanticLevel::Text, 11..27)
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::HardBreak, markdown.max_level());
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]

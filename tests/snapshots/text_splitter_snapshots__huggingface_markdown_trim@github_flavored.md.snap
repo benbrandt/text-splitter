@@ -105,8 +105,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - nisl aliquet
 - "- Nulla volutpat"
 - "aliquam velit\n+ Very easy!"
-- "```\n\n1. First ordered list item"
-- 2. Another item
+- "```"
+- "1. First ordered list item\n2. Another item"
 - ⋅⋅* Unordered sub-list.
 - "1."
 - "Actual numbers don't matter, just that"

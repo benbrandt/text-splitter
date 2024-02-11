@@ -405,7 +405,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - ", including headers, lists,"
 - "and code blocks:\n\n\t> ##"
 - "This is a header.\n\t>\n\t>"
-- "1.   This is the first list item.\n\t>"
+- 1.   This is the first list item.
+- ">"
 - "2.   This is the second list item.\n\t>"
 - "> Here's some example code:\n\t>\n\t>"
 - "return shell_exec(\"echo $input"

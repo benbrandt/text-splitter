@@ -89,10 +89,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - aliquet
 - "- Nulla volutpat aliquam velit"
 - "+ Very easy!\n```"
-- 1. First ordered list item
-- 2. Another item
-- ⋅⋅* Unordered sub
-- "-list."
+- "1. First ordered list item\n2."
+- "Another item\n⋅⋅*"
+- Unordered sub-list.
 - "1."
 - "Actual numbers don't matter, just that it's"
 - a number
@@ -116,8 +115,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "* Unordered list can use asterisks"
 - "- Or minuses\n+ Or pluses"
 - "1. Make my changes\n    1."
-- Fix bug
-- 2. Improve formatting
+- "Fix bug\n    2. Improve formatting"
 - "- Make the headings bigger"
 - 2. Push my commits to GitHub
 - 3. Open a pull request
