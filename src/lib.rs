@@ -208,7 +208,7 @@ enum SemanticSplitPosition {
 }
 
 /// Information required by generic Semantic Levels
-trait Level {
+trait Level: fmt::Debug {
     fn split_position(&self) -> SemanticSplitPosition;
 }
 
@@ -219,7 +219,7 @@ trait Level {
 /// lists, and code blocks.
 trait SemanticSplit {
     /// Internal type used to represent the level of semantic splitting.
-    type Level: Copy + fmt::Debug + Level + Ord + PartialOrd + 'static;
+    type Level: Copy + Level + Ord + PartialOrd + 'static;
 
     /// Levels that are always considered in splitting text, because they are always present.
     const PERSISTENT_LEVELS: &'static [Self::Level];
@@ -523,44 +523,57 @@ fn split_str_by_separator<L: Level>(
     let mut cursor = 0;
     let mut final_match = false;
     separator_ranges
-        .batching(move |it| match it.next() {
-            // If we've hit the end, actually return None
-            None if final_match => None,
-            // First time we hit None, return the final section of the text
-            None => {
-                final_match = true;
-                text.get(cursor..).map(|t| Either::Left(once((cursor, t))))
-            }
-            // Return text preceding match + the match
-            Some((level, range)) => {
-                let offset = cursor;
-                match level.split_position() {
-                    SemanticSplitPosition::Prev => {
-                        let section = text
-                            .get(cursor..range.end)
-                            .expect("invalid character sequence");
-                        cursor = range.end;
-                        Some(Either::Left(once((offset, section))))
+        .batching(move |it| {
+            loop {
+                match it.next() {
+                    // If we've hit the end, actually return None
+                    None if final_match => return None,
+                    // First time we hit None, return the final section of the text
+                    None => {
+                        final_match = true;
+                        return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
                     }
-                    SemanticSplitPosition::Own => {
-                        let prev_section = text
-                            .get(cursor..range.start)
-                            .expect("invalid character sequence");
-                        let separator = text
-                            .get(range.start..range.end)
-                            .expect("invalid character sequence");
-                        cursor = range.end;
-                        Some(Either::Right(
-                            [(offset, prev_section), (range.start, separator)].into_iter(),
-                        ))
-                    }
-                    SemanticSplitPosition::Next => {
-                        let prev_section = text
-                            .get(cursor..range.start)
-                            .expect("invalid character sequence");
-                        // Separator will be part of the next chunk
-                        cursor = range.start;
-                        Some(Either::Left(once((offset, prev_section))))
+                    // Return text preceding match + the match
+                    Some((level, range)) => {
+                        let offset = cursor;
+                        match level.split_position() {
+                            SemanticSplitPosition::Prev => {
+                                if range.end < cursor {
+                                    continue;
+                                }
+                                let section = text
+                                    .get(cursor..range.end)
+                                    .expect("invalid character sequence");
+                                cursor = range.end;
+                                return Some(Either::Left(once((offset, section))));
+                            }
+                            SemanticSplitPosition::Own => {
+                                if range.start < cursor {
+                                    continue;
+                                }
+                                let prev_section = text
+                                    .get(cursor..range.start)
+                                    .expect("invalid character sequence");
+                                let separator = text
+                                    .get(range.start..range.end)
+                                    .expect("invalid character sequence");
+                                cursor = range.end;
+                                return Some(Either::Right(
+                                    [(offset, prev_section), (range.start, separator)].into_iter(),
+                                ));
+                            }
+                            SemanticSplitPosition::Next => {
+                                if range.start < cursor {
+                                    continue;
+                                }
+                                let prev_section = text
+                                    .get(cursor..range.start)
+                                    .expect("invalid character sequence");
+                                // Separator will be part of the next chunk
+                                cursor = range.start;
+                                return Some(Either::Left(once((offset, prev_section))));
+                            }
+                        }
                     }
                 }
             }

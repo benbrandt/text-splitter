@@ -62,16 +62,17 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Web Form\">"
 - Dingus</a>
 - "</li>"
-- "</ul>\n\n\n*"
-- "[Overview]"
-- "(#overview"
-- ")\n    *"
-- "["
+- "</ul>"
+- "*   ["
+- "Overview]("
+- "#overview)"
+- "*   ["
 - Philosophy
 - "](#"
 - philosophy
-- ")\n    *"
-- "[Inline"
+- )
+- "*   ["
+- Inline
 - "HTML](#"
 - html)
 - "*   ["
@@ -82,49 +83,51 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Characters
 - "](#"
 - autoescape
-- ")\n*"
-- "[Block"
+- )
+- "*   [Block"
 - "Elements]("
 - "#block)"
 - "*   ["
 - Paragraphs
 - and Line
 - "Breaks](#p"
-- ")\n    *"
-- "[Headers]("
-- "#header)"
+- )
+- "*   ["
+- "Headers](#"
+- header)
 - "*   ["
 - Blockquote
 - "s](#"
 - blockquote
-- ")\n    *"
-- "[Lists](#"
-- list)
+- )
+- "*   [Lists"
+- "](#list)"
 - "*   [Code"
 - "Blocks](#"
 - precode)
 - "*   ["
 - Horizontal
 - "Rules](#hr"
-- ")\n*"
-- "[Span"
+- )
+- "*   [Span"
 - "Elements]("
 - "#span)"
 - "*   [Links"
 - "](#link)"
 - "*   ["
 - "Emphasis]("
-- "#em)\n    *"
-- "[Code](#"
-- code)
+- "#em)"
+- "*   [Code]"
+- "(#code)"
 - "*   ["
 - "Images](#"
-- "img)\n*"
-- "["
+- img)
+- "*   ["
 - Miscellane
 - "ous](#misc"
-- ")\n    *"
-- "[Backslash"
+- )
+- "*   ["
+- Backslash
 - "Escapes](#"
 - backslash)
 - "*   ["
@@ -579,8 +582,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "entities,"
 - "e.g. `&lt;"
 - "`, and"
-- "`&amp;`"
-- "."
+- "`&amp;`."
 - Ampersands
 - in
 - particular
@@ -906,8 +908,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - of headers
 - ", [Setext]"
 - "[1] and ["
-- "atx] [2]"
-- "."
+- "atx] [2]."
 - Setext-
 - style
 - headers
@@ -1148,8 +1149,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - adding
 - additional
 - levels of
-- "`>`"
-- ":"
+- "`>`:"
 - "> This is"
 - the first
 - level of
@@ -1176,16 +1176,19 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "> ## This"
 - is a
 - "header.\n\t>"
-- "> 1."
+- ">"
+- "1."
 - This is
 - the first
 - list item.
-- "> 2."
+- ">"
+- "2."
 - This is
 - the second
 - list item.
-- ">\n\t> Here'"
-- s some
+- ">\n\t>"
+- "Here's"
+- some
 - example
 - "code:\n\t>"
 - ">"
@@ -1637,8 +1640,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - a code
 - "block:"
 - "<code goes"
-- "here>\n\n\nIt"
-- "'s worth"
+- here>
+- "It's worth"
 - noting
 - "that it's"
 - possible
@@ -2083,8 +2086,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Title Here
 - "\""
 - "That is:"
-- "*"
-- Square
+- "*   Square"
 - brackets
 - containing
 - the link
@@ -2097,19 +2099,23 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - margin
 - using up
 - to three
-- "spaces);\n*"
+- spaces);
+- "*"
 - followed
 - by a colon
-- ";\n*"
+- ;
+- "*"
 - followed
 - by one or
 - more
 - spaces (or
-- "tabs);\n*"
+- tabs);
+- "*"
 - followed
 - by the URL
 - for the
-- "link;\n*"
+- link;
+- "*"
 - optionally
 - followed
 - by a title
@@ -2247,8 +2253,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "][A]"
 - are
 - equivalent
-- ".\n\nThe"
-- "*implicit"
+- "."
+- The *
+- implicit
 - link name*
 - shortcut
 - allows you
@@ -2901,12 +2908,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Optional
 - "title\")"
 - "That is:"
-- "*"
-- An
+- "*   An"
 - exclamatio
 - "n mark:"
-- "`!`"
-- ";\n*"
+- "`!`;"
+- "*"
 - followed
 - by a set
 - of square
@@ -2942,10 +2948,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "this:"
 - "!["
 - "Alt text]["
-- "id]\n\nWhere"
-- "\"id\" is"
-- the name
-- of a
+- "id]"
+- "Where \"id\""
+- is the
+- name of a
 - defined
 - image
 - reference.

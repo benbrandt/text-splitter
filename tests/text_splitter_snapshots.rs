@@ -281,3 +281,89 @@ fn markdown_trim() {
         }
     });
 }
+
+#[cfg(all(feature = "markdown", feature = "tokenizers"))]
+#[test]
+fn huggingface_markdown() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::new(&*HUGGINGFACE_TOKENIZER);
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            for chunk in &chunks {
+                assert!(HUGGINGFACE_TOKENIZER
+                    .chunk_size(chunk, &chunk_size)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(all(feature = "markdown", feature = "tokenizers"))]
+#[test]
+fn huggingface_markdown_trim() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::new(&*HUGGINGFACE_TOKENIZER).with_trim_chunks(true);
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(HUGGINGFACE_TOKENIZER
+                    .chunk_size(chunk, &chunk_size)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(all(feature = "markdown", feature = "tiktoken-rs"))]
+#[test]
+fn tiktoken_markdown() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::new(&*TIKTOKEN_TOKENIZER);
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            for chunk in &chunks {
+                assert!(TIKTOKEN_TOKENIZER
+                    .chunk_size(chunk, &chunk_size)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(all(feature = "markdown", feature = "tiktoken-rs"))]
+#[test]
+fn tiktoken_markdown_trim() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in [10, 100, 1000] {
+            let splitter = MarkdownSplitter::new(&*TIKTOKEN_TOKENIZER).with_trim_chunks(true);
+            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(TIKTOKEN_TOKENIZER
+                    .chunk_size(chunk, &chunk_size)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
