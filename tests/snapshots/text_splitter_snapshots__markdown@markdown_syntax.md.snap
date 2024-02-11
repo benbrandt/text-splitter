@@ -62,7 +62,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Web Form\">"
 - Dingus</a>
 - "</li>\n"
-- "</ul>\n\n\n"
+- "</ul>\n"
+- "\n\n"
 - "*   ["
 - "Overview]("
 - "#overview)"
@@ -594,8 +595,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "demand "
 - "special "
 - "treatment:"
-- " `<`\n"
-- "and `&`. "
+- " `<`\nand "
+- "`&`"
+- ". "
 - Left angle
 - " brackets "
 - "are used "
@@ -619,7 +621,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "entities, "
 - "e.g. `&lt;"
 - "`, and\n"
-- "`&amp;`.\n\n"
+- "`&amp;`"
+- ".\n\n"
 - Ampersands
 - " in "
 - particular
@@ -714,9 +717,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - " it will "
 - "be "
 - translated
-- "\n"
-- "into `&amp"
-- ";`.\n\n"
+- "\ninto "
+- "`&amp;`"
+- ".\n\n"
 - "So, if you"
 - " want to "
 - "include a "
@@ -805,9 +808,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "because "
 - "every "
 - "single `<`"
-- "\n"
-- "and `&` in"
-- " your "
+- "\nand `&`"
+- " in your "
 - "example "
 - code needs
 - " to be "
@@ -1224,7 +1226,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "adding "
 - additional
 - " levels of"
-- " `>`:\n\n"
+- " `>`"
+- ":\n\n"
 - "    > This"
 - " is the "
 - "first "
@@ -1739,7 +1742,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "list item,"
 - " the "
 - blockquote
-- "'s `>`\n"
+- "'s `>`"
+- "\n"
 - delimiters
 - " need to "
 - "be "
@@ -1850,11 +1854,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - " Markdown "
 - "wraps a "
 - code block
-- "\n"
-- "in both `<"
-- "pre>` and "
-- "`<code>` "
-- "tags.\n\n"
+- "\nin both "
+- "`<pre>` "
+- "and `<code"
+- ">` tags.\n\n"
 - To produce
 - " a code "
 - "block in "
@@ -3155,8 +3158,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "That is:\n\n"
 - "*   An "
 - exclamatio
-- "n mark: `!"
-- "`;\n"
+- "n mark: "
+- "`!`"
+- ";\n"
 - "*   "
 - "followed "
 - "by a set "

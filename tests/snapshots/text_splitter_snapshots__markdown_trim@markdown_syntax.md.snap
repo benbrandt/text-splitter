@@ -556,8 +556,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - demand
 - special
 - "treatment:"
-- "`<`"
-- "and `&`."
+- "`<`\nand"
+- "`&`"
+- "."
 - Left angle
 - brackets
 - are used
@@ -580,7 +581,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "entities,"
 - "e.g. `&lt;"
 - "`, and"
-- "`&amp;`."
+- "`&amp;`"
+- "."
 - Ampersands
 - in
 - particular
@@ -751,8 +753,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - because
 - every
 - "single `<`"
-- "and `&` in"
-- your
+- "and `&`"
+- in your
 - example
 - code needs
 - to be
@@ -1146,7 +1148,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - adding
 - additional
 - levels of
-- "`>`:"
+- "`>`"
+- ":"
 - "> This is"
 - the first
 - level of
@@ -2905,8 +2908,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "That is:"
 - "*   An"
 - exclamatio
-- "n mark: `!"
-- "`;"
+- "n mark:"
+- "`!`"
+- ;
 - "*"
 - followed
 - by a set

@@ -159,10 +159,10 @@ enum SemanticLevel {
     SoftBreak,
     /// An inline element that is within a larger element such as a paragraph, but
     /// more specific than a sentence.
-    /// Falls back to [`Self::Sentence`]
+    /// Falls back to [`Self::SoftBreak`]
     InlineElement(SemanticSplitPosition),
     /// Hard line break (two newlines), which signifies a new element in Markdown
-    /// Falls back to [`Self::SoftBreak`]
+    /// Falls back to [`Self::InlineElement`]
     HardBreak,
     /// thematic break/horizontal rule
     Rule,
@@ -207,11 +207,11 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match dbg!(event) {
-                Event::Start(_)
-                | Event::End(_)
-                | Event::Text(_)
-                | Event::Code(_)
-                | Event::Html(_) => None,
+                Event::Start(_) | Event::End(_) | Event::Text(_) => None,
+                Event::Code(_) | Event::Html(_) => Some((
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    range,
+                )),
                 Event::FootnoteReference(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
                     range,
@@ -508,6 +508,40 @@ mod tests {
         );
         assert_eq!(
             SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_inline_code() {
+        let markdown = Markdown::new("`bash`");
+
+        assert_eq!(
+            vec![&(
+                SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                0..6
+            ),],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_html() {
+        let markdown = Markdown::new("<div>Some text</div>");
+
+        assert_eq!(
+            vec![&(
+                SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                0..20
+            ),],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
             markdown.max_level()
         );
     }
