@@ -148,10 +148,10 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - written
 - using
 - Markdown;
-- you
-- "can [see"
-- the source
-- for it by
+- "you\ncan ["
+- see the
+- source for
+- it by
 - "adding '."
 - "text' to"
 - "the URL] ["
@@ -172,8 +172,7 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - projects/
 - markdown/
 - basics.tex
-- t
-- "##"
+- "t\n\n\n##"
 - Paragraphs
 - ", Headers,"
 - Blockquote
@@ -217,7 +216,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - styles of
 - "headers: *"
 - Setext*
-- and *atx*.
+- and *atx*
+- "."
 - Setext-
 - style
 - headers
@@ -362,8 +362,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "</h2>"
 - "</"
 - blockquote
-- ">"
-- "### Phrase"
+- ">\n\n\n\n###"
+- Phrase
 - "Emphasis #"
 - "##"
 - Markdown
@@ -426,9 +426,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - underscore
 - s instead<
 - /strong>.<
-- /p>
-- "## Lists #"
-- "#"
+- "/p>\n\n\n\n##"
+- "Lists ##"
 - Unordered
 - (bulleted)
 - lists use
@@ -550,7 +549,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - inline*
 - and
 - "*reference"
-- "*."
+- "*"
+- "."
 - With both
 - "styles,"
 - you use
@@ -758,8 +758,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "text\""
 - "title=\""
 - "Title\" />"
-- "### Code #"
-- "##"
+- "### Code"
+- "###"
 - In a
 - regular
 - "paragraph,"

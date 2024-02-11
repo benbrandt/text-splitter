@@ -47,11 +47,7 @@ fn fallsback_to_normal_text_split_if_no_markdown_content() {
     let chunk_size = 10;
     let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
 
-    assert_eq!(
-        // ["Some text", "\n\n", "from a\n", "document"],
-        ["Some text\n", "\nfrom a\n", "document"].to_vec(),
-        chunks
-    );
+    assert_eq!(["Some text", "\n\nfrom a\n", "document"].to_vec(), chunks);
 }
 
 #[cfg(feature = "markdown")]
