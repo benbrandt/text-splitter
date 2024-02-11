@@ -83,8 +83,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Characters
 - "](#"
 - autoescape
-- )
-- "*   [Block"
+- ")\n*   ["
+- Block
 - "Elements]("
 - "#block)"
 - "*   ["
@@ -108,8 +108,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "*   ["
 - Horizontal
 - "Rules](#hr"
-- )
-- "*   [Span"
+- ")\n*   ["
+- Span
 - "Elements]("
 - "#span)"
 - "*   [Links"
@@ -121,8 +121,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "(#code)"
 - "*   ["
 - "Images](#"
-- img)
-- "*   ["
+- "img)\n*   ["
 - Miscellane
 - "ous](#misc"
 - )
@@ -141,10 +140,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - written
 - using
 - Markdown;
-- you
-- "can [see"
-- the source
-- for it by
+- "you\ncan ["
+- see the
+- source for
+- it by
 - "adding '."
 - "text' to"
 - "the URL]["
@@ -214,11 +213,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "], ["
 - reStructur
 - "edText][4]"
-- ","
-- "[Grutatext"
-- "][5], and"
-- "[EtText][6"
-- "] -- the"
+- ",\n["
+- "Grutatext]"
+- "[5], and ["
+- "EtText][6]"
+- "-- the"
 - single
 - biggest
 - source of
@@ -298,7 +297,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - actually
 - look like
 - "\\*emphasis"
-- "\\*."
+- "\\"
+- "*."
 - Markdown
 - lists look
 - "like, well"
@@ -597,7 +597,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "T', you"
 - need to
 - "write '`AT"
-- "&amp;T`'."
+- "&amp;T`'"
+- "."
 - You even
 - need to
 - escape
@@ -1012,8 +1013,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - characters
 - for
 - blockquoti
-- ng.
-- "If you're"
+- ng. If you
+- "'re"
 - familiar
 - with
 - quoting
@@ -1184,9 +1185,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - This is
 - the second
 - list item.
-- ">"
-- "> Here's"
-- some
+- ">\n\t> Here'"
+- s some
 - example
 - "code:\n\t>"
 - ">"
@@ -1234,8 +1234,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - and
 - hyphens --
 - interchang
-- ably
-- "-- as list"
+- "ably\n--"
+- as list
 - "markers:"
 - "*   Red"
 - "*   Green"
@@ -1255,8 +1255,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - numbers
 - followed
 - by periods
-- ":\n\n    1."
-- Bird
+- ":"
+- 1.  Bird
 - 2.  McHale
 - 3.  Parish
 - "It's"
@@ -1514,7 +1514,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - by either
 - 4 spaces
 - or one tab
-- ":\n\n    1."
+- ":"
+- "1."
 - This is a
 - list item
 - with two
@@ -1637,8 +1638,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - a code
 - "block:"
 - "<code goes"
-- here>
-- "It's worth"
+- "here>\n\n\nIt"
+- "'s worth"
 - noting
 - "that it's"
 - possible
@@ -2083,7 +2084,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Title Here
 - "\""
 - "That is:"
-- "*   Square"
+- "*"
+- Square
 - brackets
 - containing
 - the link
@@ -2096,23 +2098,19 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - margin
 - using up
 - to three
-- spaces);
-- "*"
+- "spaces);\n*"
 - followed
 - by a colon
-- ;
-- "*"
+- ";\n*"
 - followed
 - by one or
 - more
 - spaces (or
-- tabs);
-- "*"
+- "tabs);\n*"
 - followed
 - by the URL
 - for the
-- link;
-- "*"
+- "link;\n*"
 - optionally
 - followed
 - by a title
@@ -2154,11 +2152,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - m/  (
 - Optional
 - Title Here
-- )
-- "**Note:**"
-- There is a
-- known bug
-- in
+- ")\n\n**Note:"
+- "** There"
+- is a known
+- bug in
 - Markdown.p
 - l 1.0.1
 - which
@@ -2243,16 +2240,14 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - not* case
 - sensitive.
 - E.g. these
-- two
-- "links:"
+- "two\nlinks:"
 - "[link text"
 - "][a]"
 - "[link text"
 - "][A]"
 - are
 - equivalent
-- "."
-- The *
+- ".\n\nThe *"
 - implicit
 - link name*
 - shortcut
@@ -2274,9 +2269,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - brackets -
 - "- e.g., to"
 - link the
-- word
-- "\"Google\""
-- to the
+- "word\n\""
+- "Google\" to"
+- the
 - google.com
 - "web site,"
 - you could
@@ -2906,12 +2901,12 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Optional
 - "title\")"
 - "That is:"
-- "*   An"
+- "*"
+- An
 - exclamatio
 - "n mark:"
 - "`!`"
-- ;
-- "*"
+- ";\n*"
 - followed
 - by a set
 - of square
@@ -2947,10 +2942,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "this:"
 - "!["
 - "Alt text]["
-- "id]"
-- "Where \"id\""
-- is the
-- name of a
+- "id]\n\nWhere"
+- "\"id\" is"
+- the name
+- of a
 - defined
 - image
 - reference.
@@ -3133,9 +3128,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - definitely
 - "won't fool"
 - all of
-- them.
-- "It's"
-- better
+- "them. It'"
+- s better
 - than
 - "nothing,"
 - but an

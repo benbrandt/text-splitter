@@ -157,9 +157,12 @@ enum SemanticLevel {
     /// Single line break, which isn't necessarily a new element in Markdown
     /// Falls back to [`Self::Sentence`]
     SoftBreak,
+    /// A text node within an element
+    /// Falls back to [`Self::SoftBreak`]
+    Text,
     /// An inline element that is within a larger element such as a paragraph, but
     /// more specific than a sentence.
-    /// Falls back to [`Self::SoftBreak`]
+    /// Falls back to [`Self::Text`]
     InlineElement(SemanticSplitPosition),
     /// Hard line break (two newlines), which signifies a new element in Markdown
     /// Falls back to [`Self::InlineElement`]
@@ -176,6 +179,7 @@ impl Level for SemanticLevel {
             | SemanticLevel::Word
             | SemanticLevel::Sentence
             | SemanticLevel::SoftBreak
+            | SemanticLevel::Text
             | SemanticLevel::HardBreak
             | SemanticLevel::Rule => SemanticSplitPosition::Own,
             SemanticLevel::InlineElement(p) => *p,
@@ -206,8 +210,9 @@ impl SemanticSplit for Markdown {
     fn new(text: &str) -> Self {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
-            .filter_map(|(event, range)| match dbg!(event) {
-                Event::Start(_) | Event::End(_) | Event::Text(_) => None,
+            .filter_map(|(event, range)| match event {
+                Event::Start(_) | Event::End(_) => None,
+                Event::Text(_) => Some((SemanticLevel::Text, range)),
                 Event::Code(_) | Event::Html(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     range,
@@ -268,8 +273,9 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::InlineElement(_)
+            SemanticLevel::Text
             | SemanticLevel::SoftBreak
+            | SemanticLevel::InlineElement(_)
             | SemanticLevel::HardBreak
             | SemanticLevel::Rule => split_str_by_separator(
                 text,
@@ -428,24 +434,21 @@ mod tests {
 
     #[test]
     fn chunk_by_sentences() {
-        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let text = "Mr. Fox jumped. The dog was too lazy.";
         let chunks = TextChunks::<_, _, Markdown>::new(21, &Characters, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
-        assert_eq!(
-            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too lazy."],
-            chunks
-        );
+        assert_eq!(vec!["Mr. Fox jumped. ", "The dog was too lazy."], chunks);
     }
 
     #[test]
     fn sentences_falls_back_to_words() {
-        let text = "Mr. Fox jumped. [...] The dog was too lazy.";
+        let text = "Mr. Fox jumped. The dog was too lazy.";
         let chunks = TextChunks::<_, _, Markdown>::new(16, &Characters, text, false)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
-            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+            vec!["Mr. Fox jumped. ", "The dog was too ", "lazy."],
             chunks
         );
     }
@@ -466,10 +469,10 @@ mod tests {
         let markdown = Markdown::new("Some text without any markdown separators");
 
         assert_eq!(
-            Vec::<&(SemanticLevel, Range<usize>)>::new(),
+            vec![&(SemanticLevel::Text, 0..41)],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Sentence, markdown.max_level());
+        assert_eq!(SemanticLevel::Text, markdown.max_level());
     }
 
     #[test]
@@ -482,10 +485,12 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     2..5
                 ),
+                &(SemanticLevel::Text, 6..21),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     24..27
-                )
+                ),
+                &(SemanticLevel::Text, 28..42),
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
@@ -500,10 +505,13 @@ mod tests {
         let markdown = Markdown::new("Footnote[^1]");
 
         assert_eq!(
-            vec![&(
-                SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
-                8..12
-            ),],
+            vec![
+                &(SemanticLevel::Text, 0..8),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
+                    8..12
+                ),
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(
@@ -551,10 +559,14 @@ mod tests {
         let markdown = Markdown::new("Some text\nwith a softbreak");
 
         assert_eq!(
-            vec![&(SemanticLevel::SoftBreak, 9..10)],
+            vec![
+                &(SemanticLevel::Text, 0..9),
+                &(SemanticLevel::SoftBreak, 9..10),
+                &(SemanticLevel::Text, 10..26)
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::SoftBreak, markdown.max_level());
+        assert_eq!(SemanticLevel::Text, markdown.max_level());
     }
 
     #[test]
@@ -562,7 +574,11 @@ mod tests {
         let markdown = Markdown::new("Some text\\\nwith a hardbreak");
 
         assert_eq!(
-            vec![&(SemanticLevel::HardBreak, 9..11)],
+            vec![
+                &(SemanticLevel::Text, 0..9),
+                &(SemanticLevel::HardBreak, 9..11),
+                &(SemanticLevel::Text, 11..27)
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::HardBreak, markdown.max_level());
@@ -573,7 +589,11 @@ mod tests {
         let markdown = Markdown::new("Some text\n\n---\n\nwith a rule");
 
         assert_eq!(
-            vec![&(SemanticLevel::Rule, 11..15)],
+            vec![
+                &(SemanticLevel::Text, 0..9),
+                &(SemanticLevel::Rule, 11..15),
+                &(SemanticLevel::Text, 16..27)
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::Rule, markdown.max_level());
