@@ -46,14 +46,12 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "~~Strikethrough~~\n```"
 - "Emphasis, aka italics, with *"
 - asterisks* or
-- _underscores_
-- ".\n\nStrong emphasis, aka bold, with"
-- "**asterisks** or"
-- __underscores__
-- ".\n\nCombined emphasis with"
-- "**asterisks and"
-- _underscores_
-- "**."
+- _underscores_.
+- "Strong emphasis, aka bold, with **"
+- asterisks** or
+- __underscores__.
+- Combined emphasis with **asterisks and
+- _underscores_**.
 - Strikethrough uses two tildes.
 - ~~Scratch this.~~
 - "**This is bold text**"
@@ -190,10 +188,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "```"
 - "Let's rename \\*our-new"
 - "-project\\* to \\*our-old"
-- "-project\\*.\n```\n\nLet'"
-- "s rename \\*our-new-project"
-- "\\* to \\*our-old-project"
-- "\\*.\n\n------"
+- "-project\\*.\n```"
+- "Let's rename \\*our-new"
+- "-project\\* to \\*our-old"
+- "-project\\*."
+- "------"
 - "# Links"
 - "```"
 - "[I'm an inline-style link"
@@ -300,17 +299,18 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[id]: https://"
 - octodex.github.com
 - /images/dojocat.jpg
-- "\"The Dojocat\"\n```\n\nHere"
-- "'s our logo (hover to see the"
-- "title text):\n\nInline-style:"
-- "!["
+- "\"The Dojocat\"\n```"
+- "Here's our logo (hover to see"
+- "the title text):"
+- "Inline-style:\n!["
 - "alt text](https://"
 - github.com/adam-p
 - /markdown-here/raw/master/
 - src/common/images/icon48.
 - "png \"Logo Title Text 1\")"
-- "Reference-style:"
-- "![alt text][logo]"
+- "Reference-style:\n!["
+- alt text
+- "][logo]"
 - "[logo]: https://"
 - github.com/adam-p
 - /markdown-here/raw/master/
@@ -350,11 +350,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[^first]: Footnote **can"
 - "have markup**\n\n    and multiple paragraphs."
 - "[^second]: Footnote text."
-- "```\n\nFootnote 1 link"
-- "[^first]"
-- ".\n\nFootnote 2 link[^second]"
-- ".\n\nInline footnote^["
-- "Text of inline footnote] definition."
+- "```"
+- "Footnote 1 link[^first]."
+- "Footnote 2 link[^second]."
+- "Inline footnote^[Text of inline"
+- "footnote] definition."
 - "Duplicated footnote reference[^second]"
 - "."
 - "[^first]: Footnote **can"

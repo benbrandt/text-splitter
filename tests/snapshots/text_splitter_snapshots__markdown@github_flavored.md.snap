@@ -567,9 +567,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "to \\*our-"
 - old-
 - "project\\*."
-- "\n```\n\nLet'"
-- "s rename \\"
-- "*our-new-"
+- "\n```\n\n"
+- "Let's "
+- "rename \\*"
+- our-new-
 - "project\\* "
 - "to \\*our-"
 - old-
@@ -862,10 +863,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - dojocat.jp
 - "g  \"The "
 - "Dojocat\"\n"
-- "```\n\nHere'"
-- s our logo
-- " (hover to"
-- " see the "
+- "```\n\n"
+- "Here's our"
+- " logo ("
+- "hover to "
+- "see the "
 - title text
 - "):\n\n"
 - Inline-
@@ -1492,8 +1494,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "stripes | "
 - are neat
 - "      |"
-- "    $1 "
-- "|\n\n"
+- "    $1 |\n\n"
 - There must
 - " be at "
 - "least 3 "
@@ -1818,8 +1819,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "---\n"
 - "\nHyphens\n\n"
 - "***\n"
-- "\nAsterisks"
-- "\n\n___\n"
+- "\n"
+- "Asterisks\n"
+- "\n___\n"
 - "\n"
 - Underscore
 - "s\n\n------\n"

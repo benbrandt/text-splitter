@@ -34,12 +34,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - _This is italic text_
 - "~~Strikethrough~~\n```"
 - "Emphasis, aka italics, with *"
-- asterisks* or _underscores_
-- ".\n\nStrong emphasis, aka bold, with"
-- "**asterisks** or __underscores__"
-- ".\n\nCombined emphasis with"
-- "**asterisks and _underscores_**"
-- "."
+- asterisks* or _underscores_.
+- "Strong emphasis, aka bold, with **asterisks"
+- "** or __underscores__."
+- Combined emphasis with **asterisks and
+- _underscores_**.
 - Strikethrough uses two tildes.
 - ~~Scratch this.~~
 - "**This is bold text**"
@@ -198,9 +197,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[I'm a relative reference to a repository file]("
 - "../blob/master/LICENSE)"
 - "[You can use numbers for reference-style link definitions"
-- "][1]\n\nOr leave it empty and use the"
-- "[link text itself]"
-- "."
+- "][1]"
+- "Or leave it empty and use the [link text"
+- "itself]."
 - URLs and URLs in angle brackets will automatically get
 - "turned into links.\nhttp://www.example.com or"
 - "<http://www.example.com>"
@@ -238,10 +237,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "location:"
 - "[id]: https://octodex.github.com/images"
 - "/dojocat.jpg  \"The"
-- "Dojocat\"\n```\n\nHere'"
-- s our logo (hover to see the title text
-- "):\n\nInline-style:"
-- "!["
+- "Dojocat\"\n```"
+- "Here's our logo (hover to see the title"
+- "text):"
+- "Inline-style:\n!["
 - "alt text](https://github.com/adam-p"
 - /markdown-here/raw/master/src/common/images/
 - "icon48.png \"Logo Title Text 1\")"
@@ -274,18 +273,19 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[^first]: Footnote **can have markup**"
 - and multiple paragraphs.
 - "[^second]: Footnote text.\n```"
-- "Footnote 1 link[^first]"
-- ".\n\nFootnote 2 link[^second]"
-- ".\n\nInline footnote^[Text of inline footnote]"
-- "definition.\n\nDuplicated footnote reference[^second]."
+- "Footnote 1 link[^first]."
+- "Footnote 2 link[^second]."
+- "Inline footnote^[Text of inline footnote] definition."
+- "Duplicated footnote reference[^second]."
 - "[^first]: Footnote **can have markup**"
 - and multiple paragraphs.
 - "[^second]: Footnote text.\n\n------"
 - "# Code and Syntax Highlighting"
 - "```"
 - "Inline `code` has `back-ticks around"
-- "` it.\n```\n\nInline `code` has"
-- "`back-ticks around` it."
+- "` it.\n```"
+- "Inline `code` has `back-ticks around"
+- "` it."
 - "```c#\nusing System.IO.Compression;"
 - "#pragma warning disable 414, 3021"
 - "namespace MyApplication\n{"

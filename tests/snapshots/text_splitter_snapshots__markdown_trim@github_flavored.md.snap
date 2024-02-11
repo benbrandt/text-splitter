@@ -527,9 +527,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "to \\*our-"
 - old-
 - "project\\*."
-- "```\n\nLet'"
-- "s rename \\"
-- "*our-new-"
+- "```"
+- "Let's"
+- "rename \\*"
+- our-new-
 - "project\\*"
 - "to \\*our-"
 - old-
@@ -810,9 +811,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - dojocat.jp
 - "g  \"The"
 - "Dojocat\""
-- "```\n\nHere'"
-- s our logo
-- (hover to
+- "```"
+- "Here's our"
+- logo (
+- hover to
 - see the
 - title text
 - "):"
@@ -1370,8 +1372,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| zebra"
 - stripes |
 - are neat
-- "|    $1"
-- "|"
+- "|    $1 |"
 - There must
 - be at
 - least 3

@@ -47,10 +47,10 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - The examples on this page
 - "are written in a before/after style, showing"
 - example syntax and the
-- "HTML output produced by Markdown.\n\nIt"
-- "'s also helpful to simply try Markdown out"
-- "; the [Dingus] [d] is"
-- a
+- HTML output produced by Markdown.
+- "It's also helpful to simply try Markdown"
+- "out; the [Dingus] [d]"
+- is a
 - web application that allows you type your own Markdown
 - "-formatted text"
 - and translate it to XHTML.
@@ -90,8 +90,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - the number of hashes equals the resulting
 - HTML header level.
 - Blockquotes are indicated using email-style
-- "'`>`"
-- "' angle brackets.\n\nMarkdown:"
+- "'`>`' angle brackets."
+- "Markdown:"
 - A First Level Header
 - "=========="
 - "=========="

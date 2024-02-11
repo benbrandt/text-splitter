@@ -582,8 +582,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "entities,"
 - "e.g. `&lt;"
 - "`, and"
-- "`&amp;`"
-- "."
+- "`&amp;`."
 - Ampersands
 - in
 - particular
@@ -909,8 +908,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - of headers
 - ", [Setext]"
 - "[1] and ["
-- "atx] [2]"
-- "."
+- "atx] [2]."
 - Setext-
 - style
 - headers
@@ -1188,8 +1186,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - This is
 - the second
 - list item.
-- ">\n\t> Here'"
-- s some
+- ">\n\t>"
+- "Here's"
+- some
 - example
 - "code:\n\t>"
 - ">"
@@ -1641,8 +1640,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - a code
 - "block:"
 - "<code goes"
-- "here>\n\n\nIt"
-- "'s worth"
+- here>
+- "It's worth"
 - noting
 - "that it's"
 - possible
@@ -2254,8 +2253,9 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "][A]"
 - are
 - equivalent
-- ".\n\nThe"
-- "*implicit"
+- "."
+- The *
+- implicit
 - link name*
 - shortcut
 - allows you
@@ -2948,10 +2948,10 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "this:"
 - "!["
 - "Alt text]["
-- "id]\n\nWhere"
-- "\"id\" is"
-- the name
-- of a
+- "id]"
+- "Where \"id\""
+- is the
+- name of a
 - defined
 - image
 - reference.
