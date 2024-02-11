@@ -401,8 +401,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| Backtick | `         |"
 - "| Pipe     | \\|        |\n```"
 - Colons can be used to align columns.
-- "| Tables        | Are           | Cool"
-- "|"
+- "| Tables        | Are           | Cool  |"
 - "| ------------- |:-------------:| -----:|"
 - "| col 3 is      | right-aligned |"
 - $1600 |
@@ -420,8 +419,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "--- | --- | ---"
 - "*Still* | `renders` | **"
 - "nicely**\n1 | 2 | 3"
-- "| First Header  | Second Header"
-- "|\n| ------------- | ------------- |"
+- "| First Header  | Second Header |"
+- "| ------------- | ------------- |"
 - "| Content Cell  | Content Cell  |"
 - "| Content Cell  | Content Cell  |"
 - "| Command | Description |\n| --- | --- |"
@@ -434,16 +433,15 @@ input_file: tests/inputs/markdown/github_flavored.md
 - or modified* files |
 - "| `git diff` | Show file differences that"
 - "**haven't been** staged |"
-- "| Left-aligned | Center-aligned | Right-aligned"
-- "|"
+- "| Left-aligned | Center-aligned | Right-aligned |"
 - "| :---         |     :---:"
 - "|          ---: |"
 - "| git status   | git status     | git"
 - status    |
 - "| git diff     | git diff       | git"
 - diff      |
-- "| Name     | Character"
-- "|\n| ---      | ---       |"
+- "| Name     | Character |"
+- "| ---      | ---       |"
 - "| Backtick | `         |"
 - "| Pipe     | \\|        |\n\n------"
 - "# Blockquotes\n\n```"
