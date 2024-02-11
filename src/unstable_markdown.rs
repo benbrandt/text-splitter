@@ -211,7 +211,13 @@ impl SemanticSplit for Markdown {
         let ranges = Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
-                Event::Start(Tag::Emphasis | Tag::Strong | Tag::Strikethrough)
+                Event::Start(
+                    Tag::Emphasis
+                    | Tag::Strong
+                    | Tag::Strikethrough
+                    | Tag::Link(_, _, _)
+                    | Tag::Image(_, _, _),
+                )
                 | Event::Code(_)
                 | Event::Html(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
@@ -240,9 +246,7 @@ impl SemanticSplit for Markdown {
                     | Tag::Table(_)
                     | Tag::TableHead
                     | Tag::TableRow
-                    | Tag::TableCell
-                    | Tag::Link(_, _, _)
-                    | Tag::Image(_, _, _),
+                    | Tag::TableCell,
                 )
                 | Event::End(_) => None,
             })
@@ -605,6 +609,46 @@ mod tests {
                     0..12
                 ),
                 &(SemanticLevel::Text, 2..10),
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_link() {
+        let markdown = Markdown::new("[link](url)");
+
+        assert_eq!(
+            vec![
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..11
+                ),
+                &(SemanticLevel::Text, 1..5),
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(
+            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+            markdown.max_level()
+        );
+    }
+
+    #[test]
+    fn test_image() {
+        let markdown = Markdown::new("![link](url)");
+
+        assert_eq!(
+            vec![
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..12
+                ),
+                &(SemanticLevel::Text, 2..6),
             ],
             markdown.ranges().collect::<Vec<_>>()
         );

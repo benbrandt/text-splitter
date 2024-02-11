@@ -62,17 +62,16 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "Web Form\">"
 - Dingus</a>
 - "</li>"
-- "</ul>"
-- "*   ["
-- "Overview]("
-- "#overview)"
-- "*   ["
+- "</ul>\n\n\n*"
+- "[Overview]"
+- "(#overview"
+- ")\n    *"
+- "["
 - Philosophy
 - "](#"
 - philosophy
-- )
-- "*   ["
-- Inline
+- ")\n    *"
+- "[Inline"
 - "HTML](#"
 - html)
 - "*   ["
@@ -83,50 +82,49 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - Characters
 - "](#"
 - autoescape
-- ")\n*   ["
-- Block
+- ")\n*"
+- "[Block"
 - "Elements]("
 - "#block)"
 - "*   ["
 - Paragraphs
 - and Line
 - "Breaks](#p"
-- )
-- "*   ["
-- "Headers](#"
-- header)
+- ")\n    *"
+- "[Headers]("
+- "#header)"
 - "*   ["
 - Blockquote
 - "s](#"
 - blockquote
-- )
-- "*   [Lists"
-- "](#list)"
+- ")\n    *"
+- "[Lists](#"
+- list)
 - "*   [Code"
 - "Blocks](#"
 - precode)
 - "*   ["
 - Horizontal
 - "Rules](#hr"
-- ")\n*   ["
-- Span
+- ")\n*"
+- "[Span"
 - "Elements]("
 - "#span)"
 - "*   [Links"
 - "](#link)"
 - "*   ["
 - "Emphasis]("
-- "#em)"
-- "*   [Code]"
-- "(#code)"
+- "#em)\n    *"
+- "[Code](#"
+- code)
 - "*   ["
 - "Images](#"
-- "img)\n*   ["
+- "img)\n*"
+- "["
 - Miscellane
 - "ous](#misc"
-- )
-- "*   ["
-- Backslash
+- ")\n    *"
+- "[Backslash"
 - "Escapes](#"
 - backslash)
 - "*   ["
@@ -140,8 +138,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - written
 - using
 - Markdown;
-- "you\ncan ["
-- see the
+- "you\ncan"
+- "[see the"
 - source for
 - it by
 - "adding '."
@@ -213,11 +211,11 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "], ["
 - reStructur
 - "edText][4]"
-- ",\n["
-- "Grutatext]"
-- "[5], and ["
-- "EtText][6]"
-- "-- the"
+- ","
+- "[Grutatext"
+- "][5], and"
+- "[EtText][6"
+- "] -- the"
 - single
 - biggest
 - source of
@@ -908,7 +906,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - of headers
 - ", [Setext]"
 - "[1] and ["
-- "atx] [2]."
+- "atx] [2]"
+- "."
 - Setext-
 - style
 - headers
