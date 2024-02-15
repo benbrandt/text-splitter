@@ -3,8 +3,7 @@ source: tests/text_splitter_snapshots.rs
 expression: chunks
 input_file: tests/inputs/markdown/markdown_syntax.md
 ---
-- "Markdown: Syntax"
-- "\n"
+- "Markdown: Syntax\n"
 - "=========="
 - "======\n\n"
 - "<ul id=\"ProjectSubmenu"
@@ -412,9 +411,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - ".\n    >\n    > Back to the first level.\n\n"
 - Blockquotes can contain other Markdown elements
 - ", including headers, lists,\n"
-- "and code blocks:\n\n"
-- "\t> ## This is a header.\n\t>\n"
-- "\t>"
+- "and code blocks:\n\n\t> "
+- "## This is a header.\n\t>\n\t>"
 - " 1.   This is the first list item.\n"
 - "\t>"
 - " 2.   This is the second list item.\n\t>\n"
@@ -585,8 +583,7 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "line. "
 - "To avoid this, you can backslash-escape "
 - "the period:\n\n    "
-- "1986\\. What a great season.\n"
-- "\n\n\n"
+- "1986\\. What a great season.\n\n\n\n"
 - "<h3 id=\"precode\">"
 - "Code Blocks</h3>\n\n"
 - "Pre-formatted code blocks are used for writing "

@@ -137,6 +137,31 @@ where
     }
 }
 
+/// Heading levels in markdown.
+/// Sorted in reverse order for sorting purposes.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
+enum HeadingLevel {
+    H6,
+    H5,
+    H4,
+    H3,
+    H2,
+    H1,
+}
+
+impl From<pulldown_cmark::HeadingLevel> for HeadingLevel {
+    fn from(value: pulldown_cmark::HeadingLevel) -> Self {
+        match value {
+            pulldown_cmark::HeadingLevel::H1 => HeadingLevel::H1,
+            pulldown_cmark::HeadingLevel::H2 => HeadingLevel::H2,
+            pulldown_cmark::HeadingLevel::H3 => HeadingLevel::H3,
+            pulldown_cmark::HeadingLevel::H4 => HeadingLevel::H4,
+            pulldown_cmark::HeadingLevel::H5 => HeadingLevel::H5,
+            pulldown_cmark::HeadingLevel::H6 => HeadingLevel::H6,
+        }
+    }
+}
+
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
@@ -166,6 +191,8 @@ enum SemanticLevel {
     Block,
     /// thematic break/horizontal rule
     Rule,
+    /// Heading levels in markdown
+    Heading(HeadingLevel),
 }
 
 impl Level for SemanticLevel {
@@ -181,6 +208,8 @@ impl Level for SemanticLevel {
             | SemanticLevel::Block
             | SemanticLevel::Rule => SemanticSplitPosition::Own,
             SemanticLevel::InlineElement(p) | SemanticLevel::Item(p) => *p,
+            // Attach it to the next text
+            SemanticLevel::Heading(_) => SemanticSplitPosition::Next,
         }
     }
 }
@@ -219,7 +248,7 @@ impl SemanticSplit for Markdown {
                 )
                 | Event::Code(_)
                 | Event::HardBreak
-                | Event::Html(_) => Some((
+                | Event::InlineHtml(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     range,
                 )),
@@ -240,18 +269,21 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::TableRow | Tag::Item) => {
                     Some((SemanticLevel::Item(SemanticSplitPosition::Own), range))
                 }
-                Event::Start(
+                Event::Html(_)
+                | Event::Start(
                     Tag::List(_)
                     | Tag::Table(_)
                     | Tag::BlockQuote
                     | Tag::CodeBlock(_)
+                    | Tag::HtmlBlock
                     | Tag::FootnoteDefinition(_),
                 ) => Some((SemanticLevel::Block, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
+                Event::Start(Tag::Heading { level, .. }) => {
+                    Some((SemanticLevel::Heading(level.into()), range))
+                }
                 // End events are identical to start, so no need to grab them.
-                Event::Start(Tag::Heading { .. } | Tag::HtmlBlock | Tag::MetadataBlock(_))
-                | Event::InlineHtml(_)
-                | Event::End(_) => None,
+                Event::Start(Tag::MetadataBlock(_)) | Event::End(_) => None,
             })
             .collect::<Vec<_>>();
 
@@ -303,6 +335,7 @@ impl SemanticSplit for Markdown {
             | SemanticLevel::Item(_)
             | SemanticLevel::Paragraph
             | SemanticLevel::Block
+            | SemanticLevel::Heading(_)
             | SemanticLevel::Rule => split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
@@ -655,20 +688,39 @@ mod tests {
     }
 
     #[test]
+    fn test_inline_html() {
+        let markdown = Markdown::new("<span>Some text</span>");
+
+        assert_eq!(
+            vec![
+                &(SemanticLevel::Paragraph, 0..22),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..6
+                ),
+                &(SemanticLevel::Text, 6..15),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    15..22
+                ),
+            ],
+            markdown.ranges().collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
+    }
+
+    #[test]
     fn test_html() {
         let markdown = Markdown::new("<div>Some text</div>");
 
         assert_eq!(
-            vec![&(
-                SemanticLevel::InlineElement(SemanticSplitPosition::Own),
-                0..20
-            ),],
+            vec![
+                &(SemanticLevel::Block, 0..20),
+                &(SemanticLevel::Block, 0..20)
+            ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(
-            SemanticLevel::InlineElement(SemanticSplitPosition::Own),
-            markdown.max_level()
-        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -796,5 +848,31 @@ mod tests {
             markdown.ranges().collect::<Vec<_>>()
         );
         assert_eq!(SemanticLevel::Rule, markdown.max_level());
+    }
+
+    #[test]
+    fn test_heading() {
+        for (index, (heading, level)) in [
+            ("#", HeadingLevel::H1),
+            ("##", HeadingLevel::H2),
+            ("###", HeadingLevel::H3),
+            ("####", HeadingLevel::H4),
+            ("#####", HeadingLevel::H5),
+            ("######", HeadingLevel::H6),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let markdown = Markdown::new(&format!("{heading} Heading"));
+
+            assert_eq!(
+                vec![
+                    &(SemanticLevel::Heading(level), 0..9 + index),
+                    &(SemanticLevel::Text, 2 + index..9 + index)
+                ],
+                markdown.ranges().collect::<Vec<_>>()
+            );
+            assert_eq!(SemanticLevel::Heading(level), markdown.max_level());
+        }
     }
 }

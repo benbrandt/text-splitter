@@ -100,8 +100,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<p>This is the second paragraph in the blockquote"
 - ".</p>"
 - "<h2>This is an H2 in a"
-- "blockquote</h2>\n    </blockquote>\n\n\n\n###"
-- "Phrase Emphasis ###"
+- "blockquote</h2>\n    </blockquote>"
+- "### Phrase Emphasis ###"
 - Markdown uses asterisks and underscores to indicate spans of
 - "emphasis.\n\nMarkdown:"
 - Some of these words *are emphasized*.
@@ -116,8 +116,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<p>Use two asterisks for <strong>"
 - strong emphasis</strong>.
 - "Or, if you prefer, <strong>use"
-- "two underscores instead</strong>.</p>\n\n\n\n## Lists"
-- "##"
+- two underscores instead</strong>.</p>
+- "## Lists ##"
 - Unordered (bulleted) lists use asterisks
 - ", pluses, and hyphens (`*"
 - "`,\n`+`, and `-`"
@@ -158,8 +158,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<li><p>A list item.</p>"
 - "<p>With multiple paragraphs.</p></li>"
 - "<li><p>Another item in the list.</"
-- "p></li>\n    </ul>\n\n\n\n### Links"
-- "###"
+- "p></li>\n    </ul>"
+- "### Links ###"
 - "Markdown supports two styles for creating links: *inline"
 - "* and\n*reference*"
 - "."
@@ -212,8 +212,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<p>I start my morning with a cup of coffee"
 - and
 - "<a href=\"http://www.nytimes.com/\">"
-- "The New York Times</a>.</p>\n\n\n###"
-- "Images ###"
+- The New York Times</a>.</p>
+- "### Images ###"
 - Image syntax is very much like link syntax.
 - "Inline (titles are optional):"
 - "!["
@@ -223,8 +223,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "[id]: /path/to/img.jpg \"Title\""
 - "Both of the above examples produce the same output:"
 - "<img src=\"/path/to/img.jpg\" alt=\""
-- "alt text\" title=\"Title\" />\n\n\n\n###"
-- "Code ###"
+- "alt text\" title=\"Title\" />"
+- "### Code ###"
 - "In a regular paragraph, you can create code span"
 - by wrapping text in
 - backtick quotes. Any ampersands (

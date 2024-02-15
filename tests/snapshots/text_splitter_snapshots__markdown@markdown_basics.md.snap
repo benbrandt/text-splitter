@@ -62,8 +62,7 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "Web Form\">"
 - Dingus</a>
 - "</li>\n"
-- "</ul>\n"
-- "\n\n"
+- "</ul>\n\n\n"
 - "Getting "
 - "the Gist "
 - "of "
@@ -178,7 +177,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - projects/
 - markdown/
 - basics.tex
-- "t\n\n\n## "
+- "t\n\n\n"
+- "## "
 - Paragraphs
 - ", Headers,"
 - " "
@@ -385,10 +385,10 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "</h2>\n    "
 - "</"
 - blockquote
-- ">\n\n\n\n### "
-- "Phrase "
-- "Emphasis #"
-- "##\n\n"
+- ">\n\n\n\n"
+- "### Phrase"
+- " Emphasis "
+- "###\n\n"
 - "Markdown "
 - "uses "
 - "asterisks "
@@ -457,8 +457,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - underscore
 - s instead<
 - /strong>.<
-- "/p>\n\n\n\n## "
-- "Lists ##\n\n"
+- "/p>\n\n\n\n"
+- "## Lists #"
+- "#\n\n"
 - "Unordered "
 - (bulleted)
 - " lists use"
@@ -589,9 +590,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - the list.<
 - "/p></li>\n"
 - "    </ul>\n"
-- "\n\n\n### "
-- Links
-- " ###\n\n"
+- "\n\n\n"
+- "### Links "
+- "###\n\n"
 - "Markdown "
 - "supports "
 - two styles
@@ -787,9 +788,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "The New "
 - York Times
 - "</a>.</p>\n"
-- "\n\n### "
-- "Images ###"
 - "\n\n"
+- "### Images"
+- " ###\n\n"
 - "Image "
 - "syntax is "
 - "very much "
@@ -828,8 +829,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "text\" "
 - "title=\""
 - "Title\" />\n"
-- "\n\n\n### "
-- "Code ###\n\n"
+- "\n\n\n"
+- "### Code #"
+- "##\n\n"
 - "In a "
 - "regular "
 - "paragraph,"
