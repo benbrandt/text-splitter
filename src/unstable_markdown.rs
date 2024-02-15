@@ -213,8 +213,8 @@ impl SemanticSplit for Markdown {
                     Tag::Emphasis
                     | Tag::Strong
                     | Tag::Strikethrough
-                    | Tag::Link(_, _, _)
-                    | Tag::Image(_, _, _)
+                    | Tag::Link { .. }
+                    | Tag::Image { .. }
                     | Tag::TableCell,
                 )
                 | Event::Code(_)
@@ -249,7 +249,9 @@ impl SemanticSplit for Markdown {
                 ) => Some((SemanticLevel::Block, range)),
                 Event::Rule => Some((SemanticLevel::Rule, range)),
                 // End events are identical to start, so no need to grab them.
-                Event::Start(Tag::Heading(_, _, _)) | Event::End(_) => None,
+                Event::Start(Tag::Heading { .. } | Tag::HtmlBlock | Tag::MetadataBlock(_))
+                | Event::InlineHtml(_)
+                | Event::End(_) => None,
             })
             .collect::<Vec<_>>();
 
