@@ -30,8 +30,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "title=\"Online Markdown Web Form\">"
 - Dingus</a></li
 - ">\n</ul>"
-- "Getting the Gist of Markdown'"
-- s Formatting Syntax
+- "Getting the Gist of Markdown's"
+- Formatting Syntax
 - "----------"
 - "----------"
 - "----------"
@@ -64,9 +64,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "[d]: /projects/markdown/"
 - "dingus  \"Markdown Dingus\""
 - "[src]: /projects/markdown"
-- "/basics.text\n\n\n##"
-- "Paragraphs, Headers, Blockquotes"
-- "##"
+- /basics.text
+- "## Paragraphs, Headers,"
+- "Blockquotes ##"
 - A paragraph is simply one or more consecutive lines of
 - "text, separated"
 - by one or more blank lines.
@@ -129,8 +129,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - blockquote.</p>
 - "<h2>This is an H2 in"
 - a blockquote</h2>
-- "</blockquote>\n\n\n\n###"
-- "Phrase Emphasis ###"
+- "</blockquote>"
+- "### Phrase Emphasis ##"
+- "#"
 - Markdown uses asterisks and
 - underscores to indicate spans of emphasis.
 - "Markdown:"
@@ -148,7 +149,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<strong>strong emphasis</strong>."
 - "Or, if you prefer, <strong>use"
 - two underscores instead</strong>.
-- "</p>\n\n\n\n## Lists ##"
+- "</p>"
+- "## Lists ##"
 - Unordered (bulleted) lists use
 - "asterisks, pluses, and"
 - "hyphens (`*`,"
@@ -195,8 +197,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - p></li>
 - "<li><p>Another item in"
 - the list.</p></
-- "li>\n    </ul>\n\n\n\n###"
-- "Links ###"
+- "li>\n    </ul>"
+- "### Links ###"
 - "Markdown supports two styles for creating links: *"
 - "inline* and\n*reference*"
 - "."
@@ -267,8 +269,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<a href=\"http:/"
 - "/www.nytimes.com/\""
 - ">The New York Times</a>."
-- "</p>\n\n\n### Images"
-- "###"
+- "</p>"
+- "### Images ###"
 - Image syntax is very much like link syntax.
 - "Inline (titles are optional):"
 - "!["
@@ -282,8 +284,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<img src=\"/path/"
 - "to/img.jpg\""
 - "alt=\"alt text\" title="
-- "\"Title\" />\n\n\n\n### Code"
-- "###"
+- "\"Title\" />"
+- "### Code ###"
 - "In a regular paragraph, you can create code span"
 - by wrapping text in
 - backtick quotes. Any ampersands (

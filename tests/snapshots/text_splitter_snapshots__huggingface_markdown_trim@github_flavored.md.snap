@@ -3,7 +3,17 @@ source: tests/text_splitter_snapshots.rs
 expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---
-- "# Headers"
+- "# Headers\n\n```"
+- "# h1 Heading 8-)"
+- "## h2 Heading"
+- "### h3 Heading"
+- "#### h4 Heading"
+- "##### h5 Heading"
+- "###### h6 Heading"
+- "Alternatively, for H1 and H2, an"
+- "underline-ish style:"
+- "Alt-H1\n======"
+- "Alt-H2\n------"
 - "```"
 - "# h1 Heading 8-)"
 - "## h2 Heading"
@@ -15,20 +25,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "underline-ish style:"
 - "Alt-H1\n======"
 - "Alt-H2\n------"
-- "```\n\n#"
-- "h1 Heading 8-)\n##"
-- "h2 Heading\n###"
-- "h3 Heading\n####"
-- "h4 Heading\n#####"
-- "h5 Heading\n######"
-- h6 Heading
-- "Alternatively, for H1 and H2, an"
-- "underline-ish style:"
-- "Alt-H1\n======"
-- "Alt-H2\n------"
 - "------"
-- "# Emphasis"
-- "```"
+- "# Emphasis\n\n```"
 - "Emphasis, aka italics, with *"
 - asterisks* or
 - _underscores_.
@@ -60,9 +58,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - _This is italic text_
 - ~~Strikethrough~~
 - "------"
-- "# Lists"
-- "```\n1. First ordered list item"
-- 2. Another item
+- "# Lists\n\n```\n1."
+- "First ordered list item\n2. Another item"
 - ⋅⋅* Unordered sub-list.
 - "1."
 - "Actual numbers don't matter, just that"
@@ -153,8 +150,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "- Nulla volutpat"
 - "aliquam velit\n+ Very easy!"
 - "------"
-- "# Task lists"
-- "```"
+- "# Task lists\n\n```"
 - "- [x] Finish my changes"
 - "- [ ] Push my commits to"
 - GitHub
@@ -193,8 +189,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "-project\\* to \\*our-old"
 - "-project\\*."
 - "------"
-- "# Links"
-- "```"
+- "# Links\n\n```"
 - "[I'm an inline-style link"
 - "](https://"
 - www.google.com)
@@ -264,8 +259,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[link text itself]: http://"
 - www.reddit.com
 - "------"
-- "# Images"
-- "```"
+- "# Images\n\n```"
 - "Here's our logo (hover to see"
 - "the title text):\n\nInline-style:"
 - "!["
@@ -336,8 +330,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - /images/dojocat.jpg
 - "\"The Dojocat\""
 - "------"
-- "#"
-- "[Footnotes](https://"
+- "# [Footnotes](https://"
 - github.com/markdown-it
 - /markdown-it-footnote)
 - "```"
@@ -457,8 +450,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - __halt_compiler () ; datahere
 - "datahere\ndatahere */\ndatahere"
 - "```\n\n------"
-- "# Tables"
-- "```"
+- "# Tables\n\n```"
 - Colons can be used to align columns.
 - "| Tables        | Are           | Cool  |"
 - "| ---------"
@@ -568,8 +560,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| Backtick | `         |"
 - "| Pipe     | \\|        |"
 - "------"
-- "# Blockquotes"
-- "```"
+- "# Blockquotes\n\n```"
 - "> Blockquotes are very handy in email"
 - to emulate reply text.
 - "> This line is part of the same quote."
@@ -605,8 +596,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "> >"
 - "> ...or with spaces between arrows."
 - "------"
-- "# Inline HTML"
-- "```\n<dl>"
+- "# Inline HTML\n\n```"
+- "<dl>"
 - "<dt>Definition list</"
 - dt>
 - "<dd>Is something people use sometimes."
@@ -631,16 +622,15 @@ input_file: tests/inputs/markdown/github_flavored.md
 - em>.</dd>
 - "</dl>"
 - "------"
-- "# Horizontal Rules"
-- "```\nThree or more..."
-- "---\n\nHyphens\n\n***"
+- "# Horizontal Rules\n\n```"
+- "Three or more...\n\n---"
+- "Hyphens\n\n***"
 - "Asterisks\n\n___\n\nUnderscores"
 - "```\n\nThree or more..."
 - "---\n\nHyphens\n\n***"
 - "Asterisks\n\n___\n\nUnderscores"
 - "------"
-- "# YouTube Videos"
-- "```"
+- "# YouTube Videos\n\n```"
 - "<a href=\"http:/"
 - /www.youtube.com/watch
 - "?"

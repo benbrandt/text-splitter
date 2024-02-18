@@ -30,16 +30,17 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "------\n```"
 - "# h1"
 - Heading 8-
-- ")\n##"
-- h2 Heading
-- "###"
-- h3 Heading
-- "####"
-- h4 Heading
-- "#####"
-- h5 Heading
-- "######"
-- h6 Heading
+- )
+- "## h2"
+- Heading
+- "### h3"
+- Heading
+- "#### h4"
+- Heading
+- "##### h5"
+- Heading
+- "###### h6"
+- Heading
 - Alternativ
 - "ely, for"
 - "H1 and H2,"
@@ -430,8 +431,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - + Very
 - easy!
 - "------"
-- "#"
-- Task lists
+- "# Task"
+- lists
 - "```"
 - "- [x]"
 - Finish my
@@ -504,8 +505,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - incomplete
 - item
 - "------"
-- "#"
-- Ignoring
+- "# Ignoring"
 - Markdown
 - formatting
 - You can
@@ -898,9 +898,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "g  \"The"
 - "Dojocat\""
 - "------"
-- "#"
-- "[Footnotes"
-- "](https://"
+- "# ["
+- "Footnotes]"
+- "(https://"
 - github.com
 - /markdown-
 - it/
@@ -965,8 +965,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - Footnote
 - text.
 - "------"
-- "#"
-- Code and
+- "# Code and"
 - Syntax
 - Highlighti
 - ng
@@ -1618,8 +1617,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - between
 - arrows.
 - "------"
-- "#"
-- Inline
+- "# Inline"
 - HTML
 - "```\n<dl>"
 - "<dt>"
@@ -1686,8 +1684,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - ___
 - Underscore
 - "s\n\n------"
-- "#"
-- YouTube
+- "# YouTube"
 - Videos
 - "```"
 - "<a href=\""

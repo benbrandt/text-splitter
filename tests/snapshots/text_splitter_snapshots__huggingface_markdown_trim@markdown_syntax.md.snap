@@ -403,9 +403,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - ".\n    >\n    > Back to the first level."
 - Blockquotes can contain other Markdown elements
 - ", including headers, lists,"
-- "and code blocks:"
-- "> ## This is a header.\n\t>"
-- ">"
+- "and code blocks:\n\n\t>"
+- "## This is a header.\n\t>\n\t>"
 - 1.   This is the first list item.
 - ">"
 - "2.   This is the second list item.\n\t>"

@@ -172,7 +172,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - projects/
 - markdown/
 - basics.tex
-- "t\n\n\n##"
+- t
+- "##"
 - Paragraphs
 - ", Headers,"
 - Blockquote
@@ -362,8 +363,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "</h2>"
 - "</"
 - blockquote
-- ">\n\n\n\n###"
-- Phrase
+- ">"
+- "### Phrase"
 - "Emphasis #"
 - "##"
 - Markdown
@@ -426,8 +427,9 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - underscore
 - s instead<
 - /strong>.<
-- "/p>\n\n\n\n##"
-- "Lists ##"
+- /p>
+- "## Lists #"
+- "#"
 - Unordered
 - (bulleted)
 - lists use
@@ -758,8 +760,8 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "text\""
 - "title=\""
 - "Title\" />"
-- "### Code"
-- "###"
+- "### Code #"
+- "##"
 - In a
 - regular
 - "paragraph,"

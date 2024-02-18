@@ -3,8 +3,8 @@ source: tests/text_splitter_snapshots.rs
 expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---
-- "# Headers"
-- "\n\n"
+- "# Headers\n"
+- "\n"
 - "```\n"
 - "# h1 "
 - Heading 8-
@@ -29,32 +29,34 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "======\n\n"
 - "Alt-H2\n"
 - "------\n"
-- "```\n\n# "
-- h1 Heading
-- " 8-)\n## "
-- h2 Heading
-- "\n### "
-- h3 Heading
-- "\n#### "
-- h4 Heading
-- "\n##### "
-- h5 Heading
-- "\n###### "
-- h6 Heading
-- "\n\n"
+- "```\n\n"
+- "# h1 "
+- Heading 8-
+- ")\n"
+- "## h2 "
+- "Heading\n"
+- "### h3 "
+- "Heading\n"
+- "#### h4 "
+- "Heading\n"
+- "##### h5 "
+- "Heading\n"
+- "###### h6 "
+- "Heading\n\n"
 - Alternativ
 - "ely, for "
 - "H1 and H2,"
 - " an "
 - underline-
 - "ish style:"
-- "\n\nAlt-H1"
-- "\n======\n\n"
+- "\n\n"
+- "Alt-H1\n"
+- "======\n\n"
 - Alt-H2
 - "\n------\n\n"
-- "------\n"
-- "\n# "
-- "Emphasis\n\n"
+- "------\n\n"
+- "# Emphasis"
+- "\n\n"
 - "```\n"
 - "Emphasis, "
 - "aka "
@@ -145,8 +147,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - ~~
 - Strikethro
 - "ugh~~\n\n"
-- "------\n"
-- "\n# Lists\n\n"
+- "------\n\n"
+- "# Lists\n\n"
 - "```\n1. "
 - "First "
 - "ordered "
@@ -460,10 +462,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "velit\n"
 - "+ Very "
 - "easy!\n\n"
-- "------\n"
-- "\n# "
-- Task lists
-- "\n\n"
+- "------\n\n"
+- "# Task "
+- "lists\n\n"
 - "```\n"
 - "- [x] "
 - "Finish my "
@@ -540,10 +541,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - " is an "
 - incomplete
 - " item\n\n"
-- "------\n"
-- "\n# "
-- "Ignoring "
-- "Markdown "
+- "------\n\n"
+- "# Ignoring"
+- " Markdown "
 - formatting
 - "\n\n"
 - "You can "
@@ -575,8 +575,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "to \\*our-"
 - old-
 - "project\\*."
-- "\n\n------\n"
-- "\n# Links\n\n"
+- "\n\n------\n\n"
+- "# Links\n\n"
 - "```\n"
 - "[I'm an "
 - inline-
@@ -778,9 +778,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "http://"
 - www.reddit
 - ".com\n\n"
-- "------\n"
-- "\n# Images"
-- "\n\n"
+- "------\n\n"
+- "# Images\n\n"
 - "```\n"
 - "Here's our"
 - " logo ("
@@ -950,10 +949,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - dojocat.jp
 - "g  \"The "
 - "Dojocat\"\n\n"
-- "------\n"
-- "\n# "
-- "[Footnotes"
-- "](https://"
+- "------\n\n"
+- "# ["
+- "Footnotes]"
+- "(https://"
 - github.com
 - /markdown-
 - it/
@@ -1021,10 +1020,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "[^second]:"
 - " Footnote "
 - "text.\n\n"
-- "------\n"
-- "\n# "
-- "Code and "
-- "Syntax "
+- "------\n\n"
+- "# Code and"
+- " Syntax "
 - Highlighti
 - "ng\n\n"
 - "```\n"
@@ -1299,9 +1297,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "/\n"
 - "datahere\n"
 - "```\n\n"
-- "------\n"
-- "\n# Tables"
-- "\n\n"
+- "------\n\n"
+- "# Tables\n\n"
 - "```\n"
 - Colons can
 - " be used "
@@ -1627,8 +1624,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| Pipe"
 - "     | \\|"
 - "        |\n"
-- "\n------\n"
-- "\n# "
+- "\n------\n\n"
+- "# "
 - Blockquote
 - "s\n\n"
 - "```\n"
@@ -1750,9 +1747,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "spaces "
 - "between "
 - "arrows.\n\n"
-- "------\n"
-- "\n# "
-- "Inline "
+- "------\n\n"
+- "# Inline "
 - "HTML\n\n"
 - "```\n<dl>\n"
 - "  <dt>"
@@ -1777,7 +1773,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - em>tags</
 - "em>.</dd>\n"
 - "</dl>\n```\n"
-- "\n<dl>\n"
+- "\n"
+- "<dl>\n"
 - "  <dt>"
 - Definition
 - " list</dt>"
@@ -1800,8 +1797,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - em>tags</
 - "em>.</dd>\n"
 - "</dl>\n\n"
-- "------\n"
-- "\n# "
+- "------\n\n"
+- "# "
 - Horizontal
 - " Rules\n\n"
 - "```\n"
@@ -1825,8 +1822,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\n"
 - Underscore
 - "s\n\n------\n"
-- "\n# "
-- "YouTube "
+- "\n"
+- "# YouTube "
 - "Videos\n\n"
 - "```\n"
 - "<a href=\""
