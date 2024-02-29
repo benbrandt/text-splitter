@@ -193,6 +193,8 @@ enum SemanticLevel {
     Rule,
     /// Heading levels in markdown
     Heading(HeadingLevel),
+    /// Metadata for the entire document
+    Metadata,
 }
 
 impl Level for SemanticLevel {
@@ -206,7 +208,8 @@ impl Level for SemanticLevel {
             | SemanticLevel::Text
             | SemanticLevel::Paragraph
             | SemanticLevel::Block
-            | SemanticLevel::Rule => SemanticSplitPosition::Own,
+            | SemanticLevel::Rule
+            | SemanticLevel::Metadata => SemanticSplitPosition::Own,
             SemanticLevel::InlineElement(p) | SemanticLevel::Item(p) => *p,
             // Attach it to the next text
             SemanticLevel::Heading(_) => SemanticSplitPosition::Next,
@@ -282,8 +285,9 @@ impl SemanticSplit for Markdown {
                 Event::Start(Tag::Heading { level, .. }) => {
                     Some((SemanticLevel::Heading(level.into()), range))
                 }
+                Event::Start(Tag::MetadataBlock(_)) => Some((SemanticLevel::Metadata, range)),
                 // End events are identical to start, so no need to grab them.
-                Event::Start(Tag::MetadataBlock(_)) | Event::End(_) => None,
+                Event::End(_) => None,
             })
             .collect::<Vec<_>>();
 
@@ -336,7 +340,8 @@ impl SemanticSplit for Markdown {
             | SemanticLevel::Paragraph
             | SemanticLevel::Block
             | SemanticLevel::Heading(_)
-            | SemanticLevel::Rule => split_str_by_separator(
+            | SemanticLevel::Rule
+            | SemanticLevel::Metadata => split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
                     .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),
