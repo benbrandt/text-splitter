@@ -9,7 +9,7 @@ use text_splitter::unstable_markdown::MarkdownSplitter;
 #[cfg(feature = "markdown")]
 #[test]
 fn random_chunk_size() {
-    let text = fs::read_to_string("tests/inputs/markdown/markdown_basics.md").unwrap();
+    let text = fs::read_to_string("tests/inputs/markdown/github_flavored.md").unwrap();
 
     for _ in 0..10 {
         let max_characters = Faker.fake();
@@ -26,7 +26,7 @@ fn random_chunk_size() {
 #[cfg(feature = "markdown")]
 #[test]
 fn random_chunk_indices_increase() {
-    let text = fs::read_to_string("tests/inputs/markdown/markdown_basics.md").unwrap();
+    let text = fs::read_to_string("tests/inputs/markdown/github_flavored.md").unwrap();
 
     for _ in 0..10 {
         let max_characters = Faker.fake::<usize>();
