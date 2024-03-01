@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, ops::RangeInclusive};
 
 use fake::{Fake, Faker};
 use itertools::Itertools;
@@ -69,12 +69,15 @@ fn random_chunk_range() {
     }
 }
 
+const CHUNK_SIZES: [usize; 4] = [16, 256, 4096, 65536];
+const RANGE_CHUNK_SIZES: [RangeInclusive<usize>; 2] = [64..=512, 512..=4096];
+
 #[test]
 fn characters_default() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::default();
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -92,7 +95,7 @@ fn characters_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::default().with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -109,7 +112,7 @@ fn characters_range() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for range in [500..=2000, 200..=1000] {
+        for range in RANGE_CHUNK_SIZES {
             let splitter = TextSplitter::default();
             let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
@@ -127,7 +130,7 @@ fn characters_range_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for range in [500..=2000, 200..=1000] {
+        for range in RANGE_CHUNK_SIZES {
             let splitter = TextSplitter::default().with_trim_chunks(true);
             let chunks = splitter.chunks(&text, range.clone()).collect::<Vec<_>>();
 
@@ -149,7 +152,7 @@ fn huggingface_default() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::new(&*HUGGINGFACE_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -171,7 +174,7 @@ fn huggingface_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::new(&*HUGGINGFACE_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -195,7 +198,7 @@ fn tiktoken_default() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::new(&*TIKTOKEN_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -217,7 +220,7 @@ fn tiktoken_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = TextSplitter::new(&*TIKTOKEN_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -251,7 +254,7 @@ fn markdown() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::default();
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -270,7 +273,7 @@ fn markdown_trim() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::default().with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -288,7 +291,7 @@ fn huggingface_markdown() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::new(&*HUGGINGFACE_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -310,7 +313,7 @@ fn huggingface_markdown_trim() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::new(&*HUGGINGFACE_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -331,7 +334,7 @@ fn tiktoken_markdown() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::new(&*TIKTOKEN_TOKENIZER);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
@@ -353,7 +356,7 @@ fn tiktoken_markdown_trim() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in [10, 100, 1000] {
+        for chunk_size in CHUNK_SIZES {
             let splitter = MarkdownSplitter::new(&*TIKTOKEN_TOKENIZER).with_trim_chunks(true);
             let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
 
