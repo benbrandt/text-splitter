@@ -104,8 +104,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "    - Nulla volutpat "
 - "aliquam velit\n+ Very easy!\n"
 - "```\n\n"
-- "1. First ordered list item\n2. Another item\n"
-- "⋅⋅* Unordered sub-list.\n"
+- "1. First ordered list item\n"
+- "2. Another item\n⋅⋅*"
+- " Unordered sub-list.\n"
 - "1. "
 - "Actual numbers don't matter, just that "
 - "it's a number\n"
@@ -689,4 +690,3 @@ input_file: tests/inputs/markdown/github_flavored.md
 - /watch?
 - v=
 - "ciawICBvQoE)\n"
-

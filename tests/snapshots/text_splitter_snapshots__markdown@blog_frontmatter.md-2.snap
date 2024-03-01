@@ -5,8 +5,8 @@ input_file: tests/inputs/markdown/blog_frontmatter.md
 ---
 - "---\nlayout: page\ntitle: Philosophy\npermalink: /philosophy/\n---"
 - "\n\n"
-- "Jekyll offers a unique philosophy when approaching the problem of static\nsite generation. "
-- "This core philosophy drives development and product\n"
+- "Jekyll offers a unique philosophy when approaching the problem of static\n"
+- "site generation. This core philosophy drives development and product\n"
 - "decisions. When a contributor, maintainer, or user asks herself what Jekyll\n"
 - "is about, the following principles should come to mind:\n\n"
 - "### 1. No Magic\n\n"

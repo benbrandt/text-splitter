@@ -17,8 +17,8 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "*   [Span Elements](#span)\n    *   [Links](#link)\n    *   [Emphasis](#em)\n    *   [Code](#code)\n"
 - "    *   [Images](#img)\n*   [Miscellaneous](#misc)\n    "
 - "*   [Backslash Escapes](#backslash)\n    *   [Automatic Links](#autolink)\n\n\n"
-- "**Note:** This document is itself written using Markdown; you\n"
-- "can [see the source for it by adding '.text' to the URL][src]"
+- "**Note:** This document is itself written using Markdown; you\ncan "
+- "[see the source for it by adding '.text' to the URL][src]"
 - ".\n\n  [src]: /projects/markdown/syntax.text\n\n* * *\n"
 - "\n<h2 id=\"overview\">Overview</h2>\n\n<h3 id=\"philosophy\">Philosophy</h3>\n"
 - "\nMarkdown is intended to be as easy-to-read and easy-to-write as is feasible.\n\n"
@@ -440,4 +440,3 @@ input_file: tests/inputs/markdown/markdown_syntax.md
 - "\\   backslash\n    `   backtick\n    *   asterisk\n    _   underscore\n    {}  curly braces\n"
 - "    []  square brackets\n    ()  parentheses\n    #   hash mark\n\t+\tplus sign\n\t-\tminus sign (hyphen)\n"
 - "    .   dot\n    !   exclamation mark\n"
-

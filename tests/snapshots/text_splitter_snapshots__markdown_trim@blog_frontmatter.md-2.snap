@@ -4,8 +4,8 @@ expression: chunks
 input_file: tests/inputs/markdown/blog_frontmatter.md
 ---
 - "---\nlayout: page\ntitle: Philosophy\npermalink: /philosophy/\n---"
-- "Jekyll offers a unique philosophy when approaching the problem of static\nsite generation."
-- This core philosophy drives development and product
+- Jekyll offers a unique philosophy when approaching the problem of static
+- site generation. This core philosophy drives development and product
 - "decisions. When a contributor, maintainer, or user asks herself what Jekyll"
 - "is about, the following principles should come to mind:"
 - "### 1. No Magic"

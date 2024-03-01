@@ -11,8 +11,7 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - ">\n    <li><a href=\"/projects/markdown/dingus\" title=\"Online Markdown Web Form\">Dingus</a></li>\n"
 - "</ul>\n\n\n"
 - "Getting the Gist of Markdown's Formatting Syntax\n------------------------------------------------\n\n"
-- "This page offers a brief overview of what it's like to use Markdown.\n"
-- "The [syntax page] [s]"
+- "This page offers a brief overview of what it's like to use Markdown.\nThe [syntax page] [s]"
 - " provides complete, detailed documentation for\n"
 - "every feature, but Markdown should be very easy to pick up simply by\n"
 - "looking at a few examples of it in action. The examples on this page\n"
@@ -122,4 +121,3 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<p>If you want your page to validate under XHTML 1.0 Strict,\n"
 - "    you've got to put paragraph tags in your blockquotes:</p>\n\n    <pre><code>&lt;blockquote&gt;\n"
 - "        &lt;p&gt;For example.&lt;/p&gt;\n    &lt;/blockquote&gt;\n    </code></pre>\n"
-

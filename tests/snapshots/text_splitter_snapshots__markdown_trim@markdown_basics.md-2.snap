@@ -10,8 +10,7 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<li><a href=\"/projects/markdown/license\" title=\"Pricing and License Information\">License</a></li>"
 - "<li><a href=\"/projects/markdown/dingus\" title=\"Online Markdown Web Form\">Dingus</a></li>\n</ul>"
 - "Getting the Gist of Markdown's Formatting Syntax\n------------------------------------------------"
-- "This page offers a brief overview of what it's like to use Markdown."
-- "The [syntax page] [s]"
+- "This page offers a brief overview of what it's like to use Markdown.\nThe [syntax page] [s]"
 - "provides complete, detailed documentation for"
 - "every feature, but Markdown should be very easy to pick up simply by"
 - looking at a few examples of it in action. The examples on this page
@@ -117,4 +116,3 @@ input_file: tests/inputs/markdown/markdown_basics.md
 - "<p>If you want your page to validate under XHTML 1.0 Strict,"
 - "you've got to put paragraph tags in your blockquotes:</p>\n\n    <pre><code>&lt;blockquote&gt;"
 - "&lt;p&gt;For example.&lt;/p&gt;\n    &lt;/blockquote&gt;\n    </code></pre>"
-
