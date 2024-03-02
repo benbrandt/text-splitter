@@ -880,4 +880,33 @@ mod tests {
             assert_eq!(SemanticLevel::Heading(level), markdown.max_level());
         }
     }
+
+    #[test]
+    fn test_ranges_after_offset_block() {
+        let markdown = Markdown::new("- [ ] incomplete task\n- [x] completed task");
+
+        assert_eq!(
+            vec![&(SemanticLevel::Block, 0..42),],
+            markdown
+                .ranges_after_offset(0, SemanticLevel::Block)
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
+    }
+
+    #[test]
+    fn test_ranges_after_offset_item() {
+        let markdown = Markdown::new("- [ ] incomplete task\n- [x] completed task");
+
+        assert_eq!(
+            vec![
+                &(SemanticLevel::Item(SemanticSplitPosition::Own), 0..22),
+                &(SemanticLevel::Item(SemanticSplitPosition::Own), 22..42),
+            ],
+            markdown
+                .ranges_after_offset(0, SemanticLevel::Item(SemanticSplitPosition::Own))
+                .collect::<Vec<_>>()
+        );
+        assert_eq!(SemanticLevel::Block, markdown.max_level());
+    }
 }

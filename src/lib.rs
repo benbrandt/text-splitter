@@ -239,26 +239,30 @@ trait SemanticSplit {
         offset: usize,
         level: Self::Level,
     ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
+        let first_item = self.ranges().find(|(l, _)| l == &level);
         self.ranges()
             .filter(move |(l, sep)| l >= &level && sep.start >= offset)
+            .skip_while(move |(l, r)| {
+                first_item.is_some_and(|(_, fir)| l > &level && r.contains(&fir.start))
+            })
     }
 
     /// Return a unique, sorted list of all line break levels present before the next max level, added
     /// to all of the base semantic levels, in order from smallest to largest
     fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_ {
+        let max_level = self.max_level();
         let existing_levels = self
             .ranges()
             // Only start taking them from the offset
             .filter(|(_, sep)| sep.start >= offset)
             // Stop once we hit the first of the max level
-            .take_while(|(l, _)| l < &self.max_level())
+            .take_while_inclusive(|(l, _)| l < &max_level)
             .map(|(l, _)| l)
             .copied();
 
         Self::PERSISTENT_LEVELS
             .iter()
             .copied()
-            .chain(once(self.max_level()))
             .chain(existing_levels)
             .sorted()
             .dedup()
