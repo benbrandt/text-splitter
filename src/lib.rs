@@ -230,9 +230,6 @@ trait SemanticSplit {
     /// Retrieve ranges for each semantic level in the entire text
     fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_;
 
-    /// Maximum level of semantic splitting in the text
-    fn max_level(&self) -> Self::Level;
-
     /// Retrieve ranges for all sections of a given level after an offset
     fn ranges_after_offset(
         &self,
@@ -249,23 +246,19 @@ trait SemanticSplit {
 
     /// Return a unique, sorted list of all line break levels present before the next max level, added
     /// to all of the base semantic levels, in order from smallest to largest
-    fn levels_in_next_max_chunk(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_ {
-        let max_level = self.max_level();
+    fn levels_in_remaining_text(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_ {
         let existing_levels = self
             .ranges()
             // Only start taking them from the offset
             .filter(|(_, sep)| sep.start >= offset)
-            // Stop once we hit the first of the max level
-            .take_while_inclusive(|(l, _)| l < &max_level)
-            .map(|(l, _)| l)
-            .copied();
+            .map(|(l, _)| l);
 
         Self::PERSISTENT_LEVELS
             .iter()
-            .copied()
             .chain(existing_levels)
             .sorted()
             .dedup()
+            .copied()
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -451,7 +444,7 @@ where
     fn next_sections(&'sizer self) -> Option<impl Iterator<Item = (usize, &'text str)> + 'sizer> {
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
-        let mut levels = self.semantic_split.levels_in_next_max_chunk(self.cursor);
+        let mut levels = self.semantic_split.levels_in_remaining_text(self.cursor);
         // Get starting level
         let mut semantic_level = levels.next()?;
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.

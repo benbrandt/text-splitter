@@ -3,7 +3,8 @@ source: tests/text_splitter_snapshots.rs
 expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---
-- "# Headers\n\n```"
+- "# Headers"
+- "```"
 - "# h1 Heading 8-)"
 - "## h2 Heading"
 - "### h3 Heading"
@@ -31,7 +32,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Alt-H1\n======"
 - "Alt-H2\n------"
 - "------"
-- "# Emphasis\n\n```"
+- "# Emphasis"
+- "```"
 - "Emphasis, aka"
 - "italics, with *"
 - asterisks* or
@@ -84,7 +86,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - text_
 - ~~Strikethrough~
 - "~\n\n------"
-- "# Lists\n\n```\n1."
+- "# Lists"
+- "```\n1."
 - First ordered
 - "list item\n2."
 - Another item
@@ -342,7 +345,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "* to \\*our-old-"
 - "project\\*."
 - "------"
-- "# Links\n\n```"
+- "# Links"
+- "```"
 - "[I'm an inline-"
 - "style link]("
 - "https://"
@@ -461,7 +465,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "itself]: http://"
 - www.reddit.com
 - "------"
-- "# Images\n\n```"
+- "# Images"
+- "```"
 - "Here's our logo"
 - (hover to see
 - "the title text):"
@@ -768,7 +773,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - datahere */
 - "datahere\n```"
 - "------"
-- "# Tables\n\n```"
+- "# Tables"
+- "```"
 - Colons can be
 - used to align
 - columns.

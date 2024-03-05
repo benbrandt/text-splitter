@@ -223,8 +223,6 @@ impl Level for SemanticLevel {
 struct Markdown {
     /// Range of each semantic markdown item and its precalculated semantic level
     ranges: Vec<(SemanticLevel, Range<usize>)>,
-    /// Maximum element level in a given text
-    max_level: SemanticLevel,
 }
 
 impl SemanticSplit for Markdown {
@@ -291,22 +289,11 @@ impl SemanticSplit for Markdown {
             })
             .collect::<Vec<_>>();
 
-        let max_level = ranges
-            .iter()
-            .map(|(level, _)| level)
-            .max()
-            .copied()
-            .unwrap_or(SemanticLevel::Sentence);
-
-        Self { ranges, max_level }
+        Self { ranges }
     }
 
     fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
         self.ranges.iter()
-    }
-
-    fn max_level(&self) -> Self::Level {
-        self.max_level
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -539,7 +526,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -564,7 +550,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -582,7 +567,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -599,7 +583,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -617,7 +600,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -635,7 +617,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -653,7 +634,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -671,7 +651,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -689,7 +668,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -711,7 +689,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -725,7 +702,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -759,7 +735,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -775,7 +750,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -794,7 +768,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Paragraph, markdown.max_level());
     }
 
     #[test]
@@ -809,7 +782,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -820,7 +792,6 @@ mod tests {
             vec![&(SemanticLevel::Block, 0..12), &(SemanticLevel::Text, 4..9)],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -835,7 +806,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -852,7 +822,6 @@ mod tests {
             ],
             markdown.ranges().collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Rule, markdown.max_level());
     }
 
     #[test]
@@ -877,7 +846,6 @@ mod tests {
                 ],
                 markdown.ranges().collect::<Vec<_>>()
             );
-            assert_eq!(SemanticLevel::Heading(level), markdown.max_level());
         }
     }
 
@@ -891,7 +859,6 @@ mod tests {
                 .ranges_after_offset(0, SemanticLevel::Block)
                 .collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 
     #[test]
@@ -907,6 +874,5 @@ mod tests {
                 .ranges_after_offset(0, SemanticLevel::Item(SemanticSplitPosition::Own))
                 .collect::<Vec<_>>()
         );
-        assert_eq!(SemanticLevel::Block, markdown.max_level());
     }
 }
