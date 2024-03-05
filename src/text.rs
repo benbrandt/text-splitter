@@ -180,8 +180,6 @@ static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unw
 struct LineBreaks {
     /// Range of each line break and its precalculated semantic level
     line_breaks: Vec<(SemanticLevel, Range<usize>)>,
-    /// Maximum number of linebreaks in a given text
-    max_level: SemanticLevel,
 }
 
 impl SemanticSplit for LineBreaks {
@@ -215,29 +213,12 @@ impl SemanticSplit for LineBreaks {
             })
             .collect::<Vec<_>>();
 
-        let max_level = *line_breaks
-            .iter()
-            .map(|(l, _)| l)
-            .max_by_key(|level| match level {
-                SemanticLevel::LineBreak(n) => n,
-                _ => &0,
-            })
-            .unwrap_or(&SemanticLevel::Sentence);
-
-        Self {
-            line_breaks,
-            max_level,
-        }
+        Self { line_breaks }
     }
 
     /// Retrieve ranges for all sections of a given level after an offset
     fn ranges(&self) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
         self.line_breaks.iter()
-    }
-
-    /// Maximum level of semantic splitting in the text
-    fn max_level(&self) -> SemanticLevel {
-        self.max_level
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -509,6 +490,5 @@ mod tests {
             ],
             linebreaks.line_breaks
         );
-        assert_eq!(SemanticLevel::LineBreak(3), linebreaks.max_level);
     }
 }

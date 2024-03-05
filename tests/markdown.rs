@@ -74,3 +74,39 @@ fn split_by_rule_trim() {
 
     assert_eq!(["Some text", "---", "with a rule"].to_vec(), chunks);
 }
+
+#[cfg(feature = "markdown")]
+#[test]
+fn split_by_headers() {
+    let splitter = MarkdownSplitter::default();
+    let text = "# Header 1\n\nSome text\n\n## Header 2\n\nwith headings\n";
+    let chunk_size = 30;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(
+        [
+            "# Header 1\n\nSome text\n\n",
+            "## Header 2\n\nwith headings\n"
+        ]
+        .to_vec(),
+        chunks
+    );
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn subheadings_grouped_with_top_header() {
+    let splitter = MarkdownSplitter::default();
+    let text = "# Header 1\n\nSome text\n\n## Header 2\n\nwith headings\n\n### Subheading\n\nand more text\n";
+    let chunk_size = 60;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(
+        [
+            "# Header 1\n\nSome text\n\n",
+            "## Header 2\n\nwith headings\n\n### Subheading\n\nand more text\n"
+        ]
+        .to_vec(),
+        chunks
+    );
+}

@@ -153,8 +153,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - does not
 - "allow this, but does allow blockquotes to include headings.)"
 - "``` markdown\n    - # Heading\n    ```"
-- 12. Can list items be empty?
-- "``` markdown\n    * a\n    *\n    * b\n    ```"
+- "12. Can list items be empty?\n\n    ``` markdown\n    * a\n    *"
+- "* b\n    ```"
 - 13. Can link references be defined inside block quotes or list items?
 - "``` markdown\n    > Blockquote [foo].\n    >"
 - "> [foo]: /url\n    ```"
@@ -4501,8 +4501,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "\"abc\"**\n    \"abc\"_\n    ```"
 - "- Both left and right-flanking:\n\n    ```"
 - "abc***def\n    \"abc\"_\"def\""
-- "```\n\n  - Neither left nor right-flanking:"
-- "```\n    abc *** def\n    a _ b\n    ```"
+- "```"
+- "- Neither left nor right-flanking:\n\n    ```"
+- "abc *** def\n    a _ b\n    ```"
 - (The idea of distinguishing left-flanking and right-flanking
 - delimiter runs based on the character before and the character
 - "after comes from Roopesh Chander's"
