@@ -139,8 +139,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "11. Can list items include section headings?  (`Markdown.pl` does not"
 - "allow this, but does allow blockquotes to include headings.)"
 - "``` markdown\n    - # Heading\n    ```"
-- 12. Can list items be empty?
-- "``` markdown\n    * a\n    *\n    * b\n    ```"
+- "12. Can list items be empty?\n\n    ``` markdown\n    * a"
+- "*\n    * b\n    ```"
 - 13. Can link references be defined inside block quotes or list items?
 - "``` markdown\n    > Blockquote [foo].\n    >"
 - "> [foo]: /url\n    ```"
