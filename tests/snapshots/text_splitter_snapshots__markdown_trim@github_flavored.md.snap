@@ -648,7 +648,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - return new List<
 - "int>(new int[] {"
 - "1, 2, 3 })"
-- "}\n    }\n}\n```"
+- "        }\n    }"
+- "}\n```"
 - "```css"
 - "@font-face {"
 - "font-family:"
@@ -764,7 +765,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "return ["
 - "'uri'   => $uri,"
 - "'value' => null,"
-- "];\n    }\n}"
+- "        ];\n    }"
+- "}"
 - "echo URI::ME ."
 - "URI::$st1;"
 - __halt_compiler
@@ -921,7 +923,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "|"
 - "| Command |"
 - Description
-- "|\n| --- | --- |"
+- " |\n| --- | --- |"
 - "| git status |"
 - List all new or
 - modified files |
@@ -932,7 +934,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - staged |
 - "| Command |"
 - Description
-- "|\n| --- | --- |"
+- " |\n| --- | --- |"
 - "| `git status` |"
 - List all *new or
 - modified* files

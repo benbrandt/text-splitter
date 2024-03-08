@@ -356,7 +356,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - it.)
 - "``` markdown"
 - paragraph
-- "code?\n    ```"
+- code?
+- "```"
 - "4."
 - What is the
 - exact rule for
@@ -379,7 +380,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Or this?
 - "``` markdown"
 - 1.  one
-- "- a\n\n        - b"
+- "- a"
+- "- b"
 - "2.  two\n    ```"
 - (There are some
 - relevant
@@ -510,7 +512,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Can list items
 - be empty?
 - "``` markdown"
-- "* a\n    *"
+- "    * a\n    *"
 - "* b\n    ```"
 - "13."
 - Can link
@@ -886,7 +888,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "→foo→baz→→bim\n."
+- →foo→baz→→bim
+- "."
 - "<pre><code>foo→"
 - baz→→bim
 - "</code></pre>"
@@ -895,8 +898,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "a→a\n    ὐ→a\n."
-- "<pre><code>a→a"
+- "    a→a\n    ὐ→a"
+- ".\n<pre><code>a→a"
 - ὐ→a
 - "</code></pre>"
 - "````````````````"
@@ -916,7 +919,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "- foo\n\n→bar\n."
+- "  - foo\n\n→bar\n."
 - "<ul>\n<li>"
 - "<p>foo</p>"
 - "<p>bar</p>\n</li>"
@@ -989,7 +992,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\n→bar\n."
+- "    foo\n→bar\n."
 - "<pre><code>foo"
 - bar
 - "</code></pre>"
@@ -998,7 +1001,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "- foo\n   - bar"
+- " - foo\n   - bar"
 - "→ - baz\n.\n<ul>"
 - "<li>foo\n<ul>"
 - "<li>bar\n<ul>"
@@ -1154,7 +1157,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "\\[\\]\n."
+- "    \\[\\]\n."
 - "<pre><code>\\[\\]"
 - "</code></pre>"
 - "````````````````"
@@ -1538,7 +1541,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "f&ouml;f&ouml;\n."
+- f&ouml;f&ouml;
+- "."
 - "<pre><code>f&amp"
 - ;ouml;f&amp;ouml
 - ";\n</code></pre>"
@@ -1778,9 +1782,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "***\n  ***\n   ***"
-- ".\n<hr />\n<hr />"
-- "<hr />"
+- " ***\n  ***"
+- "   ***\n.\n<hr />"
+- "<hr />\n<hr />"
 - "````````````````"
 - "````````````````"
 - Four spaces of
@@ -1789,7 +1793,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "***\n."
+- "    ***\n."
 - "<pre><code>***"
 - "</code></pre>"
 - "````````````````"
@@ -1819,7 +1823,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "- - -\n.\n<hr />"
+- " - - -\n.\n<hr />"
 - "````````````````"
 - "````````````````"
 - "````````````````"
@@ -1873,7 +1877,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "*-*\n."
+- " *-*\n."
 - "<p><em>-</em></p"
 - ">"
 - "````````````````"
@@ -2139,8 +2143,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "### foo\n  ## foo"
-- "# foo\n."
+- "### foo"
+- "## foo"
+- "   # foo\n."
 - "<h3>foo</h3>"
 - "<h2>foo</h2>"
 - "<h1>foo</h1>"
@@ -2152,7 +2157,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "# foo\n."
+- "    # foo\n."
 - "<pre><code># foo"
 - "</code></pre>"
 - "````````````````"
@@ -2426,7 +2431,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "Foo *bar\nbaz*→"
+- "  Foo *bar\nbaz*→"
 - "====\n."
 - "<h1>Foo <em>bar"
 - baz</em></h1>
@@ -2457,9 +2462,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "Foo\n---\n\n  Foo"
-- "-----\n\n  Foo"
-- "===\n."
+- "   Foo\n---"
+- "  Foo\n-----"
+- "  Foo\n  ===\n."
 - "<h2>Foo</h2>"
 - "<h2>Foo</h2>"
 - "<h1>Foo</h1>"
@@ -2471,8 +2476,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "Foo\n    ---"
-- "Foo\n---\n."
+- "    Foo\n    ---"
+- "    Foo\n---\n."
 - "<pre><code>Foo"
 - "---\n\nFoo"
 - "</code></pre>"
@@ -2675,7 +2680,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\n---\n."
+- "    foo\n---\n."
 - "<pre><code>foo"
 - "</code></pre>"
 - "<hr />"
@@ -2885,8 +2890,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "- foo\n\n    bar\n."
-- "<ul>\n<li>"
+- "  - foo\n\n    bar"
+- ".\n<ul>\n<li>"
 - "<p>foo</p>"
 - "<p>bar</p>\n</li>"
 - "</ul>"
@@ -2896,7 +2901,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - 1.  foo
-- "- bar\n.\n<ol>"
+- "    - bar\n.\n<ol>"
 - "<li>\n<p>foo</p>"
 - "<ul>"
 - "<li>bar</li>"
@@ -2913,8 +2918,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "<a/>\n    *hi*"
-- "- one\n."
+- "<a/>"
+- "*hi*"
+- "    - one\n."
 - "<pre><code>&lt;a"
 - "/&gt;\n*hi*"
 - "- one"
@@ -2930,7 +2936,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - chunk1
 - chunk2
-- "chunk3\n."
+- "    chunk3\n."
 - "<pre><code>"
 - "chunk1\n\nchunk2"
 - chunk3
@@ -2950,7 +2956,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - chunk1
-- "chunk2\n."
+- "      chunk2\n."
 - "<pre><code>"
 - chunk1
 - chunk2
@@ -2987,7 +2993,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\nbar\n."
+- "    foo\nbar\n."
 - "<pre><code>foo"
 - "</code></pre>"
 - "<p>bar</p>"
@@ -3003,7 +3009,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "# Heading"
-- "foo\nHeading"
+- "    foo\nHeading"
 - "------\n    foo"
 - "----\n."
 - "<h1>Heading</h1>"
@@ -3023,7 +3029,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\n    bar\n."
+- foo
+- "    bar\n."
 - "<pre><code>"
 - "foo\nbar"
 - "</code></pre>"
@@ -3039,8 +3046,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\n    \n\n."
-- "<pre><code>foo"
+- foo
+- ".\n<pre><code>foo"
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
@@ -3052,7 +3059,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo  \n."
+- "    foo  \n."
 - "<pre><code>foo"
 - "</code></pre>"
 - "````````````````"
@@ -3390,8 +3397,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "```\n aaa\naaa\n```"
-- ".\n<pre><code>aaa"
+- " ```\n aaa\naaa"
+- "```\n."
+- "<pre><code>aaa"
 - aaa
 - "</code></pre>"
 - "````````````````"
@@ -3399,7 +3407,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "```\naaa\n  aaa"
+- "  ```\naaa\n  aaa"
 - "aaa\n  ```\n."
 - "<pre><code>aaa"
 - "aaa\naaa"
@@ -3409,10 +3417,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "```\n   aaa"
-- "aaa\n  aaa\n   ```"
-- ".\n<pre><code>aaa"
-- "aaa\naaa"
+- "   ```\n   aaa"
+- "    aaa\n  aaa"
+- "   ```\n."
+- "<pre><code>aaa"
+- " aaa\naaa"
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
@@ -3422,8 +3431,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "```\n    aaa"
-- "```\n."
+- "    ```\n    aaa"
+- "    ```\n."
 - "<pre><code>```"
 - "aaa\n```"
 - "</code></pre>"
@@ -3450,8 +3459,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "```\naaa\n  ```\n."
-- "<pre><code>aaa"
+- "   ```\naaa\n  ```"
+- ".\n<pre><code>aaa"
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
@@ -3562,12 +3571,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "```ruby"
 - def foo(x)
-- "return 3\nend\n```"
-- "."
+- "  return 3\nend"
+- "```\n."
 - "<pre><code class"
 - "=\"language-ruby\""
 - ">def foo(x)"
-- "return 3\nend"
+- "  return 3\nend"
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
@@ -3577,12 +3586,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - ~~~~    ruby
 - "startline=3 $%@#"
 - "$\ndef foo(x)"
-- "return 3\nend"
+- "  return 3\nend"
 - "~~~~~~~\n."
 - "<pre><code class"
 - "=\"language-ruby\""
 - ">def foo(x)"
-- "return 3\nend"
+- "  return 3\nend"
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
@@ -3938,21 +3947,24 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "<table>\n  <tr>"
 - "<td>"
-- "hi\n    </td>"
-- "</tr>\n</table>"
+- hi
+- "</td>"
+- "  </tr>\n</table>"
 - "okay.\n.\n<table>"
-- "<tr>\n    <td>"
-- "hi\n    </td>"
-- "</tr>\n</table>"
+- "  <tr>\n    <td>"
+- hi
+- "</td>"
+- "  </tr>\n</table>"
 - "<p>okay.</p>"
 - "````````````````"
 - "````````````````"
 - "````````````````"
 - "````````````````"
 - example
-- "<div>\n  *hello*"
-- "<foo><a>\n."
-- "<div>\n  *hello*"
+- " <div>\n  *hello*"
+- "<foo><a>"
+- ".\n <div>"
+- "*hello*"
 - "<foo><a>"
 - "````````````````"
 - "````````````````"
@@ -4007,10 +4019,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "<div id=\"foo\""
 - "class=\"bar"
-- "baz\">\n</div>\n."
+- "  baz\">\n</div>\n."
 - "<div id=\"foo\""
 - "class=\"bar"
-- "baz\">\n</div>"
+- "  baz\">\n</div>"
 - "````````````````"
 - "````````````````"
 - An open tag need
@@ -4450,8 +4462,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "<!-- Foo\n\nbar"
-- "baz -->\nokay\n."
-- "<!-- Foo\n\nbar"
+- "   baz -->\nokay"
+- ".\n<!-- Foo\n\nbar"
 - baz -->
 - "<p>okay</p>"
 - "````````````````"
@@ -4463,9 +4475,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "<?php"
-- "echo '>';\n\n?>"
+- "  echo '>';\n\n?>"
 - "okay\n.\n<?php"
-- "echo '>';\n\n?>"
+- "  echo '>';\n\n?>"
 - "<p>okay</p>"
 - "````````````````"
 - "````````````````"
@@ -4490,17 +4502,18 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "0) then {"
 - return 1;
 - "} else {"
-- "return 0;\n  }\n}"
-- "]]>\nokay\n.\n<!["
-- "CDATA["
+- return 0;
+- "  }\n}\n]]>\nokay\n."
+- "<![CDATA["
 - function matchwo
 - "(a,b)\n{"
 - if (a < b && a <
 - "0) then {"
 - return 1;
 - "} else {"
-- "return 0;\n  }\n}"
-- "]]>\n<p>okay</p>"
+- return 0;
+- "  }\n}\n]]>"
+- "<p>okay</p>"
 - "````````````````"
 - "````````````````"
 - The opening tag
@@ -4513,8 +4526,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "<!-- foo -->"
-- "<!-- foo -->\n."
 - "<!-- foo -->"
+- ".\n  <!-- foo -->"
 - "<pre><code>&lt;!"
 - "-- foo --&gt;"
 - "</code></pre>"
@@ -4523,8 +4536,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "<div>\n\n    <div>"
-- ".\n  <div>"
+- "<div>"
+- "    <div>\n."
+- "<div>"
 - "<pre><code>&lt;"
 - div&gt;
 - "</code></pre>"
@@ -4761,15 +4775,17 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "<table>\n\n  <tr>"
-- "<td>\n      Hi"
-- "</td>\n\n  </tr>"
+- "<td>"
+- Hi
+- "</td>"
+- "</tr>"
 - "</table>\n."
 - "<table>\n  <tr>"
 - "<pre><code>&lt;"
 - "td&gt;\n  Hi"
 - "&lt;/td&gt;"
 - "</code></pre>"
-- "</tr>\n</table>"
+- "  </tr>\n</table>"
 - "````````````````"
 - "````````````````"
 - "Fortunately,"
@@ -5330,7 +5346,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "aaa\n bbb\n."
+- "  aaa\n bbb\n."
 - "<p>aaa\nbbb</p>"
 - "````````````````"
 - "````````````````"
@@ -5347,7 +5363,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - aaa
 - bbb
-- "ccc\n.\n<p>aaa\nbbb"
+- ccc
+- ".\n<p>aaa\nbbb"
 - ccc</p>
 - "````````````````"
 - "````````````````"
@@ -5363,14 +5380,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "aaa\nbbb\n.\n<p>aaa"
-- bbb</p>
+- "   aaa\nbbb\n."
+- "<p>aaa\nbbb</p>"
 - "````````````````"
 - "````````````````"
 - "````````````````"
 - "````````````````"
 - example
-- "aaa\nbbb\n."
+- "    aaa\nbbb\n."
 - "<pre><code>aaa"
 - "</code></pre>"
 - "<p>bbb</p>"
@@ -5413,8 +5430,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "aaa\n  \n\n# aaa"
-- ".\n<p>aaa</p>"
+- aaa
+- "# aaa\n\n  \n."
+- "<p>aaa</p>"
 - "<h1>aaa</h1>"
 - "````````````````"
 - "````````````````"
@@ -5607,9 +5625,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "> # Foo\n   > bar"
-- "> baz\n."
-- "<blockquote>"
+- "> # Foo"
+- "   > bar\n > baz"
+- ".\n<blockquote>"
 - "<h1>Foo</h1>"
 - "<p>bar\nbaz</p>"
 - "</blockquote>"
@@ -5622,8 +5640,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "> # Foo"
-- "> bar\n    > baz"
-- "."
+- "> bar"
+- "    > baz\n."
 - "<pre><code>&gt;"
 - "# Foo\n&gt; bar"
 - "&gt; baz"
@@ -5728,7 +5746,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - ">     foo"
-- "bar\n."
+- "    bar\n."
 - "<blockquote>"
 - "<pre><code>foo"
 - "</code></pre>"
@@ -6233,7 +6251,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "-    one"
-- "two\n.\n<ul>"
+- "     two\n.\n<ul>"
 - "<li>one</li>"
 - "</ul>"
 - "<pre><code> two"
@@ -6244,8 +6262,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "-    one"
-- "two\n.\n<ul>\n<li>"
-- "<p>one</p>"
+- "      two\n.\n<ul>"
+- "<li>\n<p>one</p>"
 - "<p>two</p>\n</li>"
 - "</ul>"
 - "````````````````"
@@ -6287,8 +6305,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "> > 1.  one\n>>"
-- ">>     two\n."
+- "> > 1.  one"
+- ">>\n>>     two\n."
 - "<blockquote>"
 - "<blockquote>"
 - "<ol>\n<li>"
@@ -6337,7 +6355,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - ">>- one\n>>"
-- ">  > two\n."
+- "  >  > two\n."
 - "<blockquote>"
 - "<blockquote>"
 - "<ul>"
@@ -6387,10 +6405,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "1.  foo\n\n    ```"
-- "bar\n    ```"
-- "baz\n\n    > bam\n."
-- "<ol>\n<li>"
-- "<p>foo</p>"
+- "    bar\n    ```"
+- baz
+- "    > bam\n.\n<ol>"
+- "<li>\n<p>foo</p>"
 - "<pre><code>bar"
 - "</code></pre>"
 - "<p>baz</p>"
@@ -6412,8 +6430,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- Foo\n\n      bar"
-- "baz\n.\n<ul>\n<li>"
-- "<p>Foo</p>"
+- "      baz\n.\n<ul>"
+- "<li>\n<p>Foo</p>"
 - "<pre><code>bar"
 - baz
 - "</code></pre>"
@@ -6556,7 +6574,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - 10.  foo
-- "bar\n."
+- "           bar\n."
 - "<ol start=\"10\">"
 - "<li>\n<p>foo</p>"
 - "<pre><code>bar"
@@ -6581,7 +6599,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - indented code
 - paragraph
-- "more code\n."
+- "    more code\n."
 - "<pre><code>"
 - indented code
 - "</code></pre>"
@@ -6597,8 +6615,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - 1.     indented
 - code
 - paragraph
-- "more code\n.\n<ol>"
-- "<li>"
+- more code
+- ".\n<ol>\n<li>"
 - "<pre><code>"
 - indented code
 - "</code></pre>"
@@ -6622,8 +6640,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - 1.      indented
 - code
 - paragraph
-- "more code\n.\n<ol>"
-- "<li>"
+- more code
+- ".\n<ol>\n<li>"
 - "<pre><code>"
 - indented code
 - "</code></pre>"
@@ -6668,7 +6686,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - "````````````````"
 - example
-- "foo\n\nbar\n."
+- "   foo\n\nbar\n."
 - "<p>foo</p>"
 - "<p>bar</p>"
 - "````````````````"
@@ -6770,8 +6788,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "-\n  foo\n-\n  ```"
-- "bar\n  ```\n-"
-- "baz\n.\n<ul>"
+- "  bar\n  ```\n-"
+- "      baz\n.\n<ul>"
 - "<li>foo</li>"
 - "<li>"
 - "<pre><code>bar"
@@ -7143,10 +7161,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "- foo\n  - bar"
 - "- baz"
-- "- boo\n.\n<ul>"
-- "<li>foo\n<ul>"
-- "<li>bar\n<ul>"
-- "<li>baz\n<ul>"
+- "      - boo\n."
+- "<ul>\n<li>foo"
+- "<ul>\n<li>bar"
+- "<ul>\n<li>baz"
+- "<ul>"
 - "<li>boo</li>"
 - "</ul>\n</li>"
 - "</ul>\n</li>"
@@ -7160,8 +7179,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- foo\n - bar"
-- "- baz\n   - boo\n."
-- "<ul>"
+- "  - baz\n   - boo"
+- ".\n<ul>"
 - "<li>foo</li>"
 - "<li>bar</li>"
 - "<li>baz</li>"
@@ -7177,7 +7196,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - 10) foo
-- "- bar\n."
+- "    - bar\n."
 - "<ol start=\"10\">"
 - "<li>foo\n<ul>"
 - "<li>bar</li>"
@@ -7232,8 +7251,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- # Foo\n- Bar"
-- "---\n  baz\n.\n<ul>"
-- "<li>"
+- "  ---\n  baz\n."
+- "<ul>\n<li>"
 - "<h1>Foo</h1>"
 - "</li>\n<li>"
 - "<h2>Bar</h2>"
@@ -7495,7 +7514,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - unintuitive that
 - "``` markdown"
 - "- foo\n\n  bar"
-- "- baz\n```"
+- "  - baz\n```"
 - should be parsed
 - as two lists
 - with an
@@ -7552,7 +7571,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "`Markdown.pl`"
 - parses
 - "``` markdown"
-- "- one\n\n  two\n```"
+- "   - one\n\n  two"
+- "```"
 - as a single list
 - "item, with `two`"
 - a continuation
@@ -7607,7 +7627,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - first paragraph
 - "`foo`:"
 - "``` markdown"
-- "10. foo\n\n   bar"
+- " 10. foo\n\n   bar"
 - "```"
 - Arguably this
 - text does read
@@ -8027,7 +8047,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "- foo\n  - bar"
 - "- baz"
-- "bim\n.\n<ul>"
+- "      bim\n.\n<ul>"
 - "<li>foo\n<ul>"
 - "<li>bar\n<ul>"
 - "<li>\n<p>baz</p>"
@@ -8072,10 +8092,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "-   foo"
-- "notcode\n\n-   foo"
+- notcode
+- "-   foo"
 - "<!-- -->"
-- "code\n.\n<ul>\n<li>"
-- "<p>foo</p>"
+- "    code\n.\n<ul>"
+- "<li>\n<p>foo</p>"
 - "<p>notcode</p>"
 - "</li>\n<li>"
 - "<p>foo</p>\n</li>"
@@ -8102,8 +8123,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- a\n - b\n  - c"
-- "- d\n  - e\n - f"
-- "- g\n.\n<ul>"
+- "   - d\n  - e"
+- " - f\n- g\n.\n<ul>"
 - "<li>a</li>"
 - "<li>b</li>"
 - "<li>c</li>"
@@ -8117,12 +8138,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "1. a\n\n  2. b"
-- "3. c\n.\n<ol>\n<li>"
-- "<p>a</p>\n</li>"
-- "<li>\n<p>b</p>"
+- "   3. c\n.\n<ol>"
+- "<li>\n<p>a</p>"
 - "</li>\n<li>"
-- "<p>c</p>\n</li>"
-- "</ol>"
+- "<p>b</p>\n</li>"
+- "<li>\n<p>c</p>"
+- "</li>\n</ol>"
 - "````````````````"
 - "````````````````"
 - "Note, however,"
@@ -8144,7 +8165,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- a\n - b\n  - c"
-- "- d\n    - e\n."
+- "   - d\n    - e\n."
 - "<ul>\n<li>a</li>"
 - "<li>b</li>"
 - "<li>c</li>\n<li>d"
@@ -8164,10 +8185,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "1. a\n\n  2. b"
-- "3. c\n.\n<ol>\n<li>"
-- "<p>a</p>\n</li>"
-- "<li>\n<p>b</p>"
-- "</li>\n</ol>"
+- "    3. c\n.\n<ol>"
+- "<li>\n<p>a</p>"
+- "</li>\n<li>"
+- "<p>b</p>\n</li>"
+- "</ol>"
 - "<pre><code>3. c"
 - "</code></pre>"
 - "````````````````"
@@ -8235,8 +8257,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- a\n- b"
-- "[ref]: /url\n- d"
-- ".\n<ul>\n<li>"
+- "[ref]: /url"
+- "- d\n.\n<ul>\n<li>"
 - "<p>a</p>\n</li>"
 - "<li>\n<p>b</p>"
 - "</li>\n<li>"
@@ -8253,7 +8275,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- a\n- ```\n  b"
-- "```\n- c\n.\n<ul>"
+- "  ```\n- c\n.\n<ul>"
 - "<li>a</li>\n<li>"
 - "<pre><code>b"
 - "</code></pre>"
@@ -8311,7 +8333,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "- a\n  > b\n  ```"
-- "c\n  ```\n- d\n."
+- "  c\n  ```\n- d\n."
 - "<ul>\n<li>a"
 - "<blockquote>"
 - "<p>b</p>"
@@ -8352,7 +8374,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "1. ```\n   foo"
-- "```\n\n   bar\n."
+- "   ```\n\n   bar\n."
 - "<ol>\n<li>"
 - "<pre><code>foo"
 - "</code></pre>"
@@ -8368,8 +8390,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "* foo\n  * bar"
-- "baz\n.\n<ul>\n<li>"
-- "<p>foo</p>\n<ul>"
+- "  baz\n.\n<ul>"
+- "<li>\n<p>foo</p>"
+- "<ul>"
 - "<li>bar</li>"
 - "</ul>\n<p>baz</p>"
 - "</li>\n</ul>"
@@ -9001,13 +9024,15 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - but not right-
 - "flanking:"
 - "```\n    ***abc"
-- "_abc\n    **\"abc\""
-- "_\"abc\"\n    ```"
+- _abc
+- "**\"abc\""
+- " _\"abc\"\n    ```"
 - "- right-flanking"
 - but not left-
 - "flanking:"
 - "```\n     abc***"
-- "abc_\n    \"abc\"**"
+- abc_
+- "\"abc\"**"
 - "\"abc\"_\n    ```"
 - "- Both left and"
 - "right-flanking:"
@@ -11758,7 +11783,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````"
 - example
 - "[link](   /uri"
-- "\"title\"  )\n."
+- "  \"title\"  )\n."
 - "<p><a href=\"/uri"
 - "\" title=\"title\">"
 - link</a></p>
@@ -14892,7 +14917,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "* on these"
 - "inlines, with"
 - "the `[`"
-- "opener\n      as"
+- " opener\n      as"
 - "`stack_bottom`."
 - "* We remove the"
 - opening

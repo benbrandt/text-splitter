@@ -47,10 +47,7 @@ fn fallsback_to_normal_text_split_if_no_markdown_content() {
     let chunk_size = 10;
     let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
 
-    assert_eq!(
-        ["Some text\n", "\n", "from a\n", "document"].to_vec(),
-        chunks
-    );
+    assert_eq!(["Some text\n", "\nfrom a\n", "document"].to_vec(), chunks);
 }
 
 #[cfg(feature = "markdown")]
@@ -105,6 +102,43 @@ fn subheadings_grouped_with_top_header() {
         [
             "# Header 1\n\nSome text\n\n",
             "## Header 2\n\nwith headings\n\n### Subheading\n\nand more text\n"
+        ]
+        .to_vec(),
+        chunks
+    );
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn trimming_doesnt_trim_block_level_indentation_if_multiple_items() {
+    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let text = "* Really long list item that is too big to fit\n\n  * Some Indented Text\n\n  * More Indented Text\n\n";
+    let chunk_size = 48;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(
+        [
+            "* Really long list item that is too big to fit",
+            "  * Some Indented Text\n\n  * More Indented Text"
+        ]
+        .to_vec(),
+        chunks
+    );
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn trimming_does_trim_block_level_indentation_if_only_one_item() {
+    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let text = "1. Really long list item\n\n  1. Some Indented Text\n\n  2. More Indented Text\n\n";
+    let chunk_size = 30;
+    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+
+    assert_eq!(
+        [
+            "1. Really long list item",
+            "1. Some Indented Text",
+            "2. More Indented Text"
         ]
         .to_vec(),
         chunks

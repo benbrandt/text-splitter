@@ -105,7 +105,7 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec!["Some text\n", "\n", "from a\n", "document"], chunks);
+    /// assert_eq!(vec!["Some text\n", "\nfrom a\n", "document"], chunks);
     /// ```
     pub fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
@@ -127,7 +127,7 @@ where
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec![(0, "Some text\n"), (10, "\n"), (11, "from a\n"), (18, "document")], chunks);
+    /// assert_eq!(vec![(0, "Some text\n"), (10, "\nfrom a\n"), (18, "document")], chunks);
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
@@ -215,6 +215,24 @@ impl Level for SemanticLevel {
             SemanticLevel::Heading(_) => SemanticSplitPosition::Next,
         }
     }
+
+    fn treat_whitespace_as_previous(&self) -> bool {
+        match self {
+            SemanticLevel::Char
+            | SemanticLevel::GraphemeCluster
+            | SemanticLevel::Word
+            | SemanticLevel::Sentence
+            | SemanticLevel::SoftBreak
+            | SemanticLevel::Text
+            | SemanticLevel::InlineElement(_)
+            | SemanticLevel::Rule
+            | SemanticLevel::Heading(_)
+            | SemanticLevel::Metadata => false,
+            SemanticLevel::Block
+            | SemanticLevel::ContainerBlock(_)
+            | SemanticLevel::MetaContainer => true,
+        }
+    }
 }
 
 /// Captures information about markdown structure for a given text, and their
@@ -224,6 +242,8 @@ struct Markdown {
     /// Range of each semantic markdown item and its precalculated semantic level
     ranges: Vec<(SemanticLevel, Range<usize>)>,
 }
+
+const NEWLINES: [char; 2] = ['\n', '\r'];
 
 impl SemanticSplit for Markdown {
     type Level = SemanticLevel;
@@ -335,6 +355,21 @@ impl SemanticSplit for Markdown {
                     .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),
             )
             .map(move |(i, str)| (offset + i, str)),
+        }
+    }
+
+    fn trim_chunk<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        offset: usize,
+        chunk: &'text str,
+    ) -> (usize, &'text str) {
+        // Preserve indentation if we have newlines inside the element
+        if chunk.trim().contains(NEWLINES) {
+            let diff = chunk.len() - chunk.trim_start_matches(NEWLINES).len();
+            (offset + diff, chunk.trim_start_matches(NEWLINES).trim_end())
+        } else {
+            let diff = chunk.len() - chunk.trim_start().len();
+            (offset + diff, chunk.trim())
         }
     }
 }

@@ -37,7 +37,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "<https://daringfireball.net/projects/markdown/>)"
 - The point can be illustrated by comparing a sample of
 - "[AsciiDoc](https://asciidoc.org/)"
-- "with\nan equivalent sample of Markdown.  Here is a sample of"
+- " with\nan equivalent sample of Markdown.  Here is a sample of"
 - "AsciiDoc from the AsciiDoc manual:"
 - "```\n1. List item one.\n+"
 - "List item one continued with a second paragraph followed by an\nIndented block.\n+"
@@ -51,12 +51,13 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "And here is the equivalent in Markdown:"
 - "```\n1.  List item one."
 - List item one continued with a second paragraph followed by an
-- "Indented block.\n\n        $ ls *.sh\n        $ mv *.sh ~/tmp"
-- "List item continued with a third paragraph.\n\n2."
+- "    Indented block.\n\n        $ ls *.sh"
+- $ mv *.sh ~/tmp
+- "    List item continued with a third paragraph.\n\n2."
 - List item two continued with an open block.
-- "This paragraph is part of the preceding list item.\n\n    1."
+- "    This paragraph is part of the preceding list item.\n\n    1."
 - This list is nested and does not require explicit item continuation.
-- "This paragraph is part of the preceding list item.\n\n    2."
+- "       This paragraph is part of the preceding list item.\n\n    2."
 - "List item b.\n\n    This paragraph belongs to item two of the outer list."
 - "```"
 - "The AsciiDoc version is, arguably, easier to write."
@@ -75,7 +76,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - not fully explicit about sublists.  It is natural to think that
 - "they, too, must be indented four spaces, but `Markdown.pl`"
 - "does\n    not require that.  This is hardly a \"corner case,\""
-- "and divergences\n    between implementations on this issue often lead to surprises for"
+- " and divergences\n    between implementations on this issue often lead to surprises for"
 - users in real documents. (See
 - "[this comment by John"
 - "Gruber](https://web.archive.org/web/20170611172104/http"
@@ -101,9 +102,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "tags?  Can a list be partially \"loose\" and partially"
 - "\"tight\"?  What should we do with a list like this?"
 - "``` markdown\n    1. one\n\n    2. two"
-- "3. three\n    ```\n\n    Or this?"
-- "``` markdown\n    1.  one\n        - a"
-- "- b\n    2.  two\n    ```"
+- "    3. three\n    ```\n\n    Or this?"
+- "    ``` markdown\n    1.  one\n        - a"
+- "        - b\n    2.  two\n    ```"
 - (There are some relevant comments by John Gruber
 - "[here](https://web.archive.org/web/20170611172104/http"
 - "://article.gmane.org/gmane.text.markdown.general/2554"
@@ -111,7 +112,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - 5.  Can list markers be indented?
 - Can ordered list markers be right-aligned?
 - "``` markdown\n     8. item 1"
-- "9. item 2\n    10. item 2a"
+- "     9. item 2\n    10. item 2a"
 - "```"
 - "6.  Is this one list with a thematic break in its second item,"
 - or two lists separated by a thematic break?
@@ -121,7 +122,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "two lists or one?  (The Markdown syntax description suggests two,"
 - but the perl scripts and many other implementations produce one.)
 - "``` markdown\n    1. fee\n    2. fie"
-- "-  foe\n    -  fum\n    ```"
+- "    -  foe\n    -  fum\n    ```"
 - 8.  What are the precedence rules for the markers of inline structure?
 - "For example, is the following a valid link, or does the code span"
 - take precedence ?
@@ -135,19 +136,19 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "structure?  For example, how should the following be parsed?"
 - "``` markdown"
 - "- `a long code span can contain a hyphen like this"
-- "- and it can screw things up`\n    ```"
+- "  - and it can screw things up`\n    ```"
 - "11. Can list items include section headings?  (`Markdown.pl` does not"
 - "allow this, but does allow blockquotes to include headings.)"
 - "``` markdown\n    - # Heading\n    ```"
 - "12. Can list items be empty?\n\n    ``` markdown\n    * a"
-- "*\n    * b\n    ```"
+- "    *\n    * b\n    ```"
 - 13. Can link references be defined inside block quotes or list items?
-- "``` markdown\n    > Blockquote [foo].\n    >"
-- "> [foo]: /url\n    ```"
+- "    ``` markdown\n    > Blockquote [foo].\n    >"
+- "    > [foo]: /url\n    ```"
 - "14. If there are multiple definitions for the same reference, which takes"
 - precedence?
 - "``` markdown\n    [foo]: /url1"
-- "[foo]: /url2\n\n    [foo][]\n    ```"
+- "    [foo]: /url2\n\n    [foo][]\n    ```"
 - "In the absence of a spec, early implementers consulted `Markdown.pl`"
 - "to resolve these ambiguities.  But `Markdown.pl`"
 - "was quite buggy, and"
@@ -164,7 +165,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - It contains many examples with side-by-side Markdown and
 - HTML.  These are intended to double as conformance tests.  An
 - "accompanying script `spec_tests.py`"
-- "can be used to run the tests\nagainst any Markdown program:"
+- " can be used to run the tests\nagainst any Markdown program:"
 - python test/spec_tests.py --spec spec.txt --program PROGRAM
 - Since this document describes how Markdown is to be parsed into
 - "an abstract syntax tree, it would have made sense to use an abstract"
@@ -224,9 +225,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "`, `)`,\n`*`, `+`, `,`, `-`, `.`,"
 - "`/` (U+0021–2F), \n`:`,"
 - "`;`, `<`, `=`, `>`, `?`, `@`"
-- "(U+003A–0040),\n`[`, `\\`, `]`,"
-- "`^`, `_`, `` ` `` (U+005B–0060"
-- "), \n`{`, `|`, `}`, or `~`"
+- " (U+003A–0040),\n`[`, `\\`,"
+- "`]`, `^`, `_`, `` ` `` (U+005B–"
+- "0060), \n`{`, `|`, `}`, or `~`"
 - (U+007B–007E).
 - "A [Unicode punctuation character](@) is a character in the Unicode `P"
 - "`\n(puncuation) or `S` (symbol) general categories."
@@ -246,13 +247,13 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "→foo→baz→→bim\n."
+- "  →foo→baz→→bim\n."
 - "<pre><code>foo→baz→→bim"
 - "</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "a→a\n    ὐ→a\n."
+- "    a→a\n    ὐ→a\n."
 - "<pre><code>a→a\nὐ→a"
 - "</code></pre>"
 - "````````````````````````````````"
@@ -261,7 +262,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "as indentation with four spaces would:"
 - "````````````````````````````````"
 - example
-- "- foo\n\n→bar\n.\n<ul>\n<li>"
+- "  - foo\n\n→bar\n.\n<ul>\n<li>"
 - "<p>foo</p>\n<p>bar</p>\n</li>"
 - "</ul>"
 - "````````````````````````````````"
@@ -292,12 +293,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "foo\n→bar\n.\n<pre><code>foo\nbar"
+- "    foo\n→bar\n.\n<pre><code>foo\nbar"
 - "</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "- foo\n   - bar\n→ - baz\n.\n<ul>"
+- " - foo\n   - bar\n→ - baz\n.\n<ul>"
 - "<li>foo\n<ul>\n<li>bar\n<ul>"
 - "<li>baz</li>\n</ul>\n</li>\n</ul>"
 - "</li>\n</ul>"
@@ -359,7 +360,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "\\[\\]\n.\n<pre><code>\\[\\]\n</code></pre>"
+- "    \\[\\]\n.\n<pre><code>\\[\\]\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
@@ -405,9 +406,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "- Entity and character references cannot stand in place of"
 - special characters that define structural elements in
 - "CommonMark.  For example, although `&#42;`"
-- "can be used\n  in place of a literal `*` character,"
+- " can be used\n  in place of a literal `*` character,"
 - "`&#42;` cannot replace\n  `*`"
-- "in emphasis delimiters, bullet list markers, or thematic\n  breaks."
+- " in emphasis delimiters, bullet list markers, or thematic\n  breaks."
 - Conforming CommonMark parsers need not store information about
 - whether a particular character was represented in the source
 - using a Unicode character or an entity reference.
@@ -509,7 +510,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "f&ouml;f&ouml;\n."
+- "    f&ouml;f&ouml;\n."
 - "<pre><code>f&amp;ouml;f&amp;ouml;"
 - "</code></pre>"
 - "````````````````````````````````"
@@ -672,8 +673,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "An [ATX heading](@)"
 - "consists of a string of characters, parsed as inline content, between an"
 - "opening sequence of 1--6 unescaped `#`"
-- "characters and an optional\nclosing sequence of any number of unescaped `#`"
-- "characters.\nThe opening sequence of `#`"
+- " characters and an optional\nclosing sequence of any number of unescaped `#`"
+- " characters.\nThe opening sequence of `#`"
 - "characters must be followed by spaces or tabs, or"
 - "by the end of line. The optional closing sequence of `#`"
 - s must be preceded by
@@ -725,14 +726,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Up to three spaces of indentation are allowed:"
 - "````````````````````````````````"
 - example
-- "### foo\n  ## foo\n   # foo\n."
+- " ### foo\n  ## foo\n   # foo\n."
 - "<h3>foo</h3>\n<h2>foo</h2>"
 - "<h1>foo</h1>"
 - "````````````````````````````````"
 - "Four spaces of indentation is too many:"
 - "````````````````````````````````"
 - example
-- "# foo\n.\n<pre><code># foo\n</code></pre>"
+- "    # foo\n.\n<pre><code># foo\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
@@ -831,7 +832,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "concatenating the lines and removing initial and final\nspaces or tabs."
 - "````````````````````````````````"
 - example
-- "Foo *bar\nbaz*→\n====\n."
+- "  Foo *bar\nbaz*→\n====\n."
 - "<h1>Foo <em>bar\nbaz</em></h1>"
 - "````````````````````````````````"
 - "The underlining can be any length:"
@@ -844,14 +845,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "need not line up with the underlining:"
 - "````````````````````````````````"
 - example
-- "Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===\n."
+- "   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===\n."
 - "<h2>Foo</h2>\n<h2>Foo</h2>"
 - "<h1>Foo</h1>"
 - "````````````````````````````````"
 - "Four spaces of indentation is too many:"
 - "````````````````````````````````"
 - example
-- "Foo\n    ---\n\n    Foo\n---\n.\n<pre><code>Foo"
+- "    Foo\n    ---\n\n    Foo\n---\n.\n<pre><code>Foo"
 - "---\n\nFoo\n</code></pre>\n<hr />"
 - "````````````````````````````````"
 - The setext heading underline can be preceded by up to three spaces of
@@ -936,7 +937,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "foo\n---\n.\n<pre><code>foo\n</code></pre>"
+- "    foo\n---\n.\n<pre><code>foo\n</code></pre>"
 - "<hr />"
 - "````````````````````````````````"
 - "````````````````````````````````"
@@ -1002,15 +1003,15 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - paragraph.)
 - "````````````````````````````````"
 - example
-- "a simple\n      indented code block\n.\n<pre><code>a simple"
-- "indented code block\n</code></pre>"
+- "    a simple\n      indented code block\n.\n<pre><code>a simple"
+- "  indented code block\n</code></pre>"
 - "````````````````````````````````"
 - If there is any ambiguity between an interpretation of indentation
 - "as a code block and as indicating that material belongs to a [list\nitem"
 - "][list items], the list item interpretation takes precedence:"
 - "````````````````````````````````"
 - example
-- "- foo\n\n    bar\n.\n<ul>\n<li>"
+- "  - foo\n\n    bar\n.\n<ul>\n<li>"
 - "<p>foo</p>\n<p>bar</p>\n</li>"
 - "</ul>"
 - "````````````````````````````````"
@@ -1024,14 +1025,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "as Markdown:"
 - "````````````````````````````````"
 - example
-- "<a/>\n    *hi*\n\n    - one\n."
+- "    <a/>\n    *hi*\n\n    - one\n."
 - "<pre><code>&lt;a/&gt;\n*hi*\n\n- one"
 - "</code></pre>"
 - "````````````````````````````````"
 - "Here we have three chunks separated by blank lines:"
 - "````````````````````````````````"
 - example
-- "chunk1\n\n    chunk2\n  \n \n \n    chunk3\n."
+- "    chunk1\n\n    chunk2\n  \n \n \n    chunk3\n."
 - "<pre><code>chunk1\n\nchunk2\n\n\n\nchunk3"
 - "</code></pre>"
 - "````````````````````````````````"
@@ -1039,8 +1040,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "the content, even in interior blank lines:"
 - "````````````````````````````````"
 - example
-- "chunk1\n      \n      chunk2\n.\n<pre><code>chunk1"
-- "chunk2\n</code></pre>"
+- "    chunk1\n      \n      chunk2\n.\n<pre><code>chunk1"
+- "  chunk2\n</code></pre>"
 - "````````````````````````````````"
 - An indented code block cannot interrupt a paragraph.  (This
 - allows hanging indents and the like.)
@@ -1052,8 +1053,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "after indented code:"
 - "````````````````````````````````"
 - example
-- "foo\nbar\n.\n<pre><code>foo\n</code></pre>"
-- "<p>bar</p>"
+- "    foo\nbar\n.\n<pre><code>foo"
+- "</code></pre>\n<p>bar</p>"
 - "````````````````````````````````"
 - "And indented code can occur immediately before and after other kinds of\nblocks:"
 - "````````````````````````````````"
@@ -1066,19 +1067,19 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "The first line can be preceded by more than four spaces of indentation:"
 - "````````````````````````````````"
 - example
-- "foo\n    bar\n.\n<pre><code>    foo\nbar"
+- "        foo\n    bar\n.\n<pre><code>    foo\nbar"
 - "</code></pre>"
 - "````````````````````````````````"
 - Blank lines preceding or following an indented code block
 - "are not included in it:"
 - "````````````````````````````````"
 - example
-- "foo\n    \n\n.\n<pre><code>foo\n</code></pre>"
+- "    \n    foo\n    \n\n.\n<pre><code>foo\n</code></pre>"
 - "````````````````````````````````"
 - "Trailing spaces or tabs are included in the code block's content:"
 - "````````````````````````````````"
 - example
-- "foo  \n.\n<pre><code>foo  \n</code></pre>"
+- "    foo  \n.\n<pre><code>foo  \n</code></pre>"
 - "````````````````````````````````"
 - "## Fenced code blocks"
 - "A [code fence](@) is a sequence"
@@ -1194,23 +1195,23 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "content lines will have equivalent opening indentation removed,\nif present:"
 - "````````````````````````````````"
 - example
-- "```\n aaa\naaa\n```\n.\n<pre><code>aaa\naaa"
+- " ```\n aaa\naaa\n```\n.\n<pre><code>aaa\naaa"
 - "</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "```\naaa\n  aaa\naaa\n  ```\n."
+- "  ```\naaa\n  aaa\naaa\n  ```\n."
 - "<pre><code>aaa\naaa\naaa\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "```\n   aaa\n    aaa\n  aaa\n   ```\n."
+- "   ```\n   aaa\n    aaa\n  aaa\n   ```\n."
 - "<pre><code>aaa\n aaa\naaa\n</code></pre>"
 - "````````````````````````````````"
 - "Four spaces of indentation is too many:"
 - "````````````````````````````````"
 - example
-- "```\n    aaa\n    ```\n.\n<pre><code>```\naaa"
+- "    ```\n    aaa\n    ```\n.\n<pre><code>```\naaa"
 - "```\n</code></pre>"
 - "````````````````````````````````"
 - "Closing fences may be preceded by up to three spaces of indentation, and their"
@@ -1222,7 +1223,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "```\naaa\n  ```\n.\n<pre><code>aaa"
+- "   ```\naaa\n  ```\n.\n<pre><code>aaa"
 - "</code></pre>"
 - "````````````````````````````````"
 - "This is not a closing fence, because it is indented 4 spaces:"
@@ -1267,14 +1268,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "```ruby\ndef foo(x)\n  return 3\nend\n```"
 - ".\n<pre><code class=\"language-ruby\">def foo(x)"
-- "return 3\nend\n</code></pre>"
+- "  return 3\nend\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
 - "~~~~    ruby startline=3 $%@#$\ndef foo(x)"
-- "return 3\nend\n~~~~~~~\n."
+- "  return 3\nend\n~~~~~~~\n."
 - "<pre><code class=\"language-ruby\">def foo(x)"
-- "return 3\nend\n</code></pre>"
+- "  return 3\nend\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
@@ -1310,16 +1311,16 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - It ends with the first subsequent line that meets a matching
 - "[end condition](@), or the last line of the document, or the last"
 - "line of\nthe [container block](#container-blocks)"
-- "containing the current HTML\nblock, if no line is encountered that meets the"
-- "[end condition].  If\nthe first line meets both the [start condition]"
-- "and the [end\ncondition], the block will contain just that line."
+- " containing the current HTML\nblock, if no line is encountered that meets the ["
+- "end condition].  If\nthe first line meets both the [start condition]"
+- " and the [end\ncondition], the block will contain just that line."
 - "1.  **Start condition:**  line begins with the string `<pre`,"
 - "`<script`, `<style`, or `<textarea` (case-insensitive),"
 - "followed by a space,\na tab, the string `>`"
 - ", or the end of the line.\\\n**End condition:**"
-- "line contains an end tag\n`</pre>`, `</script>`,"
-- "`</style>`, or `</textarea>`"
-- "(case-insensitive; it\nneed not match the start tag)."
+- "  line contains an end tag\n`</pre>`, `</script>`"
+- ", `</style>`, or `</textarea>` (case-insensitive;"
+- "it\nneed not match the start tag)."
 - "2.  **Start condition:** line begins with the string `<!--`.\\"
 - "**End condition:**  line contains the string `-->`."
 - "3.  **Start condition:** line begins with the string `<?`.\\"
@@ -1388,14 +1389,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "<table>\n  <tr>\n    <td>\n           hi"
-- "</td>\n  </tr>\n</table>\n\nokay.\n.\n<table>"
-- "<tr>\n    <td>\n           hi\n    </td>"
-- "</tr>\n</table>\n<p>okay.</p>"
+- "    </td>\n  </tr>\n</table>\n\nokay.\n.\n<table>"
+- "  <tr>\n    <td>\n           hi\n    </td>"
+- "  </tr>\n</table>\n<p>okay.</p>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "<div>\n  *hello*\n         <foo><a>\n.\n <div>"
-- "*hello*\n         <foo><a>"
+- " <div>\n  *hello*\n         <foo><a>\n."
+- " <div>\n  *hello*\n         <foo><a>"
 - "````````````````````````````````"
 - "A block can also start with a closing tag:"
 - "````````````````````````````````"
@@ -1554,7 +1555,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "<style\n  type=\"text/css\">\nh1 {color:red;}"
 - "p {color:blue;}\n</style>\nokay\n.\n<style"
-- "type=\"text/css\">\nh1 {color:red;}"
+- "  type=\"text/css\">\nh1 {color:red;}"
 - "p {color:blue;}\n</style>\n<p>okay</p>"
 - "````````````````````````````````"
 - "If there is no matching end tag, the block will end at the"
@@ -1563,7 +1564,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "<style\n  type=\"text/css\">\n\nfoo\n.\n<style"
-- "type=\"text/css\">\n\nfoo"
+- "  type=\"text/css\">\n\nfoo"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
@@ -1598,13 +1599,13 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "<!-- Foo\n\nbar\n   baz -->\nokay\n.\n<!-- Foo\n\nbar"
-- "baz -->\n<p>okay</p>"
+- "   baz -->\n<p>okay</p>"
 - "````````````````````````````````"
 - "A processing instruction (type 3):"
 - "````````````````````````````````"
 - example
 - "<?php\n\n  echo '>';\n\n?>\nokay\n.\n<?php"
-- "echo '>';\n\n?>\n<p>okay</p>"
+- "  echo '>';\n\n?>\n<p>okay</p>"
 - "````````````````````````````````"
 - "A declaration (type 4):"
 - "````````````````````````````````"
@@ -1615,23 +1616,23 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - example
 - "<![CDATA[\nfunction matchwo(a,b)\n{"
 - "if (a < b && a < 0) then {"
-- "return 1;\n\n  } else {\n\n    return 0;\n  }\n}"
-- "]]>\nokay\n.\n<![CDATA[\nfunction matchwo(a,b)\n{"
+- "    return 1;\n\n  } else {\n\n    return 0;\n  }"
+- "}\n]]>\nokay\n.\n<![CDATA[\nfunction matchwo(a,b)\n{"
 - "if (a < b && a < 0) then {"
-- "return 1;\n\n  } else {\n\n    return 0;\n  }\n}"
-- "]]>\n<p>okay</p>"
+- "    return 1;\n\n  } else {\n\n    return 0;\n  }"
+- "}\n]]>\n<p>okay</p>"
 - "````````````````````````````````"
 - "The opening tag can be preceded by up to three spaces of indentation, but not"
 - "four:"
 - "````````````````````````````````"
 - example
-- "<!-- foo -->\n\n    <!-- foo -->\n.\n  <!-- foo -->"
+- "  <!-- foo -->\n\n    <!-- foo -->\n.\n  <!-- foo -->"
 - "<pre><code>&lt;!-- foo --&gt;"
 - "</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "<div>\n\n    <div>\n.\n  <div>"
+- "  <div>\n\n    <div>\n.\n  <div>"
 - "<pre><code>&lt;div&gt;\n</code></pre>"
 - "````````````````````````````````"
 - "An HTML block of types 1--6 can interrupt a paragraph, and need"
@@ -1714,14 +1715,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "<table>\n\n  <tr>\n\n    <td>\n      Hi"
-- "</td>\n\n  </tr>\n\n</table>\n.\n<table>"
-- "<tr>\n<pre><code>&lt;td&gt;\n  Hi"
+- "    </td>\n\n  </tr>\n\n</table>\n.\n<table>"
+- "  <tr>\n<pre><code>&lt;td&gt;\n  Hi"
 - "&lt;/td&gt;\n</code></pre>\n  </tr>"
 - "</table>"
 - "````````````````````````````````"
 - "Fortunately, blank lines are usually not necessary and can be\ndeleted."
 - "The exception is inside `<pre>`"
-- "tags, but as described\n[above][HTML blocks]"
+- " tags, but as described\n[above][HTML blocks]"
 - ", raw HTML blocks starting with `<pre>`\n*can* contain blank lines."
 - "## Link reference definitions"
 - "A [link reference definition](@)"
@@ -1731,12 +1732,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "link destination],\noptional spaces or tabs (including up to one\n[line ending]"
 - "), and an optional [link\ntitle]"
 - ", which if it is present must be separated\nfrom the [link destination]"
-- "by spaces or tabs.\nNo further character may occur."
+- " by spaces or tabs.\nNo further character may occur."
 - "A [link reference definition]"
 - "does not correspond to a structural element of a document.  Instead, it"
 - "defines a label which can be used in [reference links]\nand reference-style ["
 - "images] elsewhere in the document.  [Link\nreference definitions]"
-- "can come either before or after the links that use\nthem."
+- " can come either before or after the links that use\nthem."
 - "````````````````````````````````"
 - example
 - "[foo]: /url \"title\"\n\n[foo]\n."
@@ -1745,7 +1746,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "[foo]: \n      /url  \n           'the title'"
+- "   [foo]: \n      /url  \n           'the title'"
 - "[foo]\n."
 - "<p><a href=\"/url\" title=\"the title\">foo</a></"
 - p>
@@ -1865,7 +1866,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "four spaces:"
 - "````````````````````````````````"
 - example
-- "[foo]: /url \"title\"\n\n[foo]\n."
+- "    [foo]: /url \"title\"\n\n[foo]\n."
 - "<pre><code>[foo]: /url &quot;title&quot;"
 - "</code></pre>\n<p>[foo]</p>"
 - "````````````````````````````````"
@@ -1907,8 +1908,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "[foo]: /foo-url \"foo\"\n[bar]: /bar-url"
-- "\"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],"
-- "[baz]\n."
+- "  \"bar\"\n[baz]: /baz-url\n\n[foo],"
+- "[bar],\n[baz]\n."
 - "<p><a href=\"/foo-url\" title=\"foo\">foo</a>,"
 - "<a href=\"/bar-url\" title=\"bar\">bar</a>,"
 - "<a href=\"/baz-url\">baz</a></p>"
@@ -1950,7 +1951,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Leading spaces or tabs are skipped:"
 - "````````````````````````````````"
 - example
-- "aaa\n bbb\n.\n<p>aaa\nbbb</p>"
+- "  aaa\n bbb\n.\n<p>aaa\nbbb</p>"
 - "````````````````````````````````"
 - "Lines after the first may be indented any amount, since indented"
 - code blocks cannot interrupt paragraphs.
@@ -1966,8 +1967,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "aaa\nbbb\n.\n<pre><code>aaa\n</code></pre>"
-- "<p>bbb</p>"
+- "    aaa\nbbb\n.\n<pre><code>aaa"
+- "</code></pre>\n<p>bbb</p>"
 - "````````````````````````````````"
 - "Final spaces or tabs are stripped before inline parsing, so a paragraph"
 - "that ends with two or more spaces will not end with a [hard line"
@@ -1982,7 +1983,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Blank lines at the beginning and end of the document are also ignored.
 - "````````````````````````````````"
 - example
-- "aaa\n  \n\n# aaa\n\n  \n.\n<p>aaa</p>"
+- "  \n\naaa\n  \n\n# aaa\n\n  \n.\n<p>aaa</p>"
 - "<h1>aaa</h1>"
 - "````````````````````````````````"
 - "# Container blocks"
@@ -2010,9 +2011,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "space of\nindentation.\n\nThe following rules define [block quotes]:"
 - 1.  **Basic case.
 - "**  If a string of lines *Ls*"
-- "constitute a sequence\n    of blocks *Bs*"
+- " constitute a sequence\n    of blocks *Bs*"
 - ", then the result of prepending a [block quote\n    marker]"
-- "to the beginning of each line in *Ls*\n    is a"
+- " to the beginning of each line in *Ls*\n    is a"
 - "[block quote](#block-quotes) containing *Bs*."
 - 2.  **Laziness.
 - "**  If a string of lines *Ls* constitute a"
@@ -2047,14 +2048,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "The `>` characters can be preceded by up to three spaces of indentation:"
 - "````````````````````````````````"
 - example
-- "> # Foo\n   > bar\n > baz\n.\n<blockquote>"
+- "   > # Foo\n   > bar\n > baz\n.\n<blockquote>"
 - "<h1>Foo</h1>\n<p>bar\nbaz</p>"
 - "</blockquote>"
 - "````````````````````````````````"
 - "Four spaces of indentation is too many:"
 - "````````````````````````````````"
 - example
-- "> # Foo\n    > bar\n    > baz\n."
+- "    > # Foo\n    > bar\n    > baz\n."
 - "<pre><code>&gt; # Foo\n&gt; bar\n&gt; baz"
 - "</code></pre>"
 - "````````````````````````````````"
@@ -2202,7 +2203,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "When including an indented code block in a block quote,"
 - "remember that the [block quote marker] includes\nboth the `>`"
 - and a following space of indentation.  So *five spaces*
-- "are needed\nafter the `>`:"
+- " are needed\nafter the `>`:"
 - "````````````````````````````````"
 - example
 - ">     code\n\n>    not code\n.\n<blockquote>"
@@ -2222,9 +2223,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "in some browsers.)\n\nThe following rules define [list items]:"
 - 1.  **Basic case.
 - "**  If a sequence of lines *Ls*"
-- "constitute a sequence of\n    blocks *Bs*"
+- " constitute a sequence of\n    blocks *Bs*"
 - "starting with a character other than a space or tab, and *M*"
-- "is\n    a list marker of width *W* followed by 1 ≤"
+- " is\n    a list marker of width *W* followed by 1 ≤"
 - "*N* ≤ 4 spaces of indentation,\n    then the result of prepending"
 - "*M* and the following spaces to the first line\n    of"
 - "*Ls*, and indenting subsequent lines of *Ls* by *W"
@@ -2257,7 +2258,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "1.  A paragraph\n    with two lines.\n\n        indented code"
-- "> A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
+- "    > A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
 - "with two lines.</p>\n<pre><code>indented code"
 - "</code></pre>\n<blockquote>\n<p>A block quote.</p>"
 - "</blockquote>\n</li>\n</ol>"
@@ -2283,12 +2284,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "-    one\n\n     two\n.\n<ul>\n<li>one</li>"
+- " -    one\n\n     two\n.\n<ul>\n<li>one</li>"
 - "</ul>\n<pre><code> two\n</code></pre>"
 - "````````````````````````````````"
 - "````````````````````````````````"
 - example
-- "-    one\n\n      two\n.\n<ul>\n<li>"
+- " -    one\n\n      two\n.\n<ul>\n<li>"
 - "<p>one</p>\n<p>two</p>\n</li>"
 - "</ul>"
 - "````````````````````````````````"
@@ -2302,7 +2303,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "this example:"
 - "````````````````````````````````"
 - example
-- "> > 1.  one\n>>\n>>     two\n."
+- "   > > 1.  one\n>>\n>>     two\n."
 - "<blockquote>\n<blockquote>\n<ol>\n<li>"
 - "<p>one</p>\n<p>two</p>\n</li>"
 - "</ol>\n</blockquote>\n</blockquote>"
@@ -2342,7 +2343,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "1.  foo\n\n    ```\n    bar\n    ```\n\n    baz"
-- "> bam\n.\n<ol>\n<li>\n<p>foo</p>"
+- "    > bam\n.\n<ol>\n<li>\n<p>foo</p>"
 - "<pre><code>bar\n</code></pre>"
 - "<p>baz</p>\n<blockquote>\n<p>bam</p>"
 - "</blockquote>\n</li>\n</ol>"
@@ -2385,9 +2386,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - 2.  **Item starting with indented code.
 - "**  If a sequence of lines *Ls*"
 - constitute a sequence of blocks *Bs*
-- "starting with an indented code\n    block, and *M*"
+- " starting with an indented code\n    block, and *M*"
 - is a list marker of width *W*
-- "followed by\n    one space of indentation, then the result of prepending"
+- " followed by\n    one space of indentation, then the result of prepending"
 - "*M* and the\n    following space to the first line of"
 - "*Ls*, and indenting subsequent lines\n    of *Ls* by"
 - "*W + 1* spaces, is a list item with *Bs*"
@@ -2409,16 +2410,17 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "And in this case it is 11 spaces:"
 - "````````````````````````````````"
 - example
-- "10.  foo\n\n           bar\n.\n<ol start=\"10\">"
-- "<li>\n<p>foo</p>\n<pre><code>bar"
-- "</code></pre>\n</li>\n</ol>"
+- "  10.  foo\n\n           bar\n."
+- "<ol start=\"10\">\n<li>\n<p>foo</p>"
+- "<pre><code>bar\n</code></pre>\n</li>"
+- "</ol>"
 - "````````````````````````````````"
 - If the *first* block in the list item is an indented code block
 - ",\nthen by rule #2, the contents must be preceded by *one*"
-- "space of indentation\nafter the list marker:"
+- " space of indentation\nafter the list marker:"
 - "````````````````````````````````"
 - example
-- "indented code\n\nparagraph\n\n    more code\n."
+- "    indented code\n\nparagraph\n\n    more code\n."
 - "<pre><code>indented code\n</code></pre>"
 - "<p>paragraph</p>\n<pre><code>more code"
 - "</code></pre>"
@@ -2451,7 +2453,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "by\nindenting the whole thing and prepending a list marker:"
 - "````````````````````````````````"
 - example
-- "foo\n\nbar\n.\n<p>foo</p>"
+- "   foo\n\nbar\n.\n<p>foo</p>"
 - "<p>bar</p>"
 - "````````````````````````````````"
 - "````````````````````````````````"
@@ -2474,9 +2476,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "starting with a single [blank line] constitute a (possibly empty)"
 - "sequence of blocks *Bs*, and *M* is a list marker of width"
 - "*W*,\n    then the result of prepending *M*"
-- "to the first line of *Ls*, and\n    preceding subsequent lines of"
+- " to the first line of *Ls*, and\n    preceding subsequent lines of"
 - "*Ls* by *W + 1*"
-- "spaces of indentation, is a\n    list item with *Bs*"
+- " spaces of indentation, is a\n    list item with *Bs*"
 - as its contents.
 - "If a line is empty, then it need not be indented."
 - The type of the
@@ -2500,7 +2502,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - A list item can begin with at most one blank line.
 - "In the following example, `foo`"
-- "is not part of the list\nitem:"
+- " is not part of the list\nitem:"
 - "````````````````````````````````"
 - example
 - "-\n\n  foo\n.\n<ul>\n<li></li>\n</ul>"
@@ -2547,8 +2549,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Indented one space:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\n     with two lines.\n\n         indented code"
-- "> A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
+- " 1.  A paragraph\n     with two lines.\n\n         indented code"
+- "     > A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
 - "with two lines.</p>\n<pre><code>indented code"
 - "</code></pre>\n<blockquote>\n<p>A block quote.</p>"
 - "</blockquote>\n</li>\n</ol>"
@@ -2556,28 +2558,29 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Indented two spaces:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\n      with two lines.\n\n          indented code"
-- "> A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
-- "with two lines.</p>\n<pre><code>indented code"
-- "</code></pre>\n<blockquote>\n<p>A block quote.</p>"
-- "</blockquote>\n</li>\n</ol>"
+- "  1.  A paragraph\n      with two lines."
+- "          indented code\n\n      > A block quote.\n.\n<ol>"
+- "<li>\n<p>A paragraph\nwith two lines.</p>"
+- "<pre><code>indented code\n</code></pre>\n<blockquote>"
+- "<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>"
 - "````````````````````````````````"
 - "Indented three spaces:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\n       with two lines.\n\n           indented code"
-- "> A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
-- "with two lines.</p>\n<pre><code>indented code"
-- "</code></pre>\n<blockquote>\n<p>A block quote.</p>"
-- "</blockquote>\n</li>\n</ol>"
+- "   1.  A paragraph\n       with two lines."
+- "           indented code\n\n       > A block quote.\n.\n<ol>"
+- "<li>\n<p>A paragraph\nwith two lines.</p>"
+- "<pre><code>indented code\n</code></pre>\n<blockquote>"
+- "<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>"
 - "````````````````````````````````"
 - "Four spaces indent gives a code block:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\n        with two lines.\n\n            indented code"
-- "> A block quote.\n.\n<pre><code>1.  A paragraph"
-- "with two lines.\n\n        indented code"
-- "&gt; A block quote.\n</code></pre>"
+- "    1.  A paragraph\n        with two lines."
+- "            indented code\n\n        > A block quote.\n."
+- "<pre><code>1.  A paragraph\n    with two lines."
+- "        indented code\n\n    &gt; A block quote."
+- "</code></pre>"
 - "````````````````````````````````"
 - 5.  **Laziness.
 - "**  If a string of lines *Ls* constitute a"
@@ -2591,8 +2594,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Here is an example with [lazy continuation lines]:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\nwith two lines.\n\n          indented code"
-- "> A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
+- "  1.  A paragraph\nwith two lines.\n\n          indented code"
+- "      > A block quote.\n.\n<ol>\n<li>\n<p>A paragraph"
 - "with two lines.</p>\n<pre><code>indented code"
 - "</code></pre>\n<blockquote>\n<p>A block quote.</p>"
 - "</blockquote>\n</li>\n</ol>"
@@ -2600,8 +2603,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "Indentation can be partially deleted:"
 - "````````````````````````````````"
 - example
-- "1.  A paragraph\n    with two lines.\n.\n<ol>"
-- "<li>A paragraph\nwith two lines.</li>\n</ol>"
+- "  1.  A paragraph\n    with two lines.\n."
+- "<ol>\n<li>A paragraph\nwith two lines.</li>\n</ol>"
 - "````````````````````````````````"
 - "These examples show how laziness can work in nested structures:"
 - "````````````````````````````````"
@@ -2753,7 +2756,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Would it help to adopt a two-space rule?  The problem is that such
 - "a rule, together with the rule allowing up to three spaces of indentation for"
 - "the initial list marker, allows text that is indented *less than*"
-- "the\noriginal list marker to be included in the list item. For example,"
+- " the\noriginal list marker to be included in the list item. For example,"
 - "`Markdown.pl` parses"
 - "``` markdown\n   - one\n\n  two\n```"
 - "as a single list item, with `two` a continuation paragraph:"
@@ -2804,7 +2807,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "A list is an [ordered list](@)"
 - "if its constituent list items begin with\n[ordered list markers], and a"
 - "[bullet list](@)"
-- "if its constituent list\nitems begin with [bullet list markers]."
+- " if its constituent list\nitems begin with [bullet list markers]."
 - "The [start number](@)"
 - "of an [ordered list] is determined by the list number of"
 - its initial list item.  The numbers of subsequent list items are
@@ -2854,7 +2857,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "(Indeed, the spec for [list items] and [block quotes]"
 - "presupposes\nthis principle.) This principle implies that if"
 - "``` markdown\n  * I need to buy\n    - new shoes"
-- "- a coat\n    - a plane ticket\n```"
+- "    - a coat\n    - a plane ticket\n```"
 - "is a list item containing a paragraph followed by a nested sublist,"
 - "as all Markdown implementations agree it is (though the paragraph\nmay be rendered without"
 - "`<p>` tags, since the list is \"tight\"),\nthen"
@@ -2863,13 +2866,13 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - by itself should be a paragraph followed by a nested sublist.
 - Since it is well established Markdown practice to allow lists to
 - "interrupt paragraphs inside list items, the [principle of\nuniformity]"
-- "requires us to allow this outside list items as\nwell.  ("
+- " requires us to allow this outside list items as\nwell.  ("
 - "[reStructuredText](https://docutils.sourceforge.net/rst.html)"
 - "takes a different approach, requiring blank lines before lists"
 - even inside other list items.)
 - In order to solve the problem of unwanted lists in paragraphs with
 - "hard-wrapped numerals, we allow only lists starting with `1`"
-- "to\ninterrupt paragraphs.  Thus,"
+- " to\ninterrupt paragraphs.  Thus,"
 - "````````````````````````````````"
 - example
 - "The number of windows in my house is\n14."
@@ -2926,7 +2929,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "- a\n - b\n  - c\n   - d"
-- "- e\n - f\n- g\n.\n<ul>"
+- "  - e\n - f\n- g\n.\n<ul>"
 - "<li>a</li>\n<li>b</li>\n<li>c</li>"
 - "<li>d</li>\n<li>e</li>\n<li>f</li>"
 - "<li>g</li>\n</ul>"
@@ -2945,8 +2948,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "- a\n - b\n  - c\n   - d"
-- "- e\n.\n<ul>\n<li>a</li>\n<li>b</li>"
-- "<li>c</li>\n<li>d\n- e</li>\n</ul>"
+- "    - e\n.\n<ul>\n<li>a</li>"
+- "<li>b</li>\n<li>c</li>\n<li>d"
+- "- e</li>\n</ul>"
 - "````````````````````````````````"
 - "And here, `3. c` is treated as in indented code block"
 - ",\nbecause it is indented four spaces and preceded by a\nblank line."
@@ -3050,7 +3054,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - example
 - "- a\n  - b\n  - c\n\n- d"
-- "- e\n  - f\n.\n<ul>\n<li>"
+- "  - e\n  - f\n.\n<ul>\n<li>"
 - "<p>a</p>\n<ul>\n<li>b</li>"
 - "<li>c</li>\n</ul>\n</li>\n<li>"
 - "<p>d</p>\n<ul>\n<li>e</li>"
@@ -3076,8 +3080,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "the characters between these two backtick strings, normalized in the\nfollowing ways:"
 - "- First, [line endings] are converted to [spaces]."
 - "- If the resulting string both begins *and* ends with a [space]"
-- "character, but does not consist entirely of [space]\n  characters, a single"
-- "[space] character is removed from the"
+- "character, but does not consist entirely of [space]"
+- "characters, a single [space] character is removed from the"
 - front and back.  This allows you to include code that begins
 - "or ends with backtick characters, which must be separated by"
 - whitespace from the opening or closing backtick strings.
@@ -3137,7 +3141,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - Note that browsers will typically collapse consecutive spaces
 - "when rendering `<code>`"
-- "elements, so it is recommended that\nthe following CSS be used:"
+- " elements, so it is recommended that\nthe following CSS be used:"
 - "code{white-space: pre-wrap;}"
 - Note that backslash escapes do not work in code spans. All backslashes
 - "are treated literally:"
@@ -3225,12 +3229,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - ") says:"
 - "> Markdown treats asterisks (`*`) and underscores (`_`) as indicators of"
 - "> emphasis. Text wrapped with one `*` or `_`"
-- "will be wrapped with an HTML\n> `<em>` tag; double"
+- " will be wrapped with an HTML\n> `<em>` tag; double"
 - "`*`'s or `_`'s will be wrapped with an HTML"
 - "`<strong>`\n> tag."
 - "This is enough for most users, but these rules leave much undecided,"
 - "especially when it comes to nested emphasis.  The original\n`Markdown.pl`"
-- "test suite makes it clear that triple `***` and\n`___`"
+- " test suite makes it clear that triple `***` and\n`___`"
 - "delimiters can be used for strong emphasis, and most"
 - "implementations have also allowed the following patterns:"
 - "``` markdown\n***strong emph***\n***strong** in emph*"
@@ -3251,9 +3255,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - for efficient parsing strategies that do not backtrack.
 - "First, some definitions.  A [delimiter run](@) is either"
 - "a sequence of one or more `*`"
-- "characters that is not preceded or\nfollowed by a non-backslash-escaped"
+- " characters that is not preceded or\nfollowed by a non-backslash-escaped"
 - "`*` character, or a sequence\nof one or more `_`"
-- "characters that is not preceded or followed by\na non-backslash-escaped"
+- " characters that is not preceded or followed by\na non-backslash-escaped"
 - "`_` character."
 - "A [left-flanking delimiter run](@) is"
 - "a [delimiter run] that is (1) not followed by [Unicode whitespace"
@@ -3269,14 +3273,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "followed by [Unicode whitespace] or a [Unicode punctuation character]."
 - "For purposes of this definition, the beginning and the end of"
 - "the line count as Unicode whitespace.\n\nHere are some examples of delimiter runs."
-- "- left-flanking but not right-flanking:\n\n    ```\n    ***abc"
-- "_abc\n    **\"abc\"\n     _\"abc\"\n    ```"
-- "- right-flanking but not left-flanking:\n\n    ```\n     abc***"
-- "abc_\n    \"abc\"**\n    \"abc\"_\n    ```"
-- "- Both left and right-flanking:\n\n    ```\n     abc***def"
-- "\"abc\"_\"def\"\n    ```"
-- "- Neither left nor right-flanking:\n\n    ```\n    abc *** def"
-- "a _ b\n    ```"
+- "  - left-flanking but not right-flanking:\n\n    ```\n    ***abc"
+- "      _abc\n    **\"abc\"\n     _\"abc\"\n    ```"
+- "  - right-flanking but not left-flanking:\n\n    ```\n     abc***"
+- "     abc_\n    \"abc\"**\n    \"abc\"_\n    ```"
+- "  - Both left and right-flanking:\n\n    ```\n     abc***def"
+- "    \"abc\"_\"def\"\n    ```"
+- "  - Neither left nor right-flanking:\n\n    ```\n    abc *** def"
+- "    a _ b\n    ```"
 - (The idea of distinguishing left-flanking and right-flanking
 - delimiter runs based on the character before and the character
 - "after comes from Roopesh Chander's"
@@ -3328,7 +3332,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - must not be a multiple of 3 unless both lengths are
 - multiples of 3.
 - 10. Strong emphasis begins with a delimiter that
-- "[can open strong emphasis] and ends with a delimiter that\n    ["
+- "    [can open strong emphasis] and ends with a delimiter that\n    ["
 - "can close strong emphasis], and that uses the same character\n    (`_`"
 - "or `*`"
 - ) as the opening delimiter.  The
@@ -3765,7 +3769,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - When the lengths of the interior closing and opening
 - delimiter runs are *both*
-- "multiples of 3, though,\nthey can match to create emphasis:"
+- " multiples of 3, though,\nthey can match to create emphasis:"
 - "````````````````````````````````"
 - example
 - "foo***bar***baz\n."
@@ -3909,7 +3913,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "Note that when delimiters do not match evenly, Rule 11 determines"
 - "that the excess literal `*`"
-- "characters will appear outside of the\nemphasis, rather than inside it:"
+- " characters will appear outside of the\nemphasis, rather than inside it:"
 - "````````````````````````````````"
 - example
 - "**foo*\n.\n<p>*<em>foo</em></p>"
@@ -3962,7 +3966,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "````````````````````````````````"
 - "Note that when delimiters do not match evenly, Rule 12 determines"
 - "that the excess literal `_`"
-- "characters will appear outside of the\nemphasis, rather than inside it:"
+- " characters will appear outside of the\nemphasis, rather than inside it:"
 - "````````````````````````````````"
 - example
 - "_foo__\n.\n<p><em>foo</em>_</p>"
@@ -4108,7 +4112,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "A link contains [link text] (the visible text), a [link destination"
 - "]\n(the URI that is the link destination), and optionally a [link title]."
 - "There are two basic kinds of links in Markdown.  In [inline links]"
-- "the\ndestination and title are given immediately after the link text.  In"
+- " the\ndestination and title are given immediately after the link text.  In"
 - "[reference links] the destination and title are defined elsewhere in\nthe document."
 - "A [link text](@) consists of a sequence of zero or more"
 - "inline elements enclosed by square brackets (`[` and `]`"
@@ -4132,24 +4136,24 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "`*[foo*](url)` is a link."
 - "A [link destination](@) consists of either"
 - "- a sequence of zero or more characters between an opening `<` and a"
-- "closing `>` that contains no line endings or unescaped\n  `<` or"
-- "`>` characters, or"
+- "  closing `>` that contains no line endings or unescaped\n  `<`"
+- "or `>` characters, or"
 - "- a nonempty sequence of characters that does not start with `<`,"
-- "does not include [ASCII control characters][ASCII control character]\n  or [space"
-- "] character, and includes parentheses only if (a) they are"
+- "  does not include [ASCII control characters][ASCII control character]\n  or ["
+- "space] character, and includes parentheses only if (a) they are"
 - backslash-escaped or (b) they are part of a balanced pair of
 - "unescaped parentheses.\n  (Implementations may impose limits on parentheses nesting to"
 - "avoid performance issues, but at least three levels of nesting"
 - "should be supported.)\n\nA [link title](@)  consists of either"
 - "- a sequence of zero or more characters between straight double-quote"
 - "characters (`\"`), including a `\"`"
-- "character only if it is\n  backslash-escaped, or"
+- " character only if it is\n  backslash-escaped, or"
 - "- a sequence of zero or more characters between straight single-quote"
 - "characters (`'`), including a `'`"
-- "character only if it is\n  backslash-escaped, or"
+- " character only if it is\n  backslash-escaped, or"
 - "- a sequence of zero or more characters between matching parentheses"
 - "(`(...)`), including a `(` or `)`"
-- "character only if it is\n  backslash-escaped."
+- " character only if it is\n  backslash-escaped."
 - "Although [link titles] may span multiple lines, they may not contain"
 - "a [blank line]."
 - "An [inline link](@) consists of a [link text] followed immediately"
@@ -4160,7 +4164,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "These four components may be separated by spaces, tabs, and up to one line"
 - "ending.\nIf both [link destination] and [link title]"
 - "are present, they *must*"
-- "be\nseparated by spaces, tabs, and up to one line ending."
+- " be\nseparated by spaces, tabs, and up to one line ending."
 - "The link's text consists of the inlines contained"
 - "in the [link text] (excluding the enclosing square brackets).\nThe link'"
 - "s URI consists of the link destination, excluding enclosing\n`<...>`"
@@ -5175,7 +5179,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "An [attribute value specification](@)"
 - "consists of optional spaces, tabs, and up to one line ending,\na"
 - "`=`"
-- "character, optional spaces, tabs, and up to one line ending,\nand an"
+- " character, optional spaces, tabs, and up to one line ending,\nand an"
 - "[attribute value]."
 - "An [attribute value](@)"
 - "consists of an [unquoted attribute value],\na ["
@@ -5340,7 +5344,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - A line ending (not in a code span or HTML tag) that is preceded
 - by two or more spaces and does not occur at the end of a block
 - "is parsed as a [hard line break](@)"
-- "(rendered\nin HTML as a `<br />` tag):"
+- " (rendered\nin HTML as a `<br />` tag):"
 - "````````````````````````````````"
 - "example\nfoo  \nbaz\n.\n<p>foo<br />\nbaz</p>"
 - "````````````````````````````````"
@@ -5464,7 +5468,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - references constructed in phase 1.
 - "At each point in processing, the document is represented as a tree of"
 - "**blocks**.  The root of the tree is a `document`"
-- "block.  The `document`\nmay have any number of other blocks as"
+- " block.  The `document`\nmay have any number of other blocks as"
 - "**children**"
 - ".  These children"
 - "may, in turn, have other blocks as children."
@@ -5475,9 +5479,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "marked by arrows:"
 - "``` tree\n-> document\n  -> block_quote\n       paragraph"
 - "\"Lorem ipsum dolor\\nsit amet.\""
-- "-> list (type=bullet tight=true bullet_char=-)\n         list_item"
-- "paragraph\n             \"Qui *quodsi iracundia*\""
-- "-> list_item\n        -> paragraph\n             \"aliquando id\"\n```"
+- "    -> list (type=bullet tight=true bullet_char=-)\n         list_item"
+- "           paragraph\n             \"Qui *quodsi iracundia*\""
+- "      -> list_item\n        -> paragraph\n             \"aliquando id\""
+- "```"
 - "## Phase 1: block structure"
 - Each line that is processed has an effect on this tree.  The line is
 - "analyzed and, depending on its contents, the document may be altered"
@@ -5524,16 +5529,16 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "``` markdown\n> Lorem ipsum dolor\n```"
 - "causes a `block_quote` block to be created as a child of our"
 - "open `document` block, and a `paragraph`"
-- "block as a child of\nthe `block_quote`"
+- " block as a child of\nthe `block_quote`"
 - ".  Then the text is added to the last open\nblock, the"
 - "`paragraph`:"
 - "``` tree\n-> document\n  -> block_quote\n    -> paragraph"
-- "\"Lorem ipsum dolor\"\n```\n\nThe next line,"
+- "         \"Lorem ipsum dolor\"\n```\n\nThe next line,"
 - "``` markdown\nsit amet.\n```"
 - "is a \"lazy continuation\" of the open `paragraph`, so it gets added"
 - "to the paragraph's text:"
 - "``` tree\n-> document\n  -> block_quote\n    -> paragraph"
-- "\"Lorem ipsum dolor\\nsit amet.\"\n```\n\nThe third line,"
+- "         \"Lorem ipsum dolor\\nsit amet.\"\n```\n\nThe third line,"
 - "``` markdown\n> - Qui *quodsi iracundia*\n```"
 - "causes the `paragraph` block to be closed, and a new `list"
 - "` block\nopened as a child of the `block_quote`.  A"
@@ -5542,18 +5547,20 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - ".  The text is then added to the new `paragraph`:"
 - "``` tree\n-> document\n  -> block_quote\n       paragraph"
 - "\"Lorem ipsum dolor\\nsit amet.\""
-- "-> list (type=bullet tight=true bullet_char=-)\n      -> list_item"
-- "-> paragraph\n             \"Qui *quodsi iracundia*\""
-- "```\n\nThe fourth line,\n\n``` markdown\n> - aliquando id\n```"
+- "-> list (type=bullet tight=true bullet_char=-)"
+- "      -> list_item\n        -> paragraph"
+- "             \"Qui *quodsi iracundia*\"\n```"
+- "The fourth line,\n\n``` markdown\n> - aliquando id\n```"
 - "causes the `list_item` (and its child the `paragraph`) to"
 - "be closed,\nand a new `list_item` opened up as child of the"
 - "`list`.  A `paragraph`\nis added as a child of the new"
 - "`list_item`, to contain the text.\nWe thus obtain the final tree:"
 - "``` tree\n-> document\n  -> block_quote\n       paragraph"
 - "\"Lorem ipsum dolor\\nsit amet.\""
-- "-> list (type=bullet tight=true bullet_char=-)\n         list_item"
-- "paragraph\n             \"Qui *quodsi iracundia*\""
-- "-> list_item\n        -> paragraph\n             \"aliquando id\"\n```"
+- "    -> list (type=bullet tight=true bullet_char=-)\n         list_item"
+- "           paragraph\n             \"Qui *quodsi iracundia*\""
+- "      -> list_item\n        -> paragraph\n             \"aliquando id\""
+- "```"
 - "## Phase 2: inline structure"
 - "Once all of the input has been parsed, all open blocks are closed."
 - "We then \"walk the tree,\" visiting every node, and parse raw"
@@ -5561,11 +5568,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "point we have seen all the link reference definitions, so we can"
 - resolve reference links as we go.
 - "``` tree\ndocument\n  block_quote\n    paragraph"
-- "str \"Lorem ipsum dolor\"\n      softbreak\n      str \"sit amet.\""
-- "list (type=bullet tight=true bullet_char=-)\n      list_item"
-- "paragraph\n          str \"Qui \"\n          emph"
-- "str \"quodsi iracundia\"\n      list_item\n        paragraph"
-- "str \"aliquando id\"\n```"
+- "      str \"Lorem ipsum dolor\"\n      softbreak"
+- "str \"sit amet.\""
+- "    list (type=bullet tight=true bullet_char=-)\n      list_item"
+- "        paragraph\n          str \"Qui \"\n          emph"
+- "            str \"quodsi iracundia\"\n      list_item"
+- "        paragraph\n          str \"aliquando id\"\n```"
 - "Notice how the [line ending] in the first paragraph has"
 - "been parsed as a `softbreak`, and the asterisks in the first list"
 - "item\nhave become an `emph`."
@@ -5631,8 +5639,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - to the beginning of the input -- the first one in parse order.)
 - "- Now, look back in the stack (staying above `stack_bottom`"
 - "and\n  the `openers_bottom`"
-- "for this delimiter type) for the\n  first matching potential opener (\"matching\""
-- "means same delimiter).\n\n- If one is found:"
+- " for this delimiter type) for the\n  first matching potential opener (\"matching\""
+- " means same delimiter).\n\n- If one is found:"
 - "+ Figure out whether we have emphasis or strong emphasis:"
 - "if both closer and opener spans have length >= 2, we have"
 - "strong, otherwise regular."
