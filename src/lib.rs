@@ -197,6 +197,7 @@ impl ChunkCapacity for RangeToInclusive<usize> {
 }
 
 /// How a particular semantic level relates to surrounding text elements.
+#[allow(dead_code)]
 #[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 enum SemanticSplitPosition {
     /// The semantic level should be included in the previous chunk.
@@ -210,6 +211,11 @@ enum SemanticSplitPosition {
 /// Information required by generic Semantic Levels
 trait Level: fmt::Debug {
     fn split_position(&self) -> SemanticSplitPosition;
+
+    /// Whether or not when splitting ranges, whitespace should be included as previous.
+    fn treat_whitespace_as_previous(&self) -> bool {
+        false
+    }
 }
 
 /// Implementation that dictates the semantic split points available.
@@ -268,6 +274,18 @@ trait SemanticSplit {
         text: &'text str,
         semantic_level: Self::Level,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter;
+
+    /// Trim the str and adjust the offset if necessary.
+    /// This is the default behavior, but custom semantic levels may need different behavior.
+    fn trim_chunk<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        offset: usize,
+        chunk: &'text str,
+    ) -> (usize, &'text str) {
+        // Figure out how many bytes we lose trimming the beginning
+        let diff = chunk.len() - chunk.trim_start().len();
+        (offset + diff, chunk.trim())
+    }
 }
 
 /// Returns chunks of text with their byte offsets as an iterator.
@@ -314,9 +332,7 @@ where
     /// If trim chunks is on, trim the str and adjust the offset
     fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
         if self.trim_chunks {
-            // Figure out how many bytes we lose trimming the beginning
-            let diff = chunk.len() - chunk.trim_start().len();
-            (offset + diff, chunk.trim())
+            self.semantic_split.trim_chunk(offset, chunk)
         } else {
             (offset, chunk)
         }
@@ -429,13 +445,7 @@ where
         let chunk = self.text.get(start..self.cursor)?;
 
         // Trim whitespace if user requested it
-        Some(if self.trim_chunks {
-            // Figure out how many bytes we lose trimming the beginning
-            let offset = chunk.len() - chunk.trim_start().len();
-            (start + offset, chunk.trim())
-        } else {
-            (start, chunk)
-        })
+        Some(self.trim_chunk(start, chunk))
     }
 
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
@@ -551,6 +561,15 @@ fn split_str_by_separator<L: Level>(
                                 let prev_section = text
                                     .get(cursor..range.start)
                                     .expect("invalid character sequence");
+                                if prev_section.trim().is_empty()
+                                    && level.treat_whitespace_as_previous()
+                                {
+                                    let section = text
+                                        .get(cursor..range.end)
+                                        .expect("invalid character sequence");
+                                    cursor = range.end;
+                                    return Some(Either::Left(once((offset, section))));
+                                }
                                 let separator = text
                                     .get(range.start..range.end)
                                     .expect("invalid character sequence");

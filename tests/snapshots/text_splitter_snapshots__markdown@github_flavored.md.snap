@@ -203,8 +203,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - " number\n"
 - "⋅⋅1. "
 - Ordered sub-list
-- "\n"
-- "4. "
+- "\n4. "
 - And another item
 - ".\n\n"
 - "⋅⋅⋅You can have "
@@ -248,10 +247,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "+ Or pluses\n\n"
 - "1. "
 - Make my changes
-- "\n   "
-- " 1. Fix bug\n"
-- "   "
-- " 2. "
+- "\n    1. Fix bug\n"
+- "    2. "
 - "Improve "
 - "formatting\n"
 - "        - Make "
@@ -543,8 +540,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Here's our logo "
 - "(hover to see "
 - "the title text):"
-- "\n\n"
-- "Inline-style:\n!["
+- "\n\nInline-style:\n"
+- "!["
 - "alt text](https:"
 - //github.com/
 - adam-p/markdown-
@@ -1157,8 +1154,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\nUnderscores\n\n"
 - "------\n\n"
 - "# YouTube Videos"
-- "\n\n"
-- "```\n"
+- "\n\n```\n"
 - "<a href=\"http://"
 - www.youtube.com/
 - watch?
@@ -1196,8 +1192,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - " HERE\" width=\""
 - "240\" height=\"180"
 - "\" border=\"10\">\n"
-- "</a>\n\n"
-- "```\n[!["
+- "</a>\n"
+- "\n```\n[!["
 - "IMAGE ALT TEXT "
 - "HERE](http://"
 - img.youtube.com/
