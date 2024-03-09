@@ -3,7 +3,7 @@
 use std::fs;
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
-use text_splitter::{unstable_markdown::MarkdownSplitter, Characters, TextSplitter};
+use text_splitter::{Characters, MarkdownSplitter, TextSplitter};
 use tiktoken_rs::{cl100k_base, CoreBPE};
 use tokenizers::Tokenizer;
 

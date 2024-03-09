@@ -14,13 +14,15 @@ use itertools::Itertools;
 mod characters;
 #[cfg(feature = "tokenizers")]
 mod huggingface;
+#[cfg(feature = "markdown")]
+mod markdown;
 mod text;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
-#[cfg(feature = "markdown")]
-pub mod unstable_markdown;
 
 pub use characters::Characters;
+#[cfg(feature = "markdown")]
+pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
 
 /// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
