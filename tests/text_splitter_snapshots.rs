@@ -5,7 +5,7 @@ use itertools::Itertools;
 use more_asserts::assert_le;
 use once_cell::sync::Lazy;
 #[cfg(feature = "markdown")]
-use text_splitter::unstable_markdown::MarkdownSplitter;
+use text_splitter::MarkdownSplitter;
 use text_splitter::{Characters, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};

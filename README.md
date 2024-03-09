@@ -16,6 +16,8 @@ This crate provides methods for splitting longer pieces of text into smaller chu
 
 ### By Number of Characters
 
+The simplest way to use this crate is to use the default implementation, which uses character count for chunk size.
+
 ```rust
 use text_splitter::{Characters, TextSplitter};
 
@@ -32,7 +34,8 @@ println!("{}", chunks.count())
 
 ### With Huggingface Tokenizer
 
-Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled. 
+Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled.
+
 <details>
 <summary>
 Click to show Cargo.toml.
@@ -40,9 +43,10 @@ Click to show Cargo.toml.
 
 ```toml
 [dependencies]
-text-splitter = { version = "0.6", features = ["tokenizers"] }
+text-splitter = { version = "0.7.0", features = ["tokenizers"] }
 tokenizers = { version = "0.15", features = ["http"] }
 ```
+
 </details>
 
 ```rust
@@ -71,9 +75,10 @@ Click to show Cargo.toml.
 </summary>
 
 ```toml
-text-splitter = { version = "0.6", features = ["tiktoken-rs"] }
+text-splitter = { version = "0.7.0", features = ["tiktoken-rs"] }
 tiktoken-rs = "0.5"
 ```
+
 </details>
 
 ```rust
@@ -113,29 +118,85 @@ let chunks = splitter.chunks("your document text", max_characters);
 println!("{}", chunks.count())
 ```
 
+### Markdown
+
+All of the above examples also can also work with Markdown text. If you enable the `markdown` feature, you can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
+
+```toml
+[dependencies]
+text-splitter = { version = "0.7.0", features = ["markdown"] }
+```
+
+</details>
+
+```rust
+use text_splitter::MarkdownSplitter;
+// Maximum number of characters in a chunk. Can also use a range.
+let max_characters = 1000;
+// Default implementation uses character count for chunk size.
+// Can also use all of the same tokenizer implementations as `TextSplitter`.
+let splitter = MarkdownSplitter::default()
+    // Optionally can also have the splitter trim whitespace for you
+    .with_trim_chunks(true);
+
+let chunks = splitter.chunks("# Header\n\nyour document text", max_characters);
+println!("{}", chunks.count())
+```
+
 ## Method
 
-To preserve as much semantic meaning within a chunk as possible, a recursive approach is used, starting at larger semantic units and, if that is too large, breaking it up into the next largest unit. Here is an example of the steps used:
+To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
 
-1. Split the text by a given level
-2. For each section, does it fit within the chunk size?
-   - Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
-   - No. Split by the next level and repeat.
+1. Split the text by a increasing semantic levels.
+2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
+3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length. Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
 
-The boundaries used to split the text if using the top-level `chunks` method, in descending length:
+The boundaries used to split the text if using the `chunks` method, in ascending order:
 
-1. Descending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level.
-2. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+### `TextSplitter` Semantic Levels
+
+1. Characters
+2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-4. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-5. Characters
+4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
-_Note on sentences:_ There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.
+### `Markdown` Semantic Levels
+
+Markdown is parsed according to the CommonMark spec, along with some optional features such as GitHub Flavored Markdown.
+
+1. Characters
+2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+5. Soft line breaks (single newline) which isn't necessarily a new element in Markdown.
+6. Text nodes within elements
+7. Inline elements such as: emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
+8. Block elements suce as: paragraphs, code blocks, footnote definitions, and hard breaks.
+9. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
+10. Meta containers such as: lists and tables.
+11. Thematic breaks or horizontal rules.
+12. Headings by level
+13. Metadata at the beginning of the document
+
+Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+
+### Note on sentences
+
+There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.
+
+## Feature Flags
+
+| Feature Flag  | Compatible with     | Description                                                                                                                                                              |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `markdown`    | -                   | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec.                                                                            |
+| `tiktoken-rs` | `tiktoken-rs@0.5.8` | Enables the `TextSplitter::new` to take a `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                    |
+| `tokenizers`  | `tokenizers@0.15.2` | Enables the `TextSplitter::new` to take a `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Huggingface-compatible tokenizer. |
 
 ## Inspiration
 
-This crate was inspired by [LangChain's TextSplitter](https://python.langchain.com/en/latest/modules/indexes/text_splitters/examples/recursive_text_splitter.html). But, looking into the implementation, there was potential for better performance as well as better semantic chunking.
+This crate was inspired by [LangChain's TextSplitter](https://api.python.langchain.com/en/latest/character/langchain_text_splitters.character.RecursiveCharacterTextSplitter.html#langchain_text_splitters.character.RecursiveCharacterTextSplitter). But, looking into the implementation, there was potential for better performance as well as better semantic chunking.
 
 A big thank you to the unicode-rs team for their [unicode-segmentation](https://crates.io/crates/unicode-segmentation) crate that manages a lot of the complexity of matching the Unicode rules for words and sentences.

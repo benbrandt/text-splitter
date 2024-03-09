@@ -1,7 +1,7 @@
 /*!
 # [`MarkdownSplitter`]
 Semantic splitting of Markdown documents. Tries to use as many semantic units from Markdown
-as possible, eventually falling back to the normal [`TextSplitter`] method.
+as possible, according to the Common Mark specification.
 */
 
 use std::ops::Range;
@@ -29,7 +29,7 @@ where
     chunk_sizer: S,
     /// Whether or not all chunks should have whitespace trimmed.
     /// If `false`, joining all chunks should return the original string.
-    /// If `true`, all chunks will have whitespace removed from beginning and end.
+    /// If `true`, all chunks will have whitespace removed from beginning and end, preserving indentation if necessary.
     trim_chunks: bool,
 }
 
@@ -46,7 +46,7 @@ where
     /// Creates a new [`MarkdownSplitter`].
     ///
     /// ```
-    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
+    /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// // Characters is the default, so you can also do `MarkdownSplitter::default()`
     /// let splitter = MarkdownSplitter::new(Characters);
@@ -65,9 +65,12 @@ where
     /// If `false` (default), joining all chunks should return the original
     /// string.
     /// If `true`, all chunks will have whitespace removed from beginning and end.
+    /// Indentation however will be preserved if the chunk also includes multiple lines.
+    /// Extra newlines are always removed, but if the text would include multiple indented list
+    /// items, the indentation of the first element will also be preserved.
     ///
     /// ```
-    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
+    /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default().with_trim_chunks(true);
     /// ```
@@ -82,24 +85,28 @@ where
     ///
     /// ## Method
     ///
-    /// To preserve as much semantic meaning within a chunk as possible, a
-    /// recursive approach is used, starting at larger semantic units and, if that is
-    /// too large, breaking it up into the next largest unit. Here is an example of the
-    /// steps used:
+    /// To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
     ///
-    /// 1. Split the text by a given level
-    /// 2. For each section, does it fit within the chunk size?
-    ///   a. Yes. Merge as many of these neighboring sections into a chunk as possible to maximize chunk length.
-    ///   b. No. Split by the next level and repeat.
+    /// 1. Characters
+    /// 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 5. Soft line breaks (single newline) which isn't necessarily a new element in Markdown.
+    /// 6. Text nodes within elements
+    /// 7. Inline elements such as: emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
+    /// 8. Block elements suce as: paragraphs, code blocks, footnote definitions, and hard breaks.
+    /// 9. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
+    /// 10. Meta containers such as: lists and tables.
+    /// 11. Thematic breaks or horizontal rules.
+    /// 12. Headings by level
+    /// 13. Metadata at the beginning of the document
     ///
-    /// The boundaries used to split the text if using the top-level `chunks` method, in descending length:
+    /// Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
     ///
-    /// 1. [Headings](https://spec.commonmark.org/0.30/#atx-headings) - in descending levels
-    /// 2. [Thematic Breaks](https://spec.commonmark.org/0.30/#thematic-break)
-    /// 3. Progress through the `TextSplitter::chunks` method.
+    /// Markdown is parsed according to the Commonmark spec, along with some optional features such as GitHub Flavored Markdown.
     ///
     /// ```
-    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
+    /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
@@ -121,7 +128,7 @@ where
     /// See [`MarkdownSplitter::chunks`] for more information.
     ///
     /// ```
-    /// use text_splitter::{Characters, unstable_markdown::MarkdownSplitter};
+    /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
     /// let text = "Some text\n\nfrom a\ndocument";
@@ -268,7 +275,6 @@ impl SemanticSplit for Markdown {
                     | Tag::TableCell,
                 )
                 | Event::Code(_)
-                | Event::HardBreak
                 | Event::InlineHtml(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     range,
@@ -284,6 +290,7 @@ impl SemanticSplit for Markdown {
                 )),
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::Html(_)
+                | Event::HardBreak
                 | Event::Start(Tag::Paragraph | Tag::CodeBlock(_) | Tag::FootnoteDefinition(_)) => {
                     Some((SemanticLevel::Block, range))
                 }
