@@ -109,10 +109,10 @@ where
     /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
-    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let text = "# Header\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec!["Some text\n", "\nfrom a\n", "document"], chunks);
+    /// assert_eq!(vec!["# Header\n\n", "from a\n", "document"], chunks);
     /// ```
     pub fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
@@ -131,10 +131,10 @@ where
     /// use text_splitter::{Characters, MarkdownSplitter};
     ///
     /// let splitter = MarkdownSplitter::default();
-    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let text = "# Header\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text, 10).collect::<Vec<_>>();
     ///
-    /// assert_eq!(vec![(0, "Some text\n"), (10, "\nfrom a\n"), (18, "document")], chunks);
+    /// assert_eq!(vec![(0, "# Header\n\n"), (10, "from a\n"), (17, "document")], chunks);
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
