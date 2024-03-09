@@ -32,7 +32,7 @@ let chunks = splitter.chunks("your document text", max_characters);
 println!("{}", chunks.count())
 ```
 
-### With Huggingface Tokenizer
+### With Hugging Face Tokenizer
 
 Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled.
 
@@ -189,11 +189,11 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 
 ## Feature Flags
 
-| Feature Flag  | Compatible with     | Description                                                                                                                                                              |
-| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `markdown`    | -                   | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec.                                                                            |
-| `tiktoken-rs` | `tiktoken-rs@0.5.8` | Enables the `TextSplitter::new` to take a `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                    |
-| `tokenizers`  | `tokenizers@0.15.2` | Enables the `TextSplitter::new` to take a `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Huggingface-compatible tokenizer. |
+| Feature Flag  | Compatible with     | Description                                                                                                                                                               |
+| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `markdown`    | -                   | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec.                                                                             |
+| `tiktoken-rs` | `tiktoken-rs@0.5.8` | Enables the `TextSplitter::new` to take a `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                     |
+| `tokenizers`  | `tokenizers@0.15.2` | Enables the `TextSplitter::new` to take a `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
 
 ## Inspiration
 
