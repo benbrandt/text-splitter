@@ -818,10 +818,7 @@ mod tests {
             vec![
                 &(SemanticLevel::Block, 0..27),
                 &(SemanticLevel::Text, 0..9),
-                &(
-                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
-                    9..11
-                ),
+                &(SemanticLevel::Block, 9..11),
                 &(SemanticLevel::Text, 11..27)
             ],
             markdown.ranges().collect::<Vec<_>>()
