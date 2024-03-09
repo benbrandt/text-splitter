@@ -99,7 +99,7 @@ The boundaries used to split the text if using the `chunks` method, in ascending
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
-### `Markdown` Semantic Levels
+### `MarkdownSplitter` Semantic Levels
 
 Markdown is parsed according to the CommonMark spec, along with some optional features such as GitHub Flavored Markdown.
 

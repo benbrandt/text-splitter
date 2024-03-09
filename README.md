@@ -36,18 +36,13 @@ println!("{}", chunks.count())
 
 Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled.
 
-<details>
-<summary>
-Click to show Cargo.toml.
-</summary>
+**Cargo.toml**
 
 ```toml
 [dependencies]
 text-splitter = { version = "0.7.0", features = ["tokenizers"] }
 tokenizers = { version = "0.15", features = ["http"] }
 ```
-
-</details>
 
 ```rust
 use text_splitter::TextSplitter;
@@ -69,17 +64,12 @@ println!("{}", chunks.count())
 
 Requires the `tiktoken-rs` feature to be activated and adding `tiktoken-rs` to dependencies.
 
-<details>
-<summary>
-Click to show Cargo.toml.
-</summary>
+**Cargo.toml**
 
 ```toml
 text-splitter = { version = "0.7.0", features = ["tiktoken-rs"] }
 tiktoken-rs = "0.5"
 ```
-
-</details>
 
 ```rust
 use text_splitter::TextSplitter;
@@ -122,6 +112,8 @@ println!("{}", chunks.count())
 
 All of the above examples also can also work with Markdown text. If you enable the `markdown` feature, you can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
 
+**Cargo.toml**
+
 ```toml
 [dependencies]
 text-splitter = { version = "0.7.0", features = ["markdown"] }
@@ -163,7 +155,7 @@ The boundaries used to split the text if using the `chunks` method, in ascending
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
-### `Markdown` Semantic Levels
+### `MarkdownSplitter` Semantic Levels
 
 Markdown is parsed according to the CommonMark spec, along with some optional features such as GitHub Flavored Markdown.
 
@@ -189,11 +181,18 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 
 ## Feature Flags
 
-| Feature Flag  | Compatible with     | Description                                                                                                                                                               |
-| ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `markdown`    | -                   | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec.                                                                             |
-| `tiktoken-rs` | `tiktoken-rs@0.5.8` | Enables the `TextSplitter::new` to take a `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                     |
-| `tokenizers`  | `tokenizers@0.15.2` | Enables the `TextSplitter::new` to take a `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
+### Document Format Support
+
+| Feature    | Description                                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| `markdown` | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec. |
+
+### Tokenizer Support
+
+| Dependency Feature | Version Supported | Description                                                                                                                                                               |
+| ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tiktoken-rs`      | `0.5.8`           | Enables the `TextSplitter::new` to take a `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                     |
+| `tokenizers`       | `0.15.2`          | Enables the `TextSplitter::new` to take a `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
 
 ## Inspiration
 
