@@ -1,5 +1,111 @@
 # Changelog
 
+## v0.7.0
+
+### What's New
+
+**Markdown Support!** Both the Rust crate and Python package have a new `MarkdownSplitter` you can use to split markdown text. It leverages the great work of the `pulldown-cmark` crate to parse markdown according to the CommonMark spec, and allows for very fine-grained control over how to split the text.
+
+In terms of use, the API is identical to the `TextSplitter`, so you should be able to just drop it in when you have Markdown available instead of just plain text.
+
+#### Rust
+
+```rust
+use text_splitter::MarkdownSplitter;
+
+// Default implementation uses character count for chunk size.
+// Can also use all of the same tokenizer implementations as `TextSplitter`.
+let splitter = MarkdownSplitter::default()
+    // Optionally can also have the splitter trim whitespace for you. It
+    // will preserve indentation if multiple lines are covered in a chunk.
+    .with_trim_chunks(true);
+
+let chunks = splitter.chunks("# Header\n\nyour document text", 1000)
+```
+
+#### Python
+
+```python
+from semantic_text_splitter import MarkdownSplitter
+
+# Default implementation uses character count for chunk size.
+# Can also use all of the same tokenizer implementations as `TextSplitter`.
+# By default it will also have trim whitespace for you.
+# It will preserve indentation if multiple lines are covered in a chunk.
+splitter = MarkdownSplitter()
+chunks = splitter.chunks("# Header\n\nyour document text", 1000)
+```
+
+### Breaking Changes
+
+#### Rust
+
+MSRV is now 1.75.0 since the ability to use `impl Trait` in trait methods allowed for much simpler internal APIs to enable the `MarkdownSplitter`.
+
+#### Python
+
+`CharacterTextSplitter`, `HuggingFaceTextSplitter`, `TiktokenTextSplitter`, and `CustomTextSplitter` classes have now all been consolidated into a single `TextSplitter` class. All of the previous use cases are still supported, you just need to instantiate the class with various class methods.
+
+Below are the changes you need to make to your code to upgrade to v0.7.0:
+
+##### `CharacterTextSplitter`
+
+```python
+# Before
+from semantic_text_splitter import CharacterTextSplitter
+splitter = CharacterTextSplitter()
+
+# After
+from semantic_text_splitter import TextSplitter
+splitter = TextSplitter()
+```
+
+##### `HuggingFaceTextSplitter`
+
+```python
+# Before
+from semantic_text_splitter import HuggingFaceTextSplitter
+from tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+splitter = HuggingFaceTextSplitter(tokenizer)
+
+# After
+from semantic_text_splitter import TextSplitter
+from tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+splitter = TextSplitter.from_huggingface_tokenizer(tokenizer)
+```
+
+##### `TiktokenTextSplitter`
+
+```python
+# Before
+from semantic_text_splitter import TiktokenTextSplitter
+
+splitter = TiktokenTextSplitter("gpt-3.5-turbo")
+
+# After
+from semantic_text_splitter import TextSplitter
+
+splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo")
+```
+
+##### `CustomTextSplitter`
+
+```python
+# Before
+from semantic_text_splitter import CustomTextSplitter
+
+splitter = CustomTextSplitter(lambda text: len(text))
+
+# After
+from semantic_text_splitter import TextSplitter
+
+splitter = TextSplitter.from_callback(lambda text: len(text))
+```
+
 ## v0.6.3
 
 - Re-release because of aggresive exclusions of benchmarks for the Rust package.
