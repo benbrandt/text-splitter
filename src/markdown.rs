@@ -94,7 +94,7 @@ where
     /// 5. Soft line breaks (single newline) which isn't necessarily a new element in Markdown.
     /// 6. Text nodes within elements
     /// 7. Inline elements such as: emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
-    /// 8. Block elements suce as: paragraphs, code blocks, footnote definitions, and hard breaks.
+    /// 8. Block elements suce as: paragraphs, code blocks, and footnote definitions.
     /// 9. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
     /// 10. Meta containers such as: lists and tables.
     /// 11. Thematic breaks or horizontal rules.
@@ -274,6 +274,7 @@ impl SemanticSplit for Markdown {
                     | Tag::Image { .. }
                     | Tag::TableCell,
                 )
+                | Event::HardBreak
                 | Event::Code(_)
                 | Event::InlineHtml(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
@@ -290,7 +291,6 @@ impl SemanticSplit for Markdown {
                 )),
                 Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
                 Event::Html(_)
-                | Event::HardBreak
                 | Event::Start(Tag::Paragraph | Tag::CodeBlock(_) | Tag::FootnoteDefinition(_)) => {
                     Some((SemanticLevel::Block, range))
                 }
@@ -818,7 +818,10 @@ mod tests {
             vec![
                 &(SemanticLevel::Block, 0..27),
                 &(SemanticLevel::Text, 0..9),
-                &(SemanticLevel::Block, 9..11),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    9..11
+                ),
                 &(SemanticLevel::Text, 11..27)
             ],
             markdown.ranges().collect::<Vec<_>>()
