@@ -42,7 +42,7 @@ tokenizers = { version = "0.15.2", default_features = false, features = [
 unicode-segmentation = "1.11.0"
 
 [dev-dependencies]
-criterion = "0.5.1"
+divan = "0.1.14"
 fake = "2.9.2"
 insta = { version = "1.35.1", features = ["glob", "yaml"] }
 more-asserts = "0.3.1"

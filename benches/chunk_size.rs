@@ -1,117 +1,122 @@
 #![allow(missing_docs)]
 
-use std::fs;
-
-use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
-use text_splitter::{Characters, MarkdownSplitter, TextSplitter};
-use tiktoken_rs::{cl100k_base, CoreBPE};
-use tokenizers::Tokenizer;
-
-#[allow(clippy::large_enum_variant)]
-enum TextSplitterImpl {
-    Characters(TextSplitter<Characters>),
-    Huggingface(TextSplitter<Tokenizer>),
-    Tiktoken(TextSplitter<CoreBPE>),
+fn main() {
+    // Run registered benchmarks.
+    divan::main();
 }
 
-impl TextSplitterImpl {
-    fn name(&self) -> &str {
-        match self {
-            TextSplitterImpl::Characters(_) => "Characters",
-            TextSplitterImpl::Huggingface(_) => "Huggingface",
-            TextSplitterImpl::Tiktoken(_) => "Tiktoken",
-        }
+const CHUNK_SIZES: [usize; 4] = [64, 512, 4096, 32768];
+
+#[divan::bench_group]
+mod text {
+    use std::fs;
+
+    use divan::{black_box_drop, Bencher};
+    use text_splitter::TextSplitter;
+    use tiktoken_rs::cl100k_base;
+    use tokenizers::Tokenizer;
+
+    use crate::CHUNK_SIZES;
+
+    const TEXT_FILENAMES: &[&str] = &["romeo_and_juliet", "room_with_a_view"];
+
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    TextSplitter::default(),
+                    fs::read_to_string(format!("tests/inputs/text/{filename}.txt")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
     }
 
-    fn iter() -> [Self; 3] {
-        [
-            Self::Characters(TextSplitter::default()),
-            Self::Huggingface(TextSplitter::new(
-                Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
-            )),
-            Self::Tiktoken(TextSplitter::new(cl100k_base().unwrap())),
-        ]
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    TextSplitter::new(cl100k_base().unwrap()),
+                    fs::read_to_string(format!("tests/inputs/text/{filename}.txt")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
     }
 
-    fn chunks<'text>(&self, text: &'text str, chunk_size: usize) -> Vec<&'text str> {
-        match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_size).collect(),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_size).collect(),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_size).collect(),
-        }
-    }
-}
-
-#[allow(clippy::large_enum_variant)]
-enum MarkdownSplitterImpl {
-    Characters(MarkdownSplitter<Characters>),
-    Huggingface(MarkdownSplitter<Tokenizer>),
-    Tiktoken(MarkdownSplitter<CoreBPE>),
-}
-
-impl MarkdownSplitterImpl {
-    fn name(&self) -> &str {
-        match self {
-            MarkdownSplitterImpl::Characters(_) => "Characters",
-            MarkdownSplitterImpl::Huggingface(_) => "Huggingface",
-            MarkdownSplitterImpl::Tiktoken(_) => "Tiktoken",
-        }
-    }
-
-    fn iter() -> [Self; 3] {
-        [
-            Self::Characters(MarkdownSplitter::default()),
-            Self::Huggingface(MarkdownSplitter::new(
-                Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
-            )),
-            Self::Tiktoken(MarkdownSplitter::new(cl100k_base().unwrap())),
-        ]
-    }
-
-    fn chunks<'text>(&self, text: &'text str, chunk_size: usize) -> Vec<&'text str> {
-        match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_size).collect(),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_size).collect(),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_size).collect(),
-        }
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    TextSplitter::new(Tokenizer::from_pretrained("bert-base-cased", None).unwrap()),
+                    fs::read_to_string(format!("tests/inputs/text/{filename}.txt")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
     }
 }
 
-fn text_benchmark(c: &mut Criterion) {
-    for filename in ["romeo_and_juliet", "room_with_a_view"] {
-        let mut group = c.benchmark_group(filename);
-        let text = fs::read_to_string(format!("tests/inputs/text/{filename}.txt")).unwrap();
+#[divan::bench_group]
+mod markdown {
+    use std::fs;
 
-        for splitter in TextSplitterImpl::iter() {
-            for chunk_size in (2..9).map(|n| 4usize.pow(n)) {
-                group.bench_with_input(
-                    BenchmarkId::new(splitter.name(), chunk_size),
-                    &chunk_size,
-                    |b, &chunk_size| b.iter(|| splitter.chunks(&text, chunk_size)),
-                );
-            }
-        }
-        group.finish();
+    use divan::{black_box_drop, Bencher};
+    use text_splitter::MarkdownSplitter;
+    use tiktoken_rs::cl100k_base;
+    use tokenizers::Tokenizer;
+
+    use crate::CHUNK_SIZES;
+
+    const MARKDOWN_FILENAMES: &[&str] = &["commonmark_spec"];
+
+    #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
+    fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    MarkdownSplitter::default(),
+                    fs::read_to_string(format!("tests/inputs/markdown/{filename}.md")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
+    }
+
+    #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
+    fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    MarkdownSplitter::new(cl100k_base().unwrap()),
+                    fs::read_to_string(format!("tests/inputs/markdown/{filename}.md")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
+    }
+
+    #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
+    fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bencher
+            .with_inputs(|| {
+                (
+                    MarkdownSplitter::new(
+                        Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
+                    ),
+                    fs::read_to_string(format!("tests/inputs/markdown/{filename}.md")).unwrap(),
+                )
+            })
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text, N).for_each(black_box_drop);
+            });
     }
 }
-
-fn markdown_benchmark(c: &mut Criterion) {
-    for filename in ["commonmark_spec"] {
-        let mut group = c.benchmark_group(filename);
-        let text = fs::read_to_string(format!("tests/inputs/markdown/{filename}.md")).unwrap();
-
-        for splitter in MarkdownSplitterImpl::iter() {
-            for chunk_size in (2..9).map(|n| 4usize.pow(n)) {
-                group.bench_with_input(
-                    BenchmarkId::new(splitter.name(), chunk_size),
-                    &chunk_size,
-                    |b, &chunk_size| b.iter(|| splitter.chunks(&text, chunk_size)),
-                );
-            }
-        }
-        group.finish();
-    }
-}
-
-criterion_group!(benches, text_benchmark, markdown_benchmark);
-criterion_main!(benches);
