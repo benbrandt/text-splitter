@@ -4,16 +4,15 @@ Semantic splitting of Markdown documents. Tries to use as many semantic units fr
 as possible, according to the Common Mark specification.
 */
 
-use std::ops::Range;
+use std::{iter::once, ops::Range};
 
 use auto_enums::auto_enum;
+use either::Either;
+use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{
-    split_str_by_separator, Characters, ChunkCapacity, ChunkSizer, Level, SemanticSplit,
-    SemanticSplitPosition, TextChunks,
-};
+use crate::{Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -169,6 +168,17 @@ impl From<pulldown_cmark::HeadingLevel> for HeadingLevel {
     }
 }
 
+/// How a particular semantic level relates to surrounding text elements.
+#[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+enum SemanticSplitPosition {
+    /// The semantic level should be included in the previous chunk.
+    Prev,
+    /// The semantic level should be treated as its own chunk.
+    Own,
+    /// The semantic level should be included in the next chunk.
+    Next,
+}
+
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
@@ -204,8 +214,8 @@ enum SemanticLevel {
     Metadata,
 }
 
-impl Level for SemanticLevel {
-    fn split_position(&self) -> SemanticSplitPosition {
+impl SemanticLevel {
+    fn split_position(self) -> SemanticSplitPosition {
         match self {
             SemanticLevel::Char
             | SemanticLevel::GraphemeCluster
@@ -217,13 +227,13 @@ impl Level for SemanticLevel {
             | SemanticLevel::MetaContainer
             | SemanticLevel::Rule
             | SemanticLevel::Metadata => SemanticSplitPosition::Own,
-            SemanticLevel::InlineElement(p) | SemanticLevel::ContainerBlock(p) => *p,
+            SemanticLevel::InlineElement(p) | SemanticLevel::ContainerBlock(p) => p,
             // Attach it to the next text
             SemanticLevel::Heading(_) => SemanticSplitPosition::Next,
         }
     }
 
-    fn treat_whitespace_as_previous(&self) -> bool {
+    fn treat_whitespace_as_previous(self) -> bool {
         match self {
             SemanticLevel::Char
             | SemanticLevel::GraphemeCluster
@@ -248,6 +258,85 @@ impl Level for SemanticLevel {
 struct Markdown {
     /// Range of each semantic markdown item and its precalculated semantic level
     ranges: Vec<(SemanticLevel, Range<usize>)>,
+}
+
+impl Markdown {
+    /// Given a list of separator ranges, construct the sections of the text
+    fn split_str_by_separator(
+        text: &str,
+        separator_ranges: impl Iterator<Item = (SemanticLevel, Range<usize>)>,
+    ) -> impl Iterator<Item = (usize, &str)> {
+        let mut cursor = 0;
+        let mut final_match = false;
+        separator_ranges
+            .batching(move |it| {
+                loop {
+                    match it.next() {
+                        // If we've hit the end, actually return None
+                        None if final_match => return None,
+                        // First time we hit None, return the final section of the text
+                        None => {
+                            final_match = true;
+                            return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
+                        }
+                        // Return text preceding match + the match
+                        Some((level, range)) => {
+                            let offset = cursor;
+                            match level.split_position() {
+                                SemanticSplitPosition::Prev => {
+                                    if range.end < cursor {
+                                        continue;
+                                    }
+                                    let section = text
+                                        .get(cursor..range.end)
+                                        .expect("invalid character sequence");
+                                    cursor = range.end;
+                                    return Some(Either::Left(once((offset, section))));
+                                }
+                                SemanticSplitPosition::Own => {
+                                    if range.start < cursor {
+                                        continue;
+                                    }
+                                    let prev_section = text
+                                        .get(cursor..range.start)
+                                        .expect("invalid character sequence");
+                                    if prev_section.trim().is_empty()
+                                        && level.treat_whitespace_as_previous()
+                                    {
+                                        let section = text
+                                            .get(cursor..range.end)
+                                            .expect("invalid character sequence");
+                                        cursor = range.end;
+                                        return Some(Either::Left(once((offset, section))));
+                                    }
+                                    let separator = text
+                                        .get(range.start..range.end)
+                                        .expect("invalid character sequence");
+                                    cursor = range.end;
+                                    return Some(Either::Right(
+                                        [(offset, prev_section), (range.start, separator)]
+                                            .into_iter(),
+                                    ));
+                                }
+                                SemanticSplitPosition::Next => {
+                                    if range.start < cursor {
+                                        continue;
+                                    }
+                                    let prev_section = text
+                                        .get(cursor..range.start)
+                                        .expect("invalid character sequence");
+                                    // Separator will be part of the next chunk
+                                    cursor = range.start;
+                                    return Some(Either::Left(once((offset, prev_section))));
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            .flatten()
+            .filter(|(_, s)| !s.is_empty())
+    }
 }
 
 const NEWLINES: [char; 2] = ['\n', '\r'];
@@ -356,7 +445,7 @@ impl SemanticSplit for Markdown {
             | SemanticLevel::MetaContainer
             | SemanticLevel::Heading(_)
             | SemanticLevel::Rule
-            | SemanticLevel::Metadata => split_str_by_separator(
+            | SemanticLevel::Metadata => Self::split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
                     .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),

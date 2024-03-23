@@ -3,17 +3,16 @@
 Semantic splitting of text documents.
 */
 
-use std::ops::Range;
+use std::{iter::once, ops::Range};
 
 use auto_enums::auto_enum;
+use either::Either;
+use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{
-    split_str_by_separator, Characters, ChunkCapacity, ChunkSizer, Level, SemanticSplit,
-    SemanticSplitPosition, TextChunks,
-};
+use crate::{Characters, ChunkCapacity, ChunkSizer, SemanticSplit, TextChunks};
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -164,13 +163,6 @@ enum SemanticLevel {
     LineBreak(usize),
 }
 
-impl Level for SemanticLevel {
-    /// All of these levels should be treated as their own chunk
-    fn split_position(&self) -> SemanticSplitPosition {
-        SemanticSplitPosition::Own
-    }
-}
-
 // Lazy so that we don't have to compile them more than once
 static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
@@ -180,6 +172,51 @@ static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unw
 struct LineBreaks {
     /// Range of each line break and its precalculated semantic level
     line_breaks: Vec<(SemanticLevel, Range<usize>)>,
+}
+
+impl LineBreaks {
+    /// Given a list of separator ranges, construct the sections of the text
+    fn split_str_by_separator(
+        text: &str,
+        separator_ranges: impl Iterator<Item = Range<usize>>,
+    ) -> impl Iterator<Item = (usize, &str)> {
+        let mut cursor = 0;
+        let mut final_match = false;
+        separator_ranges
+            .batching(move |it| {
+                loop {
+                    match it.next() {
+                        // If we've hit the end, actually return None
+                        None if final_match => return None,
+                        // First time we hit None, return the final section of the text
+                        None => {
+                            final_match = true;
+                            return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
+                        }
+                        // Return text preceding match + the match
+                        Some(range) => {
+                            if range.start < cursor {
+                                continue;
+                            }
+
+                            let offset = cursor;
+                            let prev_section = text
+                                .get(offset..range.start)
+                                .expect("invalid character sequence");
+                            let separator = text
+                                .get(range.start..range.end)
+                                .expect("invalid character sequence");
+                            cursor = range.end;
+                            return Some(Either::Right(
+                                [(offset, prev_section), (range.start, separator)].into_iter(),
+                            ));
+                        }
+                    }
+                }
+            })
+            .flatten()
+            .filter(|(_, s)| !s.is_empty())
+    }
 }
 
 impl SemanticSplit for LineBreaks {
@@ -245,10 +282,10 @@ impl SemanticSplit for LineBreaks {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::LineBreak(_) => split_str_by_separator(
+            SemanticLevel::LineBreak(_) => Self::split_str_by_separator(
                 text,
                 self.ranges_after_offset(offset, semantic_level)
-                    .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),
+                    .map(move |(_, sep)| sep.start - offset..sep.end - offset),
             )
             .map(move |(i, str)| (offset + i, str)),
         }
