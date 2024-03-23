@@ -79,6 +79,19 @@ splitter = TextSplitter.from_callback(lambda text: len(text))
 chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
 ```
 
+### Markdown
+
+All of the above examples also can also work with Markdown text. You can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
+
+```python
+from text_splitter import MarkdownSplitter
+# Default implementation uses character count for chunk size.
+# Can also use all of the same tokenizer implementations as `TextSplitter`.
+splitter = MarkdownSplitter()
+
+splitter.chunks("# Header\n\nyour document text", 1000)
+```
+
 ## Method
 
 To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
