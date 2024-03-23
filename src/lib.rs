@@ -279,6 +279,8 @@ where
     chunk_sizer: &'sizer S,
     /// Current byte offset in the `text`
     cursor: usize,
+    /// Reusable container for next sections to avoid extra allocations
+    next_sections: Vec<(usize, &'text str)>,
     /// Splitter used for determining semantic levels.
     semantic_split: Sp,
     /// Original text to iterate over and generate chunks from
@@ -300,6 +302,7 @@ where
             cursor: 0,
             chunk_capacity,
             chunk_sizer,
+            next_sections: Vec::new(),
             semantic_split: Sp::new(text),
             text,
             trim_chunks,
@@ -333,18 +336,19 @@ where
         let mut end = self.cursor;
         let mut equals_found = false;
 
-        let sections = self.next_sections()?.collect::<Vec<_>>();
-        let mut sizes = sections
+        self.update_next_sections();
+        let mut sizes = self
+            .next_sections
             .iter()
             .map(|_| None)
             .collect::<Vec<Option<ChunkSize>>>();
         let mut low = 0;
-        let mut high = sections.len().saturating_sub(1);
+        let mut high = self.next_sections.len().saturating_sub(1);
         let mut successful_index = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
-            let (offset, str) = sections[mid];
+            let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.check_capacity(start, chunk);
@@ -392,7 +396,11 @@ where
                 Some((successful_index, sizes.get(successful_index)?.as_ref()?))
             })
         {
-            for (size, (offset, str)) in sizes.iter().zip(sections).skip(successful_index) {
+            for (size, (offset, str)) in sizes
+                .iter()
+                .zip(self.next_sections.iter())
+                .skip(successful_index)
+            {
                 let text_end = offset + str.len();
                 match size {
                     Some(size) if size.size <= chunk_size.size => {
@@ -428,21 +436,33 @@ where
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
-    fn next_sections(&'sizer self) -> Option<impl Iterator<Item = (usize, &'text str)> + 'sizer> {
+    fn update_next_sections(&mut self) {
+        // First thing, clear out the list, but reuse the allocated memory
+        self.next_sections.clear();
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
         let mut levels = self.semantic_split.levels_in_remaining_text(self.cursor);
         // Get starting level
-        let mut semantic_level = levels.next()?;
+        let Some(mut semantic_level) = levels.next() else {
+            return;
+        };
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
         let mut max_encoded_offset = None;
 
+        let remaining_text = self.text.get(self.cursor..).unwrap();
+
         for level in levels {
-            let (_, str) = self.semantic_chunks(level).next()?;
+            let Some((_, str)) = self
+                .semantic_split
+                .semantic_chunks(self.cursor, remaining_text, level)
+                .next()
+            else {
+                return;
+            };
             let chunk_size = self.check_capacity(self.cursor, str);
             // If this no longer fits, we use the level we are at. Or if we already
             // have the rest of the string
-            if chunk_size.fits.is_gt() || self.text.get(self.cursor..)? == str {
+            if chunk_size.fits.is_gt() || remaining_text == str {
                 max_encoded_offset = chunk_size.max_chunk_size_offset;
                 break;
             }
@@ -450,27 +470,18 @@ where
             semantic_level = level;
         }
 
-        Some(
-            self.semantic_chunks(semantic_level)
-                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-                // so we should be safe to break once we reach it.
-                .take_while_inclusive(move |(offset, _)| {
-                    max_encoded_offset.map_or(true, |max| offset <= &max)
-                })
-                .filter(|(_, str)| !str.is_empty()),
-        )
-    }
+        let sections = self
+            .semantic_split
+            .semantic_chunks(self.cursor, remaining_text, semantic_level)
+            // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+            // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+            // so we should be safe to break once we reach it.
+            .take_while_inclusive(move |(offset, _)| {
+                max_encoded_offset.map_or(true, |max| offset <= &max)
+            })
+            .filter(|(_, str)| !str.is_empty());
 
-    fn semantic_chunks(
-        &'sizer self,
-        level: <Sp as SemanticSplit>::Level,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'sizer {
-        self.semantic_split.semantic_chunks(
-            self.cursor,
-            self.text.get(self.cursor..).unwrap(),
-            level,
-        )
+        self.next_sections.extend(sections);
     }
 }
 
