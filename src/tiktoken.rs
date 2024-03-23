@@ -1,35 +1,28 @@
-use std::ops::Range;
-
 use tiktoken_rs::CoreBPE;
 
 use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
-impl ChunkSizer for CoreBPE {
-    /// Returns the number of tokens in a given text after tokenization.
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
-        ChunkSize::from_offsets(encoded_offsets(self, chunk), capacity)
-    }
-}
-
 impl ChunkSizer for &CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
     fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
-        ChunkSize::from_offsets(encoded_offsets(self, chunk), capacity)
+        let tokens = self.encode_ordinary(chunk);
+        let offsets = self
+            ._decode_native_and_split(tokens)
+            .scan(0usize, |offset, bytes| {
+                let end = *offset + bytes.len();
+                let item = *offset..end;
+                *offset = end;
+                Some(item)
+            });
+        ChunkSize::from_offsets(offsets, capacity)
     }
 }
 
-fn encoded_offsets<'text, 'bpe: 'text>(
-    bpe: &'bpe CoreBPE,
-    chunk: &'text str,
-) -> impl Iterator<Item = Range<usize>> + 'text {
-    let tokens = bpe.encode_ordinary(chunk);
-    bpe._decode_native_and_split(tokens)
-        .scan(0usize, |offset, bytes| {
-            let end = *offset + bytes.len();
-            let item = *offset..end;
-            *offset = end;
-            Some(item)
-        })
+impl ChunkSizer for CoreBPE {
+    /// Returns the number of tokens in a given text after tokenization.
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+        (&self).chunk_size(chunk, capacity)
+    }
 }
 
 #[cfg(test)]
@@ -40,7 +33,12 @@ mod tests {
 
     #[test]
     fn returns_offsets() {
-        let offsets = encoded_offsets(&cl100k_base().unwrap(), "An apple a").collect::<Vec<_>>();
-        assert_eq!(offsets, vec![0..2, 2..8, 8..10]);
+        let tokenizer = cl100k_base().unwrap();
+        let capacity = 10;
+        let offsets = tokenizer.chunk_size("An apple a", &capacity);
+        assert_eq!(
+            offsets,
+            ChunkSize::from_offsets([0..2, 2..8, 8..10].into_iter(), &capacity)
+        );
     }
 }
