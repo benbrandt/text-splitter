@@ -482,15 +482,13 @@ where
         self.levels_in_remaining_text
             .extend(self.semantic_split.levels_in_remaining_text(self.cursor));
         // Get starting level
-        let Some(mut semantic_level) = self.levels_in_remaining_text.first().copied() else {
-            return;
-        };
+        let mut semantic_level = self.levels_in_remaining_text[0];
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
         let mut max_encoded_offset = None;
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        for i in 0..self.levels_in_remaining_text.len() {
+        for i in 1..self.levels_in_remaining_text.len() {
             let level = self.levels_in_remaining_text[i];
             let Some((_, str)) = self
                 .semantic_split
@@ -500,9 +498,8 @@ where
                 return;
             };
             let chunk_size = self.check_capacity(self.cursor, str);
-            // If this no longer fits, we use the level we are at. Or if we already
-            // have the rest of the string
-            if chunk_size.fits.is_gt() || remaining_text == str {
+            // If this no longer fits, we use the level we are at.
+            if chunk_size.fits.is_gt() {
                 max_encoded_offset = chunk_size.max_chunk_size_offset;
                 break;
             }
