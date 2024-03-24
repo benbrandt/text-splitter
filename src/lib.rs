@@ -6,6 +6,7 @@ use std::{
     ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
 };
 
+use ahash::AHashMap;
 use itertools::Itertools;
 
 mod characters;
@@ -81,6 +82,53 @@ impl ChunkSize {
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
     fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;
+}
+
+/// A memoized chunk sizer that caches the size of chunks.
+/// Very helpful when the same chunk is being validated multiple times, which
+/// happens often, and can be expensive to compute, such as with tokenizers.
+#[derive(Debug)]
+struct MemoizedChunkSizer<'sizer, S>
+where
+    S: ChunkSizer,
+{
+    /// The sizer we are wrapping
+    sizer: &'sizer S,
+    /// Cache of chunk sizes per byte offset range
+    cache: AHashMap<Range<usize>, ChunkSize>,
+}
+
+impl<'sizer, S> MemoizedChunkSizer<'sizer, S>
+where
+    S: ChunkSizer,
+{
+    /// Wrap any chunk sizer for memoization
+    fn new(sizer: &'sizer S) -> Self {
+        Self {
+            sizer,
+            cache: AHashMap::default(),
+        }
+    }
+
+    /// Determine the size of a given chunk to use for validation,
+    /// returning a cached value if it exists, and storing the result if not.
+    fn chunk_size(
+        &mut self,
+        offset: usize,
+        chunk: &str,
+        capacity: &impl ChunkCapacity,
+    ) -> ChunkSize {
+        *self
+            .cache
+            .entry(offset..(offset + chunk.len()))
+            .or_insert_with(|| self.sizer.chunk_size(chunk, capacity))
+    }
+
+    /// Clear the cached values. Once we've moved the cursor,
+    /// we don't need to keep the old values around.
+    fn clear_cache(&mut self) {
+        self.cache.clear();
+    }
 }
 
 /// Describes the largest valid chunk size(s) that can be generated.
@@ -276,9 +324,11 @@ where
     /// Size of the chunks to generate
     chunk_capacity: C,
     /// How to validate chunk sizes
-    chunk_sizer: &'sizer S,
+    chunk_sizer: MemoizedChunkSizer<'sizer, S>,
     /// Current byte offset in the `text`
     cursor: usize,
+    /// Reusable container for levels in remaining text to avoid extra allocations
+    levels_in_remaining_text: Vec<Sp::Level>,
     /// Reusable container for next sections to avoid extra allocations
     next_sections: Vec<(usize, &'text str)>,
     /// Splitter used for determining semantic levels.
@@ -301,7 +351,8 @@ where
         Self {
             cursor: 0,
             chunk_capacity,
-            chunk_sizer,
+            chunk_sizer: MemoizedChunkSizer::new(chunk_sizer),
+            levels_in_remaining_text: Vec::new(),
             next_sections: Vec::new(),
             semantic_split: Sp::new(text),
             text,
@@ -319,9 +370,11 @@ where
     }
 
     /// Is the given text within the chunk size?
-    fn check_capacity(&self, offset: usize, chunk: &str) -> ChunkSize {
+    fn check_capacity(&mut self, offset: usize, chunk: &str) -> ChunkSize {
         let (offset, chunk) = self.trim_chunk(offset, chunk);
-        let mut chunk_size = self.chunk_sizer.chunk_size(chunk, &self.chunk_capacity);
+        let mut chunk_size = self
+            .chunk_sizer
+            .chunk_size(offset, chunk, &self.chunk_capacity);
         if let Some(max_chunk_size_offset) = chunk_size.max_chunk_size_offset.as_mut() {
             *max_chunk_size_offset += offset;
         }
@@ -332,19 +385,17 @@ where
     /// Returns final byte offset and str.
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
+        // Reset caches so we can reuse the memory allocation
+        self.chunk_sizer.clear_cache();
+        self.update_next_sections();
+
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
-
-        self.update_next_sections();
-        let mut sizes = self
-            .next_sections
-            .iter()
-            .map(|_| None)
-            .collect::<Vec<Option<ChunkSize>>>();
         let mut low = 0;
         let mut high = self.next_sections.len().saturating_sub(1);
         let mut successful_index = None;
+        let mut successful_chunk_size = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
@@ -352,7 +403,6 @@ where
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.check_capacity(start, chunk);
-            sizes[mid] = Some(chunk_size);
 
             match chunk_size.fits {
                 Ordering::Less => {
@@ -360,6 +410,7 @@ where
                     if text_end > end {
                         end = text_end;
                         successful_index = Some(mid);
+                        successful_chunk_size = Some(chunk_size);
                     }
                 }
                 Ordering::Equal => {
@@ -367,6 +418,7 @@ where
                     if text_end < end || !equals_found {
                         end = text_end;
                         successful_index = Some(mid);
+                        successful_chunk_size = Some(chunk_size);
                     }
                     equals_found = true;
                 }
@@ -375,6 +427,7 @@ where
                     if mid == 0 && start == end {
                         end = text_end;
                         successful_index = Some(mid);
+                        successful_chunk_size = Some(chunk_size);
                     }
                 }
             };
@@ -391,36 +444,20 @@ where
         }
 
         // Sometimes with tokenization, we can get a bigger chunk for the same amount of tokens.
-        if let Some((successful_index, chunk_size)) =
-            successful_index.and_then(|successful_index| {
-                Some((successful_index, sizes.get(successful_index)?.as_ref()?))
-            })
+        if let (Some(successful_index), Some(chunk_size)) =
+            (successful_index, successful_chunk_size)
         {
-            for (size, (offset, str)) in sizes
-                .iter()
-                .zip(self.next_sections.iter())
-                .skip(successful_index)
-            {
+            for index in successful_index..self.next_sections.len() {
+                let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
-                match size {
-                    Some(size) if size.size <= chunk_size.size => {
-                        if text_end > end {
-                            end = text_end;
-                        }
+                let chunk = self.text.get(start..text_end)?;
+                let size = self.check_capacity(start, chunk);
+                if size.size <= chunk_size.size {
+                    if text_end > end {
+                        end = text_end;
                     }
-                    // We didn't tokenize this section yet
-                    None => {
-                        let chunk = self.text.get(start..text_end)?;
-                        let size = self.check_capacity(start, chunk);
-                        if size.size <= chunk_size.size {
-                            if text_end > end {
-                                end = text_end;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                    _ => break,
+                } else {
+                    break;
                 }
             }
         }
@@ -439,11 +476,13 @@ where
     fn update_next_sections(&mut self) {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
+        self.levels_in_remaining_text.clear();
         // Next levels to try. Will stop at max level. We check only levels in the next max level
         // chunk so we don't bypass it if not all levels are present in every chunk.
-        let mut levels = self.semantic_split.levels_in_remaining_text(self.cursor);
+        self.levels_in_remaining_text
+            .extend(self.semantic_split.levels_in_remaining_text(self.cursor));
         // Get starting level
-        let Some(mut semantic_level) = levels.next() else {
+        let Some(mut semantic_level) = self.levels_in_remaining_text.first().copied() else {
             return;
         };
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
@@ -451,7 +490,8 @@ where
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        for level in levels {
+        for i in 0..self.levels_in_remaining_text.len() {
+            let level = self.levels_in_remaining_text[i];
             let Some((_, str)) = self
                 .semantic_split
                 .semantic_chunks(self.cursor, remaining_text, level)
@@ -512,6 +552,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::sync::atomic::{self, AtomicUsize};
+
     use super::*;
 
     #[test]
@@ -631,6 +673,62 @@ mod tests {
                 max_chunk_size_offset: Some(3)
             },
             chunk_size
+        );
+    }
+
+    #[derive(Default)]
+    struct CountingSizer {
+        calls: AtomicUsize,
+    }
+
+    impl ChunkSizer for CountingSizer {
+        // Return character version, but count calls
+        fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+            self.calls.fetch_add(1, atomic::Ordering::SeqCst);
+            Characters.chunk_size(chunk, capacity)
+        }
+    }
+
+    #[test]
+    fn memoized_sizer_only_calculates_once_per_text() {
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let text = "1234567890";
+        for _ in 0..10 {
+            memoized_sizer.chunk_size(0, text, &10);
+        }
+
+        assert_eq!(memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn memoized_sizer_calculates_once_per_different_text() {
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let text = "1234567890";
+        for i in 0..10 {
+            memoized_sizer.chunk_size(0, text.get(0..i).unwrap(), &10);
+        }
+
+        assert_eq!(
+            memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
+            10
+        );
+    }
+
+    #[test]
+    fn can_clear_cache_on_memoized_sizer() {
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let text = "1234567890";
+        for _ in 0..10 {
+            memoized_sizer.chunk_size(0, text, &10);
+            memoized_sizer.clear_cache();
+        }
+
+        assert_eq!(
+            memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
+            10
         );
     }
 }
