@@ -392,14 +392,13 @@ class MarkdownSplitter:
         3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
         4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
         5. Soft line breaks (single newline) which isn't necessarily a new element in Markdown.
-        6. Text nodes within elements
-        7. Inline elements such as: emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
-        8. Block elements suce as: paragraphs, code blocks, and footnote definitions.
-        9. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
-        10. Meta containers such as: lists and tables.
-        11. Thematic breaks or horizontal rules.
-        12. Headings by level
-        13. Metadata at the beginning of the document
+        6. Inline elements such as: text nodes, emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
+        7. Block elements suce as: paragraphs, code blocks, and footnote definitions.
+        8. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
+        9. Meta containers such as: lists and tables.
+        10. Thematic breaks or horizontal rules.
+        11. Headings by level
+        12. Metadata at the beginning of the document
 
         Markdown is parsed according to the Commonmark spec, along with some optional features such as GitHub Flavored Markdown.
 
