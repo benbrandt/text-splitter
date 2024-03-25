@@ -435,4 +435,17 @@ mod tests {
             10
         );
     }
+
+    #[test]
+    fn test_chunk_size_from_size() {
+        let chunk_size = ChunkSize::from_size(10, &10);
+        assert_eq!(
+            ChunkSize {
+                fits: Ordering::Equal,
+                size: 10,
+                max_chunk_size_offset: None
+            },
+            chunk_size
+        );
+    }
 }
