@@ -77,9 +77,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "+ Very easy!\n```"
 - 1. First ordered list item
 - "2. Another item\n⋅⋅* Unordered sub-list."
-- "1."
-- "Actual numbers don't matter, just that it's a number"
-- "⋅⋅1. Ordered sub-list\n4. And another item."
+- "1. Actual numbers don't matter, just that it'"
+- "s a number\n⋅⋅1. Ordered sub-list"
+- 4. And another item.
 - ⋅⋅⋅You can have properly indented paragraphs within list items
 - "."
 - "Notice the blank line above, and the leading spaces (at least one,"
@@ -204,7 +204,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - octodex.github.com/images/
 - "dojocat.jpg  \"The Dojocat\"\n```"
 - "Here's our logo (hover to see the title text):"
-- "Inline-style:\n!["
+- "Inline-style:"
+- "!["
 - "alt text](https://github.com/"
 - adam-p/markdown-here/raw/master/src
 - "/common/images/icon48.png \"Logo Title Text 1"
@@ -396,12 +397,13 @@ input_file: tests/inputs/markdown/github_flavored.md
 - s keep writing to make sure this is long enough to actually wrap for everyone.
 - "Oh, you can *put* **Markdown** into a"
 - blockquote.
-- "> Blockquotes can also be nested..."
-- ">> ...by using additional greater-than signs right next to each"
-- "other...\n> > > ...or with spaces between arrows."
+- "> Blockquotes can also be nested...\n>"
+- "> ...by using additional greater-than signs right next to each other"
+- "...\n> > > ...or with spaces between arrows."
 - "------"
 - "# Inline HTML"
-- "```\n<dl>"
+- "```"
+- "<dl>"
 - "<dt>Definition list</dt>"
 - "<dd>Is something people use sometimes.</dd>"
 - "<dt>Markdown in HTML</dt>"
@@ -416,8 +418,9 @@ input_file: tests/inputs/markdown/github_flavored.md
 - Use HTML <em>tags</em>.</
 - "dd>\n</dl>\n\n------"
 - "# Horizontal Rules"
-- "```\nThree or more...\n\n---\n\nHyphens"
-- "***\n\nAsterisks\n\n___\n\nUnderscores\n```"
+- "```"
+- "Three or more...\n\n---\n\nHyphens\n\n***"
+- "Asterisks\n\n___\n\nUnderscores\n```"
 - "Three or more...\n\n---\n\nHyphens\n\n***"
 - "Asterisks\n\n___\n\nUnderscores\n\n------"
 - "# YouTube Videos"
@@ -444,7 +447,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "jpg\" alt=\"IMAGE ALT TEXT"
 - "HERE\" width=\"240\" height=\"180\" border="
 - "\"10\">\n</a>"
-- "```\n[!["
+- "```"
+- "[!["
 - "IMAGE ALT TEXT HERE](http:/"
 - /img.youtube.com/vi/
 - YOUTUBE_VIDEO_ID_HERE/0.
@@ -452,11 +456,10 @@ input_file: tests/inputs/markdown/github_flavored.md
 - www.youtube.com/watch?
 - v=YOUTUBE_VIDEO_ID_HERE)
 - "```"
-- "[!["
-- "IMAGE ALT TEXT HERE](https:/"
-- /upload.wikimedia.org/wikipedia/
-- commons/thumb/e/ef/YouTube_logo_2015.
-- svg/1200px-YouTube_logo_2015.
-- "svg.png)](https://"
-- www.youtube.com/watch?
+- "[![IMAGE ALT TEXT HERE"
+- "](https://upload.wikimedia.org/"
+- wikipedia/commons/thumb/e/ef/
+- YouTube_logo_2015.svg/1200px-
+- "YouTube_logo_2015.svg.png)](https"
+- "://www.youtube.com/watch?"
 - v=ciawICBvQoE)
