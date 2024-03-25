@@ -319,6 +319,9 @@ trait SemanticSplit {
         let diff = chunk.len() - chunk.trim_start().len();
         (offset + diff, chunk.trim())
     }
+
+    /// Allows the impl to clear out unnecessary data after the cursor has moved.
+    fn update_ranges(&mut self, _cursor: usize);
 }
 
 /// Returns chunks of text with their byte offsets as an iterator.
@@ -377,6 +380,7 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         // Reset caches so we can reuse the memory allocation
         self.chunk_sizer.clear_cache();
+        self.semantic_split.update_ranges(self.cursor);
         self.update_next_sections();
 
         let start = self.cursor;
@@ -485,12 +489,22 @@ where
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        for (level, str) in levels_in_remaining_text.filter_map(|level| {
-            self.semantic_split
-                .semantic_chunks(self.cursor, remaining_text, level)
-                .next()
-                .map(|(_, str)| (level, str))
-        }) {
+        let levels_with_chunks = levels_in_remaining_text
+            .filter_map(|level| {
+                self.semantic_split
+                    .semantic_chunks(self.cursor, remaining_text, level)
+                    .next()
+                    .map(|(_, str)| (level, str))
+            })
+            // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
+            .coalesce(|(a_level, a_str), (b_level, b_str)| {
+                if a_str.len() >= b_str.len() {
+                    Ok((b_level, b_str))
+                } else {
+                    Err(((a_level, a_str), (b_level, b_str)))
+                }
+            });
+        for (level, str) in levels_with_chunks {
             let chunk_size = self
                 .chunk_sizer
                 .check_capacity(self.trim_chunk(self.cursor, str));

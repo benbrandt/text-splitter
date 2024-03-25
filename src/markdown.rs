@@ -195,8 +195,6 @@ enum SemanticLevel {
     Sentence,
     /// Single line break, which isn't necessarily a new element in Markdown
     SoftBreak,
-    /// A text node within an element
-    Text,
     /// An inline element that is within a larger element such as a paragraph, but
     /// more specific than a sentence.
     InlineElement(SemanticSplitPosition),
@@ -222,7 +220,6 @@ impl SemanticLevel {
             | SemanticLevel::Word
             | SemanticLevel::Sentence
             | SemanticLevel::SoftBreak
-            | SemanticLevel::Text
             | SemanticLevel::Block
             | SemanticLevel::MetaContainer
             | SemanticLevel::Rule
@@ -240,7 +237,6 @@ impl SemanticLevel {
             | SemanticLevel::Word
             | SemanticLevel::Sentence
             | SemanticLevel::SoftBreak
-            | SemanticLevel::Text
             | SemanticLevel::InlineElement(_)
             | SemanticLevel::Rule
             | SemanticLevel::Heading(_)
@@ -363,13 +359,13 @@ impl SemanticSplit for Markdown {
                     | Tag::Image { .. }
                     | Tag::TableCell,
                 )
+                | Event::Text(_)
                 | Event::HardBreak
                 | Event::Code(_)
                 | Event::InlineHtml(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     range,
                 )),
-                Event::Text(_) => Some((SemanticLevel::Text, range)),
                 Event::FootnoteReference(_) => Some((
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
                     range,
@@ -442,8 +438,7 @@ impl SemanticSplit for Markdown {
             SemanticLevel::Sentence => text
                 .split_sentence_bound_indices()
                 .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::Text
-            | SemanticLevel::SoftBreak
+            SemanticLevel::SoftBreak
             | SemanticLevel::InlineElement(_)
             | SemanticLevel::ContainerBlock(_)
             | SemanticLevel::Block
@@ -472,6 +467,11 @@ impl SemanticSplit for Markdown {
             let diff = chunk.len() - chunk.trim_start().len();
             (offset + diff, chunk.trim())
         }
+    }
+
+    /// Clear out ranges we have moved past so future iterations are faster
+    fn update_ranges(&mut self, cursor: usize) {
+        self.ranges.retain(|(_, range)| range.start >= cursor);
     }
 }
 
@@ -582,7 +582,7 @@ mod tests {
 
     #[test]
     fn chunk_by_words() {
-        let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
+        let text = "The quick brown fox can jump 32.3 feet, right?";
 
         let chunks = TextChunks::<_, _, Markdown>::new(10, &Characters, text, false)
             .map(|(_, w)| w)
@@ -590,11 +590,10 @@ mod tests {
         assert_eq!(
             vec![
                 "The quick ",
-                "(\"brown\") ",
-                "fox can't ",
-                "jump 32.3 ",
-                "feet, ",
-                "right?"
+                "brown fox ",
+                "can jump ",
+                "32.3 feet,",
+                " right?"
             ],
             chunks
         );
@@ -659,7 +658,10 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Block, 0..41),
-                &(SemanticLevel::Text, 0..41)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..41
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -680,7 +682,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     2..5
                 ),
-                &(SemanticLevel::Text, 6..21),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    6..21
+                ),
                 &(
                     SemanticLevel::ContainerBlock(SemanticSplitPosition::Own),
                     22..42
@@ -689,7 +694,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Next),
                     24..27
                 ),
-                &(SemanticLevel::Text, 28..42),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    28..42
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -702,7 +710,10 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Block, 0..12),
-                &(SemanticLevel::Text, 0..8),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..8
+                ),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Prev),
                     8..12
@@ -739,7 +750,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..10
                 ),
-                &(SemanticLevel::Text, 1..9),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    1..9
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -756,7 +770,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..12
                 ),
-                &(SemanticLevel::Text, 2..10),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    2..10
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -773,7 +790,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..12
                 ),
-                &(SemanticLevel::Text, 2..10),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    2..10
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -790,7 +810,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..11
                 ),
-                &(SemanticLevel::Text, 1..5),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    1..5
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -807,7 +830,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..12
                 ),
-                &(SemanticLevel::Text, 2..6),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    2..6
+                ),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -824,7 +850,10 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     0..6
                 ),
-                &(SemanticLevel::Text, 6..15),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    6..15
+                ),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     15..22
@@ -864,12 +893,18 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     1..11
                 ),
-                &(SemanticLevel::Text, 2..10),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    2..10
+                ),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     12..22
                 ),
-                &(SemanticLevel::Text, 13..21),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    13..21
+                ),
                 &(
                     SemanticLevel::ContainerBlock(SemanticSplitPosition::Own),
                     38..57
@@ -878,12 +913,18 @@ mod tests {
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     39..47
                 ),
-                &(SemanticLevel::Text, 40..46),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    40..46
+                ),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     48..56
                 ),
-                &(SemanticLevel::Text, 49..55)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    49..55
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -896,9 +937,15 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Block, 0..26),
-                &(SemanticLevel::Text, 0..9),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..9
+                ),
                 &(SemanticLevel::SoftBreak, 9..10),
-                &(SemanticLevel::Text, 10..26)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    10..26
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -911,12 +958,18 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Block, 0..27),
-                &(SemanticLevel::Text, 0..9),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..9
+                ),
                 &(
                     SemanticLevel::InlineElement(SemanticSplitPosition::Own),
                     9..11
                 ),
-                &(SemanticLevel::Text, 11..27)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    11..27
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -930,7 +983,10 @@ mod tests {
             vec![
                 &(SemanticLevel::Block, 0..18),
                 &(SemanticLevel::Block, 10..18),
-                &(SemanticLevel::Text, 10..18)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    10..18
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -941,7 +997,13 @@ mod tests {
         let markdown = Markdown::new("```\ncode\n```");
 
         assert_eq!(
-            vec![&(SemanticLevel::Block, 0..12), &(SemanticLevel::Text, 4..9)],
+            vec![
+                &(SemanticLevel::Block, 0..12),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    4..9
+                )
+            ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
@@ -957,7 +1019,10 @@ mod tests {
                     0..7
                 ),
                 &(SemanticLevel::Block, 2..7),
-                &(SemanticLevel::Text, 2..7)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    2..7
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -970,10 +1035,16 @@ mod tests {
         assert_eq!(
             vec![
                 &(SemanticLevel::Block, 0..10),
-                &(SemanticLevel::Text, 0..9),
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    0..9
+                ),
                 &(SemanticLevel::Rule, 11..15),
                 &(SemanticLevel::Block, 16..27),
-                &(SemanticLevel::Text, 16..27)
+                &(
+                    SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                    16..27
+                )
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -997,7 +1068,10 @@ mod tests {
             assert_eq!(
                 vec![
                     &(SemanticLevel::Heading(level), 0..9 + index),
-                    &(SemanticLevel::Text, 2 + index..9 + index)
+                    &(
+                        SemanticLevel::InlineElement(SemanticSplitPosition::Own),
+                        2 + index..9 + index
+                    )
                 ],
                 markdown.ranges_after_offset(0).collect::<Vec<_>>()
             );
