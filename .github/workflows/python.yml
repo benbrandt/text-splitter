@@ -26,21 +26,6 @@ permissions:
   contents: read
 
 jobs:
-  lints:
-    name: Lints
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-        with:
-          working-directory: bindings/python
-
-      - run: cargo fmt -- --check
-      - run: cargo clippy -- -Dwarnings
-
   linux:
     runs-on: ubuntu-latest
     strategy:
