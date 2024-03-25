@@ -295,6 +295,11 @@ impl SemanticSplit for LineBreaks {
             .map(move |(i, str)| (offset + i, str)),
         }
     }
+
+    /// Clear out ranges we have moved past so future iterations are faster
+    fn update_ranges(&mut self, cursor: usize) {
+        self.line_breaks.retain(|(_, range)| range.start >= cursor);
+    }
 }
 
 #[cfg(test)]
