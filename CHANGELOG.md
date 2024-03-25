@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.8.0
+
+### What's New
+
+[Significantly fewer allocations](https://github.com/benbrandt/text-splitter/pull/121) necessary when generating chunks. This should result in a performance improvement for most use cases. This was achieved by both reusing pre-allocated collections, as well as memoizing chunk size calculations since that is often the bottleneck, and tokenizer libraries tend to be very allocation heavy!
+
+Benchmarks show:
+
+- **20-40% fewer** allocations caused by the core algorithm.
+- **Up to 20% fewer** allocations when using tokenizers to calculate chunk sizes.
+- In some cases, especially with Markdown, these improvements can also result in **up to 20% faster** chunk generation.
+
+### Breaking Changes
+
+- There was a bug in the `MarkdownSplitter` logic that caused some strange split points.
+- The `Text` semantic level in `MarkdownSplitter` has been merged with inline elements to also find better split points inside content.
+- Fixed a bug that could cause the algorithm to use a lower semantic level than necessary on occaision.
+
+All of the above mostly effect the `MarkdownSplitter` and will cause different chunks to be output than before.
+
 ## v0.7.0
 
 ### What's New
