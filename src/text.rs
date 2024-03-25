@@ -254,8 +254,13 @@ impl SemanticSplit for LineBreaks {
     }
 
     /// Retrieve ranges for all sections of a given level after an offset
-    fn ranges(&self) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
-        self.line_breaks.iter()
+    fn ranges_after_offset(
+        &self,
+        offset: usize,
+    ) -> impl Iterator<Item = &(SemanticLevel, Range<usize>)> + '_ {
+        self.line_breaks
+            .iter()
+            .filter(move |(_, sep)| sep.start >= offset)
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -284,7 +289,7 @@ impl SemanticSplit for LineBreaks {
                 .map(move |(i, str)| (offset + i, str)),
             SemanticLevel::LineBreak(_) => Self::split_str_by_separator(
                 text,
-                self.ranges_after_offset(offset, semantic_level)
+                self.level_ranges_after_offset(offset, semantic_level)
                     .map(move |(_, sep)| sep.start - offset..sep.end - offset),
             )
             .map(move |(i, str)| (offset + i, str)),

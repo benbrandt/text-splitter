@@ -409,8 +409,13 @@ impl SemanticSplit for Markdown {
         Self { ranges }
     }
 
-    fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
-        self.ranges.iter()
+    fn ranges_after_offset(
+        &self,
+        offset: usize,
+    ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
+        self.ranges
+            .iter()
+            .filter(move |(_, sep)| sep.start >= offset)
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -447,7 +452,7 @@ impl SemanticSplit for Markdown {
             | SemanticLevel::Rule
             | SemanticLevel::Metadata => Self::split_str_by_separator(
                 text,
-                self.ranges_after_offset(offset, semantic_level)
+                self.level_ranges_after_offset(offset, semantic_level)
                     .map(move |(l, sep)| (*l, sep.start - offset..sep.end - offset)),
             )
             .map(move |(i, str)| (offset + i, str)),
@@ -656,7 +661,7 @@ mod tests {
                 &(SemanticLevel::Block, 0..41),
                 &(SemanticLevel::Text, 0..41)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -686,7 +691,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 28..42),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -703,7 +708,7 @@ mod tests {
                     8..12
                 ),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -719,7 +724,7 @@ mod tests {
                     0..6
                 )
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -736,7 +741,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 1..9),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -753,7 +758,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 2..10),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -770,7 +775,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 2..10),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -787,7 +792,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 1..5),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -804,7 +809,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 2..6),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -825,7 +830,7 @@ mod tests {
                     15..22
                 ),
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -841,7 +846,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Block, 0..20)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -880,7 +885,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 49..55)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -895,7 +900,7 @@ mod tests {
                 &(SemanticLevel::SoftBreak, 9..10),
                 &(SemanticLevel::Text, 10..26)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -913,7 +918,7 @@ mod tests {
                 ),
                 &(SemanticLevel::Text, 11..27)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -927,7 +932,7 @@ mod tests {
                 &(SemanticLevel::Block, 10..18),
                 &(SemanticLevel::Text, 10..18)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -937,7 +942,7 @@ mod tests {
 
         assert_eq!(
             vec![&(SemanticLevel::Block, 0..12), &(SemanticLevel::Text, 4..9)],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -954,7 +959,7 @@ mod tests {
                 &(SemanticLevel::Block, 2..7),
                 &(SemanticLevel::Text, 2..7)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -970,7 +975,7 @@ mod tests {
                 &(SemanticLevel::Block, 16..27),
                 &(SemanticLevel::Text, 16..27)
             ],
-            markdown.ranges().collect::<Vec<_>>()
+            markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
@@ -994,7 +999,7 @@ mod tests {
                     &(SemanticLevel::Heading(level), 0..9 + index),
                     &(SemanticLevel::Text, 2 + index..9 + index)
                 ],
-                markdown.ranges().collect::<Vec<_>>()
+                markdown.ranges_after_offset(0).collect::<Vec<_>>()
             );
         }
     }
@@ -1006,7 +1011,7 @@ mod tests {
         assert_eq!(
             vec![&(SemanticLevel::MetaContainer, 0..42),],
             markdown
-                .ranges_after_offset(0, SemanticLevel::MetaContainer)
+                .level_ranges_after_offset(0, SemanticLevel::MetaContainer)
                 .collect::<Vec<_>>()
         );
     }
@@ -1027,7 +1032,10 @@ mod tests {
                 ),
             ],
             markdown
-                .ranges_after_offset(0, SemanticLevel::ContainerBlock(SemanticSplitPosition::Own))
+                .level_ranges_after_offset(
+                    0,
+                    SemanticLevel::ContainerBlock(SemanticSplitPosition::Own)
+                )
                 .collect::<Vec<_>>()
         );
     }

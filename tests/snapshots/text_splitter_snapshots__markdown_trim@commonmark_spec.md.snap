@@ -101,8 +101,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "to write, is its"
 - readability.
 - As Gruber writes
-- ":"
-- "> The overriding"
+- ":\n\n>"
+- The overriding
 - design goal for
 - "Markdown's"
 - formatting
@@ -287,10 +287,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - often lead to
 - surprises for
 - users in real
-- documents. (See
-- "[this comment by"
-- "John\n    Gruber"
-- "](https://"
+- documents.
+- "(See [this"
+- comment by John
+- "Gruber](https://"
 - web.archive.org/
 - web/
 - 20170611172104/
@@ -357,8 +357,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "``` markdown"
 - paragraph
 - code?
-- "```"
-- "4."
+- "    ```\n\n4."
 - What is the
 - exact rule for
 - determining when
@@ -493,8 +492,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - this
 - "- and it can"
 - "screw things up`"
-- "```"
-- "11."
+- "    ```\n\n11."
 - Can list items
 - include section
 - headings?  (
@@ -1259,8 +1257,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - not recognized
 - in code
 - blocks and code
-- spans.
-- "- Entity and"
+- "spans.\n\n-"
+- Entity and
 - character
 - references
 - cannot stand in
@@ -3698,8 +3696,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "condition], the"
 - block will
 - contain just
-- that line.
-- "1."
+- "that line.\n\n1."
 - "**Start"
 - "condition:**"
 - line begins with
@@ -4598,8 +4595,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - original
 - Markdown syntax
 - "specification,"
-- "which says:"
-- "> The only"
+- "which says:\n\n>"
+- The only
 - restrictions are
 - that block-level
 - HTML elements —
@@ -5521,9 +5518,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "rules define ["
 - "block quotes]:"
 - "1."
-- "**Basic case."
-- "**  If a string"
-- of lines *Ls*
+- "**Basic case.**"
+- If a string of
+- lines *Ls*
 - constitute a
 - sequence
 - "of blocks *Bs*,"
@@ -5537,9 +5534,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "[block quote](#"
 - block-quotes)
 - containing *Bs*.
-- 2.  **Laziness.
-- "**  If a string"
-- of lines *Ls*
+- "2."
+- "**Laziness.**"
+- If a string of
+- lines *Ls*
 - "constitute a ["
 - "block\n    quote"
 - "](#block-quotes)"
@@ -5573,8 +5571,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - but does
 - not occur at the
 - beginning of the
-- paragraph.
-- "3."
+- "paragraph.\n\n3."
 - "**"
 - Consecutiveness.
 - "**  A document"
@@ -6063,9 +6060,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "rules define ["
 - "list items]:"
 - "1."
-- "**Basic case."
-- "**  If a"
-- sequence of
+- "**Basic case.**"
+- If a sequence of
 - lines *Ls*
 - constitute a
 - sequence of
@@ -7016,9 +7012,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "</code></pre>"
 - "````````````````"
 - "````````````````"
-- 5.  **Laziness.
-- "**  If a string"
-- of lines *Ls*
+- "5."
+- "**Laziness.**"
+- If a string of
+- lines *Ls*
 - "constitute a ["
 - "list\n    item"
 - "](#list-items)"
@@ -7265,8 +7262,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - says the
 - following about
 - "list items:"
-- "1."
-- "\"List markers"
+- "1. \""
+- List markers
 - typically start
 - at the left
 - "margin, but may"
@@ -7278,8 +7275,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - by one or more
 - spaces or a tab.
 - "\""
-- "2."
-- "\"To make lists"
+- "2. \""
+- To make lists
 - "look nice, you"
 - can wrap items
 - with hanging
@@ -7287,8 +7284,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "But if you don't"
 - "want to, you"
 - "don't have to.\""
-- "3."
-- "\"List items may"
+- "3. \""
+- List items may
 - consist of
 - multiple
 - paragraphs.
@@ -7298,26 +7295,26 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - be indented by
 - either 4 spaces
 - "or one\n   tab.\""
-- "4."
-- "\"It looks nice"
-- if you indent
-- every line of
-- the subsequent
+- "4. \""
+- It looks nice if
+- you indent every
+- line of the
+- subsequent
 - "paragraphs,"
 - "but here again,"
 - Markdown will
 - allow you to be
 - "lazy.\""
-- "5."
-- "\"To put a"
+- "5. \""
+- To put a
 - blockquote
 - within a list
 - "item, the"
 - "blockquote's `>`"
 - delimiters need
 - "to be indented.\""
-- "6."
-- "\"To put a code"
+- "6. \""
+- To put a code
 - block within a
 - "list item, the"
 - code block needs
@@ -7741,8 +7738,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - delimiter (
 - "either `.` or `)"
 - "`)."
-- "A list is an ["
-- "ordered list](@)"
+- A list is an
+- "[ordered list](@"
+- )
 - if its
 - constituent list
 - items begin with
@@ -7766,9 +7764,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - subsequent list
 - items are
 - disregarded.
-- "A list is [loose"
-- "](@) if any of"
-- its constituent
+- A list is
+- "[loose](@) if"
+- any of its
+- constituent
 - list items are
 - separated by
 - "blank lines, or"
@@ -8475,10 +8474,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "endings] are"
 - "converted to ["
 - "spaces]."
-- "- If the"
-- resulting string
-- both begins *and
-- "* ends with a ["
+- "-"
+- If the resulting
+- string both
+- begins *and*
+- "ends with a ["
 - "space]"
 - "character, but"
 - does not consist
@@ -8834,12 +8834,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - et/projects/
 - "markdown/syntax#"
 - "em) says:"
-- "> Markdown"
-- treats asterisks
-- "(`*`) and"
-- "underscores (`_`"
-- ) as indicators
-- "of\n>"
+- ">"
+- Markdown treats
+- "asterisks (`*`)"
+- and underscores
+- "(`_`) as"
+- "indicators of\n>"
 - emphasis.
 - Text wrapped
 - "with one `*` or"
@@ -9277,8 +9277,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - unless both
 - lengths
 - are multiples of
-- "3."
-- "11."
+- "3.\n\n11."
 - "A literal `*`"
 - character cannot
 - occur at the
@@ -9290,8 +9289,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "strong emphasis,"
 - unless it
 - is backslash-
-- escaped.
-- "12."
+- "escaped.\n\n12."
 - "A literal `_`"
 - character cannot
 - occur at the
@@ -9312,8 +9310,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - the following
 - principles
 - resolve
-- "ambiguity:"
-- "13."
+- "ambiguity:\n\n13."
 - The number of
 - nestings should
 - be minimized.
@@ -11064,8 +11061,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - inside each
 - "other, the inner"
 - "-most definition"
-- is used.
-- "- Brackets are"
+- "is used.\n\n-"
+- Brackets are
 - "allowed in the ["
 - "link text] only"
 - if (a) they
@@ -11097,13 +11094,12 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "link text, since"
 - "the second `]`"
 - is part of a
-- code span.
-- "- The brackets"
-- in link text
-- bind more
-- tightly than
-- "markers for\n  ["
-- emphasis and
+- "code span.\n\n-"
+- The brackets in
+- link text bind
+- more tightly
+- than markers for
+- "[emphasis and"
 - "strong emphasis]"
 - "."
 - "Thus, for"
@@ -11113,8 +11109,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "A [link"
 - "destination](@)"
 - consists of
-- either
-- "- a sequence of"
+- "either\n\n-"
+- a sequence of
 - zero or more
 - characters
 - between an
@@ -11163,8 +11159,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - supported.)
 - "A [link title](@"
 - )  consists of
-- either
-- "- a sequence of"
+- "either\n\n-"
+- a sequence of
 - zero or more
 - characters
 - between straight
@@ -11174,8 +11170,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "` character only"
 - if it is
 - backslash-
-- "escaped, or"
-- "- a sequence of"
+- "escaped, or\n\n-"
+- a sequence of
 - zero or more
 - characters
 - between straight
@@ -11185,8 +11181,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "` character only"
 - if it is
 - backslash-
-- "escaped, or"
-- "- a sequence of"
+- "escaped, or\n\n-"
+- a sequence of
 - zero or more
 - characters
 - between matching
@@ -12010,10 +12006,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "and [shortcut](#"
 - shortcut-
 - reference-link).
-- "A [full"
-- "reference link]("
-- "@)\nconsists of a"
-- "[link text]"
+- A
+- "[full reference"
+- "link](@)"
+- "consists of a ["
+- "link text]"
 - immediately
 - "followed by a ["
 - "link label]\nthat"
@@ -12054,8 +12051,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - characters
 - inside the
 - "square\nbrackets."
-- "One label ["
-- "matches](@)"
+- One label
+- "[matches](@)"
 - another just in
 - case their
 - normalized forms
@@ -13267,8 +13264,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "URI, with the"
 - URI as the
 - "link's label."
-- "An [absolute URI"
-- "](@),"
+- An
+- "[absolute URI](@"
+- "),"
 - for these
 - "purposes,"
 - "consists of a ["
@@ -13638,8 +13636,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "optional\n["
 - attribute value
 - "specification]."
-- "An [attribute"
-- "name](@)"
+- An
+- "[attribute name]"
+- (@)
 - consists of an
 - "ASCII letter, `_"
 - "`, or `:`,"
@@ -14467,8 +14466,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "."
 - "For each line,"
 - we follow this
-- "procedure:"
-- "1."
+- "procedure:\n\n1."
 - First we iterate
 - through the open
 - "blocks, starting"
@@ -14793,10 +14791,10 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "When we're"
 - parsing inlines
 - and we hit
-- either
-- "- a run of `*`"
-- "or `_`"
-- "characters, or"
+- "either\n\n-"
+- "a run of `*` or"
+- "`_` characters,"
+- or
 - "- a `[` or `![`"
 - we insert a text
 - node with these
@@ -14816,8 +14814,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - a pointer to a
 - "text node, plus"
 - information
-- about
-- "- the type of"
+- "about\n\n-"
+- the type of
 - "delimiter (`[`,"
 - "`![`, `*`, `_`)"
 - "- the number of"
@@ -14892,8 +14890,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "link/image, or"
 - shortcut
 - reference link/
-- image.
-- "+ If we don't,"
+- "image.\n\n  +"
+- "If we don't,"
 - then we remove
 - the opening
 - delimiter from
@@ -14903,11 +14901,11 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - literal text
 - "node `]`."
 - "+ If we do, then"
-- "* We return a"
-- link or image
-- node whose
-- children are the
-- inlines
+- "*"
+- We return a link
+- or image node
+- whose children
+- are the inlines
 - after the text
 - node pointed to
 - by the opening
@@ -14954,7 +14952,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - stop before
 - "visiting `"
 - "stack_bottom`."
-- "Let `"
+- Let
+- "`"
 - current_position
 - "` point to the"
 - "element on the ["
@@ -15006,8 +15005,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - to the beginning
 - of the input --
 - the first one in
-- parse order.)
-- "- Now, look back"
+- "parse order.)\n\n-"
+- "Now, look back"
 - in the stack (
 - "staying above `"
 - "stack_bottom`"
@@ -15047,8 +15046,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - opener and
 - closer from
 - the delimiter
-- stack.
-- + Remove 1 (for
+- "stack.\n\n  +"
+- Remove 1 (for
 - regular emph) or
 - 2 (for strong
 - emph) delimiters
@@ -15089,9 +15088,9 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "point, so this"
 - puts a lower
 - bound on future
-- searches.)
-- + If the closer
-- "at `"
+- "searches.)\n\n  +"
+- If the closer at
+- "`"
 - current_position
 - "` is not a"
 - potential opener
@@ -15101,14 +15100,14 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - stack (since we
 - "know it can't"
 - be a closer
-- either).
-- "+ Advance `"
+- "either).\n\n  +"
+- "Advance `"
 - current_position
 - "` to the next"
 - element in the
-- stack.
-- "After we're done"
-- ", we remove all"
+- "stack.\n\nAfter we"
+- "'re done, we"
+- remove all
 - delimiters above
 - "`stack_bottom`"
 - from the

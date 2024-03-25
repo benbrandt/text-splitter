@@ -267,18 +267,21 @@ trait SemanticSplit {
     /// Generate a new instance from a given text.
     fn new(text: &str) -> Self;
 
-    /// Retrieve ranges for each semantic level in the entire text
-    fn ranges(&self) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_;
+    /// Retrieve ranges for each semantic level in the entire text that appear after a given offset
+    fn ranges_after_offset(
+        &self,
+        offset: usize,
+    ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_;
 
     /// Retrieve ranges for all sections of a given level after an offset
-    fn ranges_after_offset(
+    fn level_ranges_after_offset(
         &self,
         offset: usize,
         level: Self::Level,
     ) -> impl Iterator<Item = &(Self::Level, Range<usize>)> + '_ {
-        let first_item = self.ranges().find(|(l, _)| l == &level);
-        self.ranges()
-            .filter(move |(l, sep)| l >= &level && sep.start >= offset)
+        let first_item = self.ranges_after_offset(offset).find(|(l, _)| l == &level);
+        self.ranges_after_offset(offset)
+            .filter(move |(l, _)| l >= &level)
             .skip_while(move |(l, r)| {
                 first_item.is_some_and(|(_, fir)| l > &level && r.contains(&fir.start))
             })
@@ -287,11 +290,7 @@ trait SemanticSplit {
     /// Return a unique, sorted list of all line break levels present before the next max level, added
     /// to all of the base semantic levels, in order from smallest to largest
     fn levels_in_remaining_text(&self, offset: usize) -> impl Iterator<Item = Self::Level> + '_ {
-        let existing_levels = self
-            .ranges()
-            // Only start taking them from the offset
-            .filter(|(_, sep)| sep.start >= offset)
-            .map(|(l, _)| l);
+        let existing_levels = self.ranges_after_offset(offset).map(|(l, _)| l);
 
         Self::PERSISTENT_LEVELS
             .iter()

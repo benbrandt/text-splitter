@@ -519,7 +519,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Here's our logo"
 - (hover to see
 - "the title text):"
-- "Inline-style:\n!["
+- "Inline-style:"
+- "!["
 - "alt text](https:"
 - //github.com/
 - adam-p/markdown-
@@ -1040,7 +1041,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - spaces between
 - "arrows.\n\n------"
 - "# Inline HTML"
-- "```\n<dl>"
+- "```"
+- "<dl>"
 - "<dt>Definition"
 - list</dt>
 - "<dd>Is something"
@@ -1121,7 +1123,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "\" height=\"180\""
 - "border=\"10\">"
 - "</a>"
-- "```\n[!["
+- "```"
+- "[!["
 - IMAGE ALT TEXT
 - "HERE](http://"
 - img.youtube.com/
