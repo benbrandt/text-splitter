@@ -4,15 +4,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "bindings/**"
-      - ".github/workflows/python.yml"
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - "bindings/**"
-      - ".github/workflows/python.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -64,7 +58,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Run cargo test
-        run: cargo test --benches --all-features
+        run: cargo test --benches --workspace --all-features
 
   lints:
     name: Lints

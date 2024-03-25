@@ -1,5 +1,7 @@
-[package]
-name = "text-splitter"
+[workspace]
+members = ["bindings/*"]
+
+[workspace.package]
 version = "0.7.0"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
@@ -8,6 +10,17 @@ repository = "https://github.com/benbrandt/text-splitter"
 license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
+
+[package]
+name = "text-splitter"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
 exclude = [
     ".github/**",
     ".vscode/**",
