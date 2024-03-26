@@ -16,7 +16,7 @@
 
 use std::str::FromStr;
 
-use pyo3::{exceptions::PyException, prelude::*};
+use pyo3::{exceptions::PyException, prelude::*, pybacked::PyBackedStr};
 use text_splitter::{
     Characters, ChunkCapacity, ChunkSize, ChunkSizer, MarkdownSplitter, TextSplitter,
 };
@@ -57,7 +57,7 @@ impl ChunkSizer for CustomCallback {
         Python::with_gil(|py| {
             let size = self
                 .0
-                .call(py, (chunk,), None)
+                .call_bound(py, (chunk,), None)
                 .unwrap()
                 .extract::<usize>(py)
                 .unwrap();
@@ -198,11 +198,14 @@ impl PyTextSplitter {
     */
     #[staticmethod]
     #[pyo3(signature = (tokenizer, trim_chunks=true))]
-    fn from_huggingface_tokenizer(tokenizer: &PyAny, trim_chunks: bool) -> PyResult<Self> {
+    fn from_huggingface_tokenizer(
+        tokenizer: &Bound<'_, PyAny>,
+        trim_chunks: bool,
+    ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
-        let json = tokenizer.call_method0("to_str")?.extract::<&str>()?;
+        let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
         let tokenizer =
-            Tokenizer::from_str(json).map_err(|e| PyException::new_err(format!("{e}")))?;
+            Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
             splitter: TextSplitterOptions::Huggingface(
@@ -489,11 +492,14 @@ impl PyMarkdownSplitter {
     */
     #[staticmethod]
     #[pyo3(signature = (tokenizer, trim_chunks=true))]
-    fn from_huggingface_tokenizer(tokenizer: &PyAny, trim_chunks: bool) -> PyResult<Self> {
+    fn from_huggingface_tokenizer(
+        tokenizer: &Bound<'_, PyAny>,
+        trim_chunks: bool,
+    ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
-        let json = tokenizer.call_method0("to_str")?.extract::<&str>()?;
+        let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
         let tokenizer =
-            Tokenizer::from_str(json).map_err(|e| PyException::new_err(format!("{e}")))?;
+            Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
             splitter: MarkdownSplitterOptions::Huggingface(
@@ -665,7 +671,7 @@ impl PyMarkdownSplitter {
 
 #[doc = include_str!("../README.md")]
 #[pymodule]
-fn semantic_text_splitter(_py: Python, m: &PyModule) -> PyResult<()> {
+fn semantic_text_splitter(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyTextSplitter>()?;
     m.add_class::<PyMarkdownSplitter>()?;
     Ok(())
