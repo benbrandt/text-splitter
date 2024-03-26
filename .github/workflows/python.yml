@@ -59,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install semantic-text-splitter --find-links dist --force-reinstall
+          pip install --find-links dist --force-reinstall semantic-text-splitter
           pip install pytest tokenizers
           pytest
 
@@ -96,7 +96,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install semantic-text-splitter --find-links dist --force-reinstall
+          pip install --find-links dist --force-reinstall semantic-text-splitter
           pip install pytest tokenizers
           pytest
 
@@ -132,7 +132,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install semantic-text-splitter --find-links dist --force-reinstall
+          pip install --find-links dist --force-reinstall semantic-text-splitter
           pip install pytest tokenizers
           pytest
 
