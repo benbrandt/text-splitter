@@ -16,9 +16,9 @@ Benchmarks show:
 
 - There was a bug in the `MarkdownSplitter` logic that caused some strange split points.
 - The `Text` semantic level in `MarkdownSplitter` has been merged with inline elements to also find better split points inside content.
-- Fixed a bug that could cause the algorithm to use a lower semantic level than necessary on occaision.
+- Fixed a bug that could cause the algorithm to use a lower semantic level than necessary on occasion. This mostly impacted the `MarkdownSplitter`, but there were same cases of different behavior in the `TextSplitter` as well if chunks are not trimmed.
 
-All of the above mostly effect the `MarkdownSplitter` and will cause different chunks to be output than before.
+All of the above can cause different chunks to be output than before, depending on the text. So, even though these are bug fixes to bring intended behavior, they are being treated as a major version bump.
 
 ## v0.7.0
 
