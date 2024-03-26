@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.8.1
+
+### What's New
+
+- Updates to documentation and examples.
+- Update pyo3 to 0.21.0 in Python package, which should bring some performance improvements.
+
 ## v0.8.0
 
 ### What's New
