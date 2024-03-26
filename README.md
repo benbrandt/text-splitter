@@ -14,6 +14,12 @@ This crate provides methods for splitting longer pieces of text into smaller chu
 
 ## Get Started
 
+Add it to your project with
+
+```sh
+cargo add text-splitter
+```
+
 ### By Number of Characters
 
 The simplest way to use this crate is to use the default implementation, which uses character count for chunk size.
@@ -36,12 +42,9 @@ println!("{}", chunks.count())
 
 Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled.
 
-**Cargo.toml**
-
-```toml
-[dependencies]
-text-splitter = { version = "0.7.0", features = ["tokenizers"] }
-tokenizers = { version = "0.15", features = ["http"] }
+```sh
+cargo add text-splitter --features tokenizers
+cargo add tokenizers --features http
 ```
 
 ```rust
@@ -64,11 +67,9 @@ println!("{}", chunks.count())
 
 Requires the `tiktoken-rs` feature to be activated and adding `tiktoken-rs` to dependencies.
 
-**Cargo.toml**
-
-```toml
-text-splitter = { version = "0.7.0", features = ["tiktoken-rs"] }
-tiktoken-rs = "0.5"
+```sh
+cargo add text-splitter --features tiktoken-rs
+cargo add tiktoken-rs
 ```
 
 ```rust
@@ -112,11 +113,8 @@ println!("{}", chunks.count())
 
 All of the above examples also can also work with Markdown text. If you enable the `markdown` feature, you can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
 
-**Cargo.toml**
-
-```toml
-[dependencies]
-text-splitter = { version = "0.7.0", features = ["markdown"] }
+```sh
+cargo add text-splitter --features markdown
 ```
 
 </details>
