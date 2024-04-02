@@ -13,14 +13,22 @@ impl ChunkSizer for &Tokenizer {
         let encoding = self
             .encode(chunk, false)
             .expect("Unable to tokenize the following string {chunk}");
+
+        let padding_params = self.get_padding();
+
         let mut offsets = encoding
-            .get_offsets()
+            .get_ids()
             .iter()
-            .map(|(start, end)| {
+            .zip(encoding.get_offsets())
+            // Skip padding tokens at beginning and end so they don't count towards the chunk size
+            .skip_while(|&(id, _)| padding_params.map_or(false, |params| id == &params.pad_id))
+            .take_while(|&(id, _)| padding_params.map_or(true, |params| id != &params.pad_id))
+            .map(|(_, (start, end))| {
                 let end = *end + 1;
                 *start..end
             })
             .collect::<Vec<_>>();
+
         // Sometimes the offsets are off by one because of whitespace prefixing
         let prefixed = offsets.last().is_some_and(|r| r.end != chunk.len());
 
@@ -73,6 +81,17 @@ mod tests {
         assert_eq!(
             offsets,
             ChunkSize::from_offsets([0..2, 2..8, 8..10].into_iter(), &capacity)
+        );
+    }
+
+    #[test]
+    fn handles_padding() {
+        let tokenizer = Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();
+        let capacity = 10;
+        let offsets = tokenizer.chunk_size("An apple a", &capacity);
+        assert_eq!(
+            offsets,
+            ChunkSize::from_offsets([0..2, 3..8, 9..10].into_iter(), &capacity)
         );
     }
 }

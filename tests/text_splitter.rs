@@ -70,3 +70,35 @@ fn chunk_capacity_range() {
     // \n goes in the second chunk because capacity is reached after first paragraph.
     assert_eq!(vec!["12345", "\n12345"], chunks);
 }
+
+#[cfg(feature = "tokenizers")]
+#[test]
+fn huggingface_small_chunk_behavior() {
+    let tokenizer =
+        tokenizers::Tokenizer::from_file("./tests/tokenizers/huggingface.json").unwrap();
+    let splitter = TextSplitter::new(tokenizer);
+
+    let text = "notokenexistsforthisword";
+    let chunks = splitter.chunks(text, 5).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["notokenexistsforth", "isword"]);
+}
+
+#[cfg(feature = "tokenizers")]
+#[test]
+fn huggingface_tokenizer_with_padding() {
+    let tokenizer = tokenizers::Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();
+    let splitter = TextSplitter::new(tokenizer);
+    let text = "\nThis is an example text This is an example text\n";
+
+    let chunks = splitter.chunks(text, 5).collect::<Vec<_>>();
+
+    assert_eq!(
+        chunks,
+        [
+            "\n",
+            "This is an example text ",
+            "This is an example text\n"
+        ]
+    );
+}
