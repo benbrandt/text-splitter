@@ -25,6 +25,7 @@ exclude = [
     ".github/**",
     ".vscode/**",
     "/bindings/**",
+    "/benches/output.txt",
     # Rely on large test files
     "/tests/snapshots/**",
     "/tests/text_splitter_snapshots.rs",
