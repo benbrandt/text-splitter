@@ -16,6 +16,7 @@
 
 use std::str::FromStr;
 
+use auto_enums::auto_enum;
 use pyo3::{exceptions::PyException, prelude::*, pybacked::PyBackedStr};
 use text_splitter::{
     Characters, ChunkCapacity, ChunkSize, ChunkSizer, MarkdownSplitter, TextSplitter,
@@ -67,6 +68,34 @@ impl ChunkSizer for CustomCallback {
     }
 }
 
+/// Keeps track of the corresponding byte to character offset in a text
+struct ByteToCharOffsetTracker<'text> {
+    byte_offset: usize,
+    char_offset: usize,
+    text: &'text str,
+}
+
+impl<'text> ByteToCharOffsetTracker<'text> {
+    fn new(text: &'text str) -> Self {
+        Self {
+            byte_offset: 0,
+            char_offset: 0,
+            text,
+        }
+    }
+
+    /// Updates the current offsets, but is able to cache previous results
+    fn map_byte_to_char(&mut self, (offset, chunk): (usize, &'text str)) -> (usize, &'text str) {
+        let prev_text = self
+            .text
+            .get(self.byte_offset..offset)
+            .expect("Invalid byte sequence");
+        self.byte_offset = offset;
+        self.char_offset += prev_text.chars().count();
+        (self.char_offset, chunk)
+    }
+}
+
 #[allow(clippy::large_enum_variant)]
 enum TextSplitterOptions {
     Characters(TextSplitter<Characters>),
@@ -76,12 +105,31 @@ enum TextSplitterOptions {
 }
 
 impl TextSplitterOptions {
-    fn chunks<'text>(&self, text: &'text str, chunk_capacity: PyChunkCapacity) -> Vec<&'text str> {
+    #[auto_enum(Iterator)]
+    fn chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> impl Iterator<Item = &'text str> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity).collect(),
+            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity),
+        }
+    }
+
+    #[auto_enum(Iterator)]
+    fn chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+        match self {
+            Self::Characters(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::CustomCallback(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Huggingface(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Tiktoken(splitter) => splitter.chunk_indices(text, chunk_capacity),
         }
     }
 }
@@ -351,7 +399,38 @@ impl PyTextSplitter {
         text: &'text str,
         chunk_capacity: PyChunkCapacity,
     ) -> Vec<&'text str> {
-        self.splitter.chunks(text, chunk_capacity)
+        self.splitter.chunks(text, chunk_capacity).collect()
+    }
+
+    /**
+    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        text (str): Text to split.
+        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+
+    Returns:
+        A list of tuples, one for each chunk. The first item will be the character offset relative
+        to the original text. The second item is the chunk itself.
+        If `trim_chunks` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_indices<'text, 'splitter: 'text>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> Vec<(usize, &'text str)> {
+        let mut offsets = ByteToCharOffsetTracker::new(text);
+        self.splitter
+            .chunk_indices(text, chunk_capacity)
+            .map(|c| offsets.map_byte_to_char(c))
+            .collect()
     }
 }
 
@@ -364,12 +443,31 @@ enum MarkdownSplitterOptions {
 }
 
 impl MarkdownSplitterOptions {
-    fn chunks<'text>(&self, text: &'text str, chunk_capacity: PyChunkCapacity) -> Vec<&'text str> {
+    #[auto_enum(Iterator)]
+    fn chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> impl Iterator<Item = &'text str> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity).collect(),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity).collect(),
+            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity),
+        }
+    }
+
+    #[auto_enum(Iterator)]
+    fn chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+        match self {
+            Self::Characters(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::CustomCallback(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Huggingface(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Tiktoken(splitter) => splitter.chunk_indices(text, chunk_capacity),
         }
     }
 }
@@ -665,7 +763,38 @@ impl PyMarkdownSplitter {
         text: &'text str,
         chunk_capacity: PyChunkCapacity,
     ) -> Vec<&'text str> {
-        self.splitter.chunks(text, chunk_capacity)
+        self.splitter.chunks(text, chunk_capacity).collect()
+    }
+
+    /**
+    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        text (str): Text to split.
+        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+
+    Returns:
+        A list of tuples, one for each chunk. The first item will be the character offset relative
+        to the original text. The second item is the chunk itself.
+        If `trim_chunks` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_indices<'text, 'splitter: 'text>(
+        &'splitter self,
+        text: &'text str,
+        chunk_capacity: PyChunkCapacity,
+    ) -> Vec<(usize, &'text str)> {
+        let mut offsets = ByteToCharOffsetTracker::new(text);
+        self.splitter
+            .chunk_indices(text, chunk_capacity)
+            .map(|c| offsets.map_byte_to_char(c))
+            .collect()
     }
 }
 
