@@ -1188,6 +1188,7 @@ dependencies = [
 name = "semantic-text-splitter"
 version = "0.9.0"
 dependencies = [
+ "auto_enums",
  "pyo3",
  "text-splitter",
  "tiktoken-rs",

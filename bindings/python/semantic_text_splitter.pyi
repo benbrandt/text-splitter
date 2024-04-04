@@ -202,6 +202,28 @@ class TextSplitter:
             splitter, then each chunk will already be trimmed as well.
         """
 
+    def chunk_indices(
+        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
+    ) -> List[Tuple[int, str]]:
+        """Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            text (str): Text to split.
+            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+
+        Returns:
+            A list of tuples, one for each chunk. The first item will be the character offset relative
+            to the original text. The second item is the chunk itself.
+            If `trim_chunks` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
 
 class MarkdownSplitter:
     """Markdown splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
@@ -413,4 +435,26 @@ class MarkdownSplitter:
         Returns:
             A list of strings, one for each chunk. If `trim_chunks` was specified in the text
             splitter, then each chunk will already be trimmed as well.
+        """
+
+    def chunk_indices(
+        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
+    ) -> List[Tuple[int, str]]:
+        """Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            text (str): Text to split.
+            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+
+        Returns:
+            A list of tuples, one for each chunk. The first item will be the character offset relative
+            to the original text. The second item is the chunk itself.
+            If `trim_chunks` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
         """
