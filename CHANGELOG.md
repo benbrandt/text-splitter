@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.1
+
+### What's New
+
+Python `TextSplitter` and `MarkdownSplitter` now both provide a new `chunk_indices` method that returns a list not only of chunks, but also their corresponding character offsets relative to the original text. This should allow for different string comparison and matching operations on the chunks.
+
+```python
+def chunk_indices(
+    self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
+) -> List[Tuple[int, str]]:
+    ...
+```
+
+A similar method already existed on the Rust side. The key difference is that these offsets are **character** not **byte** offsets. For Rust strings, it is usually helpful to have the byte offset, but in Python, most string methods and operations deal with character indices.
+
 ## v0.9.0
 
 ### What's New

@@ -1186,7 +1186,7 @@ dependencies = [
 
 [[package]]
 name = "semantic-text-splitter"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "auto_enums",
  "pyo3",
@@ -1320,7 +1320,7 @@ dependencies = [
 
 [[package]]
 name = "text-splitter"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "ahash",
  "auto_enums",
