@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.9.0
+
+### What's New
+
+[More robust handling of Hugging Face tokenizers as chunk sizers.](https://github.com/benbrandt/text-splitter/pull/131)
+
+- **Tokenizers with padding enabled no longer count padding tokens when generating chunks**. This caused some unexpected behavior, especially if the chunk capacity didn't perfectly line up with the padding size(s). Now, the tokenizer's padding token is ignored when counting the number of tokens generated in a chunk.
+- In the process, it also became clear there were some false assumptions about how the byte offset ranges were calculated for each token. This has been fixed, and the byte offset ranges should now be more accurate when determining the boundaries of each token. This only affects some optimizations in chunk sizing, and should not affect the actual chunk output.
+
+### Breaking Changes
+
+There should only be breaking chunk output for those of you using a Hugging Face tokenizer with padding enabled. Because padding tokens are no longer counted, the chunks will likely be larger than before, and closer to the desired behavior.
+
+**Note:** This will mean the generated chunks may also be larger than the chunk capacity when tokenized, because padding tokens will be added when you tokenize the chunk. The chunk capacity for these tokenizers reflects the number of tokens used in the text, not necessarily the number of tokens that the tokenizer will generate in total.
+
 ## v0.8.1
 
 ### What's New
