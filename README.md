@@ -117,8 +117,6 @@ All of the above examples also can also work with Markdown text. If you enable t
 cargo add text-splitter --features markdown
 ```
 
-</details>
-
 ```rust
 use text_splitter::MarkdownSplitter;
 // Maximum number of characters in a chunk. Can also use a range.
