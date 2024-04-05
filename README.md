@@ -161,12 +161,9 @@ Markdown is parsed according to the CommonMark spec, along with some optional fe
 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
 5. Soft line breaks (single newline) which isn't necessarily a new element in Markdown.
 6. Inline elements such as: text nodes, emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
-7. Block elements suce as: paragraphs, code blocks, and footnote definitions.
-8. Container blocks such as: table rows, block quotes, list items, and HTML blocks.
-9. Meta containers such as: lists and tables.
-10. Thematic breaks or horizontal rules.
-11. Headings by level
-12. Metadata at the beginning of the document
+7. Block elements suce as: paragraphs, code blocks, footnote definitions, metadata. Also, a block quote or row/item within a table or list that can contain other "block" type elements, and a list or table that contains items.
+8. Thematic breaks or horizontal rules.
+9. Headings by level
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 

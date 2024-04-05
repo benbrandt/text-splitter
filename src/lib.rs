@@ -37,22 +37,45 @@ where
     fn ranges_after_offset(
         &self,
         offset: usize,
-    ) -> impl Iterator<Item = &(Level, Range<usize>)> + '_ {
+    ) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
         self.ranges
             .iter()
             .filter(move |(_, sep)| sep.start >= offset)
+            .map(|(l, r)| (*l, r.start..r.end))
     }
     /// Retrieve ranges for all sections of a given level after an offset
     fn level_ranges_after_offset(
         &self,
         offset: usize,
         level: Level,
-    ) -> impl Iterator<Item = &(Level, Range<usize>)> + '_ {
-        let first_item = self.ranges_after_offset(offset).find(|(l, _)| l == &level);
+    ) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
+        // Find the first item of this level. Allows us to skip larger items of a higher level that surround this one.
+        // Otherwise all lower levels would only return the first item of the higher level that wraps it.
+        let first_item = self
+            .ranges_after_offset(offset)
+            .position(|(l, _)| l == level)
+            .and_then(|i| {
+                self.ranges_after_offset(offset)
+                    .skip(i)
+                    .coalesce(|(a_level, a_range), (b_level, b_range)| {
+                        // If we are at the first item, if two neighboring elements have the same level and start, take the shorter one
+                        if a_level == b_level && a_range.start == b_range.start && i == 0 {
+                            Ok((b_level, b_range))
+                        } else {
+                            Err(((a_level, a_range), (b_level, b_range)))
+                        }
+                    })
+                    // Just take the first of these items
+                    .next()
+            });
+        // let first_item = self.ranges_after_offset(offset).find(|(l, _)| l == &level);
         self.ranges_after_offset(offset)
             .filter(move |(l, _)| l >= &level)
             .skip_while(move |(l, r)| {
-                first_item.is_some_and(|(_, fir)| l > &level && r.contains(&fir.start))
+                first_item.as_ref().is_some_and(|(_, fir)| {
+                    (l > &level && r.contains(&fir.start))
+                        || (l == &level && r.start == fir.start && r.end > fir.end)
+                })
             })
     }
 
@@ -63,10 +86,10 @@ where
 
         self.peristent_levels
             .iter()
+            .copied()
             .chain(existing_levels)
             .sorted()
             .dedup()
-            .copied()
     }
 
     /// Clear out ranges we have moved past so future iterations are faster

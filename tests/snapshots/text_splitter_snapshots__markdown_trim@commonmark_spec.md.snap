@@ -7378,8 +7378,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - says the
 - following about
 - "list items:"
-- "1."
-- "\""
+- "1. \""
 - List markers
 - typically start
 - at the left
@@ -7392,8 +7391,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - by one or more
 - spaces or a tab.
 - "\""
-- "2."
-- "\""
+- "2. \""
 - To make lists
 - "look nice, you"
 - can wrap items
@@ -7402,8 +7400,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "But if you don'"
 - "t want to, you"
 - "don't have to.\""
-- "3."
-- "\""
+- "3. \""
 - List items may
 - consist of
 - multiple
@@ -7414,8 +7411,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - be indented by
 - either 4 spaces
 - "or one\n   tab.\""
-- "4."
-- "\""
+- "4. \""
 - It looks nice if
 - you indent every
 - line of the
@@ -7425,8 +7421,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Markdown will
 - allow you to be
 - "lazy.\""
-- "5."
-- "\""
+- "5. \""
 - To put a
 - blockquote
 - within a list
@@ -7434,8 +7429,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "blockquote's `>`"
 - delimiters need
 - "to be indented.\""
-- "6."
-- "\""
+- "6. \""
 - To put a code
 - block within a
 - "list item, the"
@@ -9245,8 +9239,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - rules define
 - emphasis and
 - "strong emphasis:"
-- "1."
-- "A single `*`"
+- "1.  A single `*`"
 - character
 - "[can open"
 - "emphasis](@)"
@@ -9255,8 +9248,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "of a ["
 - left-flanking
 - "delimiter run]."
-- "2."
-- "A single `_`"
+- "2.  A single `_`"
 - "character ["
 - can open
 - "emphasis] iff"
@@ -9276,8 +9268,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Unicode
 - punctuation
 - "character]."
-- "3."
-- "A single `*`"
+- "3.  A single `*`"
 - character
 - "[can close"
 - "emphasis](@)"
@@ -9285,8 +9276,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "of a ["
 - right-flanking
 - "delimiter run]."
-- "4."
-- "A single `_`"
+- "4.  A single `_`"
 - "character ["
 - can close
 - "emphasis] iff"
@@ -9306,16 +9296,16 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Unicode
 - punctuation
 - "character]."
-- "5."
-- "A double `**`"
+- 5.  A double
+- "`**`"
 - "[can open strong"
 - "emphasis](@)"
 - iff it is part
 - "of a ["
 - left-flanking
 - "delimiter run]."
-- "6."
-- "A double `__` ["
+- 6.  A double
+- "`__` ["
 - can open strong
 - "emphasis] iff"
 - it is part of a
@@ -9334,8 +9324,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - Unicode
 - punctuation
 - "character]."
-- "7."
-- "A double `**`"
+- 7.  A double
+- "`**`"
 - "[can close"
 - "strong emphasis]"
 - (@)
@@ -9343,8 +9333,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "of a ["
 - right-flanking
 - "delimiter run]."
-- "8."
-- "A double `__` ["
+- 8.  A double
+- "`__` ["
 - can close strong
 - "emphasis] iff"
 - it is part of a
@@ -9447,8 +9437,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - lengths
 - are multiples of
 - "3."
-- "11."
-- "A literal `*`"
+- 11. A literal
+- "`*`"
 - character cannot
 - occur at the
 - beginning or end
@@ -9460,8 +9450,8 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - unless it
 - is backslash-
 - escaped.
-- "12."
-- "A literal `_`"
+- 12. A literal
+- "`_`"
 - character cannot
 - occur at the
 - beginning or end
@@ -11256,8 +11246,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "inlines, and"
 - a close bracket
 - "`]`."
-- "-"
-- "Backtick ["
+- "- Backtick ["
 - "code spans], ["
 - "autolinks]"
 - ", and raw ["
@@ -15142,8 +15131,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - shortcut
 - reference link/
 - image.
-- +
-- "If we don'"
+- "+ If we don'"
 - "t, then we"
 - remove the
 - opening
@@ -15163,8 +15151,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - node pointed to
 - by the opening
 - delimiter.
-- "*"
-- We run
+- "* We run"
 - "*process"
 - emphasis*
 - on these inlines
@@ -15246,8 +15233,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - until we run out
 - of potential
 - "closers:"
-- "-"
-- Move
+- "- Move"
 - "`"
 - current_position
 - "`"
@@ -15340,8 +15326,7 @@ input_file: tests/inputs/markdown/commonmark_spec.md
 - "-"
 - If none is found
 - ":"
-- +
-- Set
+- + Set
 - "`openers_bottom`"
 - to the element
 - before

@@ -75,8 +75,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "* Ac tristique libero volutpat at"
 - + Facilisis in pretium nisl aliquet
 - "- Nulla volutpat aliquam velit"
-- "+ Very easy!\n```"
-- 1. First ordered list item
+- "+ Very easy!\n```\n\n1. First ordered list item"
 - "2. Another item\n⋅⋅* Unordered sub-list."
 - "1. Actual numbers don't matter, just that it'"
 - "s a number\n⋅⋅1. Ordered sub-list"
@@ -123,12 +122,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "- [x] Finish my changes"
 - "- [ ] Push my commits to GitHub"
 - "- [ ] Open a pull request"
-- "-"
-- "[x] @mentions, #refs, [links](),"
-- "**formatting**, and <del>tags</del>"
-- supported
-- "-"
-- "[x] list syntax required (any unordered or ordered list supported)"
+- "- [x] @mentions, #refs, [links]()"
+- ", **formatting**, and <del>tags"
+- "</del> supported"
+- "- [x]"
+- list syntax required (any unordered or ordered list supported)
 - "- [ ] this is a complete item\n- [ ] this is an incomplete item"
 - "------"
 - "# Ignoring Markdown formatting"
@@ -354,8 +352,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| Name     | Character |\n| ---      | ---       |"
 - "| Backtick | `         |\n| Pipe     | \\|        |\n```"
 - Colons can be used to align columns.
-- "| Tables        | Are           | Cool"
-- "|"
+- "| Tables        | Are           | Cool  |"
 - "| ------------- |:"
 - "-------------:| -"
 - "----:|"
@@ -366,13 +363,11 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "The outer pipes (|) are optional, and you don'"
 - t need to make the
 - raw Markdown line up prettily.
-- You can also use inline Markdown.
-- Markdown | Less | Pretty
+- "You can also use inline Markdown.\n\nMarkdown | Less | Pretty"
 - "--- | --- | ---"
 - "*Still* | `renders` | **nicely**"
 - 1 | 2 | 3
-- "| First Header  | Second Header"
-- "|"
+- "| First Header  | Second Header |"
 - "| ------------- | -"
 - "------------ |"
 - "| Content Cell  | Content Cell  |\n| Content Cell  | Content Cell  |"
@@ -383,8 +378,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "| `git status` | List all *new or modified* files |"
 - "| `git diff` |"
 - "Show file differences that **haven't been** staged |"
-- "| Left-aligned | Center-aligned | Right-aligned"
-- "|"
+- "| Left-aligned | Center-aligned | Right-aligned |"
 - "| :---         |     :---:      |          ---:"
 - "|\n| git status   | git status     | git status    |"
 - "| git diff     | git diff       | git diff      |"
@@ -405,9 +399,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - ">> ...by using additional greater-than signs right next to each"
 - "other...\n> > > ...or with spaces between arrows."
 - "```"
-- ">"
-- "Blockquotes are very handy in email to emulate reply text.\n>"
-- "This line is part of the same quote.\n\nQuote break."
+- "> Blockquotes are very handy in email to emulate reply text."
+- "> This line is part of the same quote.\n\nQuote break."
 - ">"
 - This is a very long line that will still be quoted properly when it wraps.
 - "Oh boy let'"
@@ -415,8 +408,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "Oh, you can *put* **Markdown**"
 - into a blockquote.
 - "> Blockquotes can also be nested...\n>"
-- ">"
-- "...by using additional greater-than signs right next to each other"
+- "> ...by using additional greater-than signs right next to each other"
 - "...\n> > > ...or with spaces between arrows."
 - "------"
 - "# Inline HTML"
@@ -427,8 +419,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "<dt>Markdown in HTML</dt>"
 - "<dd>Does *not* work **very** well."
 - Use HTML <em>tags</em>.</
-- "dd>\n</dl>\n```"
-- "<dl>"
+- "dd>\n</dl>\n```\n\n<dl>"
 - "<dt>Definition list</dt>"
 - "<dd>Is something people use sometimes.</dd>"
 - "<dt>Markdown in HTML</dt>"
