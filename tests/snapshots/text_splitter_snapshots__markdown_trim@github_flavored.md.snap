@@ -310,30 +310,25 @@ input_file: tests/inputs/markdown/github_flavored.md
 - "```"
 - "- [x] Finish my"
 - changes
-- "-"
-- "[ ]"
+- "- [ ]"
 - Push my commits
 - to GitHub
-- "-"
-- "[ ]"
+- "- [ ]"
 - Open a pull
 - request
-- "-"
-- "[x]"
+- "- [x]"
 - "@mentions, #refs"
 - ", [links](),"
 - "**formatting**"
 - ", and <del>tags"
 - "</del> supported"
-- "-"
-- "[x]"
+- "- [x]"
 - list syntax
 - required (any
 - unordered or
 - ordered list
 - supported)
-- "-"
-- "[ ]"
+- "- [ ]"
 - this is a
 - complete item
 - "- [ ] this is an"
@@ -628,8 +623,8 @@ input_file: tests/inputs/markdown/github_flavored.md
 - definition.
 - Duplicated
 - footnote
-- "reference[^"
-- "second]."
+- reference
+- "[^second]."
 - "[^first]:"
 - Footnote
 - "**can have"
@@ -1060,16 +1055,14 @@ input_file: tests/inputs/markdown/github_flavored.md
 - Blockquotes can
 - also be nested
 - "...\n>"
-- ">"
-- "..."
+- "> ..."
 - by using
 - additional
 - greater-than
 - signs right next
 - to each other...
 - "> >"
-- ">"
-- "..."
+- "> ..."
 - or with spaces
 - between arrows.
 - "------"
@@ -1088,8 +1081,7 @@ input_file: tests/inputs/markdown/github_flavored.md
 - well.
 - Use HTML <em>
 - tags</em>.</dd>
-- "</dl>\n```"
-- "<dl>"
+- "</dl>\n```\n\n<dl>"
 - "<dt>Definition"
 - list</dt>
 - "<dd>Is something"
