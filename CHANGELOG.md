@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.10.0
+
+### Breaking Changes
+
+**Improved (but different) Markdown split points** [#137](https://github.com/benbrandt/text-splitter/pull/137). In hindsight, the levels used for determining split points in Markdown text were too granular, which led to some strange split points.
+Many more element types were consolidated into the same levels, which should still provide a good balance between splitting at the right points and not splitting too often.
+
+Because the output of the `MarkdownSplitter` will be substantially different, especially for smaller chunk sizes, this is considered a breaking change.
+
 ## v0.9.1
 
 ### What's New
