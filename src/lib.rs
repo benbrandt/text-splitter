@@ -11,7 +11,7 @@ mod chunk_size;
 mod markdown;
 mod text;
 
-pub use chunk_size::{Characters, ChunkCapacity, ChunkSize, ChunkSizer};
+pub use chunk_size::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer};
 #[cfg(feature = "markdown")]
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
@@ -163,14 +163,14 @@ where
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
-    fn new(chunk_capacity: C, chunk_sizer: &'sizer S, text: &'text str, trim_chunks: bool) -> Self {
+    fn new(chunk_config: &'sizer ChunkConfig<C, S>, text: &'text str) -> Self {
         Self {
             cursor: 0,
-            chunk_sizer: MemoizedChunkSizer::new(chunk_capacity, chunk_sizer),
+            chunk_sizer: MemoizedChunkSizer::new(chunk_config.capacity(), chunk_config.sizer()),
             next_sections: Vec::new(),
             semantic_split: SemanticSplitRanges::<L>::new(text),
             text,
-            trim_chunks,
+            trim_chunks: chunk_config.trim(),
         }
     }
 

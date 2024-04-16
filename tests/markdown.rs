@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 #[cfg(feature = "markdown")]
-use text_splitter::MarkdownSplitter;
+use text_splitter::{ChunkConfig, MarkdownSplitter};
 
 #[cfg(feature = "markdown")]
 #[test]
@@ -13,8 +13,8 @@ fn random_chunk_size() {
 
     for _ in 0..10 {
         let max_characters = Faker.fake();
-        let splitter = MarkdownSplitter::default();
-        let chunks = splitter.chunks(&text, max_characters).collect::<Vec<_>>();
+        let splitter = MarkdownSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
+        let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
         assert_eq!(chunks.join(""), text);
         for chunk in chunks {
@@ -30,10 +30,8 @@ fn random_chunk_indices_increase() {
 
     for _ in 0..10 {
         let max_characters = Faker.fake::<usize>();
-        let splitter = MarkdownSplitter::default();
-        let indices = splitter
-            .chunk_indices(&text, max_characters)
-            .map(|(i, _)| i);
+        let splitter = MarkdownSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
+        let indices = splitter.chunk_indices(&text).map(|(i, _)| i);
 
         assert!(indices.tuple_windows().all(|(a, b)| a < b));
     }
@@ -42,10 +40,10 @@ fn random_chunk_indices_increase() {
 #[cfg(feature = "markdown")]
 #[test]
 fn fallsback_to_normal_text_split_if_no_markdown_content() {
-    let splitter = MarkdownSplitter::default();
+    let chunk_config = ChunkConfig::new(10).with_trim(false);
+    let splitter = MarkdownSplitter::new(chunk_config);
     let text = "Some text\n\nfrom a\ndocument";
-    let chunk_size = 10;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(["Some text\n", "\nfrom a\n", "document"].to_vec(), chunks);
 }
@@ -53,10 +51,9 @@ fn fallsback_to_normal_text_split_if_no_markdown_content() {
 #[cfg(feature = "markdown")]
 #[test]
 fn split_by_rule() {
-    let splitter = MarkdownSplitter::default();
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(12).with_trim(false));
     let text = "Some text\n\n---\n\nwith a rule";
-    let chunk_size = 12;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(["Some text\n\n", "---\n", "\nwith a rule"].to_vec(), chunks);
 }
@@ -64,10 +61,9 @@ fn split_by_rule() {
 #[cfg(feature = "markdown")]
 #[test]
 fn split_by_rule_trim() {
-    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let splitter = MarkdownSplitter::new(12);
     let text = "Some text\n\n---\n\nwith a rule";
-    let chunk_size = 12;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(["Some text", "---", "with a rule"].to_vec(), chunks);
 }
@@ -75,10 +71,9 @@ fn split_by_rule_trim() {
 #[cfg(feature = "markdown")]
 #[test]
 fn split_by_headers() {
-    let splitter = MarkdownSplitter::default();
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(30).with_trim(false));
     let text = "# Header 1\n\nSome text\n\n## Header 2\n\nwith headings\n";
-    let chunk_size = 30;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
         [
@@ -93,10 +88,9 @@ fn split_by_headers() {
 #[cfg(feature = "markdown")]
 #[test]
 fn subheadings_grouped_with_top_header() {
-    let splitter = MarkdownSplitter::default();
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(60).with_trim(false));
     let text = "# Header 1\n\nSome text\n\n## Header 2\n\nwith headings\n\n### Subheading\n\nand more text\n";
-    let chunk_size = 60;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
         [
@@ -111,10 +105,9 @@ fn subheadings_grouped_with_top_header() {
 #[cfg(feature = "markdown")]
 #[test]
 fn trimming_doesnt_trim_block_level_indentation_if_multiple_items() {
-    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let splitter = MarkdownSplitter::new(48);
     let text = "* Really long list item that is too big to fit\n\n  * Some Indented Text\n\n  * More Indented Text\n\n";
-    let chunk_size = 48;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
         [
@@ -129,10 +122,9 @@ fn trimming_doesnt_trim_block_level_indentation_if_multiple_items() {
 #[cfg(feature = "markdown")]
 #[test]
 fn trimming_does_trim_block_level_indentation_if_only_one_item() {
-    let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+    let splitter = MarkdownSplitter::new(30);
     let text = "1. Really long list item\n\n  1. Some Indented Text\n\n  2. More Indented Text\n\n";
-    let chunk_size = 30;
-    let chunks = splitter.chunks(text, chunk_size).collect::<Vec<_>>();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
         [

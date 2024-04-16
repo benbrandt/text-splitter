@@ -4,11 +4,12 @@ use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 /// characters in each chunk.
 ///
 /// ```
-/// use text_splitter::{Characters, TextSplitter};
+/// use text_splitter::TextSplitter;
 ///
-/// let splitter = TextSplitter::new(Characters);
+/// // Uses character splitter by default.
+/// let splitter = TextSplitter::new(10);
 /// ```
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Characters;
 
 impl ChunkSizer for Characters {

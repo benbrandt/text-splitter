@@ -86,62 +86,6 @@ pub trait ChunkSizer {
     fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;
 }
 
-/// A memoized chunk sizer that caches the size of chunks.
-/// Very helpful when the same chunk is being validated multiple times, which
-/// happens often, and can be expensive to compute, such as with tokenizers.
-#[derive(Debug)]
-pub struct MemoizedChunkSizer<'sizer, C, S>
-where
-    C: ChunkCapacity,
-    S: ChunkSizer,
-{
-    /// Cache of chunk sizes per byte offset range
-    cache: AHashMap<Range<usize>, ChunkSize>,
-    /// How big can each chunk be
-    chunk_capacity: C,
-    /// The sizer we are wrapping
-    sizer: &'sizer S,
-}
-
-impl<'sizer, C, S> MemoizedChunkSizer<'sizer, C, S>
-where
-    C: ChunkCapacity,
-    S: ChunkSizer,
-{
-    /// Wrap any chunk sizer for memoization
-    pub fn new(chunk_capacity: C, sizer: &'sizer S) -> Self {
-        Self {
-            cache: AHashMap::new(),
-            chunk_capacity,
-            sizer,
-        }
-    }
-
-    /// Determine the size of a given chunk to use for validation,
-    /// returning a cached value if it exists, and storing the result if not.
-    pub fn chunk_size(&mut self, offset: usize, chunk: &str) -> ChunkSize {
-        *self
-            .cache
-            .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| self.sizer.chunk_size(chunk, &self.chunk_capacity))
-    }
-
-    /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
-    pub fn check_capacity(&mut self, (offset, chunk): (usize, &str)) -> ChunkSize {
-        let mut chunk_size = self.chunk_size(offset, chunk);
-        if let Some(max_chunk_size_offset) = chunk_size.max_chunk_size_offset.as_mut() {
-            *max_chunk_size_offset += offset;
-        }
-        chunk_size
-    }
-
-    /// Clear the cached values. Once we've moved the cursor,
-    /// we don't need to keep the old values around.
-    pub fn clear_cache(&mut self) {
-        self.cache.clear();
-    }
-}
-
 /// Describes the largest valid chunk size(s) that can be generated.
 ///
 /// An `end` size is required, which is the maximum possible chunk size that
@@ -251,6 +195,162 @@ impl ChunkCapacity for RangeToInclusive<usize> {
 
     fn end(&self) -> usize {
         self.end
+    }
+}
+
+/// Configuration for how chunks should be created
+#[derive(Debug)]
+pub struct ChunkConfig<Capacity, Sizer>
+where
+    Capacity: ChunkCapacity,
+    Sizer: ChunkSizer,
+{
+    /// The chunk capacity to use for filling chunks
+    capacity: Capacity,
+    /// The chunk sizer to use for determining the size of each chunk
+    sizer: Sizer,
+    /// Whether whitespace will be trimmed from the beginning and end of each chunk
+    trim: bool,
+}
+
+impl<Capacity> ChunkConfig<Capacity, Characters>
+where
+    Capacity: ChunkCapacity,
+{
+    /// Create a basic configuration for chunking with only the required value a chunk capacity.
+    ///
+    /// By default, chunk sizes will be calculated based on the number of characters in each chunk.
+    /// You can set a custom chunk sizer by calling [`Self::with_sizer`].
+    ///
+    /// By default, chunks will be trimmed. If you want to preserve whitespace,
+    /// call [`Self::with_trim`] and set it to `false`.
+    #[must_use]
+    pub fn new(capacity: Capacity) -> Self {
+        Self {
+            capacity,
+            sizer: Characters,
+            trim: true,
+        }
+    }
+}
+
+impl<Capacity, Sizer> ChunkConfig<Capacity, Sizer>
+where
+    Capacity: ChunkCapacity,
+    Sizer: ChunkSizer,
+{
+    /// Retrieve a reference to the chunk capacity for this configuration.
+    pub fn capacity(&self) -> &Capacity {
+        &self.capacity
+    }
+
+    /// Retrieve a reference to the chunk sizer for this configuration.
+    pub fn sizer(&self) -> &Sizer {
+        &self.sizer
+    }
+
+    /// Set a custom chunk sizer to use for determining the size of each chunk
+    ///
+    /// ```
+    /// use text_splitter::{Characters, ChunkConfig};
+    ///
+    /// let config = ChunkConfig::new(512).with_sizer(Characters);
+    /// ```
+    #[must_use]
+    pub fn with_sizer<S: ChunkSizer>(self, sizer: S) -> ChunkConfig<Capacity, S> {
+        ChunkConfig {
+            capacity: self.capacity,
+            sizer,
+            trim: self.trim,
+        }
+    }
+
+    /// Whether chunkd should have whitespace trimmed from the beginning and end or not.
+    pub fn trim(&self) -> bool {
+        self.trim
+    }
+
+    /// Specify whether chunks should have whitespace trimmed from the
+    /// beginning and end or not.
+    ///
+    /// If `false` (default), joining all chunks should return the original
+    /// string.
+    /// If `true`, all chunks will have whitespace removed from beginning and end.
+    ///
+    /// ```
+    /// use text_splitter::ChunkConfig;
+    ///
+    /// let config = ChunkConfig::new(512).with_trim(false);
+    /// ```
+    #[must_use]
+    pub fn with_trim(mut self, trim: bool) -> Self {
+        self.trim = trim;
+        self
+    }
+}
+
+impl<Capacity> From<Capacity> for ChunkConfig<Capacity, Characters>
+where
+    Capacity: ChunkCapacity,
+{
+    fn from(capacity: Capacity) -> Self {
+        Self::new(capacity)
+    }
+}
+
+/// A memoized chunk sizer that caches the size of chunks.
+/// Very helpful when the same chunk is being validated multiple times, which
+/// happens often, and can be expensive to compute, such as with tokenizers.
+#[derive(Debug)]
+pub struct MemoizedChunkSizer<'sizer, C, S>
+where
+    C: ChunkCapacity,
+    S: ChunkSizer,
+{
+    /// Cache of chunk sizes per byte offset range
+    cache: AHashMap<Range<usize>, ChunkSize>,
+    /// How big can each chunk be
+    chunk_capacity: &'sizer C,
+    /// The sizer we are wrapping
+    sizer: &'sizer S,
+}
+
+impl<'sizer, C, S> MemoizedChunkSizer<'sizer, C, S>
+where
+    C: ChunkCapacity,
+    S: ChunkSizer,
+{
+    /// Wrap any chunk sizer for memoization
+    pub fn new(chunk_capacity: &'sizer C, sizer: &'sizer S) -> Self {
+        Self {
+            cache: AHashMap::new(),
+            chunk_capacity,
+            sizer,
+        }
+    }
+
+    /// Determine the size of a given chunk to use for validation,
+    /// returning a cached value if it exists, and storing the result if not.
+    pub fn chunk_size(&mut self, offset: usize, chunk: &str) -> ChunkSize {
+        *self
+            .cache
+            .entry(offset..(offset + chunk.len()))
+            .or_insert_with(|| self.sizer.chunk_size(chunk, self.chunk_capacity))
+    }
+
+    /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
+    pub fn check_capacity(&mut self, (offset, chunk): (usize, &str)) -> ChunkSize {
+        let mut chunk_size = self.chunk_size(offset, chunk);
+        if let Some(max_chunk_size_offset) = chunk_size.max_chunk_size_offset.as_mut() {
+            *max_chunk_size_offset += offset;
+        }
+        chunk_size
+    }
+
+    /// Clear the cached values. Once we've moved the cursor,
+    /// we don't need to keep the old values around.
+    pub fn clear_cache(&mut self) {
+        self.cache.clear();
     }
 }
 
@@ -396,7 +496,7 @@ mod tests {
     #[test]
     fn memoized_sizer_only_calculates_once_per_text() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(10, &sizer);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
@@ -408,7 +508,7 @@ mod tests {
     #[test]
     fn memoized_sizer_calculates_once_per_different_text() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(10, &sizer);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
         let text = "1234567890";
         for i in 0..10 {
             memoized_sizer.chunk_size(0, text.get(0..i).unwrap());
@@ -423,7 +523,7 @@ mod tests {
     #[test]
     fn can_clear_cache_on_memoized_sizer() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(10, &sizer);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
@@ -447,5 +547,36 @@ mod tests {
             },
             chunk_size
         );
+    }
+
+    #[test]
+    fn basic_chunk_config() {
+        let config = ChunkConfig::new(10);
+        assert_eq!(config.capacity, 10);
+        assert_eq!(config.sizer, Characters);
+        assert!(config.trim);
+    }
+
+    #[test]
+    fn disable_trimming() {
+        let config = ChunkConfig::new(10).with_trim(false);
+        assert!(!config.trim);
+    }
+
+    #[test]
+    fn new_sizer() {
+        #[derive(Debug, PartialEq)]
+        struct BasicSizer;
+
+        impl ChunkSizer for BasicSizer {
+            fn chunk_size(&self, _chunk: &str, _capacity: &impl ChunkCapacity) -> ChunkSize {
+                unimplemented!()
+            }
+        }
+
+        let config = ChunkConfig::new(10).with_sizer(BasicSizer);
+        assert_eq!(config.capacity, 10);
+        assert_eq!(config.sizer, BasicSizer);
+        assert!(config.trim);
     }
 }

@@ -17,15 +17,15 @@ mod text {
     use std::fs;
 
     use divan::{black_box_drop, counter::BytesCount, Bencher};
-    use text_splitter::{ChunkSizer, TextSplitter};
+    use text_splitter::{ChunkConfig, ChunkSizer, TextSplitter};
 
     use crate::CHUNK_SIZES;
 
     const TEXT_FILENAMES: &[&str] = &["romeo_and_juliet", "room_with_a_view"];
 
-    fn bench<const N: usize, S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
+    fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
-        G: Fn() -> TextSplitter<S> + Sync,
+        G: Fn() -> TextSplitter<usize, S> + Sync,
         S: ChunkSizer,
     {
         bencher
@@ -37,30 +37,32 @@ mod text {
             })
             .input_counter(|(_, text)| BytesCount::of_str(text))
             .bench_values(|(splitter, text)| {
-                splitter.chunks(&text, N).for_each(black_box_drop);
+                splitter.chunks(&text).for_each(black_box_drop);
             });
     }
 
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, TextSplitter::default);
+        bench(bencher, filename, || TextSplitter::new(N));
     }
 
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
-            TextSplitter::new(tiktoken_rs::cl100k_base().unwrap())
+        use text_splitter::ChunkConfig;
+
+        bench(bencher, filename, || {
+            TextSplitter::new(ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()))
         });
     }
 
     #[cfg(feature = "tokenizers")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
-            TextSplitter::new(
+        bench(bencher, filename, || {
+            TextSplitter::new(ChunkConfig::new(N).with_sizer(
                 tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
-            )
+            ))
         });
     }
 }
@@ -71,15 +73,15 @@ mod markdown {
     use std::fs;
 
     use divan::{black_box_drop, counter::BytesCount, Bencher};
-    use text_splitter::{ChunkSizer, MarkdownSplitter};
+    use text_splitter::{ChunkConfig, ChunkSizer, MarkdownSplitter};
 
     use crate::CHUNK_SIZES;
 
     const MARKDOWN_FILENAMES: &[&str] = &["commonmark_spec"];
 
-    fn bench<const N: usize, S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
+    fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
-        G: Fn() -> MarkdownSplitter<S> + Sync,
+        G: Fn() -> MarkdownSplitter<usize, S> + Sync,
         S: ChunkSizer,
     {
         bencher
@@ -91,30 +93,32 @@ mod markdown {
             })
             .input_counter(|(_, text)| BytesCount::of_str(text))
             .bench_values(|(splitter, text)| {
-                splitter.chunks(&text, N).for_each(black_box_drop);
+                splitter.chunks(&text).for_each(black_box_drop);
             });
     }
 
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, MarkdownSplitter::default);
+        bench(bencher, filename, || MarkdownSplitter::new(N));
     }
 
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
-            MarkdownSplitter::new(tiktoken_rs::cl100k_base().unwrap())
+        bench(bencher, filename, || {
+            MarkdownSplitter::new(
+                ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
+            )
         });
     }
 
     #[cfg(feature = "tokenizers")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
-            MarkdownSplitter::new(
+        bench(bencher, filename, || {
+            MarkdownSplitter::new(ChunkConfig::new(N).with_sizer(
                 tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
-            )
+            ))
         });
     }
 }

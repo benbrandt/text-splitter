@@ -25,17 +25,14 @@ cargo add text-splitter
 The simplest way to use this crate is to use the default implementation, which uses character count for chunk size.
 
 ```rust
-use text_splitter::{Characters, TextSplitter};
+use text_splitter::TextSplitter;
 
 // Maximum number of characters in a chunk
 let max_characters = 1000;
 // Default implementation uses character count for chunk size
-let splitter = TextSplitter::default()
-    // Optionally can also have the splitter trim whitespace for you
-    .with_trim_chunks(true);
+let splitter = TextSplitter::new(max_characters);
 
-let chunks = splitter.chunks("your document text", max_characters);
-println!("{}", chunks.count())
+let chunks = splitter.chunks("your document text");
 ```
 
 ### With Hugging Face Tokenizer
@@ -48,19 +45,16 @@ cargo add tokenizers --features http
 ```
 
 ```rust
-use text_splitter::TextSplitter;
+use text_splitter::{ChunkConfig, TextSplitter};
 // Can also use anything else that implements the ChunkSizer
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
 let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
 let max_tokens = 1000;
-let splitter = TextSplitter::new(tokenizer)
-    // Optionally can also have the splitter trim whitespace for you
-    .with_trim_chunks(true);
+let splitter = TextSplitter::new(ChunkConfig::new(max_tokens).with_sizer(tokenizer));
 
-let chunks = splitter.chunks("your document text", max_tokens);
-println!("{}", chunks.count())
+let chunks = splitter.chunks("your document text");
 ```
 
 ### With Tiktoken Tokenizer
@@ -73,19 +67,16 @@ cargo add tiktoken-rs
 ```
 
 ```rust
-use text_splitter::TextSplitter;
+use text_splitter::{ChunkConfig, TextSplitter};
 // Can also use anything else that implements the ChunkSizer
 // trait from the text_splitter crate.
 use tiktoken_rs::cl100k_base;
 
 let tokenizer = cl100k_base().unwrap();
 let max_tokens = 1000;
-let splitter = TextSplitter::new(tokenizer)
-    // Optionally can also have the splitter trim whitespace for you
-    .with_trim_chunks(true);
+let splitter = TextSplitter::new(ChunkConfig::new(max_tokens).with_sizer(tokenizer));
 
-let chunks = splitter.chunks("your document text", max_tokens);
-println!("{}", chunks.count())
+let chunks = splitter.chunks("your document text");
 ```
 
 ### Using a Range for Chunk Capacity
@@ -97,16 +88,15 @@ Once a chunk has reached a length that falls within the range it will be returne
 It is always possible that a chunk may be returned that is less than the `start` value, as adding the next piece of text may have made it larger than the `end` capacity.
 
 ```rust
-use text_splitter::{Characters, TextSplitter};
+use text_splitter::{ChunkConfig, TextSplitter};
 
 // Maximum number of characters in a chunk. Will fill up the
 // chunk until it is somewhere in this range.
 let max_characters = 500..2000;
 // Default implementation uses character count for chunk size
-let splitter = TextSplitter::default().with_trim_chunks(true);
+let splitter = TextSplitter::new(max_characters);
 
-let chunks = splitter.chunks("your document text", max_characters);
-println!("{}", chunks.count())
+let chunks = splitter.chunks("your document text");
 ```
 
 ### Markdown
@@ -123,12 +113,9 @@ use text_splitter::MarkdownSplitter;
 let max_characters = 1000;
 // Default implementation uses character count for chunk size.
 // Can also use all of the same tokenizer implementations as `TextSplitter`.
-let splitter = MarkdownSplitter::default()
-    // Optionally can also have the splitter trim whitespace for you
-    .with_trim_chunks(true);
+let splitter = MarkdownSplitter::new(max_characters);
 
-let chunks = splitter.chunks("# Header\n\nyour document text", max_characters);
-println!("{}", chunks.count())
+let chunks = splitter.chunks("# Header\n\nyour document text");
 ```
 
 ## Method

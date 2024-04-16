@@ -12,10 +12,10 @@ class TextSplitter:
     # Maximum number of characters in a chunk
     max_characters = 1000
     # Optionally can also have the splitter not trim whitespace for you
-    splitter = TextSplitter()
-    # splitter = TextSplitter(trim_chunks=False)
+    splitter = TextSplitter(max_characters)
+    # splitter = TextSplitter(max_characters, trim=False)
 
-    chunks = splitter.chunks("your document text", max_characters)
+    chunks = splitter.chunks("your document text")
     ```
 
     ### Using a Range for Chunk Capacity
@@ -29,11 +29,12 @@ class TextSplitter:
     ```python
     from semantic_text_splitter import TextSplitter
 
-    splitter = TextSplitter()
 
     # Maximum number of characters in a chunk. Will fill up the
     # chunk until it is somewhere in this range.
-    chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+    splitter = TextSplitter((200,1000))
+
+    chunks = splitter.chunks("your document text")
     ```
 
     ### Using a Hugging Face Tokenizer
@@ -45,9 +46,9 @@ class TextSplitter:
     # Maximum number of tokens in a chunk
     max_tokens = 1000
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer)
+    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
-    chunks = splitter.chunks("your document text", max_tokens)
+    chunks = splitter.chunks("your document text")
     ```
 
     ### Using a Tiktoken Tokenizer
@@ -58,9 +59,9 @@ class TextSplitter:
 
     # Maximum number of tokens in a chunk
     max_tokens = 1000
-    splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo")
+    splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo", max_tokens)
 
-    chunks = splitter.chunks("your document text", max_tokens)
+    chunks = splitter.chunks("your document text")
     ```
 
     ### Using a Custom Callback
@@ -68,32 +69,43 @@ class TextSplitter:
     ```python
     from semantic_text_splitter import TextSplitter
 
-    # Optionally can also have the splitter trim whitespace for you
-    splitter = TextSplitter.from_callback(lambda text: len(text))
+    splitter = TextSplitter.from_callback(lambda text: len(text), 1000)
 
-    # Maximum number of tokens in a chunk. Will fill up the
-    # chunk until it is somewhere in this range.
-    chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+    chunks = splitter.chunks("your document text")
     ```
 
     Args:
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
     """
 
-    def __init__(self, trim_chunks: bool = True) -> None: ...
+    def __init__(
+        self, capacity: Union[int, Tuple[int, int]], trim: bool = True
+    ) -> None: ...
 
     @staticmethod
-    def from_huggingface_tokenizer(tokenizer, trim_chunks: bool = True) -> TextSplitter:
+    def from_huggingface_tokenizer(
+        tokenizer, capacity: Union[int, Tuple[int, int]], trim: bool = True
+    ) -> TextSplitter:
         """Instantiate a new text splitter from a Hugging Face Tokenizer instance.
 
         Args:
             tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
                 chunk.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
-                    beginning and end or not. If False, joining all chunks will return the original
-                    string. Defaults to True.
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
+                beginning and end or not. If False, joining all chunks will return the original
+                string. Defaults to True.
 
         Returns:
             The new text splitter
@@ -101,14 +113,19 @@ class TextSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_str(
-        json: str, trim_chunks: bool = True
+        json: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
     ) -> TextSplitter:
         """Instantiate a new text splitter from the given Hugging Face Tokenizer JSON string.
 
         Args:
             json (str): A valid JSON string representing a previously serialized
                 Hugging Face Tokenizer
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -118,29 +135,40 @@ class TextSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_file(
-        path: str, trim_chunks: bool = True
+        path: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
     ) -> TextSplitter:
         """Instantiate a new text splitter from the Hugging Face tokenizer file at the given path.
 
         Args:
             path (str): A path to a local JSON file representing a previously serialized
                 Hugging Face tokenizer.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
-
 
         Returns:
             The new text splitter
         """
 
     @staticmethod
-    def from_tiktoken_model(model: str, trim_chunks: bool = True) -> TextSplitter:
+    def from_tiktoken_model(
+        model: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+    ) -> TextSplitter:
         """Instantiate a new text splitter based on an OpenAI Tiktoken tokenizer.
 
         Args:
             model (str): The OpenAI model name you want to retrieve a tokenizer for.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -150,14 +178,21 @@ class TextSplitter:
 
     @staticmethod
     def from_callback(
-        callback: Callable[[str], int], trim_chunks: bool = True
+        callback: Callable[[str], int],
+        capacity: Union[int, Tuple[int, int]],
+        trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter based on a custom callback.
 
         Args:
             callback (Callable[[str], int]): A lambda or other function that can be called. It will be
                 provided a piece of text, and it should return an integer value for the size.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -165,9 +200,7 @@ class TextSplitter:
             The new text splitter
         """
 
-    def chunks(
-        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
-    ) -> List[str]:
+    def chunks(self, text: str) -> List[str]:
         """Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
 
 
@@ -191,36 +224,24 @@ class TextSplitter:
 
         Args:
             text (str): Text to split.
-            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-                single int, then chunks will be filled up as much as possible, without going over
-                that number. If a tuple of two integers is provided, a chunk will be considered
-                "full" once it is within the two numbers (inclusive range). So it will only fill
-                up the chunk until the lower range is met.
 
         Returns:
-            A list of strings, one for each chunk. If `trim_chunks` was specified in the text
+            A list of strings, one for each chunk. If `trim` was specified in the text
             splitter, then each chunk will already be trimmed as well.
         """
 
-    def chunk_indices(
-        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
-    ) -> List[Tuple[int, str]]:
+    def chunk_indices(self, text: str) -> List[Tuple[int, str]]:
         """Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
 
         See `chunks` for more information.
 
         Args:
             text (str): Text to split.
-            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-                single int, then chunks will be filled up as much as possible, without going over
-                that number. If a tuple of two integers is provided, a chunk will be considered
-                "full" once it is within the two numbers (inclusive range). So it will only fill
-                up the chunk until the lower range is met.
 
         Returns:
             A list of tuples, one for each chunk. The first item will be the character offset relative
             to the original text. The second item is the chunk itself.
-            If `trim_chunks` was specified in the text splitter, then each chunk will already be
+            If `trim` was specified in the text splitter, then each chunk will already be
             trimmed as well.
         """
 
@@ -236,10 +257,10 @@ class MarkdownSplitter:
     # Maximum number of characters in a chunk
     max_characters = 1000
     # Optionally can also have the splitter not trim whitespace for you
-    splitter = MarkdownSplitter()
-    # splitter = MarkdownSplitter(trim_chunks=False)
+    splitter = MarkdownSplitter(max_characters)
+    # splitter = MarkdownSplitter(max_characters, trim=False)
 
-    chunks = splitter.chunks("# Header\n\nyour document text", max_characters)
+    chunks = splitter.chunks("# Header\n\nyour document text")
     ```
 
     ### Using a Range for Chunk Capacity
@@ -253,11 +274,11 @@ class MarkdownSplitter:
     ```python
     from semantic_text_splitter import MarkdownSplitter
 
-    splitter = MarkdownSplitter()
+    splitter = MarkdownSplitter(capacity=(200,1000))
 
     # Maximum number of characters in a chunk. Will fill up the
     # chunk until it is somewhere in this range.
-    chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+    chunks = splitter.chunks("# Header\n\nyour document text")
     ```
 
     ### Using a Hugging Face Tokenizer
@@ -269,9 +290,9 @@ class MarkdownSplitter:
     # Maximum number of tokens in a chunk
     max_tokens = 1000
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer)
+    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
-    chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+    chunks = splitter.chunks("# Header\n\nyour document text")
     ```
 
     ### Using a Tiktoken Tokenizer
@@ -282,9 +303,9 @@ class MarkdownSplitter:
 
     # Maximum number of tokens in a chunk
     max_tokens = 1000
-    splitter = MarkdownSplitter.from_tiktoken_model("gpt-3.5-turbo")
+    splitter = MarkdownSplitter.from_tiktoken_model("gpt-3.5-turbo"m max_tokens)
 
-    chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+    chunks = splitter.chunks("# Header\n\nyour document text")
     ```
 
     ### Using a Custom Callback
@@ -293,36 +314,45 @@ class MarkdownSplitter:
     from semantic_text_splitter import MarkdownSplitter
 
     # Optionally can also have the splitter trim whitespace for you
-    splitter = MarkdownSplitter.from_callback(lambda text: len(text))
+    splitter = MarkdownSplitter.from_callback(lambda text: len(text), 1000)
 
     # Maximum number of tokens in a chunk. Will fill up the
     # chunk until it is somewhere in this range.
-    chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+    chunks = splitter.chunks("# Header\n\nyour document text")
     ```
 
     Args:
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
     """
 
-    def __init__(self, trim_chunks: bool = True) -> None: ...
+    def __init__(
+        self, capacity: Union[int, Tuple[int, int]], trim: bool = True
+    ) -> None: ...
 
     @staticmethod
     def from_huggingface_tokenizer(
-        tokenizer, trim_chunks: bool = True
+        tokenizer, capacity: Union[int, Tuple[int, int]], trim: bool = True
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from a Hugging Face Tokenizer instance.
 
         Args:
             tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
                 chunk.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
-                    beginning and end or not. If False, joining all chunks will return the original
-                    string. Defaults to True.
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
+                beginning and end or not. If False, joining all chunks will return the original
+                string. Defaults to True.
 
         Returns:
             The new markdown splitter
@@ -330,14 +360,19 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_str(
-        json: str, trim_chunks: bool = True
+        json: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from the given Hugging Face Tokenizer JSON string.
 
         Args:
             json (str): A valid JSON string representing a previously serialized
                 Hugging Face Tokenizer
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -347,29 +382,40 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_file(
-        path: str, trim_chunks: bool = True
+        path: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from the Hugging Face tokenizer file at the given path.
 
         Args:
             path (str): A path to a local JSON file representing a previously serialized
                 Hugging Face tokenizer.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
-
 
         Returns:
             The new markdown splitter
         """
 
     @staticmethod
-    def from_tiktoken_model(model: str, trim_chunks: bool = True) -> MarkdownSplitter:
+    def from_tiktoken_model(
+        model: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+    ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter based on an OpenAI Tiktoken tokenizer.
 
         Args:
             model (str): The OpenAI model name you want to retrieve a tokenizer for.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -379,14 +425,21 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_callback(
-        callback: Callable[[str], int], trim_chunks: bool = True
+        callback: Callable[[str], int],
+        capacity: Union[int, Tuple[int, int]],
+        trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter based on a custom callback.
 
         Args:
             callback (Callable[[str], int]): A lambda or other function that can be called. It will be
                 provided a piece of text, and it should return an integer value for the size.
-            trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+                single int, then chunks will be filled up as much as possible, without going over
+                that number. If a tuple of two integers is provided, a chunk will be considered
+                "full" once it is within the two numbers (inclusive range). So it will only fill
+                up the chunk until the lower range is met.
+            trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
 
@@ -394,9 +447,7 @@ class MarkdownSplitter:
             The new markdown splitter
         """
 
-    def chunks(
-        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
-    ) -> List[str]:
+    def chunks(self, text: str) -> List[str]:
         """Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
 
         ## Method
@@ -423,31 +474,19 @@ class MarkdownSplitter:
 
         Args:
             text (str): Text to split.
-            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-                single int, then chunks will be filled up as much as possible, without going over
-                that number. If a tuple of two integers is provided, a chunk will be considered
-                "full" once it is within the two numbers (inclusive range). So it will only fill
-                up the chunk until the lower range is met.
 
         Returns:
             A list of strings, one for each chunk. If `trim_chunks` was specified in the text
             splitter, then each chunk will already be trimmed as well.
         """
 
-    def chunk_indices(
-        self, text: str, chunk_capacity: Union[int, Tuple[int, int]]
-    ) -> List[Tuple[int, str]]:
+    def chunk_indices(self, text: str) -> List[Tuple[int, str]]:
         """Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
 
         See `chunks` for more information.
 
         Args:
             text (str): Text to split.
-            chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-                single int, then chunks will be filled up as much as possible, without going over
-                that number. If a tuple of two integers is provided, a chunk will be considered
-                "full" once it is within the two numbers (inclusive range). So it will only fill
-                up the chunk until the lower range is met.
 
         Returns:
             A list of tuples, one for each chunk. The first item will be the character offset relative

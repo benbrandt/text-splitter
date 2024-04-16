@@ -19,7 +19,7 @@ use std::str::FromStr;
 use auto_enums::auto_enum;
 use pyo3::{exceptions::PyException, prelude::*, pybacked::PyBackedStr};
 use text_splitter::{
-    Characters, ChunkCapacity, ChunkSize, ChunkSizer, MarkdownSplitter, TextSplitter,
+    Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer, MarkdownSplitter, TextSplitter,
 };
 use tiktoken_rs::{get_bpe_from_model, CoreBPE};
 use tokenizers::Tokenizer;
@@ -98,10 +98,10 @@ impl<'text> ByteToCharOffsetTracker<'text> {
 
 #[allow(clippy::large_enum_variant)]
 enum TextSplitterOptions {
-    Characters(TextSplitter<Characters>),
-    CustomCallback(TextSplitter<CustomCallback>),
-    Huggingface(TextSplitter<Tokenizer>),
-    Tiktoken(TextSplitter<CoreBPE>),
+    Characters(TextSplitter<PyChunkCapacity, Characters>),
+    CustomCallback(TextSplitter<PyChunkCapacity, CustomCallback>),
+    Huggingface(TextSplitter<PyChunkCapacity, Tokenizer>),
+    Tiktoken(TextSplitter<PyChunkCapacity, CoreBPE>),
 }
 
 impl TextSplitterOptions {
@@ -109,13 +109,12 @@ impl TextSplitterOptions {
     fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Characters(splitter) => splitter.chunks(text),
+            Self::CustomCallback(splitter) => splitter.chunks(text),
+            Self::Huggingface(splitter) => splitter.chunks(text),
+            Self::Tiktoken(splitter) => splitter.chunks(text),
         }
     }
 
@@ -123,13 +122,12 @@ impl TextSplitterOptions {
     fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::CustomCallback(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::Huggingface(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::Tiktoken(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Characters(splitter) => splitter.chunk_indices(text),
+            Self::CustomCallback(splitter) => splitter.chunk_indices(text),
+            Self::Huggingface(splitter) => splitter.chunk_indices(text),
+            Self::Tiktoken(splitter) => splitter.chunk_indices(text),
         }
     }
 }
@@ -145,10 +143,10 @@ from semantic_text_splitter import TextSplitter
 # Maximum number of characters in a chunk
 max_characters = 1000
 # Optionally can also have the splitter not trim whitespace for you
-splitter = TextSplitter()
-# splitter = TextSplitter(trim_chunks=False)
+splitter = TextSplitter(max_characters)
+# splitter = TextSplitter(max_characters, trim=False)
 
-chunks = splitter.chunks("your document text", max_characters)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Range for Chunk Capacity
@@ -162,11 +160,12 @@ It is always possible that a chunk may be returned that is less than the `start`
 ```python
 from semantic_text_splitter import TextSplitter
 
-splitter = TextSplitter()
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+splitter = TextSplitter((200,1000))
+
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Hugging Face Tokenizer
@@ -178,9 +177,9 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-splitter = TextSplitter.from_huggingface_tokenizer(tokenizer)
+splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
-chunks = splitter.chunks("your document text", max_tokens)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Tiktoken Tokenizer
@@ -191,9 +190,9 @@ from semantic_text_splitter import TextSplitter
 
 # Maximum number of tokens in a chunk
 max_tokens = 1000
-splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo")
+splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo", max_tokens)
 
-chunks = splitter.chunks("your document text", max_tokens)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Custom Callback
@@ -201,16 +200,18 @@ chunks = splitter.chunks("your document text", max_tokens)
 ```python
 from semantic_text_splitter import TextSplitter
 
-# Optionally can also have the splitter trim whitespace for you
-splitter = TextSplitter.from_callback(lambda text: len(text))
+splitter = TextSplitter.from_callback(lambda text: len(text), 1000)
 
-# Maximum number of tokens in a chunk. Will fill up the
-# chunk until it is somewhere in this range.
-chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("your document text")
 ```
 
 Args:
-    trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+    capacity (int | (int, int)): The capacity of characters in each chunk. If a
+        single int, then chunks will be filled up as much as possible, without going over
+        that number. If a tuple of two integers is provided, a chunk will be considered
+        "full" once it is within the two numbers (inclusive range). So it will only fill
+        up the chunk until the lower range is met.
+    trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
         beginning and end or not. If False, joining all chunks will return the original
         string. Defaults to True.
 */
@@ -222,12 +223,12 @@ struct PyTextSplitter {
 #[pymethods]
 impl PyTextSplitter {
     #[new]
-    #[pyo3(signature = (trim_chunks=true))]
-    fn new(trim_chunks: bool) -> Self {
+    #[pyo3(signature = (capacity, trim=true))]
+    fn new(capacity: PyChunkCapacity, trim: bool) -> Self {
         Self {
-            splitter: TextSplitterOptions::Characters(
-                TextSplitter::default().with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::Characters(TextSplitter::new(
+                ChunkConfig::new(capacity).with_trim(trim),
+            )),
         }
     }
 
@@ -237,18 +238,24 @@ impl PyTextSplitter {
     Args:
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
             chunk.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
-                beginning and end or not. If False, joining all chunks will return the original
-                string. Defaults to True.
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
+            beginning and end or not. If False, joining all chunks will return the original
+            string. Defaults to True.
 
     Returns:
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (tokenizer, trim_chunks=true))]
+    #[pyo3(signature = (tokenizer, capacity, trim=true))]
     fn from_huggingface_tokenizer(
         tokenizer: &Bound<'_, PyAny>,
-        trim_chunks: bool,
+        capacity: PyChunkCapacity,
+        trim: bool,
     ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
         let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
@@ -256,9 +263,11 @@ impl PyTextSplitter {
             Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(
-                TextSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -268,7 +277,12 @@ impl PyTextSplitter {
     Args:
         json (str): A valid JSON string representing a previously serialized
             Hugging Face Tokenizer
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
 
@@ -276,16 +290,22 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (json, trim_chunks=true))]
-    fn from_huggingface_tokenizer_str(json: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (json, capacity, trim=true))]
+    fn from_huggingface_tokenizer_str(
+        json: &str,
+        capacity: PyChunkCapacity,
+        trim: bool,
+    ) -> PyResult<Self> {
         let tokenizer = json
             .parse()
             .map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(
-                TextSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -295,7 +315,12 @@ impl PyTextSplitter {
     Args:
         path (str): A path to a local JSON file representing a previously serialized
             Hugging Face tokenizer.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
 
@@ -303,14 +328,20 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (path, trim_chunks=true))]
-    fn from_huggingface_tokenizer_file(path: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (path, capacity, trim=true))]
+    fn from_huggingface_tokenizer_file(
+        path: &str,
+        capacity: PyChunkCapacity,
+        trim: bool,
+    ) -> PyResult<Self> {
         let tokenizer =
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(
-                TextSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -319,7 +350,12 @@ impl PyTextSplitter {
 
     Args:
         model (str): The OpenAI model name you want to retrieve a tokenizer for.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
 
@@ -327,15 +363,17 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (model, trim_chunks=true))]
-    fn from_tiktoken_model(model: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (model, capacity, trim=true))]
+    fn from_tiktoken_model(model: &str, capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
         let tokenizer =
             get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Tiktoken(
-                TextSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::Tiktoken(TextSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -345,7 +383,12 @@ impl PyTextSplitter {
     Args:
         callback (Callable[[str], int]): A lambda or other function that can be called. It will be
             provided a piece of text, and it should return an integer value for the size.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
 
@@ -353,12 +396,14 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (callback, trim_chunks=true))]
-    fn from_callback(callback: PyObject, trim_chunks: bool) -> Self {
+    #[pyo3(signature = (callback, capacity, trim=true))]
+    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> Self {
         Self {
-            splitter: TextSplitterOptions::CustomCallback(
-                TextSplitter::new(CustomCallback(callback)).with_trim_chunks(trim_chunks),
-            ),
+            splitter: TextSplitterOptions::CustomCallback(TextSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(CustomCallback(callback))
+                    .with_trim(trim),
+            )),
         }
     }
 
@@ -382,24 +427,17 @@ impl PyTextSplitter {
     4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
     5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`) Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
 
+    Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+
     Args:
         text (str): Text to split.
-        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-            single int, then chunks will be filled up as much as possible, without going over
-            that number. If a tuple of two integers is provided, a chunk will be considered
-            "full" once it is within the two numbers (inclusive range). So it will only fill
-            up the chunk until the lower range is met.
 
     Returns:
-        A list of strings, one for each chunk. If `trim_chunks` was specified in the text
+        A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
-    fn chunks<'text, 'splitter: 'text>(
-        &'splitter self,
-        text: &'text str,
-        chunk_capacity: PyChunkCapacity,
-    ) -> Vec<&'text str> {
-        self.splitter.chunks(text, chunk_capacity).collect()
+    fn chunks<'text, 'splitter: 'text>(&'splitter self, text: &'text str) -> Vec<&'text str> {
+        self.splitter.chunks(text).collect()
     }
 
     /**
@@ -409,26 +447,20 @@ impl PyTextSplitter {
 
     Args:
         text (str): Text to split.
-        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-            single int, then chunks will be filled up as much as possible, without going over
-            that number. If a tuple of two integers is provided, a chunk will be considered
-            "full" once it is within the two numbers (inclusive range). So it will only fill
-            up the chunk until the lower range is met.
 
     Returns:
         A list of tuples, one for each chunk. The first item will be the character offset relative
         to the original text. The second item is the chunk itself.
-        If `trim_chunks` was specified in the text splitter, then each chunk will already be
+        If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
     fn chunk_indices<'text, 'splitter: 'text>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> Vec<(usize, &'text str)> {
         let mut offsets = ByteToCharOffsetTracker::new(text);
         self.splitter
-            .chunk_indices(text, chunk_capacity)
+            .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
             .collect()
     }
@@ -436,10 +468,10 @@ impl PyTextSplitter {
 
 #[allow(clippy::large_enum_variant)]
 enum MarkdownSplitterOptions {
-    Characters(MarkdownSplitter<Characters>),
-    CustomCallback(MarkdownSplitter<CustomCallback>),
-    Huggingface(MarkdownSplitter<Tokenizer>),
-    Tiktoken(MarkdownSplitter<CoreBPE>),
+    Characters(MarkdownSplitter<PyChunkCapacity, Characters>),
+    CustomCallback(MarkdownSplitter<PyChunkCapacity, CustomCallback>),
+    Huggingface(MarkdownSplitter<PyChunkCapacity, Tokenizer>),
+    Tiktoken(MarkdownSplitter<PyChunkCapacity, CoreBPE>),
 }
 
 impl MarkdownSplitterOptions {
@@ -447,13 +479,12 @@ impl MarkdownSplitterOptions {
     fn chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::CustomCallback(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::Huggingface(splitter) => splitter.chunks(text, chunk_capacity),
-            Self::Tiktoken(splitter) => splitter.chunks(text, chunk_capacity),
+            Self::Characters(splitter) => splitter.chunks(text),
+            Self::CustomCallback(splitter) => splitter.chunks(text),
+            Self::Huggingface(splitter) => splitter.chunks(text),
+            Self::Tiktoken(splitter) => splitter.chunks(text),
         }
     }
 
@@ -461,13 +492,12 @@ impl MarkdownSplitterOptions {
     fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
         match self {
-            Self::Characters(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::CustomCallback(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::Huggingface(splitter) => splitter.chunk_indices(text, chunk_capacity),
-            Self::Tiktoken(splitter) => splitter.chunk_indices(text, chunk_capacity),
+            Self::Characters(splitter) => splitter.chunk_indices(text),
+            Self::CustomCallback(splitter) => splitter.chunk_indices(text),
+            Self::Huggingface(splitter) => splitter.chunk_indices(text),
+            Self::Tiktoken(splitter) => splitter.chunk_indices(text),
         }
     }
 }
@@ -548,12 +578,14 @@ chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1
 ```
 
 Args:
-    trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+    capacity (int | (int, int)): The capacity of characters in each chunk. If a
+        single int, then chunks will be filled up as much as possible, without going over
+        that number. If a tuple of two integers is provided, a chunk will be considered
+        "full" once it is within the two numbers (inclusive range). So it will only fill
+        up the chunk until the lower range is met.
+    trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
         beginning and end or not. If False, joining all chunks will return the original
-        string. Indentation however will be preserved if the chunk also includes multiple lines.
-        Extra newlines are always removed, but if the text would include multiple indented list
-        items, the indentation of the first element will also be preserved.
-        Defaults to True.
+        string. Defaults to True.
 */
 #[pyclass(frozen, name = "MarkdownSplitter")]
 struct PyMarkdownSplitter {
@@ -563,12 +595,12 @@ struct PyMarkdownSplitter {
 #[pymethods]
 impl PyMarkdownSplitter {
     #[new]
-    #[pyo3(signature = (trim_chunks=true))]
-    fn new(trim_chunks: bool) -> Self {
+    #[pyo3(signature = (capacity, trim=true))]
+    fn new(capacity: PyChunkCapacity, trim: bool) -> Self {
         Self {
-            splitter: MarkdownSplitterOptions::Characters(
-                MarkdownSplitter::default().with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::Characters(MarkdownSplitter::new(
+                ChunkConfig::new(capacity).with_trim(trim),
+            )),
         }
     }
 
@@ -578,21 +610,24 @@ impl PyMarkdownSplitter {
     Args:
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
             chunk.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
 
     Returns:
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (tokenizer, trim_chunks=true))]
+    #[pyo3(signature = (tokenizer, capacity, trim=true))]
     fn from_huggingface_tokenizer(
         tokenizer: &Bound<'_, PyAny>,
-        trim_chunks: bool,
+        capacity: PyChunkCapacity,
+        trim: bool,
     ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
         let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
@@ -600,9 +635,11 @@ impl PyMarkdownSplitter {
             Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(
-                MarkdownSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -612,27 +649,35 @@ impl PyMarkdownSplitter {
     Args:
         json (str): A valid JSON string representing a previously serialized
             Hugging Face Tokenizer
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
 
     Returns:
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (json, trim_chunks=true))]
-    fn from_huggingface_tokenizer_str(json: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (json, capacity, trim=true))]
+    fn from_huggingface_tokenizer_str(
+        json: &str,
+        capacity: PyChunkCapacity,
+        trim: bool,
+    ) -> PyResult<Self> {
         let tokenizer = json
             .parse()
             .map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(
-                MarkdownSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -642,25 +687,33 @@ impl PyMarkdownSplitter {
     Args:
         path (str): A path to a local JSON file representing a previously serialized
             Hugging Face tokenizer.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
 
     Returns:
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (path, trim_chunks=true))]
-    fn from_huggingface_tokenizer_file(path: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (path, capacity, trim=true))]
+    fn from_huggingface_tokenizer_file(
+        path: &str,
+        capacity: PyChunkCapacity,
+        trim: bool,
+    ) -> PyResult<Self> {
         let tokenizer =
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(
-                MarkdownSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -669,26 +722,30 @@ impl PyMarkdownSplitter {
 
     Args:
         model (str): The OpenAI model name you want to retrieve a tokenizer for.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
 
     Returns:
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (model, trim_chunks=true))]
-    fn from_tiktoken_model(model: &str, trim_chunks: bool) -> PyResult<Self> {
+    #[pyo3(signature = (model, capacity, trim=true))]
+    fn from_tiktoken_model(model: &str, capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
         let tokenizer =
             get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Tiktoken(
-                MarkdownSplitter::new(tokenizer).with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::Tiktoken(MarkdownSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(tokenizer)
+                    .with_trim(trim),
+            )),
         })
     }
 
@@ -698,23 +755,27 @@ impl PyMarkdownSplitter {
     Args:
         callback (Callable[[str], int]): A lambda or other function that can be called. It will be
             provided a piece of text, and it should return an integer value for the size.
-        trim_chunks (bool, optional): Specify whether chunks should have whitespace trimmed from the
+        capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            single int, then chunks will be filled up as much as possible, without going over
+            that number. If a tuple of two integers is provided, a chunk will be considered
+            "full" once it is within the two numbers (inclusive range). So it will only fill
+            up the chunk until the lower range is met.
+        trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
-            string. Indentation however will be preserved if the chunk also includes multiple lines.
-            Extra newlines are always removed, but if the text would include multiple indented list
-            items, the indentation of the first element will also be preserved.
-            Defaults to True.
+            string. Defaults to True.
 
     Returns:
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (callback, trim_chunks=true))]
-    fn from_callback(callback: PyObject, trim_chunks: bool) -> Self {
+    #[pyo3(signature = (callback, capacity, trim=true))]
+    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> Self {
         Self {
-            splitter: MarkdownSplitterOptions::CustomCallback(
-                MarkdownSplitter::new(CustomCallback(callback)).with_trim_chunks(trim_chunks),
-            ),
+            splitter: MarkdownSplitterOptions::CustomCallback(MarkdownSplitter::new(
+                ChunkConfig::new(capacity)
+                    .with_sizer(CustomCallback(callback))
+                    .with_trim(trim),
+            )),
         }
     }
 
@@ -745,22 +806,13 @@ impl PyMarkdownSplitter {
 
     Args:
         text (str): Text to split.
-        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-            single int, then chunks will be filled up as much as possible, without going over
-            that number. If a tuple of two integers is provided, a chunk will be considered
-            "full" once it is within the two numbers (inclusive range). So it will only fill
-            up the chunk until the lower range is met.
 
     Returns:
         A list of strings, one for each chunk. If `trim_chunks` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
-    fn chunks<'text, 'splitter: 'text>(
-        &'splitter self,
-        text: &'text str,
-        chunk_capacity: PyChunkCapacity,
-    ) -> Vec<&'text str> {
-        self.splitter.chunks(text, chunk_capacity).collect()
+    fn chunks<'text, 'splitter: 'text>(&'splitter self, text: &'text str) -> Vec<&'text str> {
+        self.splitter.chunks(text).collect()
     }
 
     /**
@@ -770,11 +822,6 @@ impl PyMarkdownSplitter {
 
     Args:
         text (str): Text to split.
-        chunk_capacity (int | (int, int)): The capacity of characters in each chunk. If a
-            single int, then chunks will be filled up as much as possible, without going over
-            that number. If a tuple of two integers is provided, a chunk will be considered
-            "full" once it is within the two numbers (inclusive range). So it will only fill
-            up the chunk until the lower range is met.
 
     Returns:
         A list of tuples, one for each chunk. The first item will be the character offset relative
@@ -785,11 +832,10 @@ impl PyMarkdownSplitter {
     fn chunk_indices<'text, 'splitter: 'text>(
         &'splitter self,
         text: &'text str,
-        chunk_capacity: PyChunkCapacity,
     ) -> Vec<(usize, &'text str)> {
         let mut offsets = ByteToCharOffsetTracker::new(text);
         self.splitter
-            .chunk_indices(text, chunk_capacity)
+            .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
             .collect()
     }
