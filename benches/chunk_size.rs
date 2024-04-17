@@ -65,6 +65,20 @@ mod text {
             ))
         });
     }
+    #[cfg(feature = "rust-tokenizers")]
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench::<N, _, _>(bencher, filename, || {
+            TextSplitter::new(
+                rust_tokenizers::tokenizer::BertTokenizer::from_file(
+                    "tests/tokenizers/bert-uncased-vocab.txt",
+                    false,
+                    false,
+                )
+                .unwrap(),
+            )
+        });
+    }
 }
 
 #[cfg(feature = "markdown")]
@@ -119,6 +133,20 @@ mod markdown {
             MarkdownSplitter::new(ChunkConfig::new(N).with_sizer(
                 tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
             ))
+        });
+    }
+    #[cfg(feature = "rust-tokenizers")]
+    #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
+    fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench::<N, _, _>(bencher, filename, || {
+            MarkdownSplitter::new(
+                rust_tokenizers::tokenizer::BertTokenizer::from_file(
+                    "tests/tokenizers/bert-uncased-vocab.txt",
+                    false,
+                    false,
+                )
+                .unwrap(),
+            )
         });
     }
 }

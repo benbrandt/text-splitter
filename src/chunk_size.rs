@@ -8,6 +8,8 @@ use ahash::AHashMap;
 mod characters;
 #[cfg(feature = "tokenizers")]
 mod huggingface;
+#[cfg(feature = "rust-tokenizers")]
+mod rust_tokenizers;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 
