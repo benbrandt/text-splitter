@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.11.0
+
+### Breaking Changes
+
+- Bump tokenizers from 0.15.2 to 0.19.1
+
+### Other updates
+
+- Bump either from 1.10.0 to 1.11.0
+- Bump pyo3 from 0.21.1 to 0.21.2
+
 ## v0.10.0
 
 ### Breaking Changes
