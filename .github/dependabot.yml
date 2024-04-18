@@ -11,9 +11,17 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "cargo"
-    directory: "/bindings/python"
+    directory: "/"
     schedule:
       interval: "daily"
+    allow:
+      - dependency-type: "indirect"
+    groups:
+      indirect:
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
