@@ -5,13 +5,7 @@ use itertools::Itertools;
 use more_asserts::assert_le;
 use once_cell::sync::Lazy;
 #[cfg(feature = "rust-tokenizers")]
-use rust_tokenizers::{
-    tokenizer::{BertTokenizer, TruncationStrategy},
-    vocab::{BertVocab, Vocab},
-    Offset,
-};
-#[cfg(feature = "rust-tokenizers")]
-use std::path::PathBuf;
+use rust_tokenizers::tokenizer::BertTokenizer;
 #[cfg(feature = "markdown")]
 use text_splitter::MarkdownSplitter;
 use text_splitter::{Characters, ChunkConfig, ChunkSizer, TextSplitter};
@@ -170,7 +164,7 @@ fn characters_range_trim() {
 #[cfg(feature = "rust-tokenizers")]
 static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
     let path: &str = "tests/tokenizers/bert-uncased-vocab.txt";
-    BertTokenizer = BertTokenizer::from_file(path, false, false).unwrap()
+    BertTokenizer::from_file(path, false, false).unwrap()
 });
 
 #[cfg(feature = "rust-tokenizers")]

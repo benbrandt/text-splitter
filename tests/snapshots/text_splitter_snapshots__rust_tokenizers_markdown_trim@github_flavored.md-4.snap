@@ -1,6 +1,6 @@
 ---
 source: tests/text_splitter_snapshots.rs
-assertion_line: 352
+assertion_line: 345
 expression: chunks
 input_file: tests/inputs/markdown/github_flavored.md
 ---

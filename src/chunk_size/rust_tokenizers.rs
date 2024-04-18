@@ -1,5 +1,5 @@
 use rust_tokenizers::{
-    tokenizer::{BertTokenizer, Tokenizer, TruncationStrategy},
+    tokenizer::{BertTokenizer, Tokenizer},
     Offset,
 };
 use std::ops::Range;
@@ -8,23 +8,16 @@ use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
 impl ChunkSizer for &BertTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
-        ChunkSize::from_offsets(
-            self.encode(
-                chunk,
-                None,
-                capacity.end(),
-                &TruncationStrategy::LongestFirst,
-                capacity.start().unwrap_or(0),
-            )
-            .token_offsets
+        let binding = self.tokenize_with_offsets(chunk);
+        let offsets = binding
+            .offsets
             .iter()
             .flatten()
             .map(|Offset { begin, end }| Range {
                 start: *begin as usize,
                 end: *end as usize,
-            }),
-            capacity,
-        )
+            });
+        ChunkSize::from_offsets(offsets, capacity)
     }
 }
 

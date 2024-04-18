@@ -1,6 +1,6 @@
 ---
 source: tests/text_splitter_snapshots.rs
-assertion_line: 177
+assertion_line: 170
 expression: chunks
 input_file: tests/inputs/text/romeo_and_juliet.txt
 ---
