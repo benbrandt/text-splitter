@@ -9,7 +9,7 @@ impl ChunkSizer for &Tokenizer {
     ///
     /// Will panic if you don't have a byte-level tokenizer and the splitter
     /// encounters text it can't tokenize.
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
         let encoding = self
             .encode(chunk, false)
             .expect("Unable to tokenize the following string {chunk}");
@@ -36,7 +36,7 @@ impl ChunkSizer for Tokenizer {
     ///
     /// Will panic if you don't have a byte-level tokenizer and the splitter
     /// encounters text it can't tokenize.
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
         (&self).chunk_size(chunk, capacity)
     }
 }
@@ -49,10 +49,10 @@ mod tests {
     fn returns_offsets() {
         let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
         let capacity = 10;
-        let offsets = tokenizer.chunk_size(" An apple a", &capacity);
+        let offsets = tokenizer.chunk_size(" An apple a", &capacity.into());
         assert_eq!(
             offsets,
-            ChunkSize::from_offsets([1..3, 4..9, 10..11].into_iter(), &capacity)
+            ChunkSize::from_offsets([1..3, 4..9, 10..11].into_iter(), &capacity.into())
         );
     }
 
@@ -62,10 +62,10 @@ mod tests {
             tokenizers::Tokenizer::from_file("./tests/tokenizers/huggingface.json").unwrap();
 
         let capacity = 10;
-        let offsets = tokenizer.chunk_size("An apple a", &capacity);
+        let offsets = tokenizer.chunk_size("An apple a", &capacity.into());
         assert_eq!(
             offsets,
-            ChunkSize::from_offsets([0..2, 3..8, 9..10].into_iter(), &capacity)
+            ChunkSize::from_offsets([0..2, 3..8, 9..10].into_iter(), &capacity.into())
         );
     }
 
@@ -73,10 +73,10 @@ mod tests {
     fn handles_padding() {
         let tokenizer = Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();
         let capacity = 10;
-        let offsets = tokenizer.chunk_size("An apple a", &capacity);
+        let offsets = tokenizer.chunk_size("An apple a", &capacity.into());
         assert_eq!(
             offsets,
-            ChunkSize::from_offsets([0..2, 3..8, 9..10].into_iter(), &capacity)
+            ChunkSize::from_offsets([0..2, 3..8, 9..10].into_iter(), &capacity.into())
         );
     }
 }

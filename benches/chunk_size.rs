@@ -25,7 +25,7 @@ mod text {
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
-        G: Fn() -> TextSplitter<usize, S> + Sync,
+        G: Fn() -> TextSplitter<S> + Sync,
         S: ChunkSizer,
     {
         bencher
@@ -81,7 +81,7 @@ mod markdown {
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
-        G: Fn() -> MarkdownSplitter<usize, S> + Sync,
+        G: Fn() -> MarkdownSplitter<S> + Sync,
         S: ChunkSizer,
     {
         bencher

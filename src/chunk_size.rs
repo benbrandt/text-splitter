@@ -29,7 +29,8 @@ pub struct ChunkSize {
 impl ChunkSize {
     /// Generate a chunk size from a given size. Will not be able to compute the
     /// max byte offset that fits within the capacity.
-    pub fn from_size(size: usize, capacity: &impl ChunkCapacity) -> Self {
+    #[must_use]
+    pub fn from_size(size: usize, capacity: &ChunkCapacity) -> Self {
         Self {
             fits: capacity.fits(size),
             max_chunk_size_offset: None,
@@ -41,7 +42,7 @@ impl ChunkSize {
     /// element in the chunk.
     pub fn from_offsets(
         offsets: impl Iterator<Item = Range<usize>>,
-        capacity: &impl ChunkCapacity,
+        capacity: &ChunkCapacity,
     ) -> Self {
         let mut chunk_size = offsets.fold(
             Self {
@@ -51,7 +52,7 @@ impl ChunkSize {
             },
             |mut acc, range| {
                 acc.size += 1;
-                if acc.size <= capacity.end() {
+                if acc.size <= capacity.max() {
                     acc.max_chunk_size_offset = Some(range.end);
                 }
                 acc
@@ -83,140 +84,155 @@ impl ChunkSize {
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
 }
 
-/// Describes the largest valid chunk size(s) that can be generated.
+/// Describes the valid chunk size(s) that can be generated.
 ///
-/// An `end` size is required, which is the maximum possible chunk size that
-/// can be generated.
+/// The `desired` size is the target size for the chunk. In most cases, this
+/// will also serve as the maximum size of the chunk. It is always possible
+/// that a chunk may be returned that is less than the `desired` value, as
+/// adding the next piece of text may have made it larger than the `desired`
+/// capacity.
 ///
-/// A `start` size is optional. By specifying `start` and `end` it means a
-/// range of sizes will be considered valid. Once a chunk has reached a length
-/// that falls between `start` and `end` it will be returned.
+/// The `max` size is the maximum possible chunk size that can be generated.
+/// By setting this to a larger value than `desired`, it means that the chunk
+/// should be as close to `desired` as possible, but can be larger if it means
+/// staying at a larger semantic level.
 ///
-/// It is always possible that a chunk may be returned that is less than the
-/// `start` value, as adding the next piece of text may have made it larger
-/// than the `end` capacity.
-pub trait ChunkCapacity {
-    /// An optional `start` value. If both `start` and `end` are specified, a
-    /// valid chunk can fall anywhere between the two values (inclusive).
-    fn start(&self) -> Option<usize> {
-        None
+/// The splitter will consume text until at maxumum somewhere between `desired`
+/// and `max`, if they differ, but never above `max`.
+///
+/// If you need to ensure a fixed size, set `desired` and `max` to the same
+/// value. For example, if you are trying to maximize the context window for an
+/// embedding.
+///
+/// If you are loosely targeting a size, but have some extra room, for example
+/// in a RAG use case where you roughly want a certain part of a document, you
+/// can set `max` to your absolute maxumum, and the splitter can stay at a
+/// higher semantic level when determining the chunk.
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub struct ChunkCapacity {
+    desired: usize,
+    max: usize,
+}
+
+impl ChunkCapacity {
+    /// Create a new `ChunkCapacity` with the same `desired` and `max` size.
+    #[must_use]
+    pub fn new(size: usize) -> Self {
+        Self {
+            desired: size,
+            max: size,
+        }
     }
 
-    /// The maximum size that a chunk can be.
+    /// The `desired` size is the target size for the chunk. In most cases, this
+    /// will also serve as the maximum size of the chunk. It is always possible
+    /// that a chunk may be returned that is less than the `desired` value, as
+    /// adding the next piece of text may have made it larger than the `desired`
+    /// capacity.
     #[must_use]
-    fn end(&self) -> usize;
+    pub fn desired(&self) -> usize {
+        self.desired
+    }
+
+    /// The `max` size is the maximum possible chunk size that can be generated.
+    /// By setting this to a larger value than `desired`, it means that the chunk
+    /// should be as close to `desired` as possible, but can be larger if it means
+    /// staying at a larger semantic level.
+    #[must_use]
+    pub fn max(&self) -> usize {
+        self.max
+    }
+
+    /// If you need to ensure a fixed size, set `desired` and `max` to the same
+    /// value. For example, if you are trying to maximize the context window for an
+    /// embedding.
+    ///
+    /// If you are loosely targeting a size, but have some extra room, for example
+    /// in a RAG use case where you roughly want a certain part of a document, you
+    /// can set `max` to your absolute maxumum, and the splitter can stay at a
+    /// higher semantic level when determining the chunk.
+    #[must_use]
+    pub fn with_max(self, max: usize) -> Self {
+        Self { max, ..self }
+    }
 
     /// Validate if a given chunk fits within the capacity
     ///
     /// - `Ordering::Less` indicates more could be added
     /// - `Ordering::Equal` indicates the chunk is within the capacity range
     /// - `Ordering::Greater` indicates the chunk is larger than the capacity
-    fn fits(&self, chunk_size: usize) -> Ordering {
-        let end = self.end();
-
-        match self.start() {
-            Some(start) => {
-                if chunk_size < start {
-                    Ordering::Less
-                } else if chunk_size > end {
-                    Ordering::Greater
-                } else {
-                    Ordering::Equal
-                }
-            }
-            None => chunk_size.cmp(&end),
+    #[must_use]
+    pub fn fits(&self, chunk_size: usize) -> Ordering {
+        if chunk_size < self.desired {
+            Ordering::Less
+        } else if chunk_size > self.max {
+            Ordering::Greater
+        } else {
+            Ordering::Equal
         }
     }
 }
 
-impl ChunkCapacity for usize {
-    fn end(&self) -> usize {
-        *self
+impl From<usize> for ChunkCapacity {
+    fn from(size: usize) -> Self {
+        ChunkCapacity::new(size)
     }
 }
 
-impl ChunkCapacity for Range<usize> {
-    fn start(&self) -> Option<usize> {
-        Some(self.start)
-    }
-
-    fn end(&self) -> usize {
-        self.end.saturating_sub(1).max(self.start)
+impl From<Range<usize>> for ChunkCapacity {
+    fn from(range: Range<usize>) -> Self {
+        ChunkCapacity::new(range.start).with_max(range.end.saturating_sub(1).max(range.start))
     }
 }
 
-impl ChunkCapacity for RangeFrom<usize> {
-    fn start(&self) -> Option<usize> {
-        Some(self.start)
-    }
-
-    fn end(&self) -> usize {
-        usize::MAX
+impl From<RangeFrom<usize>> for ChunkCapacity {
+    fn from(range: RangeFrom<usize>) -> Self {
+        ChunkCapacity::new(range.start).with_max(usize::MAX)
     }
 }
 
-impl ChunkCapacity for RangeFull {
-    fn start(&self) -> Option<usize> {
-        Some(usize::MIN)
-    }
-
-    fn end(&self) -> usize {
-        usize::MAX
+impl From<RangeFull> for ChunkCapacity {
+    fn from(_: RangeFull) -> Self {
+        ChunkCapacity::new(usize::MIN).with_max(usize::MAX)
     }
 }
 
-impl ChunkCapacity for RangeInclusive<usize> {
-    fn start(&self) -> Option<usize> {
-        Some(*self.start())
-    }
-
-    fn end(&self) -> usize {
-        *self.end()
+impl From<RangeInclusive<usize>> for ChunkCapacity {
+    fn from(range: RangeInclusive<usize>) -> Self {
+        ChunkCapacity::new(*range.start()).with_max(*range.end())
     }
 }
 
-impl ChunkCapacity for RangeTo<usize> {
-    fn start(&self) -> Option<usize> {
-        Some(usize::MIN)
-    }
-
-    fn end(&self) -> usize {
-        self.end.saturating_sub(1)
+impl From<RangeTo<usize>> for ChunkCapacity {
+    fn from(range: RangeTo<usize>) -> Self {
+        ChunkCapacity::new(usize::MIN).with_max(range.end.saturating_sub(1))
     }
 }
 
-impl ChunkCapacity for RangeToInclusive<usize> {
-    fn start(&self) -> Option<usize> {
-        Some(usize::MIN)
-    }
-
-    fn end(&self) -> usize {
-        self.end
+impl From<RangeToInclusive<usize>> for ChunkCapacity {
+    fn from(range: RangeToInclusive<usize>) -> Self {
+        ChunkCapacity::new(usize::MIN).with_max(range.end)
     }
 }
 
 /// Configuration for how chunks should be created
 #[derive(Debug)]
-pub struct ChunkConfig<Capacity, Sizer>
+pub struct ChunkConfig<Sizer>
 where
-    Capacity: ChunkCapacity,
     Sizer: ChunkSizer,
 {
     /// The chunk capacity to use for filling chunks
-    capacity: Capacity,
+    capacity: ChunkCapacity,
     /// The chunk sizer to use for determining the size of each chunk
     sizer: Sizer,
     /// Whether whitespace will be trimmed from the beginning and end of each chunk
     trim: bool,
 }
 
-impl<Capacity> ChunkConfig<Capacity, Characters>
-where
-    Capacity: ChunkCapacity,
-{
+impl ChunkConfig<Characters> {
     /// Create a basic configuration for chunking with only the required value a chunk capacity.
     ///
     /// By default, chunk sizes will be calculated based on the number of characters in each chunk.
@@ -225,22 +241,21 @@ where
     /// By default, chunks will be trimmed. If you want to preserve whitespace,
     /// call [`Self::with_trim`] and set it to `false`.
     #[must_use]
-    pub fn new(capacity: Capacity) -> Self {
+    pub fn new(capacity: impl Into<ChunkCapacity>) -> Self {
         Self {
-            capacity,
+            capacity: capacity.into(),
             sizer: Characters,
             trim: true,
         }
     }
 }
 
-impl<Capacity, Sizer> ChunkConfig<Capacity, Sizer>
+impl<Sizer> ChunkConfig<Sizer>
 where
-    Capacity: ChunkCapacity,
     Sizer: ChunkSizer,
 {
     /// Retrieve a reference to the chunk capacity for this configuration.
-    pub fn capacity(&self) -> &Capacity {
+    pub fn capacity(&self) -> &ChunkCapacity {
         &self.capacity
     }
 
@@ -257,7 +272,7 @@ where
     /// let config = ChunkConfig::new(512).with_sizer(Characters);
     /// ```
     #[must_use]
-    pub fn with_sizer<S: ChunkSizer>(self, sizer: S) -> ChunkConfig<Capacity, S> {
+    pub fn with_sizer<S: ChunkSizer>(self, sizer: S) -> ChunkConfig<S> {
         ChunkConfig {
             capacity: self.capacity,
             sizer,
@@ -289,11 +304,11 @@ where
     }
 }
 
-impl<Capacity> From<Capacity> for ChunkConfig<Capacity, Characters>
+impl<T> From<T> for ChunkConfig<Characters>
 where
-    Capacity: ChunkCapacity,
+    T: Into<ChunkCapacity>,
 {
-    fn from(capacity: Capacity) -> Self {
+    fn from(capacity: T) -> Self {
         Self::new(capacity)
     }
 }
@@ -302,26 +317,24 @@ where
 /// Very helpful when the same chunk is being validated multiple times, which
 /// happens often, and can be expensive to compute, such as with tokenizers.
 #[derive(Debug)]
-pub struct MemoizedChunkSizer<'sizer, C, S>
+pub struct MemoizedChunkSizer<'sizer, Sizer>
 where
-    C: ChunkCapacity,
-    S: ChunkSizer,
+    Sizer: ChunkSizer,
 {
     /// Cache of chunk sizes per byte offset range
     cache: AHashMap<Range<usize>, ChunkSize>,
     /// How big can each chunk be
-    chunk_capacity: &'sizer C,
+    chunk_capacity: &'sizer ChunkCapacity,
     /// The sizer we are wrapping
-    sizer: &'sizer S,
+    sizer: &'sizer Sizer,
 }
 
-impl<'sizer, C, S> MemoizedChunkSizer<'sizer, C, S>
+impl<'sizer, Sizer> MemoizedChunkSizer<'sizer, Sizer>
 where
-    C: ChunkCapacity,
-    S: ChunkSizer,
+    Sizer: ChunkSizer,
 {
     /// Wrap any chunk sizer for memoization
-    pub fn new(chunk_capacity: &'sizer C, sizer: &'sizer S) -> Self {
+    pub fn new(chunk_capacity: &'sizer ChunkCapacity, sizer: &'sizer Sizer) -> Self {
         Self {
             cache: AHashMap::new(),
             chunk_capacity,
@@ -364,9 +377,15 @@ mod tests {
     fn check_chunk_capacity() {
         let chunk = "12345";
 
-        assert_eq!(Characters.chunk_size(chunk, &4).fits, Ordering::Greater);
-        assert_eq!(Characters.chunk_size(chunk, &5).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &6).fits, Ordering::Less);
+        assert_eq!(
+            Characters.chunk_size(chunk, &4.into()).fits,
+            Ordering::Greater
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &5.into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(Characters.chunk_size(chunk, &6.into()).fits, Ordering::Less);
     }
 
     #[test]
@@ -374,31 +393,49 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..0)).fits,
+            Characters.chunk_size(chunk, &(0..0).into()).fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..5)).fits,
+            Characters.chunk_size(chunk, &(0..5).into()).fits,
             Ordering::Greater
         );
-        assert_eq!(Characters.chunk_size(chunk, &(5..6)).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &(6..100)).fits, Ordering::Less);
+        assert_eq!(
+            Characters.chunk_size(chunk, &(5..6).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(6..100).into()).fits,
+            Ordering::Less
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_from() {
         let chunk = "12345";
 
-        assert_eq!(Characters.chunk_size(chunk, &(0..)).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &(5..)).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &(6..)).fits, Ordering::Less);
+        assert_eq!(
+            Characters.chunk_size(chunk, &(0..).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(5..).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(6..).into()).fits,
+            Ordering::Less
+        );
     }
 
     #[test]
     fn check_chunk_capacity_for_range_full() {
         let chunk = "12345";
 
-        assert_eq!(Characters.chunk_size(chunk, &..).fits, Ordering::Equal);
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..).into()).fits,
+            Ordering::Equal
+        );
     }
 
     #[test]
@@ -406,13 +443,19 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..=4)).fits,
+            Characters.chunk_size(chunk, &(0..=4).into()).fits,
             Ordering::Greater
         );
-        assert_eq!(Characters.chunk_size(chunk, &(5..=6)).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &(4..=5)).fits, Ordering::Equal);
         assert_eq!(
-            Characters.chunk_size(chunk, &(6..=100)).fits,
+            Characters.chunk_size(chunk, &(5..=6).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(4..=5).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(6..=100).into()).fits,
             Ordering::Less
         );
     }
@@ -421,9 +464,18 @@ mod tests {
     fn check_chunk_capacity_for_range_to() {
         let chunk = "12345";
 
-        assert_eq!(Characters.chunk_size(chunk, &(..0)).fits, Ordering::Greater);
-        assert_eq!(Characters.chunk_size(chunk, &(..5)).fits, Ordering::Greater);
-        assert_eq!(Characters.chunk_size(chunk, &(..6)).fits, Ordering::Equal);
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..0).into()).fits,
+            Ordering::Greater
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..5).into()).fits,
+            Ordering::Greater
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..6).into()).fits,
+            Ordering::Equal
+        );
     }
 
     #[test]
@@ -431,17 +483,23 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(..=4)).fits,
+            Characters.chunk_size(chunk, &(..=4).into()).fits,
             Ordering::Greater
         );
-        assert_eq!(Characters.chunk_size(chunk, &(..=5)).fits, Ordering::Equal);
-        assert_eq!(Characters.chunk_size(chunk, &(..=6)).fits, Ordering::Equal);
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..=5).into()).fits,
+            Ordering::Equal
+        );
+        assert_eq!(
+            Characters.chunk_size(chunk, &(..=6).into()).fits,
+            Ordering::Equal
+        );
     }
 
     #[test]
     fn chunk_size_from_offsets() {
         let offsets = [0..1, 1..2, 2..3];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1);
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1.into());
         assert_eq!(
             ChunkSize {
                 fits: Ordering::Greater,
@@ -455,7 +513,7 @@ mod tests {
     #[test]
     fn chunk_size_from_empty_offsets() {
         let offsets = [];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1);
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1.into());
         assert_eq!(
             ChunkSize {
                 fits: Ordering::Less,
@@ -469,7 +527,7 @@ mod tests {
     #[test]
     fn chunk_size_from_small_offsets() {
         let offsets = [0..1, 1..2, 2..3];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &4);
+        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &4.into());
         assert_eq!(
             ChunkSize {
                 fits: Ordering::Less,
@@ -487,7 +545,7 @@ mod tests {
 
     impl ChunkSizer for CountingSizer {
         // Return character version, but count calls
-        fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+        fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
             self.calls.fetch_add(1, atomic::Ordering::SeqCst);
             Characters.chunk_size(chunk, capacity)
         }
@@ -496,7 +554,8 @@ mod tests {
     #[test]
     fn memoized_sizer_only_calculates_once_per_text() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
+        let capacity = ChunkCapacity::new(10);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&capacity, &sizer);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
@@ -508,7 +567,8 @@ mod tests {
     #[test]
     fn memoized_sizer_calculates_once_per_different_text() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
+        let capacity = ChunkCapacity::new(10);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&capacity, &sizer);
         let text = "1234567890";
         for i in 0..10 {
             memoized_sizer.chunk_size(0, text.get(0..i).unwrap());
@@ -523,7 +583,8 @@ mod tests {
     #[test]
     fn can_clear_cache_on_memoized_sizer() {
         let sizer = CountingSizer::default();
-        let mut memoized_sizer = MemoizedChunkSizer::new(&10, &sizer);
+        let capacity = ChunkCapacity::new(10);
+        let mut memoized_sizer = MemoizedChunkSizer::new(&capacity, &sizer);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
@@ -538,7 +599,7 @@ mod tests {
 
     #[test]
     fn test_chunk_size_from_size() {
-        let chunk_size = ChunkSize::from_size(10, &10);
+        let chunk_size = ChunkSize::from_size(10, &10.into());
         assert_eq!(
             ChunkSize {
                 fits: Ordering::Equal,
@@ -552,7 +613,7 @@ mod tests {
     #[test]
     fn basic_chunk_config() {
         let config = ChunkConfig::new(10);
-        assert_eq!(config.capacity, 10);
+        assert_eq!(config.capacity, 10.into());
         assert_eq!(config.sizer, Characters);
         assert!(config.trim);
     }
@@ -569,13 +630,13 @@ mod tests {
         struct BasicSizer;
 
         impl ChunkSizer for BasicSizer {
-            fn chunk_size(&self, _chunk: &str, _capacity: &impl ChunkCapacity) -> ChunkSize {
+            fn chunk_size(&self, _chunk: &str, _capacity: &ChunkCapacity) -> ChunkSize {
                 unimplemented!()
             }
         }
 
         let config = ChunkConfig::new(10).with_sizer(BasicSizer);
-        assert_eq!(config.capacity, 10);
+        assert_eq!(config.capacity, 10.into());
         assert_eq!(config.sizer, BasicSizer);
         assert!(config.trim);
     }

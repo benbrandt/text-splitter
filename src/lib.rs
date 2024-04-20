@@ -133,42 +133,40 @@ trait SemanticSplit {
 
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
-struct TextChunks<'text, 'sizer, C, S, L>
+struct TextChunks<'text, 'sizer, Sizer, Level>
 where
-    C: ChunkCapacity,
-    S: ChunkSizer,
-    L: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<L>: SemanticSplit,
+    Sizer: ChunkSizer,
+    Level: Copy + Ord + PartialOrd + 'static,
+    SemanticSplitRanges<Level>: SemanticSplit,
 {
     /// How to validate chunk sizes
-    chunk_sizer: MemoizedChunkSizer<'sizer, C, S>,
+    chunk_sizer: MemoizedChunkSizer<'sizer, Sizer>,
     /// Current byte offset in the `text`
     cursor: usize,
     /// Reusable container for next sections to avoid extra allocations
     next_sections: Vec<(usize, &'text str)>,
     /// Splitter used for determining semantic levels.
-    semantic_split: SemanticSplitRanges<L>,
+    semantic_split: SemanticSplitRanges<Level>,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// Whether or not chunks should be trimmed
     trim_chunks: bool,
 }
 
-impl<'sizer, 'text: 'sizer, C, S, L> TextChunks<'text, 'sizer, C, S, L>
+impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunks<'text, 'sizer, Sizer, Level>
 where
-    C: ChunkCapacity,
-    S: ChunkSizer,
-    L: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<L>: SemanticSplit<Level = L>,
+    Sizer: ChunkSizer,
+    Level: Copy + Ord + PartialOrd + 'static,
+    SemanticSplitRanges<Level>: SemanticSplit<Level = Level>,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
-    fn new(chunk_config: &'sizer ChunkConfig<C, S>, text: &'text str) -> Self {
+    fn new(chunk_config: &'sizer ChunkConfig<Sizer>, text: &'text str) -> Self {
         Self {
             cursor: 0,
             chunk_sizer: MemoizedChunkSizer::new(chunk_config.capacity(), chunk_config.sizer()),
             next_sections: Vec::new(),
-            semantic_split: SemanticSplitRanges::<L>::new(text),
+            semantic_split: SemanticSplitRanges::<Level>::new(text),
             text,
             trim_chunks: chunk_config.trim(),
         }
@@ -341,12 +339,11 @@ where
     }
 }
 
-impl<'sizer, 'text: 'sizer, C, S, L> Iterator for TextChunks<'text, 'sizer, C, S, L>
+impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator for TextChunks<'text, 'sizer, Sizer, Level>
 where
-    C: ChunkCapacity,
-    S: ChunkSizer,
-    L: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<L>: SemanticSplit<Level = L>,
+    Sizer: ChunkSizer,
+    Level: Copy + Ord + PartialOrd + 'static,
+    SemanticSplitRanges<Level>: SemanticSplit<Level = Level>,
 {
     type Item = (usize, &'text str);
 

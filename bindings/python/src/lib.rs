@@ -34,17 +34,11 @@ enum PyChunkCapacity {
     IntTuple(usize, usize),
 }
 
-impl ChunkCapacity for PyChunkCapacity {
-    fn start(&self) -> Option<usize> {
-        match self {
-            Self::Int(_) => None,
-            Self::IntTuple(start, _) => Some(*start),
-        }
-    }
-
-    fn end(&self) -> usize {
-        match self {
-            Self::Int(end) | Self::IntTuple(_, end) => *end,
+impl From<PyChunkCapacity> for ChunkCapacity {
+    fn from(capacity: PyChunkCapacity) -> Self {
+        match capacity {
+            PyChunkCapacity::Int(capacity) => ChunkCapacity::new(capacity),
+            PyChunkCapacity::IntTuple(min, max) => ChunkCapacity::new(min).with_max(max),
         }
     }
 }
@@ -54,7 +48,7 @@ struct CustomCallback(PyObject);
 
 impl ChunkSizer for CustomCallback {
     /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
         Python::with_gil(|py| {
             let size = self
                 .0
@@ -98,10 +92,10 @@ impl<'text> ByteToCharOffsetTracker<'text> {
 
 #[allow(clippy::large_enum_variant)]
 enum TextSplitterOptions {
-    Characters(TextSplitter<PyChunkCapacity, Characters>),
-    CustomCallback(TextSplitter<PyChunkCapacity, CustomCallback>),
-    Huggingface(TextSplitter<PyChunkCapacity, Tokenizer>),
-    Tiktoken(TextSplitter<PyChunkCapacity, CoreBPE>),
+    Characters(TextSplitter<Characters>),
+    CustomCallback(TextSplitter<CustomCallback>),
+    Huggingface(TextSplitter<Tokenizer>),
+    Tiktoken(TextSplitter<CoreBPE>),
 }
 
 impl TextSplitterOptions {
@@ -468,10 +462,10 @@ impl PyTextSplitter {
 
 #[allow(clippy::large_enum_variant)]
 enum MarkdownSplitterOptions {
-    Characters(MarkdownSplitter<PyChunkCapacity, Characters>),
-    CustomCallback(MarkdownSplitter<PyChunkCapacity, CustomCallback>),
-    Huggingface(MarkdownSplitter<PyChunkCapacity, Tokenizer>),
-    Tiktoken(MarkdownSplitter<PyChunkCapacity, CoreBPE>),
+    Characters(MarkdownSplitter<Characters>),
+    CustomCallback(MarkdownSplitter<CustomCallback>),
+    Huggingface(MarkdownSplitter<Tokenizer>),
+    Tiktoken(MarkdownSplitter<CoreBPE>),
 }
 
 impl MarkdownSplitterOptions {
