@@ -7,7 +7,7 @@ use std::ops::Range;
 use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
 impl ChunkSizer for &BertTokenizer {
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
         let binding = self.tokenize_with_offsets(chunk);
         let offsets = binding
             .offsets
@@ -22,7 +22,7 @@ impl ChunkSizer for &BertTokenizer {
 }
 
 impl ChunkSizer for BertTokenizer {
-    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
         (&self).chunk_size(chunk, capacity)
     }
 }
@@ -36,10 +36,10 @@ mod tests {
         let path: &str = "tests/tokenizers/bert-uncased-vocab.txt";
         let tokenizer: BertTokenizer = BertTokenizer::from_file(path, false, false).unwrap();
         let capacity = 10;
-        let offsets = tokenizer.chunk_size(" An apple a", &capacity);
+        let offsets = tokenizer.chunk_size(" An apple a", &capacity.into());
         assert_eq!(
             offsets,
-            ChunkSize::from_offsets([1..3, 4..9, 10..11].into_iter(), &capacity)
+            ChunkSize::from_offsets([1..3, 4..9, 10..11].into_iter(), &capacity.into())
         );
     }
 }

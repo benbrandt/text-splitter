@@ -174,13 +174,17 @@ fn rust_tokenizers() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in CHUNK_SIZES {
-            let splitter = TextSplitter::new(&*BERT_UNCASED_TOKENIZER);
-            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(&*BERT_UNCASED_TOKENIZER)
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
                 assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &chunk_size)
+                    .chunk_size(chunk, &capacity)
                     .fits()
                     .is_le());
             }
@@ -196,12 +200,14 @@ fn rust_tokenizers_trim() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in CHUNK_SIZES {
-            let splitter = TextSplitter::new(&*BERT_UNCASED_TOKENIZER).with_trim_chunks(true);
-            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
                 assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &chunk_size)
+                    .chunk_size(chunk, &capacity)
                     .fits()
                     .is_le());
             }
@@ -342,13 +348,17 @@ fn rust_tokenizers_markdown() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in CHUNK_SIZES {
-            let splitter = MarkdownSplitter::new(&*BERT_UNCASED_TOKENIZER);
-            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(&*BERT_UNCASED_TOKENIZER)
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
                 assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &chunk_size)
+                    .chunk_size(chunk, &capacity)
                     .fits()
                     .is_le());
             }
@@ -364,12 +374,14 @@ fn rust_tokenizers_markdown_trim() {
         let text = fs::read_to_string(path).unwrap();
 
         for chunk_size in CHUNK_SIZES {
-            let splitter = MarkdownSplitter::new(&*BERT_UNCASED_TOKENIZER).with_trim_chunks(true);
-            let chunks = splitter.chunks(&text, chunk_size).collect::<Vec<_>>();
+            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
                 assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &chunk_size)
+                    .chunk_size(chunk, &capacity)
                     .fits()
                     .is_le());
             }

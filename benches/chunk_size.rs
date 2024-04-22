@@ -68,14 +68,16 @@ mod text {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
+        bench(bencher, filename, || {
             TextSplitter::new(
-                rust_tokenizers::tokenizer::BertTokenizer::from_file(
-                    "tests/tokenizers/bert-uncased-vocab.txt",
-                    false,
-                    false,
-                )
-                .unwrap(),
+                ChunkConfig::new(N).with_sizer(
+                    rust_tokenizers::tokenizer::BertTokenizer::from_file(
+                        "tests/tokenizers/bert-uncased-vocab.txt",
+                        false,
+                        false,
+                    )
+                    .unwrap(),
+                ),
             )
         });
     }
@@ -138,14 +140,16 @@ mod markdown {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        bench::<N, _, _>(bencher, filename, || {
+        bench(bencher, filename, || {
             MarkdownSplitter::new(
-                rust_tokenizers::tokenizer::BertTokenizer::from_file(
-                    "tests/tokenizers/bert-uncased-vocab.txt",
-                    false,
-                    false,
-                )
-                .unwrap(),
+                ChunkConfig::new(N).with_sizer(
+                    rust_tokenizers::tokenizer::BertTokenizer::from_file(
+                        "tests/tokenizers/bert-uncased-vocab.txt",
+                        false,
+                        false,
+                    )
+                    .unwrap(),
+                ),
             )
         });
     }
