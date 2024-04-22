@@ -11,7 +11,9 @@ mod chunk_size;
 mod markdown;
 mod text;
 
-pub use chunk_size::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer};
+pub use chunk_size::{
+    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkSize, ChunkSizer,
+};
 #[cfg(feature = "markdown")]
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;

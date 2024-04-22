@@ -17,9 +17,14 @@
 use std::str::FromStr;
 
 use auto_enums::auto_enum;
-use pyo3::{exceptions::PyException, prelude::*, pybacked::PyBackedStr};
+use pyo3::{
+    exceptions::{PyException, PyValueError},
+    prelude::*,
+    pybacked::PyBackedStr,
+};
 use text_splitter::{
-    Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer, MarkdownSplitter, TextSplitter,
+    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkSize, ChunkSizer,
+    MarkdownSplitter, TextSplitter,
 };
 use tiktoken_rs::{get_bpe_from_model, CoreBPE};
 use tokenizers::Tokenizer;
@@ -34,12 +39,28 @@ enum PyChunkCapacity {
     IntTuple(usize, usize),
 }
 
-impl From<PyChunkCapacity> for ChunkCapacity {
-    fn from(capacity: PyChunkCapacity) -> Self {
-        match capacity {
+struct PyChunkCapacityError(ChunkCapacityError);
+
+impl From<ChunkCapacityError> for PyChunkCapacityError {
+    fn from(err: ChunkCapacityError) -> Self {
+        Self(err)
+    }
+}
+
+impl From<PyChunkCapacityError> for PyErr {
+    fn from(err: PyChunkCapacityError) -> Self {
+        PyValueError::new_err(err.0.to_string())
+    }
+}
+
+impl TryFrom<PyChunkCapacity> for ChunkCapacity {
+    type Error = PyChunkCapacityError;
+
+    fn try_from(capacity: PyChunkCapacity) -> Result<Self, Self::Error> {
+        Ok(match capacity {
             PyChunkCapacity::Int(capacity) => ChunkCapacity::new(capacity),
-            PyChunkCapacity::IntTuple(min, max) => ChunkCapacity::new(min).with_max(max),
-        }
+            PyChunkCapacity::IntTuple(min, max) => ChunkCapacity::new(min).with_max(max)?,
+        })
     }
 }
 
@@ -218,12 +239,12 @@ struct PyTextSplitter {
 impl PyTextSplitter {
     #[new]
     #[pyo3(signature = (capacity, trim=true))]
-    fn new(capacity: PyChunkCapacity, trim: bool) -> Self {
-        Self {
+    fn new(capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
+        Ok(Self {
             splitter: TextSplitterOptions::Characters(TextSplitter::new(
-                ChunkConfig::new(capacity).with_trim(trim),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?).with_trim(trim),
             )),
-        }
+        })
     }
 
     /**
@@ -258,7 +279,7 @@ impl PyTextSplitter {
 
         Ok(Self {
             splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -296,7 +317,7 @@ impl PyTextSplitter {
 
         Ok(Self {
             splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -332,7 +353,7 @@ impl PyTextSplitter {
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
             splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -364,7 +385,7 @@ impl PyTextSplitter {
 
         Ok(Self {
             splitter: TextSplitterOptions::Tiktoken(TextSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -391,14 +412,14 @@ impl PyTextSplitter {
     */
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, trim=true))]
-    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> Self {
-        Self {
+    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
+        Ok(Self {
             splitter: TextSplitterOptions::CustomCallback(TextSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(CustomCallback(callback))
                     .with_trim(trim),
             )),
-        }
+        })
     }
 
     /**
@@ -590,12 +611,12 @@ struct PyMarkdownSplitter {
 impl PyMarkdownSplitter {
     #[new]
     #[pyo3(signature = (capacity, trim=true))]
-    fn new(capacity: PyChunkCapacity, trim: bool) -> Self {
-        Self {
+    fn new(capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
+        Ok(Self {
             splitter: MarkdownSplitterOptions::Characters(MarkdownSplitter::new(
-                ChunkConfig::new(capacity).with_trim(trim),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?).with_trim(trim),
             )),
-        }
+        })
     }
 
     /**
@@ -630,7 +651,7 @@ impl PyMarkdownSplitter {
 
         Ok(Self {
             splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -668,7 +689,7 @@ impl PyMarkdownSplitter {
 
         Ok(Self {
             splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -704,7 +725,7 @@ impl PyMarkdownSplitter {
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
             splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -736,7 +757,7 @@ impl PyMarkdownSplitter {
 
         Ok(Self {
             splitter: MarkdownSplitterOptions::Tiktoken(MarkdownSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(tokenizer)
                     .with_trim(trim),
             )),
@@ -763,14 +784,14 @@ impl PyMarkdownSplitter {
     */
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, trim=true))]
-    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> Self {
-        Self {
+    fn from_callback(callback: PyObject, capacity: PyChunkCapacity, trim: bool) -> PyResult<Self> {
+        Ok(Self {
             splitter: MarkdownSplitterOptions::CustomCallback(MarkdownSplitter::new(
-                ChunkConfig::new(capacity)
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_sizer(CustomCallback(callback))
                     .with_trim(trim),
             )),
-        }
+        })
     }
 
     /**

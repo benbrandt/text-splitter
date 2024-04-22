@@ -231,3 +231,8 @@ def test_markdown_char_indices_with_multibyte_character() -> None:
         (4, "12ü"),
         (8, "12ü"),
     ]
+
+
+def test_invalid_chunk_range() -> None:
+    with pytest.raises(ValueError):
+        splitter = TextSplitter((2, 1))

@@ -12,79 +12,20 @@ mod huggingface;
 mod tiktoken;
 
 pub use characters::Characters;
+use thiserror::Error;
 
-/// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
-/// determined by the sizer, as well as the max byte offset of the text that
-/// would fit within the given `ChunkCapacity`.
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub struct ChunkSize {
-    /// Whether or not the entire chunk fits within the `ChunkCapacity`
-    fits: Ordering,
-    /// max byte offset of the text that fit within the given `ChunkCapacity`.
-    max_chunk_size_offset: Option<usize>,
-    /// Size of the chunk, in units used by the sizer.
-    size: usize,
-}
+/// Indicates there was an error with the chunk capacity configuration.
+/// The `Display` implementation will provide a human-readable error message to
+/// help debug the issue that caused the error.
+#[derive(Error, Debug)]
+#[error(transparent)]
+pub struct ChunkCapacityError(#[from] ChunkCapacityErrorRepr);
 
-impl ChunkSize {
-    /// Generate a chunk size from a given size. Will not be able to compute the
-    /// max byte offset that fits within the capacity.
-    #[must_use]
-    pub fn from_size(size: usize, capacity: &ChunkCapacity) -> Self {
-        Self {
-            fits: capacity.fits(size),
-            max_chunk_size_offset: None,
-            size,
-        }
-    }
-
-    /// Generate a chunk size from an iterator of byte ranges for each encoded
-    /// element in the chunk.
-    pub fn from_offsets(
-        offsets: impl Iterator<Item = Range<usize>>,
-        capacity: &ChunkCapacity,
-    ) -> Self {
-        let mut chunk_size = offsets.fold(
-            Self {
-                fits: Ordering::Less,
-                max_chunk_size_offset: None,
-                size: 0,
-            },
-            |mut acc, range| {
-                acc.size += 1;
-                if acc.size <= capacity.max() {
-                    acc.max_chunk_size_offset = Some(range.end);
-                }
-                acc
-            },
-        );
-        chunk_size.fits = capacity.fits(chunk_size.size);
-        chunk_size
-    }
-
-    /// Determine whether the chunk size fits within the capacity or not
-    #[must_use]
-    pub fn fits(&self) -> Ordering {
-        self.fits
-    }
-
-    /// max byte offset of the text that fit within the given `ChunkCapacity`.
-    #[must_use]
-    pub fn max_chunk_size_offset(&self) -> Option<usize> {
-        self.max_chunk_size_offset
-    }
-
-    /// Size of the chunk, in units used by the sizer.
-    #[must_use]
-    pub fn size(&self) -> usize {
-        self.size
-    }
-}
-
-/// Determines the size of a given chunk.
-pub trait ChunkSizer {
-    /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
+/// Private error and free to change across minor version of the crate.
+#[derive(Error, Debug)]
+enum ChunkCapacityErrorRepr {
+    #[error("Max chunk size must be greater than or equal to the desired chunk size")]
+    MaxLessThanDesired,
 }
 
 /// Describes the valid chunk size(s) that can be generated.
@@ -154,9 +95,18 @@ impl ChunkCapacity {
     /// in a RAG use case where you roughly want a certain part of a document, you
     /// can set `max` to your absolute maxumum, and the splitter can stay at a
     /// higher semantic level when determining the chunk.
-    #[must_use]
-    pub fn with_max(self, max: usize) -> Self {
-        Self { max, ..self }
+    ///
+    /// # Errors
+    ///
+    /// If the `max` size is less than the `desired` size, an error is returned.
+    pub fn with_max(self, max: usize) -> Result<Self, ChunkCapacityError> {
+        if max < self.desired {
+            Err(ChunkCapacityError(
+                ChunkCapacityErrorRepr::MaxLessThanDesired,
+            ))
+        } else {
+            Ok(Self { max, ..self })
+        }
     }
 
     /// Validate if a given chunk fits within the capacity
@@ -184,38 +134,124 @@ impl From<usize> for ChunkCapacity {
 
 impl From<Range<usize>> for ChunkCapacity {
     fn from(range: Range<usize>) -> Self {
-        ChunkCapacity::new(range.start).with_max(range.end.saturating_sub(1).max(range.start))
+        ChunkCapacity::new(range.start)
+            .with_max(range.end.saturating_sub(1).max(range.start))
+            .expect("invalid range")
     }
 }
 
 impl From<RangeFrom<usize>> for ChunkCapacity {
     fn from(range: RangeFrom<usize>) -> Self {
-        ChunkCapacity::new(range.start).with_max(usize::MAX)
+        ChunkCapacity::new(range.start)
+            .with_max(usize::MAX)
+            .expect("invalid range")
     }
 }
 
 impl From<RangeFull> for ChunkCapacity {
     fn from(_: RangeFull) -> Self {
-        ChunkCapacity::new(usize::MIN).with_max(usize::MAX)
+        ChunkCapacity::new(usize::MIN)
+            .with_max(usize::MAX)
+            .expect("invalid range")
     }
 }
 
 impl From<RangeInclusive<usize>> for ChunkCapacity {
     fn from(range: RangeInclusive<usize>) -> Self {
-        ChunkCapacity::new(*range.start()).with_max(*range.end())
+        ChunkCapacity::new(*range.start())
+            .with_max(*range.end())
+            .expect("invalid range")
     }
 }
 
 impl From<RangeTo<usize>> for ChunkCapacity {
     fn from(range: RangeTo<usize>) -> Self {
-        ChunkCapacity::new(usize::MIN).with_max(range.end.saturating_sub(1))
+        ChunkCapacity::new(usize::MIN)
+            .with_max(range.end.saturating_sub(1))
+            .expect("invalid range")
     }
 }
 
 impl From<RangeToInclusive<usize>> for ChunkCapacity {
     fn from(range: RangeToInclusive<usize>) -> Self {
-        ChunkCapacity::new(usize::MIN).with_max(range.end)
+        ChunkCapacity::new(usize::MIN)
+            .with_max(range.end)
+            .expect("invalid range")
     }
+}
+
+/// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
+/// determined by the sizer, as well as the max byte offset of the text that
+/// would fit within the given `ChunkCapacity`.
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub struct ChunkSize {
+    /// Whether or not the entire chunk fits within the `ChunkCapacity`
+    fits: Ordering,
+    /// max byte offset of the text that fit within the given `ChunkCapacity`.
+    max_chunk_size_offset: Option<usize>,
+    /// Size of the chunk, in units used by the sizer.
+    size: usize,
+}
+
+impl ChunkSize {
+    /// Generate a chunk size from a given size. Will not be able to compute the
+    /// max byte offset that fits within the capacity.
+    #[must_use]
+    pub fn from_size(size: usize, capacity: &ChunkCapacity) -> Self {
+        Self {
+            fits: capacity.fits(size),
+            max_chunk_size_offset: None,
+            size,
+        }
+    }
+
+    /// Generate a chunk size from an iterator of byte ranges for each encoded
+    /// element in the chunk.
+    pub fn from_offsets(
+        offsets: impl Iterator<Item = Range<usize>>,
+        capacity: &ChunkCapacity,
+    ) -> Self {
+        let mut chunk_size = offsets.fold(
+            Self {
+                fits: Ordering::Less,
+                max_chunk_size_offset: None,
+                size: 0,
+            },
+            |mut acc, range| {
+                acc.size += 1;
+                if acc.size <= capacity.max {
+                    acc.max_chunk_size_offset = Some(range.end);
+                }
+                acc
+            },
+        );
+        chunk_size.fits = capacity.fits(chunk_size.size);
+        chunk_size
+    }
+
+    /// Determine whether the chunk size fits within the capacity or not
+    #[must_use]
+    pub fn fits(&self) -> Ordering {
+        self.fits
+    }
+
+    /// max byte offset of the text that fit within the given `ChunkCapacity`.
+    #[must_use]
+    pub fn max_chunk_size_offset(&self) -> Option<usize> {
+        self.max_chunk_size_offset
+    }
+
+    /// Size of the chunk, in units used by the sizer.
+    #[must_use]
+    pub fn size(&self) -> usize {
+        self.size
+    }
+}
+
+/// Determines the size of a given chunk.
+pub trait ChunkSizer {
+    /// Determine the size of a given chunk to use for validation
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
 }
 
 /// Configuration for how chunks should be created
@@ -639,5 +675,31 @@ mod tests {
         assert_eq!(config.capacity, 10.into());
         assert_eq!(config.sizer, BasicSizer);
         assert!(config.trim);
+    }
+
+    #[test]
+    fn chunk_capacity_max_and_desired_equal() {
+        let capacity = ChunkCapacity::new(10);
+        assert_eq!(capacity.desired(), 10);
+        assert_eq!(capacity.max(), 10);
+    }
+
+    #[test]
+    fn chunk_capacity_can_adjust_max() {
+        let capacity = ChunkCapacity::new(10).with_max(20).unwrap();
+        assert_eq!(capacity.desired(), 10);
+        assert_eq!(capacity.max(), 20);
+    }
+
+    #[test]
+    fn chunk_capacity_max_cant_be_less_than_desired() {
+        let capacity = ChunkCapacity::new(10);
+        let err = capacity.with_max(5).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "Max chunk size must be greater than or equal to the desired chunk size"
+        );
+        assert_eq!(capacity.desired(), 10);
+        assert_eq!(capacity.max(), 10);
     }
 }
