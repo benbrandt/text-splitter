@@ -16,10 +16,10 @@ from semantic_text_splitter import TextSplitter
 # Maximum number of characters in a chunk
 max_characters = 1000
 # Optionally can also have the splitter not trim whitespace for you
-splitter = TextSplitter()
-# splitter = TextSplitter(trim_chunks=False)
+splitter = TextSplitter(max_characters)
+# splitter = TextSplitter(max_characters, trim=False)
 
-chunks = splitter.chunks("your document text", max_characters)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Range for Chunk Capacity
@@ -33,11 +33,12 @@ It is always possible that a chunk may be returned that is less than the `start`
 ```python
 from semantic_text_splitter import TextSplitter
 
-splitter = TextSplitter()
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+splitter = TextSplitter((200,1000))
+
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Hugging Face Tokenizer
@@ -49,9 +50,9 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-splitter = TextSplitter.from_huggingface_tokenizer(tokenizer)
+splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
-chunks = splitter.chunks("your document text", max_tokens)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Tiktoken Tokenizer
@@ -61,9 +62,9 @@ from semantic_text_splitter import TextSplitter
 
 # Maximum number of tokens in a chunk
 max_tokens = 1000
-splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo")
+splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo", max_tokens)
 
-chunks = splitter.chunks("your document text", max_tokens)
+chunks = splitter.chunks("your document text")
 ```
 
 ### Using a Custom Callback
@@ -71,12 +72,9 @@ chunks = splitter.chunks("your document text", max_tokens)
 ```python
 from semantic_text_splitter import TextSplitter
 
-# Optionally can also have the splitter trim whitespace for you
-splitter = TextSplitter.from_callback(lambda text: len(text))
+splitter = TextSplitter.from_callback(lambda text: len(text), 1000)
 
-# Maximum number of tokens in a chunk. Will fill up the
-# chunk until it is somewhere in this range.
-chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("your document text")
 ```
 
 ### Markdown
@@ -84,12 +82,15 @@ chunks = splitter.chunks("your document text", chunk_capacity=(200,1000))
 All of the above examples also can also work with Markdown text. You can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
 
 ```python
-from text_splitter import MarkdownSplitter
-# Default implementation uses character count for chunk size.
-# Can also use all of the same tokenizer implementations as `TextSplitter`.
-splitter = MarkdownSplitter()
+from semantic_text_splitter import MarkdownSplitter
 
-splitter.chunks("# Header\n\nyour document text", 1000)
+# Maximum number of characters in a chunk
+max_characters = 1000
+# Optionally can also have the splitter not trim whitespace for you
+splitter = MarkdownSplitter(max_characters)
+# splitter = MarkdownSplitter(max_characters, trim=False)
+
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ## Method
