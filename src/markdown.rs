@@ -12,7 +12,7 @@ use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{ChunkConfig, ChunkSizer, SemanticSplit, SemanticSplitRanges, TextChunks};
+use crate::{ChunkConfig, ChunkSizer, SemanticLevel, TextChunks};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -101,7 +101,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::<Sizer, SemanticLevel>::new(&self.chunk_config, text)
+        TextChunks::<Sizer, MarkdownLevel>::new(&self.chunk_config, text)
     }
 }
 
@@ -143,7 +143,7 @@ enum SemanticSplitPosition {
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-enum SemanticLevel {
+enum MarkdownLevel {
     /// Split by individual chars. May be larger than a single byte,
     /// but we don't go lower so we always have valid UTF str's.
     Char,
@@ -166,42 +166,40 @@ enum SemanticLevel {
     Heading(HeadingLevel),
 }
 
-impl SemanticLevel {
+impl MarkdownLevel {
     fn split_position(self) -> SemanticSplitPosition {
         match self {
-            SemanticLevel::Char
-            | SemanticLevel::GraphemeCluster
-            | SemanticLevel::Word
-            | SemanticLevel::Sentence
-            | SemanticLevel::SoftBreak
-            | SemanticLevel::Block
-            | SemanticLevel::Rule
-            | SemanticLevel::InlineElement => SemanticSplitPosition::Own,
+            Self::Char
+            | Self::GraphemeCluster
+            | Self::Word
+            | Self::Sentence
+            | Self::SoftBreak
+            | Self::Block
+            | Self::Rule
+            | Self::InlineElement => SemanticSplitPosition::Own,
             // Attach it to the next text
-            SemanticLevel::Heading(_) => SemanticSplitPosition::Next,
+            Self::Heading(_) => SemanticSplitPosition::Next,
         }
     }
 
     fn treat_whitespace_as_previous(self) -> bool {
         match self {
-            SemanticLevel::Char
-            | SemanticLevel::GraphemeCluster
-            | SemanticLevel::Word
-            | SemanticLevel::Sentence
-            | SemanticLevel::SoftBreak
-            | SemanticLevel::InlineElement
-            | SemanticLevel::Rule
-            | SemanticLevel::Heading(_) => false,
-            SemanticLevel::Block => true,
+            Self::Char
+            | Self::GraphemeCluster
+            | Self::Word
+            | Self::Sentence
+            | Self::SoftBreak
+            | Self::InlineElement
+            | Self::Rule
+            | Self::Heading(_) => false,
+            Self::Block => true,
         }
     }
-}
 
-impl SemanticSplitRanges<SemanticLevel> {
     /// Given a list of separator ranges, construct the sections of the text
     fn split_str_by_separator(
         text: &str,
-        separator_ranges: impl Iterator<Item = (SemanticLevel, Range<usize>)>,
+        separator_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
         let mut cursor = 0;
         let mut final_match = false;
@@ -265,14 +263,18 @@ impl SemanticSplitRanges<SemanticLevel> {
             .filter(|(_, s)| !s.is_empty())
     }
 }
-
 const NEWLINES: [char; 2] = ['\n', '\r'];
 
-impl SemanticSplit for SemanticSplitRanges<SemanticLevel> {
-    type Level = SemanticLevel;
+impl SemanticLevel for MarkdownLevel {
+    const PERSISTENT_LEVELS: &'static [Self] = &[
+        Self::Char,
+        Self::GraphemeCluster,
+        Self::Word,
+        Self::Sentence,
+    ];
 
-    fn new(text: &str) -> Self {
-        let ranges = Parser::new_ext(text, Options::all())
+    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
+        Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
                 Event::Start(
@@ -288,8 +290,8 @@ impl SemanticSplit for SemanticSplitRanges<SemanticLevel> {
                 | Event::Code(_)
                 | Event::InlineHtml(_)
                 | Event::FootnoteReference(_)
-                | Event::TaskListMarker(_) => Some((SemanticLevel::InlineElement, range)),
-                Event::SoftBreak => Some((SemanticLevel::SoftBreak, range)),
+                | Event::TaskListMarker(_) => Some((Self::InlineElement, range)),
+                Event::SoftBreak => Some((Self::SoftBreak, range)),
                 Event::Html(_)
                 | Event::Start(
                     Tag::Paragraph
@@ -303,69 +305,39 @@ impl SemanticSplit for SemanticSplitRanges<SemanticLevel> {
                     | Tag::HtmlBlock
                     | Tag::List(_)
                     | Tag::Table(_),
-                ) => Some((SemanticLevel::Block, range)),
-                Event::Rule => Some((SemanticLevel::Rule, range)),
+                ) => Some((Self::Block, range)),
+                Event::Rule => Some((Self::Rule, range)),
                 Event::Start(Tag::Heading { level, .. }) => {
-                    Some((SemanticLevel::Heading(level.into()), range))
+                    Some((Self::Heading(level.into()), range))
                 }
                 // End events are identical to start, so no need to grab them.
                 Event::End(_) => None,
             })
-            .collect::<Vec<_>>();
-
-        Self {
-            peristent_levels: &[
-                SemanticLevel::Char,
-                SemanticLevel::GraphemeCluster,
-                SemanticLevel::Word,
-                SemanticLevel::Sentence,
-            ],
-            ranges,
-        }
     }
 
-    /// Split a given text into iterator over each semantic chunk
     #[auto_enum(Iterator)]
-    fn semantic_chunks<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        offset: usize,
-        text: &'text str,
-        semantic_level: Self::Level,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        match semantic_level {
-            SemanticLevel::Char => text.char_indices().map(move |(i, c)| {
+    fn sections(
+        self,
+        text: &str,
+        level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
+    ) -> impl Iterator<Item = (usize, &str)> {
+        match self {
+            Self::Char => text.char_indices().map(move |(i, c)| {
                 (
-                    offset + i,
+                    i,
                     text.get(i..i + c.len_utf8()).expect("char should be valid"),
                 )
             }),
-            SemanticLevel::GraphemeCluster => text
-                .grapheme_indices(true)
-                .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::Word => text
-                .split_word_bound_indices()
-                .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::Sentence => text
-                .split_sentence_bound_indices()
-                .map(move |(i, str)| (offset + i, str)),
-            SemanticLevel::SoftBreak
-            | SemanticLevel::InlineElement
-            | SemanticLevel::Block
-            | SemanticLevel::Heading(_)
-            | SemanticLevel::Rule => Self::split_str_by_separator(
-                text,
-                self.level_ranges_after_offset(offset, semantic_level)
-                    .map(move |(l, sep)| (l, sep.start - offset..sep.end - offset)),
-            )
-            .map(move |(i, str)| (offset + i, str)),
+            Self::GraphemeCluster => text.grapheme_indices(true),
+            Self::Word => text.split_word_bound_indices(),
+            Self::Sentence => text.split_sentence_bound_indices(),
+            Self::SoftBreak | Self::InlineElement | Self::Block | Self::Heading(_) | Self::Rule => {
+                Self::split_str_by_separator(text, level_ranges)
+            }
         }
     }
 
-    fn trim_chunk<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        offset: usize,
-        chunk: &'text str,
-    ) -> (usize, &'text str) {
+    fn trim_chunk(offset: usize, chunk: &str) -> (usize, &str) {
         // Preserve indentation if we have newlines inside the element
         if chunk.trim().contains(NEWLINES) {
             let diff = chunk.len() - chunk.trim_start_matches(NEWLINES).len();
@@ -383,12 +355,14 @@ mod tests {
 
     use fake::{Fake, Faker};
 
+    use crate::SemanticSplitRanges;
+
     use super::*;
 
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let chunks = TextChunks::<_, SemanticLevel>::new(
+        let chunks = TextChunks::<_, MarkdownLevel>::new(
             &ChunkConfig::new(text.chars().count()).with_trim(false),
             &text,
         )
@@ -405,7 +379,7 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let chunks = TextChunks::<_, SemanticLevel>::new(
+        let chunks = TextChunks::<_, MarkdownLevel>::new(
             &ChunkConfig::new(max_chunk_size).with_trim(false),
             &text,
         )
@@ -431,7 +405,7 @@ mod tests {
     fn empty_string() {
         let text = "";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(100).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(100).with_trim(false), text)
                 .map(|(_, c)| c)
                 .collect::<Vec<_>>();
         assert!(chunks.is_empty());
@@ -441,7 +415,7 @@ mod tests {
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
                 .map(|(_, c)| c)
                 .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -452,7 +426,7 @@ mod tests {
         let text = "a̐éö̲\r\n";
 
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(3).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(3).with_trim(false), text)
                 .map(|(_, g)| g)
                 .collect::<Vec<_>>();
         // \r\n is grouped together not separated
@@ -464,7 +438,7 @@ mod tests {
         let text = " a b ";
 
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(1), text).collect::<Vec<_>>();
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(1), text).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
     }
 
@@ -473,7 +447,7 @@ mod tests {
         let text = "a̐éö̲\r\n";
 
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
                 .map(|(_, g)| g)
                 .collect::<Vec<_>>();
         assert_eq!(
@@ -487,7 +461,7 @@ mod tests {
         let text = "\r\na̐éö̲\r\n";
 
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(3), text).collect::<Vec<_>>();
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(3), text).collect::<Vec<_>>();
         assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
     }
 
@@ -496,7 +470,7 @@ mod tests {
         let text = "The quick brown fox can jump 32.3 feet, right?";
 
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(10).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(10).with_trim(false), text)
                 .map(|(_, w)| w)
                 .collect::<Vec<_>>();
         assert_eq!(
@@ -515,7 +489,7 @@ mod tests {
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(2).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(2).with_trim(false), text)
                 .map(|(_, w)| w)
                 .collect::<Vec<_>>();
         assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
@@ -525,7 +499,7 @@ mod tests {
     fn trim_word_indices() {
         let text = "Some text from a document";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (10, "from a"), (17, "document")],
             chunks
@@ -536,7 +510,7 @@ mod tests {
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. The dog was too lazy.";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(21).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(21).with_trim(false), text)
                 .map(|(_, s)| s)
                 .collect::<Vec<_>>();
         assert_eq!(vec!["Mr. Fox jumped. ", "The dog was too lazy."], chunks);
@@ -546,7 +520,7 @@ mod tests {
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. The dog was too lazy.";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(16).with_trim(false), text)
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(16).with_trim(false), text)
                 .map(|(_, s)| s)
                 .collect::<Vec<_>>();
         assert_eq!(
@@ -559,7 +533,7 @@ mod tests {
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
         let chunks =
-            TextChunks::<_, SemanticLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
+            TextChunks::<_, MarkdownLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text."), (11, "From a"), (18, "document.")],
             chunks
@@ -568,13 +542,14 @@ mod tests {
 
     #[test]
     fn test_no_markdown_separators() {
-        let markdown =
-            SemanticSplitRanges::<SemanticLevel>::new("Some text without any markdown separators");
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("Some text without any markdown separators").collect(),
+        );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..41),
-                (SemanticLevel::InlineElement, 0..41)
+                (MarkdownLevel::Block, 0..41),
+                (MarkdownLevel::InlineElement, 0..41)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -582,19 +557,19 @@ mod tests {
 
     #[test]
     fn test_checklist() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new(
-            "- [ ] incomplete task\n- [x] completed task",
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("- [ ] incomplete task\n- [x] completed task").collect(),
         );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..42),
-                (SemanticLevel::Block, 0..22),
-                (SemanticLevel::InlineElement, 2..5),
-                (SemanticLevel::InlineElement, 6..21),
-                (SemanticLevel::Block, 22..42),
-                (SemanticLevel::InlineElement, 24..27),
-                (SemanticLevel::InlineElement, 28..42),
+                (MarkdownLevel::Block, 0..42),
+                (MarkdownLevel::Block, 0..22),
+                (MarkdownLevel::InlineElement, 2..5),
+                (MarkdownLevel::InlineElement, 6..21),
+                (MarkdownLevel::Block, 22..42),
+                (MarkdownLevel::InlineElement, 24..27),
+                (MarkdownLevel::InlineElement, 28..42),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -602,13 +577,13 @@ mod tests {
 
     #[test]
     fn test_footnote_reference() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("Footnote[^1]");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("Footnote[^1]").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..12),
-                (SemanticLevel::InlineElement, 0..8),
-                (SemanticLevel::InlineElement, 8..12),
+                (MarkdownLevel::Block, 0..12),
+                (MarkdownLevel::InlineElement, 0..8),
+                (MarkdownLevel::InlineElement, 8..12),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -616,12 +591,12 @@ mod tests {
 
     #[test]
     fn test_inline_code() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("`bash`");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("`bash`").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..6),
-                (SemanticLevel::InlineElement, 0..6)
+                (MarkdownLevel::Block, 0..6),
+                (MarkdownLevel::InlineElement, 0..6)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -629,13 +604,13 @@ mod tests {
 
     #[test]
     fn test_emphasis() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("*emphasis*");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("*emphasis*").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..10),
-                (SemanticLevel::InlineElement, 0..10),
-                (SemanticLevel::InlineElement, 1..9),
+                (MarkdownLevel::Block, 0..10),
+                (MarkdownLevel::InlineElement, 0..10),
+                (MarkdownLevel::InlineElement, 1..9),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -643,13 +618,13 @@ mod tests {
 
     #[test]
     fn test_strong() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("**emphasis**");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("**emphasis**").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..12),
-                (SemanticLevel::InlineElement, 0..12),
-                (SemanticLevel::InlineElement, 2..10),
+                (MarkdownLevel::Block, 0..12),
+                (MarkdownLevel::InlineElement, 0..12),
+                (MarkdownLevel::InlineElement, 2..10),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -657,13 +632,13 @@ mod tests {
 
     #[test]
     fn test_strikethrough() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("~~emphasis~~");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("~~emphasis~~").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..12),
-                (SemanticLevel::InlineElement, 0..12),
-                (SemanticLevel::InlineElement, 2..10),
+                (MarkdownLevel::Block, 0..12),
+                (MarkdownLevel::InlineElement, 0..12),
+                (MarkdownLevel::InlineElement, 2..10),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -671,13 +646,13 @@ mod tests {
 
     #[test]
     fn test_link() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("[link](url)");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("[link](url)").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..11),
-                (SemanticLevel::InlineElement, 0..11),
-                (SemanticLevel::InlineElement, 1..5),
+                (MarkdownLevel::Block, 0..11),
+                (MarkdownLevel::InlineElement, 0..11),
+                (MarkdownLevel::InlineElement, 1..5),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -685,13 +660,13 @@ mod tests {
 
     #[test]
     fn test_image() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("![link](url)");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("![link](url)").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..12),
-                (SemanticLevel::InlineElement, 0..12),
-                (SemanticLevel::InlineElement, 2..6),
+                (MarkdownLevel::Block, 0..12),
+                (MarkdownLevel::InlineElement, 0..12),
+                (MarkdownLevel::InlineElement, 2..6),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -699,14 +674,15 @@ mod tests {
 
     #[test]
     fn test_inline_html() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("<span>Some text</span>");
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("<span>Some text</span>").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..22),
-                (SemanticLevel::InlineElement, 0..6),
-                (SemanticLevel::InlineElement, 6..15),
-                (SemanticLevel::InlineElement, 15..22),
+                (MarkdownLevel::Block, 0..22),
+                (MarkdownLevel::InlineElement, 0..6),
+                (MarkdownLevel::InlineElement, 6..15),
+                (MarkdownLevel::InlineElement, 15..22),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -714,32 +690,34 @@ mod tests {
 
     #[test]
     fn test_html() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("<div>Some text</div>");
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("<div>Some text</div>").collect());
 
         assert_eq!(
-            vec![(SemanticLevel::Block, 0..20), (SemanticLevel::Block, 0..20)],
+            vec![(MarkdownLevel::Block, 0..20), (MarkdownLevel::Block, 0..20)],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
 
     #[test]
     fn test_table() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new(
-            "| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |",
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |")
+                .collect(),
         );
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..57),
-                (SemanticLevel::Block, 0..24),
-                (SemanticLevel::InlineElement, 1..11),
-                (SemanticLevel::InlineElement, 2..10),
-                (SemanticLevel::InlineElement, 12..22),
-                (SemanticLevel::InlineElement, 13..21),
-                (SemanticLevel::Block, 38..57),
-                (SemanticLevel::InlineElement, 39..47),
-                (SemanticLevel::InlineElement, 40..46),
-                (SemanticLevel::InlineElement, 48..56),
-                (SemanticLevel::InlineElement, 49..55)
+                (MarkdownLevel::Block, 0..57),
+                (MarkdownLevel::Block, 0..24),
+                (MarkdownLevel::InlineElement, 1..11),
+                (MarkdownLevel::InlineElement, 2..10),
+                (MarkdownLevel::InlineElement, 12..22),
+                (MarkdownLevel::InlineElement, 13..21),
+                (MarkdownLevel::Block, 38..57),
+                (MarkdownLevel::InlineElement, 39..47),
+                (MarkdownLevel::InlineElement, 40..46),
+                (MarkdownLevel::InlineElement, 48..56),
+                (MarkdownLevel::InlineElement, 49..55)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -747,14 +725,16 @@ mod tests {
 
     #[test]
     fn test_softbreak() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("Some text\nwith a softbreak");
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("Some text\nwith a softbreak").collect(),
+        );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..26),
-                (SemanticLevel::InlineElement, 0..9),
-                (SemanticLevel::SoftBreak, 9..10),
-                (SemanticLevel::InlineElement, 10..26)
+                (MarkdownLevel::Block, 0..26),
+                (MarkdownLevel::InlineElement, 0..9),
+                (MarkdownLevel::SoftBreak, 9..10),
+                (MarkdownLevel::InlineElement, 10..26)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -762,14 +742,16 @@ mod tests {
 
     #[test]
     fn test_hardbreak() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("Some text\\\nwith a hardbreak");
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("Some text\\\nwith a hardbreak").collect(),
+        );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..27),
-                (SemanticLevel::InlineElement, 0..9),
-                (SemanticLevel::InlineElement, 9..11),
-                (SemanticLevel::InlineElement, 11..27)
+                (MarkdownLevel::Block, 0..27),
+                (MarkdownLevel::InlineElement, 0..9),
+                (MarkdownLevel::InlineElement, 9..11),
+                (MarkdownLevel::InlineElement, 11..27)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -777,13 +759,14 @@ mod tests {
 
     #[test]
     fn test_footnote_def() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("[^first]: Footnote");
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("[^first]: Footnote").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..18),
-                (SemanticLevel::Block, 10..18),
-                (SemanticLevel::InlineElement, 10..18)
+                (MarkdownLevel::Block, 0..18),
+                (MarkdownLevel::Block, 10..18),
+                (MarkdownLevel::InlineElement, 10..18)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -791,12 +774,12 @@ mod tests {
 
     #[test]
     fn test_code_block() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("```\ncode\n```");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("```\ncode\n```").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..12),
-                (SemanticLevel::InlineElement, 4..9)
+                (MarkdownLevel::Block, 0..12),
+                (MarkdownLevel::InlineElement, 4..9)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -804,13 +787,13 @@ mod tests {
 
     #[test]
     fn test_block_quote() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("> quote");
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("> quote").collect());
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..7),
-                (SemanticLevel::Block, 2..7),
-                (SemanticLevel::InlineElement, 2..7)
+                (MarkdownLevel::Block, 0..7),
+                (MarkdownLevel::Block, 2..7),
+                (MarkdownLevel::InlineElement, 2..7)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -818,15 +801,17 @@ mod tests {
 
     #[test]
     fn test_with_rule() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new("Some text\n\n---\n\nwith a rule");
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("Some text\n\n---\n\nwith a rule").collect(),
+        );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..10),
-                (SemanticLevel::InlineElement, 0..9),
-                (SemanticLevel::Rule, 11..15),
-                (SemanticLevel::Block, 16..27),
-                (SemanticLevel::InlineElement, 16..27)
+                (MarkdownLevel::Block, 0..10),
+                (MarkdownLevel::InlineElement, 0..9),
+                (MarkdownLevel::Rule, 11..15),
+                (MarkdownLevel::Block, 16..27),
+                (MarkdownLevel::InlineElement, 16..27)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -845,12 +830,14 @@ mod tests {
         .into_iter()
         .enumerate()
         {
-            let markdown = SemanticSplitRanges::<SemanticLevel>::new(&format!("{heading} Heading"));
+            let markdown = SemanticSplitRanges::new(
+                MarkdownLevel::offsets(&format!("{heading} Heading")).collect(),
+            );
 
             assert_eq!(
                 vec![
-                    (SemanticLevel::Heading(level), 0..9 + index),
-                    (SemanticLevel::InlineElement, 2 + index..9 + index)
+                    (MarkdownLevel::Heading(level), 0..9 + index),
+                    (MarkdownLevel::InlineElement, 2 + index..9 + index)
                 ],
                 markdown.ranges_after_offset(0).collect::<Vec<_>>()
             );
@@ -859,17 +846,17 @@ mod tests {
 
     #[test]
     fn test_ranges_after_offset_block() {
-        let markdown = SemanticSplitRanges::<SemanticLevel>::new(
-            "- [ ] incomplete task\n- [x] completed task",
+        let markdown = SemanticSplitRanges::new(
+            MarkdownLevel::offsets("- [ ] incomplete task\n- [x] completed task").collect(),
         );
 
         assert_eq!(
             vec![
-                (SemanticLevel::Block, 0..22),
-                (SemanticLevel::Block, 22..42),
+                (MarkdownLevel::Block, 0..22),
+                (MarkdownLevel::Block, 22..42),
             ],
             markdown
-                .level_ranges_after_offset(0, SemanticLevel::Block)
+                .level_ranges_after_offset(0, MarkdownLevel::Block)
                 .collect::<Vec<_>>()
         );
     }
