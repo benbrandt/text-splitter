@@ -1,5 +1,209 @@
 # Changelog
 
+## v0.12.0
+
+### What's New
+
+This release is a big API change to pull all chunk configuration options into the same place, at initialization of the splitters. This was motivated by two things:
+
+1. These settings are all important to deciding how to split the text for a given use case, and in practice I saw them often being set together anyway.
+2. To prep the library for new features like chunk overlap, where error handling has to be introduced to make sure that invariants are kept between all of the settings. These errors should be handled as sson as possible before chunking the text.
+
+Overall, I think this has aligned the library with the usage I have seen in the wild, and pulls all of the settings for the "domain" of chunking into a single unit.
+
+### Breaking Changes
+
+#### Rust
+
+- **Trimming is now enabled by default**. This brings the Rust crate in alignment with the Python package. But for every use case I saw, this was already being set to `true`, and this does logically make sense as the default behavior.
+- `TextSplitter` and `MarkdownSplitter` now take a `ChunkConfig` in their `::new` method
+  - This bring the `ChunkSizer`, `ChunkCapacity` and `trim` settings into a single struct that can be instantiated with a builder-lite pattern.
+  - `with_trim_chunks` method has been removed from `TextSplitter` and `MarkdownSplitter`. You can now set `trim` in the `ChunkConfig` struct.
+- `ChunkCapacity` is now a struct instead of a Trait. If you were using a custom `ChunkCapacity`, you can change your `impl` to a `From<TYPE> for ChunkCapacity` instead. and you should be able to still pass it in to all of the same methods.
+  - This also means `ChunkSizer`s take a concrete type in their method instead of an impl
+
+##### Migration Examples
+
+**Default settings:**
+
+```rust
+/// Before
+let splitter = TextSplitter::default().with_trim_chunks(true);
+let chunks = splitter.chunks("your document text", 500);
+
+/// After
+let splitter = TextSplitter::new(500);
+let chunks = splitter.chunks("your document text");
+```
+
+**Hugging Face Tokenizers:**
+
+```rust
+/// Before
+let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+let splitter = TextSplitter::new(tokenizer).with_trim_chunks(true);
+let chunks = splitter.chunks("your document text", 500);
+
+/// After
+let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+let splitter = TextSplitter::new(ChunkConfig::new(500).with_sizer(tokenizer));
+let chunks = splitter.chunks("your document text");
+```
+
+**Tiktoken:**
+
+```rust
+/// Before
+let tokenizer = cl100k_base().unwrap();
+let splitter = TextSplitter::new(tokenizer).with_trim_chunks(true);
+let chunks = splitter.chunks("your document text", 500);
+
+/// After
+let tokenizer = cl100k_base().unwrap();
+let splitter = TextSplitter::new(ChunkConfig::new(500).with_sizer(tokenizer));
+let chunks = splitter.chunks("your document text");
+```
+
+**Ranges:**
+
+```rust
+/// Before
+let splitter = TextSplitter::default().with_trim_chunks(true);
+let chunks = splitter.chunks("your document text", 500..2000);
+
+/// After
+let splitter = TextSplitter::new(500..2000);
+let chunks = splitter.chunks("your document text");
+```
+
+**Markdown:**
+
+```rust
+/// Before
+let splitter = MarkdownSplitter::default().with_trim_chunks(true);
+let chunks = splitter.chunks("your document text", 500);
+
+/// After
+let splitter = MarkdownSplitter::new(500);
+let chunks = splitter.chunks("your document text");
+```
+
+**ChunkSizer impls**
+
+```rust
+pub trait ChunkSizer {
+    /// Before
+    fn chunk_size(&self, chunk: &str, capacity: &impl ChunkCapacity) -> ChunkSize;
+    /// After
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
+}
+```
+
+**ChunkCapacity impls**
+
+```rust
+/// Before
+impl ChunkCapacity for Range<usize> {
+    fn start(&self) -> Option<usize> {
+        Some(self.start)
+    }
+
+    fn end(&self) -> usize {
+        self.end.saturating_sub(1).max(self.start)
+    }
+}
+
+/// After
+impl From<Range<usize>> for ChunkCapacity {
+    fn from(range: Range<usize>) -> Self {
+        ChunkCapacity::new(range.start)
+            .with_max(range.end.saturating_sub(1).max(range.start))
+            .expect("invalid range")
+    }
+}
+```
+
+#### Python
+
+- Chunk `capacity` is now a required arguement in the `__init__` and classmethods of `TextSplitter` and `MarkdownSplitter`
+- `trim_chunks` parameter is now just `trim` in the `__init__` and classmethods of `TextSplitter` and `MarkdownSplitter`
+
+##### Migration Examples
+
+**Default settings:**
+
+```python
+# Before
+splitter = TextSplitter()
+chunks = splitter.chunks("your document text", 500)
+
+# After
+splitter = TextSplitter(500)
+chunks = splitter.chunks("your document text")
+```
+
+**Ranges:**
+
+```python
+# Before
+splitter = TextSplitter()
+chunks = splitter.chunks("your document text", (200,1000))
+
+# After
+splitter = TextSplitter((200,1000))
+chunks = splitter.chunks("your document text")
+```
+
+**Hugging Face Tokenizers:**
+
+```python
+# Before
+tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+splitter = TextSplitter.from_huggingface_tokenizer(tokenizer)
+chunks = splitter.chunks("your document text", 500)
+
+# After
+tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, 500)
+chunks = splitter.chunks("your document text")
+```
+
+**Tiktoken:**
+
+```python
+# Before
+splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo")
+chunks = splitter.chunks("your document text", 500)
+
+# After
+splitter = TextSplitter.from_tiktoken_model("gpt-3.5-turbo", 500)
+chunks = splitter.chunks("your document text")
+```
+
+**Custom callback:**
+
+```python
+# Before
+splitter = TextSplitter.from_callback(lambda text: len(text))
+chunks = splitter.chunks("your document text", 500)
+
+# After
+splitter = TextSplitter.from_callback(lambda text: len(text), 500)
+chunks = splitter.chunks("your document text")
+```
+
+**Markdown:**
+
+```python
+# Before
+splitter = MarkdownSplitter()
+chunks = splitter.chunks("your document text", 500)
+
+# After
+splitter = MarkdownSplitter(500)
+chunks = splitter.chunks("your document text")
+```
+
 ## v0.11.0
 
 ### Breaking Changes
