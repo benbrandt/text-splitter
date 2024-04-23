@@ -18,23 +18,50 @@ pub use chunk_size::{
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
 
+/// Custom-defined levels of semantic splitting for custom document types.
+trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
+    /// Levels that are always considered in splitting text, because they are always present.
+    const PERSISTENT_LEVELS: &'static [Self];
+
+    /// Generate a list of offsets for each semantic level within the text.
+    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)>;
+
+    /// Given a level, split the text into sections based on the level.
+    /// Level ranges are also provided of items that are equal to or greater than the current level.
+    fn sections(
+        self,
+        text: &str,
+        level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
+    ) -> impl Iterator<Item = (usize, &str)>;
+
+    /// Trim the str and adjust the offset if necessary.
+    /// This is the default behavior, but custom semantic levels may need different behavior.
+    fn trim_chunk(offset: usize, chunk: &str) -> (usize, &str) {
+        // Figure out how many bytes we lose trimming the beginning
+        let diff = chunk.len() - chunk.trim_start().len();
+        (offset + diff, chunk.trim())
+    }
+}
+
 /// Captures information about document structure for a given text, and their
 /// various semantic levels
 #[derive(Debug)]
 struct SemanticSplitRanges<Level>
 where
-    Level: Copy + Ord + PartialOrd + 'static,
+    Level: SemanticLevel,
 {
-    /// Levels that are always considered in splitting text, because they are always present.
-    peristent_levels: &'static [Level],
     /// Range of each semantic item and its precalculated semantic level
     ranges: Vec<(Level, Range<usize>)>,
 }
 
 impl<Level> SemanticSplitRanges<Level>
 where
-    Level: Copy + Ord + PartialOrd + 'static,
+    Level: SemanticLevel,
 {
+    fn new(ranges: Vec<(Level, Range<usize>)>) -> Self {
+        Self { ranges }
+    }
+
     /// Retrieve ranges for all sections of a given level after an offset
     fn ranges_after_offset(
         &self,
@@ -86,12 +113,28 @@ where
     fn levels_in_remaining_text(&self, offset: usize) -> impl Iterator<Item = Level> + '_ {
         let existing_levels = self.ranges_after_offset(offset).map(|(l, _)| l);
 
-        self.peristent_levels
+        Level::PERSISTENT_LEVELS
             .iter()
             .copied()
             .chain(existing_levels)
             .sorted()
             .dedup()
+    }
+
+    /// Split a given text into iterator over each semantic chunk
+    fn semantic_chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        offset: usize,
+        text: &'text str,
+        semantic_level: Level,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+        semantic_level
+            .sections(
+                text,
+                self.level_ranges_after_offset(offset, semantic_level)
+                    .map(move |(l, sep)| (l, sep.start - offset..sep.end - offset)),
+            )
+            .map(move |(i, str)| (offset + i, str))
     }
 
     /// Clear out ranges we have moved past so future iterations are faster
@@ -100,46 +143,12 @@ where
     }
 }
 
-/// Implementation that dictates the semantic split points available.
-/// For plain text, this goes from characters, to grapheme clusters, to words,
-/// to sentences, to linebreaks.
-/// For something like Markdown, this would also include things like headers,
-/// lists, and code blocks.
-trait SemanticSplit {
-    /// Internal type used to represent the level of semantic splitting.
-    type Level: Copy + Ord + PartialOrd + 'static;
-
-    /// Generate a new instance from a given text.
-    fn new(text: &str) -> Self;
-
-    /// Split a given text into iterator over each semantic chunk
-    fn semantic_chunks<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        offset: usize,
-        text: &'text str,
-        semantic_level: Self::Level,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter;
-
-    /// Trim the str and adjust the offset if necessary.
-    /// This is the default behavior, but custom semantic levels may need different behavior.
-    fn trim_chunk<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        offset: usize,
-        chunk: &'text str,
-    ) -> (usize, &'text str) {
-        // Figure out how many bytes we lose trimming the beginning
-        let diff = chunk.len() - chunk.trim_start().len();
-        (offset + diff, chunk.trim())
-    }
-}
-
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
 struct TextChunks<'text, 'sizer, Sizer, Level>
 where
     Sizer: ChunkSizer,
-    Level: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<Level>: SemanticSplit,
+    Level: SemanticLevel,
 {
     /// How to validate chunk sizes
     chunk_sizer: MemoizedChunkSizer<'sizer, Sizer>,
@@ -158,8 +167,7 @@ where
 impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunks<'text, 'sizer, Sizer, Level>
 where
     Sizer: ChunkSizer,
-    Level: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<Level>: SemanticSplit<Level = Level>,
+    Level: SemanticLevel,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
@@ -168,7 +176,7 @@ where
             cursor: 0,
             chunk_sizer: MemoizedChunkSizer::new(chunk_config.capacity(), chunk_config.sizer()),
             next_sections: Vec::new(),
-            semantic_split: SemanticSplitRanges::<Level>::new(text),
+            semantic_split: SemanticSplitRanges::new(Level::offsets(text).collect()),
             text,
             trim_chunks: chunk_config.trim(),
         }
@@ -177,7 +185,7 @@ where
     /// If trim chunks is on, trim the str and adjust the offset
     fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
         if self.trim_chunks {
-            self.semantic_split.trim_chunk(offset, chunk)
+            Level::trim_chunk(offset, chunk)
         } else {
             (offset, chunk)
         }
@@ -344,8 +352,7 @@ where
 impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator for TextChunks<'text, 'sizer, Sizer, Level>
 where
     Sizer: ChunkSizer,
-    Level: Copy + Ord + PartialOrd + 'static,
-    SemanticSplitRanges<Level>: SemanticSplit<Level = Level>,
+    Level: SemanticLevel,
 {
     type Item = (usize, &'text str);
 
