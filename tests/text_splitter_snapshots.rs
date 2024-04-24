@@ -4,6 +4,8 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 use once_cell::sync::Lazy;
+#[cfg(feature = "rust-tokenizers")]
+use rust_tokenizers::tokenizer::BertTokenizer;
 #[cfg(feature = "markdown")]
 use text_splitter::MarkdownSplitter;
 use text_splitter::{Characters, ChunkConfig, ChunkSizer, TextSplitter};
@@ -159,6 +161,60 @@ fn characters_range_trim() {
     });
 }
 
+#[cfg(feature = "rust-tokenizers")]
+static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
+    let path: &str = "tests/tokenizers/bert-uncased-vocab.txt";
+    BertTokenizer::from_file(path, false, false).unwrap()
+});
+
+#[cfg(feature = "rust-tokenizers")]
+#[test]
+fn rust_tokenizers() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in CHUNK_SIZES {
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(&*BERT_UNCASED_TOKENIZER)
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            for chunk in &chunks {
+                assert!(BERT_UNCASED_TOKENIZER
+                    .chunk_size(chunk, &capacity)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(feature = "rust-tokenizers")]
+#[test]
+fn rust_tokenizers_trim() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in CHUNK_SIZES {
+            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(BERT_UNCASED_TOKENIZER
+                    .chunk_size(chunk, &capacity)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
 #[cfg(feature = "tokenizers")]
 static HUGGINGFACE_TOKENIZER: Lazy<Tokenizer> =
     Lazy::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
@@ -285,6 +341,54 @@ fn markdown() {
     });
 }
 
+#[cfg(all(feature = "markdown", feature = "rust-tokenizers"))]
+#[test]
+fn rust_tokenizers_markdown() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in CHUNK_SIZES {
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(&*BERT_UNCASED_TOKENIZER)
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            assert_eq!(chunks.join(""), text);
+            for chunk in &chunks {
+                assert!(BERT_UNCASED_TOKENIZER
+                    .chunk_size(chunk, &capacity)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
+
+#[cfg(all(feature = "markdown", feature = "rust-tokenizers"))]
+#[test]
+fn rust_tokenizers_markdown_trim() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        for chunk_size in CHUNK_SIZES {
+            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(BERT_UNCASED_TOKENIZER
+                    .chunk_size(chunk, &capacity)
+                    .fits()
+                    .is_le());
+            }
+            insta::assert_yaml_snapshot!(chunks);
+        }
+    });
+}
 #[cfg(feature = "tokenizers")]
 #[test]
 fn markdown_trim() {
