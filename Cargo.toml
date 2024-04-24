@@ -50,6 +50,7 @@ itertools = "0.12.1"
 once_cell = "1.19.0"
 pulldown-cmark = { version = "0.10.3", default-features = false, optional = true }
 regex = "1.10.4"
+rust_tokenizers = { version = "8.1.1", optional = true }
 thiserror = "1.0.59"
 tiktoken-rs = { version = "0.5.8", optional = true }
 tokenizers = { version = "0.19.1", default_features = false, features = [
@@ -73,6 +74,7 @@ harness = false
 
 [features]
 markdown = ["dep:pulldown-cmark"]
+rust-tokenizers = ["dep:rust_tokenizers"]
 tokenizers = ["dep:tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 
