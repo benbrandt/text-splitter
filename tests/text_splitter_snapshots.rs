@@ -163,8 +163,10 @@ fn characters_range_trim() {
 
 #[cfg(feature = "rust-tokenizers")]
 static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
-    let path: &str = "tests/tokenizers/bert-uncased-vocab.txt";
-    BertTokenizer::from_file(path, false, false).unwrap()
+    let vocab_path = test_utils::download_file_to_cache(
+        "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+    );
+    BertTokenizer::from_file(vocab_path, false, false).unwrap()
 });
 
 #[cfg(feature = "rust-tokenizers")]

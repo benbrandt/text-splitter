@@ -1,0 +1,19 @@
+[package]
+name = "test_utils"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cached-path = { version = "0.6.1", default-features = false, features = [
+    "rustls-tls",
+] }
+dirs = "5.0.1"

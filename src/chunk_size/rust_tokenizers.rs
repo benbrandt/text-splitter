@@ -1,18 +1,21 @@
-use rust_tokenizers::tokenizer::{
-    AlbertTokenizer, BertTokenizer, DeBERTaTokenizer, DeBERTaV2Tokenizer, FNetTokenizer,
-    Gpt2Tokenizer, M2M100Tokenizer, MBart50Tokenizer, MarianTokenizer, NLLBTokenizer,
-    OpenAiGptTokenizer, PegasusTokenizer, ProphetNetTokenizer, ReformerTokenizer, RobertaTokenizer,
-    T5Tokenizer, Tokenizer, XLMRobertaTokenizer, XLNetTokenizer,
-};
-use rust_tokenizers::{Offset, TokensWithOffsets};
 use std::ops::Range;
+
+use rust_tokenizers::{
+    tokenizer::{
+        AlbertTokenizer, BertTokenizer, DeBERTaTokenizer, DeBERTaV2Tokenizer, FNetTokenizer,
+        Gpt2Tokenizer, M2M100Tokenizer, MBart50Tokenizer, MarianTokenizer, NLLBTokenizer,
+        OpenAiGptTokenizer, PegasusTokenizer, ProphetNetTokenizer, ReformerTokenizer,
+        RobertaTokenizer, T5Tokenizer, Tokenizer, XLMRobertaTokenizer, XLNetTokenizer,
+    },
+    vocab::Vocab,
+    Offset,
+};
 
 use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 
 impl ChunkSizer for &AlbertTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -24,8 +27,7 @@ impl ChunkSizer for AlbertTokenizer {
 
 impl ChunkSizer for &BertTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -36,8 +38,7 @@ impl ChunkSizer for BertTokenizer {
 }
 impl ChunkSizer for &DeBERTaTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -49,8 +50,7 @@ impl ChunkSizer for DeBERTaTokenizer {
 
 impl ChunkSizer for &DeBERTaV2Tokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -62,8 +62,7 @@ impl ChunkSizer for DeBERTaV2Tokenizer {
 
 impl ChunkSizer for &FNetTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -75,8 +74,7 @@ impl ChunkSizer for FNetTokenizer {
 
 impl ChunkSizer for &Gpt2Tokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -88,8 +86,7 @@ impl ChunkSizer for Gpt2Tokenizer {
 
 impl ChunkSizer for &M2M100Tokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -101,8 +98,7 @@ impl ChunkSizer for M2M100Tokenizer {
 
 impl ChunkSizer for &MBart50Tokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -114,8 +110,7 @@ impl ChunkSizer for MBart50Tokenizer {
 
 impl ChunkSizer for &MarianTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -127,8 +122,7 @@ impl ChunkSizer for MarianTokenizer {
 
 impl ChunkSizer for &NLLBTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -140,8 +134,7 @@ impl ChunkSizer for NLLBTokenizer {
 
 impl ChunkSizer for &OpenAiGptTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -152,8 +145,7 @@ impl ChunkSizer for OpenAiGptTokenizer {
 }
 impl ChunkSizer for &PegasusTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -164,8 +156,7 @@ impl ChunkSizer for PegasusTokenizer {
 }
 impl ChunkSizer for &ProphetNetTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -176,8 +167,7 @@ impl ChunkSizer for ProphetNetTokenizer {
 }
 impl ChunkSizer for &ReformerTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -188,8 +178,7 @@ impl ChunkSizer for ReformerTokenizer {
 }
 impl ChunkSizer for &XLNetTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -200,8 +189,7 @@ impl ChunkSizer for XLNetTokenizer {
 }
 impl ChunkSizer for &RobertaTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -213,8 +201,7 @@ impl ChunkSizer for RobertaTokenizer {
 
 impl ChunkSizer for &T5Tokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -226,8 +213,7 @@ impl ChunkSizer for T5Tokenizer {
 
 impl ChunkSizer for &XLMRobertaTokenizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        let tokens_with_offsets = self.tokenize_with_offsets(chunk);
-        chunk_size_from_offsets(&tokens_with_offsets, capacity)
+        chunk_size_from_offsets(*self, chunk, capacity)
     }
 }
 
@@ -237,10 +223,12 @@ impl ChunkSizer for XLMRobertaTokenizer {
     }
 }
 
-fn chunk_size_from_offsets(
-    tokens_with_offsets: &TokensWithOffsets,
+fn chunk_size_from_offsets<V: Vocab, T: Tokenizer<V>>(
+    tokenizer: &T,
+    chunk: &str,
     capacity: &ChunkCapacity,
 ) -> ChunkSize {
+    let tokens_with_offsets = tokenizer.tokenize_with_offsets(chunk);
     let offsets = tokens_with_offsets
         .offsets
         .iter()
@@ -254,12 +242,16 @@ fn chunk_size_from_offsets(
 
 #[cfg(test)]
 mod tests {
+    use test_utils::download_file_to_cache;
+
     use super::*;
 
     #[test]
     fn returns_offsets() {
-        let path: &str = "tests/tokenizers/bert-uncased-vocab.txt";
-        let tokenizer: BertTokenizer = BertTokenizer::from_file(path, false, false).unwrap();
+        let vocab_path = download_file_to_cache(
+            "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+        );
+        let tokenizer: BertTokenizer = BertTokenizer::from_file(vocab_path, false, false).unwrap();
         let capacity = 10;
         let offsets = tokenizer.chunk_size(" An apple a", &capacity.into());
         assert_eq!(

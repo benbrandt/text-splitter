@@ -1,5 +1,5 @@
 [workspace]
-members = ["bindings/*"]
+members = ["bindings/*", "test_utils"]
 
 [workspace.package]
 version = "0.12.0"
@@ -67,6 +67,7 @@ tokenizers = { version = "0.19.1", default-features = false, features = [
     "onig",
     "http",
 ] }
+test_utils = { path = "./test_utils" }
 
 [[bench]]
 name = "chunk_size"
