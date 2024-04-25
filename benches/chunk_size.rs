@@ -68,15 +68,16 @@ mod text {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        use test_utils::download_file_to_cache;
+
         bench(bencher, filename, || {
+            let vocab_path = download_file_to_cache(
+                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+            );
             TextSplitter::new(
                 ChunkConfig::new(N).with_sizer(
-                    rust_tokenizers::tokenizer::BertTokenizer::from_file(
-                        "tests/tokenizers/bert-uncased-vocab.txt",
-                        false,
-                        false,
-                    )
-                    .unwrap(),
+                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
+                        .unwrap(),
                 ),
             )
         });
@@ -140,15 +141,16 @@ mod markdown {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        use test_utils::download_file_to_cache;
+
         bench(bencher, filename, || {
+            let vocab_path = download_file_to_cache(
+                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+            );
             MarkdownSplitter::new(
                 ChunkConfig::new(N).with_sizer(
-                    rust_tokenizers::tokenizer::BertTokenizer::from_file(
-                        "tests/tokenizers/bert-uncased-vocab.txt",
-                        false,
-                        false,
-                    )
-                    .unwrap(),
+                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
+                        .unwrap(),
                 ),
             )
         });
