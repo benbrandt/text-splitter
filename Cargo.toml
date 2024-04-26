@@ -1,5 +1,5 @@
 [workspace]
-members = ["bindings/*", "test_utils"]
+members = ["bindings/*"]
 
 [workspace.package]
 version = "0.12.0"
@@ -59,6 +59,10 @@ tokenizers = { version = "0.19.1", default_features = false, features = [
 unicode-segmentation = "1.11.0"
 
 [dev-dependencies]
+cached-path = { version = "0.6.1", default-features = false, features = [
+    "rustls-tls",
+] }
+dirs = "5.0.1"
 divan = "0.1.14"
 fake = "2.9.2"
 insta = { version = "1.38.0", features = ["glob", "yaml"] }
@@ -67,7 +71,6 @@ tokenizers = { version = "0.19.1", default-features = false, features = [
     "onig",
     "http",
 ] }
-test_utils = { path = "./test_utils" }
 
 [[bench]]
 name = "chunk_size"

@@ -1,5 +1,6 @@
-use std::{fs, ops::RangeInclusive};
+use std::{fs, ops::RangeInclusive, path::PathBuf};
 
+use cached_path::Cache;
 use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
@@ -161,9 +162,24 @@ fn characters_range_trim() {
     });
 }
 
+/// Downloads a remote file to the cache directory if it doensn't already exist,
+/// and returns the path to the cached file.
+fn download_file_to_cache(src: &str) -> PathBuf {
+    let mut cache_dir = dirs::home_dir().unwrap();
+    cache_dir.push(".cache");
+    cache_dir.push(".text-splitter");
+
+    Cache::builder()
+        .dir(cache_dir)
+        .build()
+        .unwrap()
+        .cached_path(src)
+        .unwrap()
+}
+
 #[cfg(feature = "rust-tokenizers")]
 static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
-    let vocab_path = test_utils::download_file_to_cache(
+    let vocab_path = download_file_to_cache(
         "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
     );
     BertTokenizer::from_file(vocab_path, false, false).unwrap()

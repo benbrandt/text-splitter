@@ -89,9 +89,26 @@ impl_chunk_sizer!(
 
 #[cfg(test)]
 mod tests {
-    use test_utils::download_file_to_cache;
+    use std::path::PathBuf;
+
+    use cached_path::Cache;
 
     use super::*;
+
+    /// Downloads a remote file to the cache directory if it doensn't already exist,
+    /// and returns the path to the cached file.
+    fn download_file_to_cache(src: &str) -> PathBuf {
+        let mut cache_dir = dirs::home_dir().unwrap();
+        cache_dir.push(".cache");
+        cache_dir.push(".text-splitter");
+
+        Cache::builder()
+            .dir(cache_dir)
+            .build()
+            .unwrap()
+            .cached_path(src)
+            .unwrap()
+    }
 
     #[test]
     fn returns_offsets() {

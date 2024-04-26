@@ -2056,19 +2056,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_utils"
-version = "0.12.0"
-dependencies = [
- "cached-path",
- "dirs",
-]
-
-[[package]]
 name = "text-splitter"
 version = "0.12.0"
 dependencies = [
  "ahash",
  "auto_enums",
+ "cached-path",
+ "dirs",
  "divan",
  "either",
  "fake",
@@ -2079,7 +2073,6 @@ dependencies = [
  "pulldown-cmark",
  "regex",
  "rust_tokenizers",
- "test_utils",
  "thiserror",
  "tiktoken-rs",
  "tokenizers",
