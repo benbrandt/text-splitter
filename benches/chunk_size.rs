@@ -1,5 +1,8 @@
 #![allow(missing_docs)]
 
+use std::path::PathBuf;
+
+use cached_path::Cache;
 use divan::AllocProfiler;
 
 #[global_allocator]
@@ -10,6 +13,21 @@ const CHUNK_SIZES: [usize; 4] = [64, 512, 4096, 32768];
 fn main() {
     // Run registered benchmarks.
     divan::main();
+}
+
+/// Downloads a remote file to the cache directory if it doensn't already exist,
+/// and returns the path to the cached file.
+fn download_file_to_cache(src: &str) -> PathBuf {
+    let mut cache_dir = dirs::home_dir().unwrap();
+    cache_dir.push(".cache");
+    cache_dir.push(".text-splitter");
+
+    Cache::builder()
+        .dir(cache_dir)
+        .build()
+        .unwrap()
+        .cached_path(src)
+        .unwrap()
 }
 
 #[divan::bench_group]
@@ -68,7 +86,7 @@ mod text {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        use test_utils::download_file_to_cache;
+        use crate::download_file_to_cache;
 
         bench(bencher, filename, || {
             let vocab_path = download_file_to_cache(
@@ -141,7 +159,7 @@ mod markdown {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        use test_utils::download_file_to_cache;
+        use crate::download_file_to_cache;
 
         bench(bencher, filename, || {
             let vocab_path = download_file_to_cache(
