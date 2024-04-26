@@ -101,13 +101,14 @@ impl ChunkCapacity {
     /// # Errors
     ///
     /// If the `max` size is less than the `desired` size, an error is returned.
-    pub fn with_max(self, max: usize) -> Result<Self, ChunkCapacityError> {
+    pub fn with_max(mut self, max: usize) -> Result<Self, ChunkCapacityError> {
         if max < self.desired {
             Err(ChunkCapacityError(
                 ChunkCapacityErrorRepr::MaxLessThanDesired,
             ))
         } else {
-            Ok(Self { max, ..self })
+            self.max = max;
+            Ok(self)
         }
     }
 
@@ -256,6 +257,20 @@ pub trait ChunkSizer {
     fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
 }
 
+/// Indicates there was an error with the chunk configuration.
+/// The `Display` implementation will provide a human-readable error message to
+/// help debug the issue that caused the error.
+#[derive(Error, Debug)]
+#[error(transparent)]
+pub struct ChunkConfigError(#[from] ChunkConfigErrorRepr);
+
+/// Private error and free to change across minor version of the crate.
+#[derive(Error, Debug)]
+enum ChunkConfigErrorRepr {
+    #[error("The overlap is larger than or equal to the chunk capacity")]
+    OverlapLargerThanCapacity,
+}
+
 /// Configuration for how chunks should be created
 #[derive(Debug)]
 pub struct ChunkConfig<Sizer>
@@ -264,6 +279,8 @@ where
 {
     /// The chunk capacity to use for filling chunks
     capacity: ChunkCapacity,
+    /// The amount of overlap between chunks. Defaults to 0.
+    overlap: usize,
     /// The chunk sizer to use for determining the size of each chunk
     sizer: Sizer,
     /// Whether whitespace will be trimmed from the beginning and end of each chunk
@@ -282,6 +299,7 @@ impl ChunkConfig<Characters> {
     pub fn new(capacity: impl Into<ChunkCapacity>) -> Self {
         Self {
             capacity: capacity.into(),
+            overlap: 0,
             sizer: Characters,
             trim: true,
         }
@@ -295,6 +313,27 @@ where
     /// Retrieve a reference to the chunk capacity for this configuration.
     pub fn capacity(&self) -> &ChunkCapacity {
         &self.capacity
+    }
+
+    /// Retrieve the amount of overlap between chunks.
+    pub fn overlap(&self) -> usize {
+        self.overlap
+    }
+
+    /// Set the amount of overlap between chunks.
+    ///
+    /// # Errors
+    ///
+    /// Will return an error if the overlap is larger than or equal to the chunk capacity.
+    pub fn with_overlap(mut self, overlap: usize) -> Result<Self, ChunkConfigError> {
+        if overlap >= self.capacity.max {
+            Err(ChunkConfigError(
+                ChunkConfigErrorRepr::OverlapLargerThanCapacity,
+            ))
+        } else {
+            self.overlap = overlap;
+            Ok(self)
+        }
     }
 
     /// Retrieve a reference to the chunk sizer for this configuration.
@@ -313,6 +352,7 @@ where
     pub fn with_sizer<S: ChunkSizer>(self, sizer: S) -> ChunkConfig<S> {
         ChunkConfig {
             capacity: self.capacity,
+            overlap: self.overlap,
             sizer,
             trim: self.trim,
         }
@@ -339,6 +379,11 @@ where
     pub fn with_trim(mut self, trim: bool) -> Self {
         self.trim = trim;
         self
+    }
+
+    /// Generate a memoized chunk sizer from this config to cache the size of chunks.
+    pub(crate) fn memoized_sizer(&self) -> MemoizedChunkSizer<'_, Sizer> {
+        MemoizedChunkSizer::new(&self.capacity, &self.sizer)
     }
 }
 
@@ -703,5 +748,21 @@ mod tests {
         );
         assert_eq!(capacity.desired(), 10);
         assert_eq!(capacity.max(), 10);
+    }
+
+    #[test]
+    fn set_chunk_overlap() {
+        let config = ChunkConfig::new(10).with_overlap(5).unwrap();
+        assert_eq!(config.overlap(), 5);
+    }
+
+    #[test]
+    fn cant_set_overlap_larger_than_capacity() {
+        let chunk_config = ChunkConfig::new(5);
+        let err = chunk_config.with_overlap(10).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "The overlap is larger than or equal to the chunk capacity"
+        );
     }
 }

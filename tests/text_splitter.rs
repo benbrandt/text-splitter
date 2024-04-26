@@ -102,3 +102,38 @@ fn huggingface_tokenizer_with_padding() {
         ]
     );
 }
+
+#[test]
+fn chunk_overlap_characters() {
+    let splitter = TextSplitter::new(ChunkConfig::new(4).with_overlap(2).unwrap());
+    let text = "1234567890";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["1234", "3456", "5678", "7890"]);
+}
+
+#[test]
+fn chunk_overlap_words() {
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(4)
+            .with_overlap(3)
+            .unwrap()
+            .with_trim(false),
+    );
+    let text = "An apple a day";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["An ", " ", "appl", "pple", " a ", "a ", " day"]);
+}
+
+#[test]
+fn chunk_overlap_words_trim() {
+    let splitter = TextSplitter::new(ChunkConfig::new(4).with_overlap(3).unwrap());
+    let text = "An apple a day";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["An", "appl", "pple", "a", "day"]);
+}
