@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.12.1
+
+### What's New
+
+- [`rust_tokenizers`](https://crates.io/crates/rust_tokenizers) support has been added to the Rust crate.
+
 ## v0.12.0
 
 ### What's New

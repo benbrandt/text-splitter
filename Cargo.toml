@@ -2,7 +2,7 @@
 members = ["bindings/*"]
 
 [workspace.package]
-version = "0.12.0"
+version = "0.12.1"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens, and is callable from Rust and Python."
@@ -81,8 +81,8 @@ harness = false
 [features]
 markdown = ["dep:pulldown-cmark"]
 rust-tokenizers = ["dep:rust_tokenizers"]
-tokenizers = ["dep:tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
+tokenizers = ["dep:tokenizers"]
 
 [lints.rust]
 future_incompatible = "warn"
