@@ -158,8 +158,8 @@ where
     cursor: usize,
     /// Reusable container for next sections to avoid extra allocations
     next_sections: Vec<(usize, &'text str)>,
-    /// Previous item's byte range
-    prev_item_range: Option<Range<usize>>,
+    /// Previous item's end byte offset
+    prev_item_end: usize,
     /// Splitter used for determining semantic levels.
     semantic_split: SemanticSplitRanges<Level>,
     /// Original text to iterate over and generate chunks from
@@ -179,7 +179,7 @@ where
             chunk_sizer: chunk_config.memoized_sizer(),
             cursor: 0,
             next_sections: Vec::new(),
-            prev_item_range: None,
+            prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(Level::offsets(text).collect()),
             text,
         }
@@ -423,12 +423,12 @@ where
                 // cases where we trim.
                 (_, "") => continue,
                 c => {
-                    let item_range = Some(c.0..c.0 + c.1.len());
-                    // Skip because we've emitted a duplicate chunk
-                    if item_range == self.prev_item_range {
+                    let item_end = c.0 + c.1.len();
+                    // Skip because we've emitted a chunk whose content we've already emitted
+                    if item_end <= self.prev_item_end {
                         continue;
                     }
-                    self.prev_item_range = item_range;
+                    self.prev_item_end = item_end;
                     return Some(c);
                 }
             }

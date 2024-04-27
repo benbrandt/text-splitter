@@ -125,7 +125,7 @@ fn chunk_overlap_words() {
 
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
-    assert_eq!(chunks, ["An ", " ", "appl", "pple", " a ", "a ", " day"]);
+    assert_eq!(chunks, ["An ", "appl", "pple", " a ", " day"]);
 }
 
 #[test]
@@ -136,4 +136,14 @@ fn chunk_overlap_words_trim() {
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(chunks, ["An", "appl", "pple", "a", "day"]);
+}
+
+#[test]
+fn chunk_overlap_paragraph() {
+    let splitter = TextSplitter::new(ChunkConfig::new(14).with_overlap(7).unwrap());
+    let text = "Item 1\nItem 2\nItem 3";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["Item 1\nItem 2", "Item 2\nItem 3"]);
 }
