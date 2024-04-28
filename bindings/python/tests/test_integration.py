@@ -18,6 +18,13 @@ def test_chunks_range() -> None:
     ]
 
 
+def test_chunk_overlap() -> None:
+    splitter = TextSplitter(capacity=4, overlap=2)
+    text = "1234567890"
+
+    assert splitter.chunks(text) == ["1234", "3456", "5678", "7890"]
+
+
 def test_chunks_trim() -> None:
     splitter = TextSplitter(capacity=4)
     text = "123\n123"

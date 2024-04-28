@@ -26,6 +26,33 @@ permissions:
   contents: read
 
 jobs:
+  min_supported_version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          working-directory: bindings/python
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: x86_64
+          args: --release --out dist
+          sccache: "true"
+          manylinux: auto
+          working-directory: bindings/python
+      - name: pytest
+        shell: bash
+        run: |
+          set -e
+          pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
+          pip install pytest tokenizers
+          pytest
+
   linux:
     runs-on: ubuntu-latest
     strategy:

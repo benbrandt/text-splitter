@@ -1,3 +1,9 @@
+use std::fs;
+
+use fake::{Fake, Faker};
+use itertools::Itertools;
+use more_asserts::assert_le;
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use text_splitter::{ChunkConfig, TextSplitter};
 
 #[test]
@@ -101,4 +107,136 @@ fn huggingface_tokenizer_with_padding() {
             "This is an example text\n"
         ]
     );
+}
+
+#[test]
+fn chunk_overlap_characters() {
+    let splitter = TextSplitter::new(ChunkConfig::new(4).with_overlap(2).unwrap());
+    let text = "1234567890";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["1234", "3456", "5678", "7890"]);
+}
+
+#[test]
+fn chunk_overlap_words() {
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(4)
+            .with_overlap(3)
+            .unwrap()
+            .with_trim(false),
+    );
+    let text = "An apple a day";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["An ", "appl", "pple", " a ", " day"]);
+}
+
+#[test]
+fn chunk_overlap_words_trim() {
+    let splitter = TextSplitter::new(ChunkConfig::new(4).with_overlap(3).unwrap());
+    let text = "An apple a day";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["An", "appl", "pple", "a", "day"]);
+}
+
+#[test]
+fn chunk_overlap_paragraph() {
+    let splitter = TextSplitter::new(ChunkConfig::new(14).with_overlap(7).unwrap());
+    let text = "Item 1\nItem 2\nItem 3";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["Item 1\nItem 2", "Item 2\nItem 3"]);
+}
+
+#[test]
+fn random_chunk_size() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    (0..10).into_par_iter().for_each(|_| {
+        let max_characters = Faker.fake::<usize>();
+        let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
+        let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+        assert_eq!(chunks.join(""), text);
+        assert!(chunks
+            .iter()
+            .all(|chunk| chunk.chars().count() <= max_characters));
+    });
+}
+
+#[test]
+fn random_chunk_indices_increase() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    (0..10).into_par_iter().for_each(|_| {
+        let max_characters = Faker.fake::<usize>();
+        let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
+        let indices = splitter.chunk_indices(&text).map(|(i, _)| i);
+
+        assert!(indices.tuple_windows().all(|(a, b)| a < b));
+    });
+}
+
+#[test]
+fn random_chunk_range() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    (0..10).into_par_iter().for_each(|_| {
+        let a = Faker.fake::<Option<u16>>().map(usize::from);
+        let b = Faker.fake::<Option<u16>>().map(usize::from);
+
+        let chunks = match (a, b) {
+            (None, None) => TextSplitter::new(ChunkConfig::new(..).with_trim(false))
+                .chunks(&text)
+                .collect::<Vec<_>>(),
+            (None, Some(b)) => TextSplitter::new(ChunkConfig::new(..b).with_trim(false))
+                .chunks(&text)
+                .collect::<Vec<_>>(),
+            (Some(a), None) => TextSplitter::new(ChunkConfig::new(a..).with_trim(false))
+                .chunks(&text)
+                .collect::<Vec<_>>(),
+            (Some(a), Some(b)) if b < a => {
+                TextSplitter::new(ChunkConfig::new(b..a).with_trim(false))
+                    .chunks(&text)
+                    .collect::<Vec<_>>()
+            }
+            (Some(a), Some(b)) => TextSplitter::new(ChunkConfig::new(a..=b).with_trim(false))
+                .chunks(&text)
+                .collect::<Vec<_>>(),
+        };
+
+        assert_eq!(chunks.join(""), text);
+        let max = a.unwrap_or(usize::MIN).max(b.unwrap_or(usize::MAX));
+        for chunk in chunks {
+            let chars = chunk.chars().count();
+            assert_le!(chars, max);
+        }
+    });
+}
+
+#[test]
+fn random_chunk_overlap() {
+    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
+
+    (0..10).into_par_iter().for_each(|_| {
+        let a = usize::from(Faker.fake::<u16>());
+        let b = usize::from(Faker.fake::<u16>());
+        let capacity = a.max(b);
+        let overlap = a.min(b);
+
+        let chunks = TextSplitter::new(ChunkConfig::new(capacity).with_overlap(overlap).unwrap())
+            .chunks(&text)
+            .collect::<Vec<_>>();
+
+        for chunk in chunks {
+            let chars = chunk.chars().count();
+            assert_le!(chars, capacity);
+        }
+    });
 }

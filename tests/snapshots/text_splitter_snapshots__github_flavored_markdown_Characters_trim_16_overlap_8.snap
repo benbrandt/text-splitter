@@ -1,0 +1,1479 @@
+---
+source: tests/text_splitter_snapshots.rs
+expression: chunks
+---
+- "# Headers"
+- "```"
+- "# h1 Heading 8-)"
+- "## h2 Heading"
+- "### h3 Heading"
+- "#### h4 Heading"
+- "##### h5 Heading"
+- "###### h6"
+- "##### h6 Heading"
+- "Alternatively,"
+- ", for H1 and H2,"
+- "and H2, an"
+- "H2, an underline"
+- "-ish style:"
+- "Alt-H1\n======"
+- "======\n\nAlt-H2"
+- "Alt-H2\n------"
+- "------\n```"
+- "# h1 Heading 8-)"
+- "## h2 Heading"
+- "### h3 Heading"
+- "#### h4 Heading"
+- "##### h5 Heading"
+- "######"
+- h6 Heading
+- "Alternatively,"
+- ", for H1 and H2,"
+- "and H2, an"
+- "H2, an underline"
+- "-ish style:"
+- "Alt-H1\n======"
+- "Alt-H2\n------"
+- "------"
+- "# Emphasis"
+- "```"
+- "Emphasis, aka"
+- ", aka italics,"
+- "italics, with *"
+- with *asterisks*
+- "* or"
+- or _underscores_
+- "."
+- "Strong emphasis,"
+- ", aka bold, with"
+- ", with **"
+- with **asterisks
+- "** or"
+- __underscores__.
+- Combined
+- emphasis with **
+- with **asterisks
+- and
+- _underscores_**.
+- Strikethrough
+- uses two tildes.
+- ~~Scratch this.
+- ~~
+- "**This is bold"
+- is bold text**
+- __This is bold
+- is bold text__
+- "*This is italic"
+- italic text*
+- _This is italic
+- italic text_
+- ~~Strikethrough~
+- "~~\n```"
+- "Emphasis, aka"
+- ", aka italics,"
+- "italics, with"
+- "*asterisks* or"
+- or _underscores_
+- "."
+- "Strong emphasis,"
+- ", aka bold, with"
+- "**asterisks** or"
+- __underscores__.
+- Combined
+- emphasis with
+- "**asterisks and"
+- _underscores_**.
+- Strikethrough
+- uses two tildes.
+- ~~Scratch this.
+- ~~
+- "**This is bold"
+- is bold text**
+- __This is bold
+- is bold text__
+- "*This is italic"
+- italic text*
+- _This is italic
+- italic text_
+- ~~Strikethrough~
+- "~~\n\n------"
+- "# Lists"
+- "```"
+- "1."
+- First ordered
+- ordered list
+- " list item\n2."
+- 2. Another item
+- ⋅⋅* Unordered
+- " sub-list.\n1."
+- Actual numbers
+- "numbers don't"
+- "don't matter,"
+- "matter, just"
+- ", just that it's"
+- "it's a number"
+- ⋅⋅1.
+- Ordered sub-list
+- "4."
+- And another item
+- item.
+- ⋅⋅⋅You can have
+- have properly
+- indented
+- paragraphs
+- within list
+- list items.
+- Notice the blank
+- blank line above
+- "above, and the"
+- and the leading
+- leading spaces (
+- spaces (at least
+- "at least one,"
+- "one, but we'll"
+- "we'll use three"
+- three here to
+- here to also
+- to also align
+- align the raw
+- the raw Markdown
+- Markdown).
+- ⋅⋅⋅To have a
+- have a line
+- a line break
+- break without a
+- "a paragraph, you"
+- ", you will need"
+- need to use two
+- use two trailing
+- trailing spaces.
+- ⋅⋅
+- ⋅⋅⋅Note that
+- that this line
+- line is separate
+- "separate, but"
+- ", but within the"
+- the same
+- same paragraph.
+- ⋅⋅
+- ⋅⋅⋅(This is
+- This is contrary
+- contrary to the
+- to the typical
+- typical GFM line
+- GFM line break
+- "break behaviour,"
+- ", where trailing"
+- trailing spaces
+- spaces are not
+- are not required
+- required.)
+- "* Unordered list"
+- list can use
+- use asterisks
+- "- Or minuses"
+- "+ Or pluses\n\n1."
+- Make my changes
+- 1. Fix bug
+- "Fix bug\n    2."
+- Improve
+- formatting
+- "- Make the"
+- the headings
+- headings bigger
+- "2."
+- Push my commits
+- commits to
+- " to GitHub\n3."
+- Open a pull
+- a pull request
+- "* Describe my"
+- my changes
+- "* Mention all"
+- all the members
+- members of my
+- of my team
+- "* Ask for"
+- Ask for feedback
+- + Create a list
+- a list by
+- list by starting
+- starting a line
+- "a line with `+`,"
+- "`+`, `-`, or `*`"
+- + Sub-lists are
+- are made by
+- by indenting 2
+- "2 spaces:"
+- "- Marker"
+- Marker character
+- change forces
+- forces new list
+- "new list start:"
+- "* Ac tristique"
+- libero volutpat
+- volutpat at
+- + Facilisis in
+- in pretium nisl
+- nisl aliquet
+- "- Nulla volutpat"
+- volutpat aliquam
+- aliquam velit
+- "+ Very easy!\n```"
+- "1."
+- First ordered
+- ordered list
+- list item
+- 2. Another item
+- ⋅⋅*
+- Unordered sub-
+- sub-list.
+- "1."
+- Actual numbers
+- "numbers don'"
+- "t matter, just"
+- ", just that it'"
+- "'s a number"
+- ⋅⋅1.
+- Ordered sub-list
+- "4."
+- And another item
+- item.
+- ⋅⋅⋅You can have
+- have properly
+- indented
+- paragraphs
+- within list
+- list items.
+- Notice the blank
+- blank line above
+- "above, and the"
+- and the leading
+- leading spaces (
+- spaces (at least
+- "at least one,"
+- "one, but we'"
+- ll use three
+- three here to
+- here to also
+- to also align
+- align the raw
+- the raw Markdown
+- Markdown).
+- ⋅⋅⋅To have a
+- have a line
+- a line break
+- break without a
+- "a paragraph, you"
+- ", you will need"
+- need to use two
+- use two trailing
+- trailing spaces.
+- ⋅⋅
+- ⋅⋅⋅Note that
+- that this line
+- line is separate
+- "separate, but"
+- ", but within the"
+- the same
+- same paragraph.
+- ⋅⋅
+- ⋅⋅⋅(This is
+- This is contrary
+- contrary to the
+- to the typical
+- typical GFM line
+- GFM line break
+- "break behaviour,"
+- ", where trailing"
+- trailing spaces
+- spaces are not
+- are not required
+- required.)
+- "*"
+- Unordered list
+- list can use
+- use asterisks
+- "- Or minuses"
+- + Or pluses
+- "1."
+- Make my changes
+- 1. Fix bug
+- "2."
+- Improve
+- formatting
+- "-"
+- Make the
+- the headings
+- headings bigger
+- "2."
+- Push my commits
+- commits to
+- to GitHub
+- "3."
+- Open a pull
+- a pull request
+- "* Describe my"
+- my changes
+- "* Mention all"
+- all the members
+- members of my
+- of my team
+- "* Ask for"
+- Ask for feedback
+- + Create a list
+- a list by
+- list by starting
+- starting a line
+- "a line with `+`,"
+- "`+`, `-`, or `*`"
+- + Sub-lists are
+- are made by
+- by indenting 2
+- "2 spaces:"
+- "- Marker"
+- Marker character
+- change forces
+- forces new list
+- "new list start:"
+- "* Ac tristique"
+- libero volutpat
+- volutpat at
+- + Facilisis in
+- in pretium nisl
+- nisl aliquet
+- "-"
+- Nulla volutpat
+- volutpat aliquam
+- aliquam velit
+- + Very easy!
+- "------"
+- "# Task lists"
+- "```"
+- "- [x] Finish my"
+- my changes
+- "- [ ] Push my"
+- Push my commits
+- commits to
+- to GitHub
+- "- [ ] Open a"
+- "] Open a pull"
+- a pull request
+- "- [x] @mentions,"
+- ", #refs, [links]"
+- "[links](), **"
+- "(), **formatting"
+- "**, and <del>"
+- "<del>tags</del>"
+- "</del> supported"
+- "- [x] list"
+- "[x] list syntax"
+- syntax required
+- required (any
+- (any unordered
+- or ordered list
+- list supported)
+- "- [x] this is a"
+- is a complete
+- complete item
+- "- [ ] this is an"
+- is an incomplete
+- " item\n```"
+- "- [x] Finish my"
+- my changes
+- "- [ ]"
+- Push my commits
+- commits to
+- to GitHub
+- "- [ ]"
+- Open a pull
+- a pull request
+- "- [x]"
+- "@mentions, #refs"
+- ", #refs,"
+- "[links](),"
+- ", **formatting**"
+- ", and <del>tags"
+- tags</del>
+- "</del> supported"
+- "- [x]"
+- list syntax
+- syntax required
+- required (any
+- (any unordered
+- or ordered list
+- list supported)
+- "- [ ]"
+- this is a
+- is a complete
+- complete item
+- "- [ ] this is an"
+- is an incomplete
+- " item\n\n------"
+- "#"
+- Ignoring
+- Markdown
+- formatting
+- You can tell
+- can tell GitHub
+- GitHub to ignore
+- ignore (or
+- (or escape)
+- escape) Markdown
+- formatting by
+- "by using \\"
+- "using \\ before"
+- "\\ before the"
+- the Markdown
+- character.
+- "```"
+- "Let's rename \\*"
+- "\\*our-new-"
+- "our-new-project\\"
+- "project\\* to \\*"
+- "\\* to \\*our-old-"
+- "our-old-project\\"
+- "project\\*.\n```"
+- "Let's rename \\"
+- "*our-new-project"
+- "\\* to \\"
+- "*our-old-project"
+- "\\*.\n\n------"
+- "# Links"
+- "```"
+- "[I'm an inline-"
+- inline-style
+- "-style link]("
+- "link](https://"
+- //www.google.com
+- )
+- "[I'm an inline-"
+- inline-style
+- "-style link with"
+- "with title]("
+- "title](https://"
+- //www.google.com
+- "\"Google's"
+- "Homepage\")"
+- "[I'm a reference"
+- "-style link]["
+- "link][Arbitrary"
+- case-insensitive
+- "reference text]"
+- "[I'm a relative"
+- reference to a
+- to a repository
+- "file](../blob/"
+- "../blob/master/"
+- /master/LICENSE)
+- "[You can use"
+- can use numbers
+- numbers for
+- for reference-
+- "-style link"
+- link definitions
+- "][1]"
+- Or leave it
+- leave it empty
+- it empty and use
+- "and use the ["
+- "the [link text"
+- "text itself]."
+- URLs and URLs in
+- URLs in angle
+- angle brackets
+- brackets will
+- automatically
+- get turned into
+- into links.
+- "http://"
+- /www.example.com
+- "or <http://"
+- /www.example.com
+- "> and sometimes"
+- example.com (but
+- (but not on
+- "not on Github,"
+- "Github, for"
+- ", for example)."
+- Some text to
+- text to show
+- to show that the
+- the reference
+- links can follow
+- follow later.
+- "[arbitrary case-"
+- case-insensitive
+- "reference text]:"
+- "text]: https://"
+- /www.mozilla.org
+- "[1]: http://"
+- "://slashdot.org"
+- "[link text"
+- "text itself]:"
+- "itself]: http://"
+- //www.reddit.com
+- "```"
+- "[I'm an inline-"
+- inline-style
+- "-style link]("
+- "link](https://"
+- //www.google.com
+- )
+- "[I'm an inline-"
+- inline-style
+- "-style link with"
+- "with title]("
+- "title](https://"
+- //www.google.com
+- "\"Google's"
+- "Homepage\")"
+- "[I'm a reference"
+- "-style link]["
+- "link][Arbitrary"
+- case-insensitive
+- "reference text]"
+- "[I'm a relative"
+- reference to a
+- to a repository
+- "file](../blob/"
+- "../blob/master/"
+- /master/LICENSE)
+- "[You can use"
+- can use numbers
+- numbers for
+- for reference-
+- "-style link"
+- link definitions
+- "][1]"
+- Or leave it
+- leave it empty
+- it empty and use
+- and use the
+- "[link text"
+- "text itself]."
+- URLs and URLs in
+- URLs in angle
+- angle brackets
+- brackets will
+- automatically
+- get turned into
+- into links.
+- "http://"
+- /www.example.com
+- or
+- "<http://"
+- /www.example.com
+- "> and sometimes"
+- example.com (but
+- (but not on
+- "not on Github,"
+- "Github, for"
+- ", for example)."
+- Some text to
+- text to show
+- to show that the
+- the reference
+- links can follow
+- follow later.
+- "[arbitrary case-"
+- case-insensitive
+- "reference text]:"
+- "text]: https://"
+- /www.mozilla.org
+- "[1]: http://"
+- "://slashdot.org"
+- "[link text"
+- "text itself]:"
+- "itself]: http://"
+- //www.reddit.com
+- "------"
+- "# Images"
+- "```"
+- "Here's our logo"
+- our logo (hover
+- (hover to see
+- to see the title
+- "title text):"
+- "Inline-style:\n!["
+- "alt text](https:"
+- "](https://"
+- "://github.com/"
+- /adam-p/markdown
+- markdown-here/
+- "-here/raw/master"
+- /master/src/
+- /src/common/
+- /common/images/
+- /images/icon48.
+- "/icon48.png \""
+- ".png \"Logo Title"
+- "Title Text 1\")"
+- "Reference-style:"
+- "!["
+- "alt text][logo]"
+- "[logo]: https://"
+- "://github.com/"
+- /adam-p/markdown
+- markdown-here/
+- "-here/raw/master"
+- /master/src/
+- /src/common/
+- /common/images/
+- /images/icon48.
+- "/icon48.png \""
+- ".png \"Logo Title"
+- "Title Text 2\""
+- "!["
+- "Minion](https://"
+- octodex.github.c
+- github.com/
+- /images/
+- "/minion.png)\n!["
+- "Stormtroopocat]("
+- "](https://"
+- octodex.github.c
+- github.com/
+- /images/
+- stormtroopocat.j
+- "opocat.jpg \"The"
+- "Stormtroopocat\")"
+- "Like links,"
+- "links, Images"
+- ", Images also"
+- also have a
+- have a footnote
+- footnote style
+- style syntax
+- "![Alt text][id]"
+- With a reference
+- later in the
+- in the document
+- defining the URL
+- the URL location
+- "location:"
+- "[id]: https://"
+- octodex.github.c
+- github.com/
+- /images/
+- "/dojocat.jpg  \""
+- "\"The Dojocat\""
+- "```"
+- "Here'"
+- s our logo (
+- logo (hover to
+- hover to see the
+- see the title
+- "title text):"
+- "Inline-style:"
+- "!["
+- alt text
+- "](https://"
+- "://github.com/"
+- /adam-p/markdown
+- markdown-here/
+- "-here/raw/master"
+- /master/src/
+- /src/common/
+- /common/images/
+- /images/icon48.
+- "/icon48.png \""
+- ".png \"Logo Title"
+- "Title Text 1\")"
+- "Reference-style:"
+- "!["
+- alt text
+- "][logo]"
+- "[logo]: https://"
+- "://github.com/"
+- /adam-p/markdown
+- markdown-here/
+- "-here/raw/master"
+- /master/src/
+- /src/common/
+- /common/images/
+- /images/icon48.
+- "/icon48.png \""
+- ".png \"Logo Title"
+- "Title Text 2\""
+- "!["
+- Minion
+- "](https://"
+- octodex.github.c
+- github.com/
+- /images/
+- /minion.png)
+- "!["
+- Stormtroopocat
+- "](https://"
+- octodex.github.c
+- github.com/
+- /images/
+- stormtroopocat.j
+- "opocat.jpg \"The"
+- "Stormtroopocat\")"
+- "Like links,"
+- "links, Images"
+- ", Images also"
+- also have a
+- have a footnote
+- footnote style
+- style syntax
+- "![Alt text][id]"
+- With a reference
+- later in the
+- in the document
+- defining the URL
+- the URL location
+- "location:"
+- "[id]: https://"
+- octodex.github.c
+- github.com/
+- /images/
+- "/dojocat.jpg  \""
+- "\"The Dojocat\""
+- "------"
+- "#"
+- "[Footnotes]("
+- "](https://"
+- "://github.com/"
+- /markdown-it/
+- "-it/markdown-it-"
+- "-it-footnote)"
+- "```"
+- "Footnote 1 link["
+- "1 link[^first]."
+- "Footnote 2 link["
+- "2 link[^second]."
+- Inline footnote^
+- "^[Text of inline"
+- "inline footnote]"
+- "] definition."
+- Duplicated
+- footnote
+- "reference[^"
+- "[^second]."
+- "[^first]:"
+- "first]: Footnote"
+- Footnote **can
+- "**can have"
+- can have markup*
+- markup**
+- and multiple
+- paragraphs.
+- "[^second]:"
+- "]: Footnote text"
+- " text.\n```"
+- Footnote 1 link
+- "[^first]."
+- Footnote 2 link
+- "[^second]."
+- Inline footnote^
+- "["
+- Text of inline
+- "inline footnote]"
+- "] definition."
+- Duplicated
+- footnote
+- reference
+- "[^second]."
+- "[^first]:"
+- Footnote
+- "**can have"
+- can have markup
+- "**"
+- and multiple
+- paragraphs.
+- "[^second]:"
+- Footnote text.
+- "------"
+- "#"
+- Code and Syntax
+- Highlighting
+- "```"
+- "Inline `code`"
+- "`code` has `back"
+- "`back-ticks"
+- "-ticks around`"
+- " around` it.\n```"
+- "Inline `code`"
+- "`code` has"
+- "`back-ticks"
+- "-ticks around`"
+- it.
+- "```c#"
+- using
+- System.IO.Compre
+- O.Compression;
+- "#pragma warning"
+- warning disable
+- "disable 414,"
+- "414, 3021"
+- namespace
+- " MyApplication\n{"
+- "[Obsolete(\"...\")"
+- "(\"...\")]"
+- "class Program :"
+- ": IInterface"
+- "{"
+- public static
+- static List<int>
+- "<int> JustDoIt("
+- (int count)
+- "{"
+- Console.WriteLin
+- "WriteLine($\""
+- "($\"Hello {Name}!"
+- "{Name}!\");"
+- return new List<
+- List<int>(new
+- "int>(new int[] {"
+- "int[] { 1, 2, 3"
+- "1, 2, 3 })"
+- "        }\n    }"
+- "    }\n}\n```"
+- "```css"
+- "@font-face {"
+- "font-family:"
+- ": Chunkfive; src"
+- "; src: url('"
+- "('Chunkfive.otf'"
+- "');\n}"
+- "body, .usertext"
+- "usertext {"
+- "color: #F0F0F0;"
+- "; background: #"
+- ": #600;"
+- "font-family:"
+- ": Chunkfive,"
+- ", sans;\n}"
+- "@import url("
+- url(print.css);
+- "@media print {"
+- "a[href^=http]::"
+- "=http]::after {"
+- "content: attr("
+- ": attr(href)\n  }"
+- "  }\n}\n```"
+- "```javascript"
+- function $
+- $initHighlight(
+- "(block, cls) {"
+- "try {"
+- if (cls.search(/
+- "(/\\bno\\-"
+- "/\\bno\\-highlight"
+- "\\b/) != -1)"
+- return process(
+- "process(block,"
+- "(block, true,"
+- ", true, 0x0F) +"
+- "` class=\"${cls}\""
+- "\"${cls}\"`;"
+- "} catch (e) {"
+- /* handle
+- handle exception
+- " */\n  }"
+- for (var i = 0 /
+- i = 0 / 2; i <
+- "< classes.length"
+- "; i++) {"
+- if (
+- (checkCondition(
+- "(classes[i]) ==="
+- "]) === undefined"
+- )
+- "console.log('"
+- "('undefined');"
+- "  }\n}"
+- export  $
+- $initHighlight;
+- "```"
+- "```php"
+- "require_once '"
+- "'Zend/Uri/"
+- "/Uri/Http.php';"
+- namespace
+- "Location\\Web;"
+- interface
+- " Factory\n{"
+- static function
+- " _factory();\n}"
+- abstract class
+- class URI
+- URI extends
+- extends BaseURI
+- implements
+- " Factory\n{"
+- abstract
+- function test();
+- public static $
+- static $st1 = 1;
+- "const ME = \"Yo\";"
+- var $list = NULL
+- "= NULL;"
+- private $var;
+- /**
+- "* Returns a URI"
+- "*"
+- "* @return URI"
+- "*/"
+- static public
+- public function
+- _factory($stats
+- ($stats = array(
+- "= array(), $uri"
+- "(), $uri = 'http"
+- " = 'http')\n    {"
+- echo __METHOD__;
+- "$uri = explode('"
+- "(':', $uri, 0b10"
+- ", 0b10);"
+- $schemeSpecific
+- "= isset($uri[1])"
+- "$uri[1]) ?"
+- "$uri[1] : '';"
+- "$desc = 'Multi"
+- line description
+- "';"
+- // Security
+- Security check
+- if (!
+- ctype_alnum($
+- "($scheme)) {"
+- throw new
+- Zend_Uri_Excepti
+- "_Exception('"
+- "('Illegal scheme"
+- "scheme');"
+- "}"
+- $this->var = 0 -
+- "= 0 - self::$st;"
+- $this->list =
+- "->list = list("
+- "= list(Array(\"1\""
+- "(\"1\"=> 2, 2=>"
+- "> 2, 2=>self::ME"
+- "self::ME, 3 => \\"
+- ", 3 => \\Location"
+- "Location\\Web\\URI"
+- "\\Web\\URI::class)"
+- "::class));"
+- "return ["
+- "'uri'   => $uri,"
+- "'value' => null,"
+- "        ];\n    }"
+- "    }\n}"
+- "echo URI::ME ."
+- "URI::$st1;"
+- __halt_compiler
+- () ; datahere
+- datahere
+- datahere */
+- "datahere\n```"
+- "------"
+- "# Tables"
+- "```"
+- Colons can be
+- can be used to
+- used to align
+- to align columns
+- columns.
+- "| Tables"
+- Tables        |
+- "| Are"
+- Are           |
+- "| Cool  |"
+- "| -------------"
+- "-------- |:-----"
+- "|:-------------:"
+- "-------:| -----:"
+- "| -----:|"
+- "| col 3 is"
+- col 3 is      |
+- "| right-aligned"
+- "-aligned | $1600"
+- "| $1600 |"
+- "| col 2 is"
+- col 2 is      |
+- "| centered"
+- centered      |
+- "|   $12 |"
+- "| zebra stripes"
+- stripes | are
+- "| are neat"
+- are neat      |
+- "|    $1 |"
+- There must be at
+- be at least 3
+- least 3 dashes
+- separating each
+- each header cell
+- cell.
+- The outer pipes
+- pipes (|) are
+- (|) are optional
+- "optional, and"
+- ", and you don't"
+- "don't need to"
+- need to make the
+- raw Markdown
+- Markdown line up
+- line up prettily
+- prettily.
+- You can also use
+- also use inline
+- inline Markdown.
+- Markdown | Less
+- "| Less | Pretty"
+- "--- | --- | ---"
+- "*Still* | `"
+- "* | `renders` |"
+- "` | **nicely**"
+- 1 | 2 | 3
+- "| First Header"
+- Header  | Second
+- "| Second Header"
+- Header |
+- "| -------------"
+- "-------- | -----"
+- "| -------------"
+- "-------- |"
+- "| Content Cell"
+- Cell  | Content
+- Content Cell  |
+- "| Content Cell"
+- Cell  | Content
+- Content Cell  |
+- "| Command |"
+- "| Description |"
+- "| --- | --- |"
+- "| git status |"
+- status | List
+- "| List all new"
+- all new or
+- new or modified
+- modified files |
+- "| git diff |"
+- diff | Show file
+- file differences
+- "that haven't"
+- "haven't been"
+- been staged |
+- "| Command |"
+- "| Description |"
+- "| --- | --- |"
+- "| `git status` |"
+- "` | List all *"
+- all *new or
+- "*new or modified"
+- modified* files
+- "* files |"
+- "| `git diff` |"
+- "diff` | Show"
+- "` | Show file"
+- file differences
+- "that **haven't"
+- "*haven't been**"
+- been** staged |
+- "| Left-aligned |"
+- "| Center-aligned"
+- "-aligned | Right"
+- "| Right-aligned"
+- "-aligned |"
+- "| :---         |"
+- "|     :---:"
+- ":---:      |"
+- "|          ---:"
+- "---: |"
+- "| git status   |"
+- "| git status"
+- status     | git
+- "| git status"
+- status    |
+- "| git diff     |"
+- "| git diff"
+- git diff       |
+- "| git diff"
+- git diff      |
+- "| Name     |"
+- "| Character |"
+- "| ---      | ---"
+- "| ---       |"
+- "| Backtick | `"
+- "| `         |"
+- "| Pipe     | \\|"
+- "| \\|        |"
+- "```"
+- Colons can be
+- can be used to
+- used to align
+- to align columns
+- columns.
+- "| Tables"
+- Tables        |
+- "| Are"
+- Are           |
+- "| Cool"
+- "|"
+- "| -------------"
+- "-------- |:-----"
+- "|:-------------:"
+- "-------:| -----:"
+- "| -----:|"
+- "| col 3 is"
+- col 3 is      |
+- "| right-aligned"
+- "| $1600 |"
+- "| col 2 is"
+- col 2 is      |
+- "| centered"
+- centered      |
+- "|   $12 |"
+- "| zebra stripes"
+- "| are neat"
+- are neat      |
+- "|    $1 |"
+- There must be at
+- be at least 3
+- least 3 dashes
+- separating each
+- each header cell
+- cell.
+- The outer pipes
+- pipes (|) are
+- (|) are optional
+- "optional, and"
+- ", and you don'"
+- t need to make
+- to make the
+- raw Markdown
+- Markdown line up
+- line up prettily
+- prettily.
+- You can also use
+- also use inline
+- inline Markdown.
+- Markdown | Less
+- "| Less | Pretty"
+- "--- | --- | ---"
+- "*Still* |"
+- "| `renders` |"
+- "| **nicely**"
+- 1 | 2 | 3
+- "| First Header"
+- "| Second Header"
+- "|"
+- "| -------------"
+- "-------- | -----"
+- "| -------------"
+- "-------- |"
+- "| Content Cell"
+- "| Content Cell"
+- "|"
+- "| Content Cell"
+- "| Content Cell"
+- "|"
+- "| Command |"
+- "| Description"
+- "|\n| --- | --- |"
+- "| git status |"
+- List all new or
+- new or modified
+- modified files |
+- "| git diff |"
+- Show file
+- file differences
+- "that haven'"
+- "'t been staged |"
+- "| Command |"
+- "| Description"
+- "|\n| --- | --- |"
+- "| `git status` |"
+- List all *new or
+- "*new or modified"
+- modified* files
+- files |
+- "| `git diff` |"
+- Show file
+- file differences
+- that
+- "**haven't been**"
+- staged |
+- "| Left-aligned |"
+- "| Center-aligned"
+- "| Right-aligned"
+- "|"
+- "| :---         |"
+- "|     :---:"
+- ":---:      |"
+- "|          ---:"
+- "---: |"
+- "| git status   |"
+- "| git status"
+- "| git status"
+- "|"
+- "| git diff     |"
+- "| git diff"
+- git diff       |
+- "| git diff"
+- git diff      |
+- "| Name     |"
+- "| Character"
+- "|"
+- "| ---      | ---"
+- "| ---       |"
+- "| Backtick | `"
+- "| `         |"
+- "| Pipe     | \\|"
+- "| \\|        |"
+- "------"
+- "# Blockquotes"
+- "```"
+- "> Blockquotes"
+- are very handy
+- handy in email
+- in email to
+- email to emulate
+- emulate reply
+- reply text.
+- "> This line is"
+- line is part of
+- part of the same
+- the same quote.
+- Quote break.
+- "> This is a very"
+- a very long line
+- line that will
+- will still be
+- still be quoted
+- quoted properly
+- properly when it
+- when it wraps.
+- "Oh boy let's"
+- "let's keep"
+- keep writing to
+- to make sure
+- sure this is
+- this is long
+- is long enough
+- enough to
+- to actually wrap
+- wrap for
+- for everyone.
+- "Oh, you can *put"
+- can *put* **
+- "*put* **Markdown"
+- Markdown** into
+- "** into a"
+- a blockquote.
+- "> Blockquotes"
+- can also be
+- also be nested..
+- nested...
+- ">> ...by using"
+- using additional
+- greater-than
+- "-than signs"
+- signs right next
+- next to each
+- to each other...
+- "> > > ...or with"
+- ".or with spaces"
+- spaces between
+- between arrows.
+- "```"
+- ">"
+- Blockquotes are
+- are very handy
+- handy in email
+- in email to
+- email to emulate
+- emulate reply
+- " reply text.\n>"
+- This line is
+- line is part of
+- part of the same
+- the same quote.
+- Quote break.
+- ">"
+- This is a very
+- a very long line
+- line that will
+- will still be
+- still be quoted
+- quoted properly
+- properly when it
+- when it wraps.
+- "Oh boy let'"
+- s keep writing
+- writing to make
+- to make sure
+- sure this is
+- this is long
+- is long enough
+- enough to
+- to actually wrap
+- wrap for
+- for everyone.
+- "Oh, you can"
+- "*put*"
+- "**Markdown**"
+- into a
+- a blockquote.
+- ">"
+- Blockquotes can
+- can also be
+- also be nested
+- "...\n>"
+- "> ..."
+- by using
+- using additional
+- greater-than
+- "-than signs"
+- signs right next
+- next to each
+- to each other...
+- "...\n> >"
+- "> ..."
+- or with spaces
+- spaces between
+- between arrows.
+- "------"
+- "# Inline HTML"
+- "```"
+- "<dl>"
+- "<dt>Definition"
+- list</dt>
+- "<dd>Is something"
+- people use
+- use sometimes.</
+- ".</dd>"
+- "<dt>Markdown in"
+- in HTML</dt>
+- "<dd>Does *not*"
+- "*not* work **"
+- work **very**
+- "**very** well."
+- Use HTML <em>
+- "<em>tags</em>.</"
+- "</em>.</dd>"
+- "</dl>\n```\n\n<dl>"
+- "<dt>Definition"
+- list</dt>
+- "<dd>Is something"
+- people use
+- use sometimes.</
+- ".</dd>"
+- "<dt>Markdown in"
+- in HTML</dt>
+- "<dd>Does *not*"
+- "*not* work **"
+- work **very**
+- "**very** well."
+- Use HTML <em>
+- "<em>tags</em>.</"
+- "</em>.</dd>"
+- "</dl>\n\n------"
+- "#"
+- Horizontal Rules
+- "```"
+- Three or more...
+- "---\n\nHyphens"
+- "Hyphens\n\n***"
+- "***\n\nAsterisks"
+- "___\n\nUnderscores"
+- "```"
+- Three or more...
+- "---\n\nHyphens"
+- "Hyphens\n\n***"
+- "***\n\nAsterisks"
+- "___\n\nUnderscores"
+- "------"
+- "# YouTube Videos"
+- "```"
+- "<a href=\"http://"
+- /www.youtube.com
+- /watch?
+- feature=
+- "=player_embedded"
+- "&v="
+- YOUTUBE_VIDEO_ID
+- "VIDEO_ID_HERE\""
+- "\" target=\"_blank"
+- "=\"_blank\">"
+- "<img src=\"http:/"
+- "=\"http://"
+- /img.youtube.com
+- /vi/
+- YOUTUBE_VIDEO_ID
+- VIDEO_ID_HERE/0.
+- "/0.jpg\" alt=\""
+- "\" alt=\"IMAGE ALT"
+- "ALT TEXT HERE\""
+- "HERE\" width=\"240"
+- "=\"240\" height=\""
+- "height=\"180\""
+- "=\"180\" border=\""
+- "border=\"10\">"
+- "</a>\n```"
+- "<a href=\"http://"
+- /www.youtube.com
+- /watch?
+- feature=
+- "=player_embedded"
+- "&v="
+- YOUTUBE_VIDEO_ID
+- "VIDEO_ID_HERE\""
+- "\" target=\"_blank"
+- "=\"_blank\">"
+- "<img src=\"http:/"
+- "=\"http://"
+- /img.youtube.com
+- /vi/
+- YOUTUBE_VIDEO_ID
+- VIDEO_ID_HERE/0.
+- "/0.jpg\" alt=\""
+- "\" alt=\"IMAGE ALT"
+- "ALT TEXT HERE\""
+- "HERE\" width=\"240"
+- "=\"240\" height=\""
+- "height=\"180\""
+- "=\"180\" border=\""
+- "border=\"10\">"
+- "</a>"
+- "```"
+- "[!["
+- IMAGE ALT TEXT
+- "ALT TEXT HERE]("
+- "HERE](http://"
+- /img.youtube.com
+- /vi/
+- YOUTUBE_VIDEO_ID
+- VIDEO_ID_HERE/0.
+- "/0.jpg)](http://"
+- /www.youtube.com
+- /watch?
+- v=
+- YOUTUBE_VIDEO_ID
+- VIDEO_ID_HERE)
+- "```"
+- "[!["
+- IMAGE ALT TEXT
+- "ALT TEXT HERE]("
+- "HERE](https://"
+- upload.wikimedia
+- ikimedia.org/
+- /wikipedia/
+- /commons/thumb/e
+- /thumb/e/ef/
+- YouTube_logo_201
+- logo_2015.svg/
+- ".svg/1200px-"
+- YouTube_logo_201
+- logo_2015.
+- ".svg.png)](https"
+- ")](https://"
+- /www.youtube.com
+- /watch?
+- v=ciawICBvQoE)
