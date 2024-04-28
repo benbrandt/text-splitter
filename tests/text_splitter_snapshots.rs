@@ -5,11 +5,13 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 use once_cell::sync::Lazy;
+use rayon::prelude::*;
 #[cfg(feature = "rust-tokenizers")]
 use rust_tokenizers::tokenizer::BertTokenizer;
+use strum::{Display, EnumIter, IntoEnumIterator};
 #[cfg(feature = "markdown")]
 use text_splitter::MarkdownSplitter;
-use text_splitter::{Characters, ChunkConfig, ChunkSizer, TextSplitter};
+use text_splitter::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};
 #[cfg(feature = "tokenizers")]
@@ -19,36 +21,36 @@ use tokenizers::Tokenizer;
 fn random_chunk_size() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
-    for _ in 0..10 {
-        let max_characters = Faker.fake();
+    (0..10).into_par_iter().for_each(|_| {
+        let max_characters = Faker.fake::<usize>();
         let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
         let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
         assert_eq!(chunks.join(""), text);
-        for chunk in chunks {
-            assert_le!(chunk.chars().count(), max_characters);
-        }
-    }
+        assert!(chunks
+            .iter()
+            .all(|chunk| chunk.chars().count() <= max_characters));
+    });
 }
 
 #[test]
 fn random_chunk_indices_increase() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
-    for _ in 0..10 {
+    (0..10).into_par_iter().for_each(|_| {
         let max_characters = Faker.fake::<usize>();
         let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
         let indices = splitter.chunk_indices(&text).map(|(i, _)| i);
 
         assert!(indices.tuple_windows().all(|(a, b)| a < b));
-    }
+    });
 }
 
 #[test]
 fn random_chunk_range() {
     let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
 
-    for _ in 0..10 {
+    (0..10).into_par_iter().for_each(|_| {
         let a = Faker.fake::<Option<u16>>().map(usize::from);
         let b = Faker.fake::<Option<u16>>().map(usize::from);
 
@@ -78,89 +80,11 @@ fn random_chunk_range() {
             let chars = chunk.chars().count();
             assert_le!(chars, max);
         }
-    }
+    });
 }
 
 const CHUNK_SIZES: [usize; 4] = [16, 256, 4096, 65536];
 const RANGE_CHUNK_SIZES: [RangeInclusive<usize>; 2] = [64..=512, 512..=4096];
-
-#[test]
-fn characters_no_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[test]
-fn characters_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[test]
-fn characters_range() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for range in RANGE_CHUNK_SIZES {
-            let config = ChunkConfig::new(range.clone()).with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[test]
-fn characters_range_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for range in RANGE_CHUNK_SIZES {
-            let config = ChunkConfig::new(range.clone());
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
 
 /// Downloads a remote file to the cache directory if it doensn't already exist,
 /// and returns the path to the cached file.
@@ -185,342 +109,213 @@ static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
     BertTokenizer::from_file(vocab_path, false, false).unwrap()
 });
 
-#[cfg(feature = "rust-tokenizers")]
-#[test]
-fn rust_tokenizers() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*BERT_UNCASED_TOKENIZER)
-                .with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(feature = "rust-tokenizers")]
-#[test]
-fn rust_tokenizers_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
 #[cfg(feature = "tokenizers")]
 static HUGGINGFACE_TOKENIZER: Lazy<Tokenizer> =
     Lazy::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
 
-#[cfg(feature = "tokenizers")]
-#[test]
-fn huggingface_no_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*HUGGINGFACE_TOKENIZER)
-                .with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(HUGGINGFACE_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(feature = "tokenizers")]
-#[test]
-fn huggingface_trim() {
-    insta::glob!("inputs/text/*.txt", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*HUGGINGFACE_TOKENIZER);
-            let capacity = *config.capacity();
-            let splitter = TextSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(HUGGINGFACE_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
 #[cfg(feature = "tiktoken-rs")]
 static TIKTOKEN_TOKENIZER: Lazy<CoreBPE> = Lazy::new(|| cl100k_base().unwrap());
 
-#[cfg(feature = "tiktoken-rs")]
+#[derive(Copy, Clone, Display, EnumIter)]
+enum SizerOption {
+    Characters,
+    #[cfg(feature = "rust-tokenizers")]
+    RustTokenizers,
+    #[cfg(feature = "tokenizers")]
+    Tokenizers,
+    #[cfg(feature = "tiktoken-rs")]
+    TikToken,
+}
+
+impl ChunkSizer for SizerOption {
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
+        match self {
+            Self::Characters => Characters.chunk_size(chunk, capacity),
+            #[cfg(feature = "rust-tokenizers")]
+            Self::RustTokenizers => BERT_UNCASED_TOKENIZER.chunk_size(chunk, capacity),
+            #[cfg(feature = "tokenizers")]
+            Self::Tokenizers => HUGGINGFACE_TOKENIZER.chunk_size(chunk, capacity),
+            #[cfg(feature = "tiktoken-rs")]
+            Self::TikToken => TIKTOKEN_TOKENIZER.chunk_size(chunk, capacity),
+        }
+    }
+}
+
 #[test]
-fn tiktoken_no_trim() {
+fn trim_false() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*TIKTOKEN_TOKENIZER)
-                .with_trim(false);
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            SizerOption::iter()
+                .collect::<Vec<_>>()
+                .into_par_iter()
+                .for_each(|sizer| {
+                    let config = ChunkConfig::new(chunk_size)
+                        .with_sizer(sizer)
+                        .with_trim(false);
+                    let capacity = *config.capacity();
+                    let splitter = TextSplitter::new(config);
+                    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+                    assert_eq!(chunks.join(""), text);
+                    for chunk in &chunks {
+                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                    }
+                    insta::assert_yaml_snapshot!(
+                        format!(
+                            "{}_{sizer}_trim_false_{chunk_size}",
+                            path.file_stem().unwrap().to_string_lossy()
+                        ),
+                        chunks
+                    );
+                });
+        });
+    });
+}
+
+#[test]
+fn trim() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            SizerOption::iter()
+                .collect::<Vec<_>>()
+                .into_par_iter()
+                .for_each(|sizer| {
+                    let config = ChunkConfig::new(chunk_size).with_sizer(sizer);
+                    let capacity = *config.capacity();
+                    let splitter = TextSplitter::new(config);
+                    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+                    for chunk in &chunks {
+                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                    }
+                    insta::assert_yaml_snapshot!(
+                        format!(
+                            "{}_{sizer}_trim_{chunk_size}",
+                            path.file_stem().unwrap().to_string_lossy()
+                        ),
+                        chunks
+                    );
+                });
+        });
+    });
+}
+
+#[test]
+fn range_trim_false() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        RANGE_CHUNK_SIZES.into_par_iter().for_each(|range| {
+            let config = ChunkConfig::new(range.clone()).with_trim(false);
             let capacity = *config.capacity();
             let splitter = TextSplitter::new(config);
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
-                assert!(TIKTOKEN_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
+                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
             }
-            insta::assert_yaml_snapshot!(chunks);
-        }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_Characters_trim_false_range_{range:?}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
+        });
     });
 }
 
-#[cfg(feature = "tiktoken-rs")]
 #[test]
-fn tiktoken_trim() {
+fn range_trim() {
     insta::glob!("inputs/text/*.txt", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*TIKTOKEN_TOKENIZER);
+        RANGE_CHUNK_SIZES.into_par_iter().for_each(|range| {
+            let config = ChunkConfig::new(range.clone());
             let capacity = *config.capacity();
             let splitter = TextSplitter::new(config);
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(TIKTOKEN_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
+                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
             }
-            insta::assert_yaml_snapshot!(chunks);
-        }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_Characters_trim_range_{range:?}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
+        });
     });
 }
 
 #[cfg(feature = "markdown")]
 #[test]
-fn markdown() {
+fn markdown_trim_false() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            SizerOption::iter()
+                .collect::<Vec<_>>()
+                .into_par_iter()
+                .for_each(|sizer| {
+                    let config = ChunkConfig::new(chunk_size)
+                        .with_sizer(sizer)
+                        .with_trim(false);
+                    let capacity = *config.capacity();
+                    let splitter = MarkdownSplitter::new(config);
+                    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
+                    assert_eq!(chunks.join(""), text);
+                    for chunk in &chunks {
+                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                    }
+                    insta::assert_yaml_snapshot!(
+                        format!(
+                            "{}_markdown_{sizer}_trim_false_{chunk_size}",
+                            path.file_stem().unwrap().to_string_lossy()
+                        ),
+                        chunks
+                    );
+                });
+        });
     });
 }
 
-#[cfg(all(feature = "markdown", feature = "rust-tokenizers"))]
-#[test]
-fn rust_tokenizers_markdown() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*BERT_UNCASED_TOKENIZER)
-                .with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(all(feature = "markdown", feature = "rust-tokenizers"))]
-#[test]
-fn rust_tokenizers_markdown_trim() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*BERT_UNCASED_TOKENIZER);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(BERT_UNCASED_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-#[cfg(feature = "tokenizers")]
+#[cfg(feature = "markdown")]
 #[test]
 fn markdown_trim() {
     insta::glob!("inputs/markdown/*.md", |path| {
         let text = fs::read_to_string(path).unwrap();
 
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            SizerOption::iter()
+                .collect::<Vec<_>>()
+                .into_par_iter()
+                .for_each(|sizer| {
+                    let config = ChunkConfig::new(chunk_size).with_sizer(sizer);
+                    let capacity = *config.capacity();
+                    let splitter = MarkdownSplitter::new(config);
+                    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
-            for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(all(feature = "markdown", feature = "tokenizers"))]
-#[test]
-fn huggingface_markdown() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*HUGGINGFACE_TOKENIZER)
-                .with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(HUGGINGFACE_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(all(feature = "markdown", feature = "tokenizers"))]
-#[test]
-fn huggingface_markdown_trim() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*HUGGINGFACE_TOKENIZER);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(HUGGINGFACE_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(all(feature = "markdown", feature = "tiktoken-rs"))]
-#[test]
-fn tiktoken_markdown() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size)
-                .with_sizer(&*TIKTOKEN_TOKENIZER)
-                .with_trim(false);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            assert_eq!(chunks.join(""), text);
-            for chunk in &chunks {
-                assert!(TIKTOKEN_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
-    });
-}
-
-#[cfg(all(feature = "markdown", feature = "tiktoken-rs"))]
-#[test]
-fn tiktoken_markdown_trim() {
-    insta::glob!("inputs/markdown/*.md", |path| {
-        let text = fs::read_to_string(path).unwrap();
-
-        for chunk_size in CHUNK_SIZES {
-            let config = ChunkConfig::new(chunk_size).with_sizer(&*TIKTOKEN_TOKENIZER);
-            let capacity = *config.capacity();
-            let splitter = MarkdownSplitter::new(config);
-            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-            for chunk in &chunks {
-                assert!(TIKTOKEN_TOKENIZER
-                    .chunk_size(chunk, &capacity)
-                    .fits()
-                    .is_le());
-            }
-            insta::assert_yaml_snapshot!(chunks);
-        }
+                    for chunk in &chunks {
+                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                    }
+                    insta::assert_yaml_snapshot!(
+                        format!(
+                            "{}_markdown_{sizer}_trim_{chunk_size}",
+                            path.file_stem().unwrap().to_string_lossy()
+                        ),
+                        chunks
+                    );
+                });
+        });
     });
 }
