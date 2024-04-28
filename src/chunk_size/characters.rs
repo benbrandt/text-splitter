@@ -9,7 +9,7 @@ use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
 /// // Uses character splitter by default.
 /// let splitter = TextSplitter::new(10);
 /// ```
-#[derive(Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Characters;
 
 impl ChunkSizer for Characters {

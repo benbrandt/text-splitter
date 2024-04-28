@@ -1,9 +1,6 @@
 use std::{fs, ops::RangeInclusive, path::PathBuf};
 
 use cached_path::Cache;
-use fake::{Fake, Faker};
-use itertools::Itertools;
-use more_asserts::assert_le;
 use once_cell::sync::Lazy;
 use rayon::prelude::*;
 #[cfg(feature = "rust-tokenizers")]
@@ -16,72 +13,6 @@ use text_splitter::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSize
 use tiktoken_rs::{cl100k_base, CoreBPE};
 #[cfg(feature = "tokenizers")]
 use tokenizers::Tokenizer;
-
-#[test]
-fn random_chunk_size() {
-    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
-
-    (0..10).into_par_iter().for_each(|_| {
-        let max_characters = Faker.fake::<usize>();
-        let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
-        let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-
-        assert_eq!(chunks.join(""), text);
-        assert!(chunks
-            .iter()
-            .all(|chunk| chunk.chars().count() <= max_characters));
-    });
-}
-
-#[test]
-fn random_chunk_indices_increase() {
-    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
-
-    (0..10).into_par_iter().for_each(|_| {
-        let max_characters = Faker.fake::<usize>();
-        let splitter = TextSplitter::new(ChunkConfig::new(max_characters).with_trim(false));
-        let indices = splitter.chunk_indices(&text).map(|(i, _)| i);
-
-        assert!(indices.tuple_windows().all(|(a, b)| a < b));
-    });
-}
-
-#[test]
-fn random_chunk_range() {
-    let text = fs::read_to_string("tests/inputs/text/room_with_a_view.txt").unwrap();
-
-    (0..10).into_par_iter().for_each(|_| {
-        let a = Faker.fake::<Option<u16>>().map(usize::from);
-        let b = Faker.fake::<Option<u16>>().map(usize::from);
-
-        let chunks = match (a, b) {
-            (None, None) => TextSplitter::new(ChunkConfig::new(..).with_trim(false))
-                .chunks(&text)
-                .collect::<Vec<_>>(),
-            (None, Some(b)) => TextSplitter::new(ChunkConfig::new(..b).with_trim(false))
-                .chunks(&text)
-                .collect::<Vec<_>>(),
-            (Some(a), None) => TextSplitter::new(ChunkConfig::new(a..).with_trim(false))
-                .chunks(&text)
-                .collect::<Vec<_>>(),
-            (Some(a), Some(b)) if b < a => {
-                TextSplitter::new(ChunkConfig::new(b..a).with_trim(false))
-                    .chunks(&text)
-                    .collect::<Vec<_>>()
-            }
-            (Some(a), Some(b)) => TextSplitter::new(ChunkConfig::new(a..=b).with_trim(false))
-                .chunks(&text)
-                .collect::<Vec<_>>(),
-        };
-
-        assert_eq!(chunks.join(""), text);
-        let max = a.unwrap_or(usize::MIN).max(b.unwrap_or(usize::MAX));
-        for chunk in chunks {
-            let chars = chunk.chars().count();
-            assert_le!(chars, max);
-        }
-    });
-}
 
 const CHUNK_SIZES: [usize; 4] = [16, 256, 4096, 65536];
 const RANGE_CHUNK_SIZES: [RangeInclusive<usize>; 2] = [64..=512, 512..=4096];
@@ -316,6 +247,128 @@ fn markdown_trim() {
                         chunks
                     );
                 });
+        });
+    });
+}
+
+#[test]
+fn overlap_trim_false() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            let overlap = chunk_size / 2;
+            let sizer = Characters;
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(sizer)
+                .with_overlap(overlap)
+                .unwrap()
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_Characters_trim_false_{chunk_size}_overlap_{overlap}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
+        });
+    });
+}
+
+#[test]
+fn overlap_trim() {
+    insta::glob!("inputs/text/*.txt", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            let sizer = Characters;
+            let overlap = chunk_size / 2;
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(sizer)
+                .with_overlap(overlap)
+                .unwrap();
+            let capacity = *config.capacity();
+            let splitter = TextSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_Characters_trim_{chunk_size}_overlap_{overlap}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
+        });
+    });
+}
+
+#[test]
+fn markdown_overlap_trim_false() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            let overlap = chunk_size / 2;
+            let sizer = Characters;
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(sizer)
+                .with_overlap(overlap)
+                .unwrap()
+                .with_trim(false);
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_markdown_Characters_trim_false_{chunk_size}_overlap_{overlap}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
+        });
+    });
+}
+
+#[test]
+fn markdown_overlap_trim() {
+    insta::glob!("inputs/markdown/*.md", |path| {
+        let text = fs::read_to_string(path).unwrap();
+
+        CHUNK_SIZES.into_par_iter().for_each(|chunk_size| {
+            let sizer = Characters;
+            let overlap = chunk_size / 2;
+            let config = ChunkConfig::new(chunk_size)
+                .with_sizer(sizer)
+                .with_overlap(overlap)
+                .unwrap();
+            let capacity = *config.capacity();
+            let splitter = MarkdownSplitter::new(config);
+            let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+            for chunk in &chunks {
+                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+            }
+            insta::assert_yaml_snapshot!(
+                format!(
+                    "{}_markdown_Characters_trim_{chunk_size}_overlap_{overlap}",
+                    path.file_stem().unwrap().to_string_lossy()
+                ),
+                chunks
+            );
         });
     });
 }

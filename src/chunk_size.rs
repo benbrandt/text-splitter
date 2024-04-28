@@ -267,7 +267,7 @@ pub struct ChunkConfigError(#[from] ChunkConfigErrorRepr);
 /// Private error and free to change across minor version of the crate.
 #[derive(Error, Debug)]
 enum ChunkConfigErrorRepr {
-    #[error("The overlap is larger than or equal to the chunk capacity")]
+    #[error("The overlap is larger than or equal to the desired chunk capacity")]
     OverlapLargerThanCapacity,
 }
 
@@ -326,7 +326,7 @@ where
     ///
     /// Will return an error if the overlap is larger than or equal to the chunk capacity.
     pub fn with_overlap(mut self, overlap: usize) -> Result<Self, ChunkConfigError> {
-        if overlap >= self.capacity.max {
+        if overlap >= self.capacity.desired {
             Err(ChunkConfigError(
                 ChunkConfigErrorRepr::OverlapLargerThanCapacity,
             ))
@@ -762,7 +762,17 @@ mod tests {
         let err = chunk_config.with_overlap(10).unwrap_err();
         assert_eq!(
             err.to_string(),
-            "The overlap is larger than or equal to the chunk capacity"
+            "The overlap is larger than or equal to the desired chunk capacity"
+        );
+    }
+
+    #[test]
+    fn cant_set_overlap_larger_than_desired() {
+        let chunk_config = ChunkConfig::new(5..15);
+        let err = chunk_config.with_overlap(10).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "The overlap is larger than or equal to the desired chunk capacity"
         );
     }
 }
