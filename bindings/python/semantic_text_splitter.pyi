@@ -1,6 +1,7 @@
-from typing import Any, Callable, List, Tuple, Union
+from typing import Any, Callable, List, Tuple, Union, final
 
 
+@final
 class TextSplitter:
     """Plain-text splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
 
@@ -80,29 +81,36 @@ class TextSplitter:
             that number. If a tuple of two integers is provided, a chunk will be considered
             "full" once it is within the two numbers (inclusive range). So it will only fill
             up the chunk until the lower range is met.
+        overlap (int, optional): The maximum number of allowed characters to overlap between chunks.
+            Defaults to 0.
         trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
     """
 
     def __init__(
-        self, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        self, capacity: Union[int, Tuple[int, int]], overlap: int = 0, trim: bool = True
     ) -> None: ...
 
     @staticmethod
     def from_huggingface_tokenizer(
-        tokenizer, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        tokenizer,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter from a Hugging Face Tokenizer instance.
 
         Args:
             tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
                 chunk.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -113,18 +121,23 @@ class TextSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_str(
-        json: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        json: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter from the given Hugging Face Tokenizer JSON string.
 
         Args:
             json (str): A valid JSON string representing a previously serialized
                 Hugging Face Tokenizer
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -135,18 +148,23 @@ class TextSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_file(
-        path: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        path: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter from the Hugging Face tokenizer file at the given path.
 
         Args:
             path (str): A path to a local JSON file representing a previously serialized
                 Hugging Face tokenizer.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -157,17 +175,22 @@ class TextSplitter:
 
     @staticmethod
     def from_tiktoken_model(
-        model: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        model: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter based on an OpenAI Tiktoken tokenizer.
 
         Args:
             model (str): The OpenAI model name you want to retrieve a tokenizer for.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -180,6 +203,7 @@ class TextSplitter:
     def from_callback(
         callback: Callable[[str], int],
         capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
         trim: bool = True,
     ) -> TextSplitter:
         """Instantiate a new text splitter based on a custom callback.
@@ -187,11 +211,13 @@ class TextSplitter:
         Args:
             callback (Callable[[str], int]): A lambda or other function that can be called. It will be
                 provided a piece of text, and it should return an integer value for the size.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum allowed overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -246,6 +272,7 @@ class TextSplitter:
         """
 
 
+@final
 class MarkdownSplitter:
     """Markdown splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
 
@@ -327,29 +354,36 @@ class MarkdownSplitter:
             that number. If a tuple of two integers is provided, a chunk will be considered
             "full" once it is within the two numbers (inclusive range). So it will only fill
             up the chunk until the lower range is met.
+        overlap (int, optional): The maximum number of allowed characters to overlap between chunks.
+            Defaults to 0.
         trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
     """
 
     def __init__(
-        self, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        self, capacity: Union[int, Tuple[int, int]], overlap: int = 0, trim: bool = True
     ) -> None: ...
 
     @staticmethod
     def from_huggingface_tokenizer(
-        tokenizer, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        tokenizer,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from a Hugging Face Tokenizer instance.
 
         Args:
             tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
                 chunk.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -360,18 +394,23 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_str(
-        json: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        json: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from the given Hugging Face Tokenizer JSON string.
 
         Args:
             json (str): A valid JSON string representing a previously serialized
                 Hugging Face Tokenizer
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -382,18 +421,23 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_huggingface_tokenizer_file(
-        path: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        path: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter from the Hugging Face tokenizer file at the given path.
 
         Args:
             path (str): A path to a local JSON file representing a previously serialized
                 Hugging Face tokenizer.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -404,17 +448,22 @@ class MarkdownSplitter:
 
     @staticmethod
     def from_tiktoken_model(
-        model: str, capacity: Union[int, Tuple[int, int]], trim: bool = True
+        model: str,
+        capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
+        trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter based on an OpenAI Tiktoken tokenizer.
 
         Args:
             model (str): The OpenAI model name you want to retrieve a tokenizer for.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.
@@ -427,6 +476,7 @@ class MarkdownSplitter:
     def from_callback(
         callback: Callable[[str], int],
         capacity: Union[int, Tuple[int, int]],
+        overlap: int = 0,
         trim: bool = True,
     ) -> MarkdownSplitter:
         """Instantiate a new markdown splitter based on a custom callback.
@@ -434,11 +484,13 @@ class MarkdownSplitter:
         Args:
             callback (Callable[[str], int]): A lambda or other function that can be called. It will be
                 provided a piece of text, and it should return an integer value for the size.
-            capacity (int | (int, int)): The capacity of characters in each chunk. If a
+            capacity (int | (int, int)): The capacity of tokens in each chunk. If a
                 single int, then chunks will be filled up as much as possible, without going over
                 that number. If a tuple of two integers is provided, a chunk will be considered
                 "full" once it is within the two numbers (inclusive range). So it will only fill
                 up the chunk until the lower range is met.
+            overlap (int, optional): The maximum number of allowed tokens to overlap between chunks.
+                Defaults to 0.
             trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
                 beginning and end or not. If False, joining all chunks will return the original
                 string. Defaults to True.

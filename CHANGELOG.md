@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.12.2
+
+### What's New
+
+**Support for chunk overlapping:** Several of you have been waiting on this for awhile now, and I am happy to say that chunk overlapping is now available in a way that still stays true to the spirit of finding good semantic break points.
+
+When a new chunk is emitted, if chunk overlapping is enabled, the splitter will look back at the semantic sections of the current level and pull in as many as possible that fit within the overlap window. **This does mean that none can be taken**, which is often the case when close to a higher semantic level boundary.
+
+When it will almost always produce an overlap is when the current semantic level couldn't be fit into a single chunk, and it provides overlapping sections since we may not have found a good break point in the middle of the section. Which seems to be the main motivation for using chunk overlapping in the first place.
+
+#### Rust Usage
+
+```rust
+let chunk_config = ChunkConfig::new(256)
+    // .with_sizer(sizer) // Optional tokenizer or other chunk sizer impl
+    .with_overlap(64)
+    .expect("Overlap must be less than desired chunk capacity");
+let splitter = TextSplitter::new(chunk_config); // Or MarkdownSplitter
+```
+
+#### Python Usage
+
+```python
+splitter = TextSplitter(256, overlap=64) # or any of the class methods to use a tokenizer
+```
+
 ## v0.12.1
 
 ### What's New
