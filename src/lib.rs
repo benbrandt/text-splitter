@@ -311,13 +311,12 @@ where
         let mut start = end;
         let mut low = 0;
         // Find closest index that would work
-        let binary_search_by_key = dbg!(self
+        let binary_search_by_key = self
             .next_sections
-            .binary_search_by_key(&end, |(offset, str)| offset + str.len()));
+            .binary_search_by_key(&end, |(offset, str)| offset + str.len());
         let mut high = match binary_search_by_key {
             Ok(i) | Err(i) => i,
         };
-        dbg!(&self.next_sections);
 
         while low <= high {
             let mid = low + (high - low) / 2;
