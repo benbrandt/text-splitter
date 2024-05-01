@@ -311,10 +311,10 @@ where
         let mut start = end;
         let mut low = 0;
         // Find closest index that would work
-        let binary_search_by_key = self
+        let mut high = match self
             .next_sections
-            .binary_search_by_key(&end, |(offset, str)| offset + str.len());
-        let mut high = match binary_search_by_key {
+            .binary_search_by_key(&end, |(offset, str)| offset + str.len())
+        {
             Ok(i) | Err(i) => i,
         };
 

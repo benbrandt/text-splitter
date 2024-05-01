@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.12.3
+
+### Bug Fix
+
+Remove leftover `dbg!` statements in chunk overlap code [#154](https://github.com/benbrandt/text-splitter/pull/164) 🤦🏻‍♂️
+
+Apologies if I spammed your logs!
+
 ## v0.12.2
 
 ### What's New
