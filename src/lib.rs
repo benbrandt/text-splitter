@@ -5,11 +5,13 @@ use std::{cmp::Ordering, ops::Range};
 
 use chunk_size::MemoizedChunkSizer;
 use itertools::Itertools;
+use trim::{Trim, TrimOption};
 
 mod chunk_size;
 #[cfg(feature = "markdown")]
 mod markdown;
 mod text;
+mod trim;
 
 pub use chunk_size::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSize,
@@ -35,12 +37,9 @@ trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)>;
 
-    /// Trim the str and adjust the offset if necessary.
-    /// This is the default behavior, but custom semantic levels may need different behavior.
-    fn trim_chunk(offset: usize, chunk: &str) -> (usize, &str) {
-        // Figure out how many bytes we lose trimming the beginning
-        let diff = chunk.len() - chunk.trim_start().len();
-        (offset + diff, chunk.trim())
+    /// Trimming behavior to use when trimming chunks
+    fn trim_behavior() -> impl Trim {
+        TrimOption::All
     }
 }
 
@@ -189,7 +188,7 @@ where
     /// If trim chunks is on, trim the str and adjust the offset
     fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
         if self.chunk_config.trim() {
-            Level::trim_chunk(offset, chunk)
+            Level::trim_behavior().trim(offset, chunk)
         } else {
             (offset, chunk)
         }

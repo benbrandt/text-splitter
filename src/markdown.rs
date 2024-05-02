@@ -12,7 +12,10 @@ use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{ChunkConfig, ChunkSizer, SemanticLevel, TextChunks};
+use crate::{
+    trim::{Trim, TrimOption},
+    ChunkConfig, ChunkSizer, SemanticLevel, TextChunks,
+};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -263,7 +266,6 @@ impl MarkdownLevel {
             .filter(|(_, s)| !s.is_empty())
     }
 }
-const NEWLINES: [char; 2] = ['\n', '\r'];
 
 impl SemanticLevel for MarkdownLevel {
     const PERSISTENT_LEVELS: &'static [Self] = &[
@@ -337,15 +339,8 @@ impl SemanticLevel for MarkdownLevel {
         }
     }
 
-    fn trim_chunk(offset: usize, chunk: &str) -> (usize, &str) {
-        // Preserve indentation if we have newlines inside the element
-        if chunk.trim().contains(NEWLINES) {
-            let diff = chunk.len() - chunk.trim_start_matches(NEWLINES).len();
-            (offset + diff, chunk.trim_start_matches(NEWLINES).trim_end())
-        } else {
-            let diff = chunk.len() - chunk.trim_start().len();
-            (offset + diff, chunk.trim())
-        }
+    fn trim_behavior() -> impl Trim {
+        TrimOption::PreserveIndentation
     }
 }
 
