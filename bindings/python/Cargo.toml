@@ -26,3 +26,6 @@ tiktoken-rs = "0.5.8"
 tokenizers = { version = "0.19.1", default_features = false, features = [
     "onig",
 ] }
+
+[lints]
+workspace = true

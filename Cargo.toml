@@ -11,6 +11,22 @@ license = "MIT"
 keywords = ["text", "split", "tokenizer", "nlp", "ai"]
 categories = ["text-processing"]
 
+
+[workspace.lints.rust]
+future_incompatible = { level = "warn", priority = -1 }
+missing_debug_implementations = "warn"
+missing_docs = "warn"
+nonstandard_style = { level = "warn", priority = -1 }
+rust_2018_compatibility = { level = "warn", priority = -1 }
+rust_2018_idioms = { level = "warn", priority = -1 }
+rust_2021_compatibility = { level = "warn", priority = -1 }
+rust_2024_compatibility = { level = "warn", priority = -1 }
+unused = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+cargo = "warn"
+pedantic = "warn"
+
 [package]
 name = "text-splitter"
 version.workspace = true
@@ -84,20 +100,8 @@ rust-tokenizers = ["dep:rust_tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 tokenizers = ["dep:tokenizers"]
 
-[lints.rust]
-future_incompatible = { level = "warn", priority = -1 }
-missing_debug_implementations = "warn"
-missing_docs = "warn"
-nonstandard_style = { level = "warn", priority = -1 }
-rust_2018_compatibility = { level = "warn", priority = -1 }
-rust_2018_idioms = { level = "warn", priority = -1 }
-rust_2021_compatibility = { level = "warn", priority = -1 }
-rust_2024_compatibility = { level = "warn", priority = -1 }
-unused = { level = "warn", priority = -1 }
-
-[lints.clippy]
-cargo = "warn"
-pedantic = "warn"
+[lints]
+workspace = true
 
 # Tokenizers and indirect deps can cause slow runtime
 [profile.dev.package."*"]
