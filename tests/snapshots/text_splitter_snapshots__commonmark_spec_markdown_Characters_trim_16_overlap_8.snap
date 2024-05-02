@@ -3466,7 +3466,7 @@ expression: chunks
 - "3. paragraph \""
 - "\"Foo bar --- baz"
 - "--- baz\""
-- "4. heading \"Foo"
+- "4. heading \""
 - "\"Foo bar\""
 - "\", paragraph \""
 - "\"baz\""
@@ -11601,7 +11601,8 @@ expression: chunks
 - some examples of
 - of delimiter
 - runs.
-- "- left-flanking"
+- "-"
+- left-flanking
 - flanking but not
 - but not right-
 - "right-flanking:"
@@ -11610,7 +11611,8 @@ expression: chunks
 - "**\"abc\""
 - "_\"abc\""
 - " _\"abc\"\n    ```"
-- "- right-flanking"
+- "-"
+- right-flanking
 - flanking but not
 - but not left-
 - "left-flanking:"
@@ -11619,14 +11621,16 @@ expression: chunks
 - "\"abc\"**"
 - "\"abc\"_"
 - "\"abc\"_\n    ```"
-- "- Both left and"
+- "-"
+- Both left and
 - left and right-
 - "right-flanking:"
 - "```"
 - abc***def
 - "\"abc\"_\"def\""
 - "```"
-- "- Neither left"
+- "-"
+- Neither left nor
 - left nor right-
 - "right-flanking:"
 - "```"
@@ -19062,7 +19066,7 @@ expression: chunks
 - and we hit
 - we hit either
 - "- a run of `*`"
-- "of `*` or `_`"
+- "`*` or `_`"
 - "characters, or"
 - "- a `[` or `![`"
 - we insert a text
@@ -19091,7 +19095,8 @@ expression: chunks
 - "node, plus"
 - plus information
 - about
-- "- the type of"
+- "-"
+- the type of
 - of delimiter (
 - "`[`, `![`, `*`,"
 - ", `*`, `_`)"
@@ -19157,7 +19162,7 @@ expression: chunks
 - for an opening
 - "`[` or `![`"
 - "`![` delimiter."
-- "- If we don't"
+- "- If we don'"
 - "t find one, we"
 - "one, we return a"
 - return a literal
@@ -19233,7 +19238,8 @@ expression: chunks
 - "`[` opener"
 - " opener\n      as"
 - "`stack_bottom`."
-- "* We remove the"
+- "*"
+- We remove the
 - the opening
 - delimiter.
 - "*"
@@ -19474,7 +19480,8 @@ expression: chunks
 - be a closer
 - a closer either)
 - either).
-- "+ Advance `"
+- + Advance
+- "`"
 - current_position
 - "`"
 - to the next

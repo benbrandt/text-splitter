@@ -2781,9 +2781,10 @@ expression: chunks
 - "\""
 - "3. paragraph \""
 - "Foo bar --- baz\""
-- "4. heading \"Foo"
-- "bar\", paragraph"
-- "\"baz\""
+- "4. heading \""
+- "Foo bar\""
+- ", paragraph \"baz"
+- "\""
 - We find
 - interpretation 4
 - "most natural,"
@@ -9169,29 +9170,32 @@ expression: chunks
 - Here are some
 - examples of
 - delimiter runs.
-- "- left-flanking"
+- "-"
+- left-flanking
 - but not right-
 - "flanking:"
 - "```\n    ***abc"
 - _abc
 - "**\"abc\""
 - " _\"abc\"\n    ```"
-- "- right-flanking"
+- "-"
+- right-flanking
 - but not left-
 - "flanking:"
 - "```\n     abc***"
 - abc_
 - "\"abc\"**"
 - "\"abc\"_\n    ```"
-- "- Both left and"
+- "-"
+- Both left and
 - "right-flanking:"
 - "```"
 - abc***def
 - "\"abc\"_\"def\""
 - "```"
-- "- Neither left"
-- nor right-
-- "flanking:"
+- "-"
+- Neither left nor
+- "right-flanking:"
 - "```"
 - abc *** def
 - "a _ b\n    ```"
@@ -15046,7 +15050,8 @@ expression: chunks
 - "text node, plus"
 - information
 - about
-- "- the type of"
+- "-"
+- the type of
 - "delimiter (`[`,"
 - "`![`, `*`, `_`)"
 - "-"
@@ -15100,8 +15105,8 @@ expression: chunks
 - stack for an
 - "opening `[` or"
 - "`![` delimiter."
-- "- If we don't"
-- "find one, we"
+- "- If we don'"
+- "t find one, we"
 - return a literal
 - "text node `]`."
 - "-"
@@ -15157,7 +15162,8 @@ expression: chunks
 - ", with the `[`"
 - " opener\n      as"
 - "`stack_bottom`."
-- "* We remove the"
+- "*"
+- We remove the
 - opening
 - delimiter.
 - "*"
@@ -15356,7 +15362,8 @@ expression: chunks
 - "know it can't"
 - be a closer
 - either).
-- "+ Advance `"
+- + Advance
+- "`"
 - current_position
 - "`"
 - to the next

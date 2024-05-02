@@ -6,11 +6,9 @@ as possible, according to the Common Mark specification.
 
 use std::{iter::once, ops::Range};
 
-use auto_enums::auto_enum;
 use either::Either;
 use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
-use unicode_segmentation::UnicodeSegmentation;
 
 use crate::{
     trim::{Trim, TrimOption},
@@ -147,15 +145,6 @@ enum SemanticSplitPosition {
 /// as well as a fallback in case a given fallback is too large.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 enum MarkdownLevel {
-    /// Split by individual chars. May be larger than a single byte,
-    /// but we don't go lower so we always have valid UTF str's.
-    Char,
-    /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
-    GraphemeCluster,
-    /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    Word,
-    /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    Sentence,
     /// Single line break, which isn't necessarily a new element in Markdown
     SoftBreak,
     /// An inline element that is within a larger element such as a paragraph, but
@@ -172,14 +161,9 @@ enum MarkdownLevel {
 impl MarkdownLevel {
     fn split_position(self) -> SemanticSplitPosition {
         match self {
-            Self::Char
-            | Self::GraphemeCluster
-            | Self::Word
-            | Self::Sentence
-            | Self::SoftBreak
-            | Self::Block
-            | Self::Rule
-            | Self::InlineElement => SemanticSplitPosition::Own,
+            Self::SoftBreak | Self::Block | Self::Rule | Self::InlineElement => {
+                SemanticSplitPosition::Own
+            }
             // Attach it to the next text
             Self::Heading(_) => SemanticSplitPosition::Next,
         }
@@ -187,14 +171,7 @@ impl MarkdownLevel {
 
     fn treat_whitespace_as_previous(self) -> bool {
         match self {
-            Self::Char
-            | Self::GraphemeCluster
-            | Self::Word
-            | Self::Sentence
-            | Self::SoftBreak
-            | Self::InlineElement
-            | Self::Rule
-            | Self::Heading(_) => false,
+            Self::SoftBreak | Self::InlineElement | Self::Rule | Self::Heading(_) => false,
             Self::Block => true,
         }
     }
@@ -268,13 +245,6 @@ impl MarkdownLevel {
 }
 
 impl SemanticLevel for MarkdownLevel {
-    const PERSISTENT_LEVELS: &'static [Self] = &[
-        Self::Char,
-        Self::GraphemeCluster,
-        Self::Word,
-        Self::Sentence,
-    ];
-
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
         Parser::new_ext(text, Options::all())
             .into_offset_iter()
@@ -317,22 +287,12 @@ impl SemanticLevel for MarkdownLevel {
             })
     }
 
-    #[auto_enum(Iterator)]
     fn sections(
         self,
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
         match self {
-            Self::Char => text.char_indices().map(move |(i, c)| {
-                (
-                    i,
-                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
-                )
-            }),
-            Self::GraphemeCluster => text.grapheme_indices(true),
-            Self::Word => text.split_word_bound_indices(),
-            Self::Sentence => text.split_sentence_bound_indices(),
             Self::SoftBreak | Self::InlineElement | Self::Block | Self::Heading(_) | Self::Rule => {
                 Self::split_str_by_separator(text, level_ranges)
             }

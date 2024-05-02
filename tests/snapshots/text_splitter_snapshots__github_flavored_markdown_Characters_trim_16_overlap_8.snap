@@ -313,33 +313,38 @@ expression: chunks
 - "3."
 - Open a pull
 - a pull request
-- "* Describe my"
+- "*"
+- Describe my
 - my changes
-- "* Mention all"
+- "*"
+- Mention all the
 - all the members
 - members of my
 - of my team
-- "* Ask for"
+- "*"
 - Ask for feedback
-- + Create a list
-- a list by
+- +
+- Create a list by
 - list by starting
 - starting a line
 - "a line with `+`,"
 - "`+`, `-`, or `*`"
-- + Sub-lists are
+- +
+- Sub-lists are
 - are made by
 - by indenting 2
 - "2 spaces:"
-- "- Marker"
+- "-"
 - Marker character
 - change forces
 - forces new list
 - "new list start:"
-- "* Ac tristique"
+- "*"
+- Ac tristique
 - libero volutpat
 - volutpat at
-- + Facilisis in
+- +
+- Facilisis in
 - in pretium nisl
 - nisl aliquet
 - "-"
@@ -379,7 +384,8 @@ expression: chunks
 - "- [ ] this is an"
 - is an incomplete
 - " item\n```"
-- "- [x] Finish my"
+- "- [x]"
+- Finish my
 - my changes
 - "- [ ]"
 - Push my commits
@@ -407,7 +413,8 @@ expression: chunks
 - this is a
 - is a complete
 - complete item
-- "- [ ] this is an"
+- "- [ ]"
+- this is an
 - is an incomplete
 - " item\n\n------"
 - "#"

@@ -91,8 +91,8 @@ expression: chunks
 - 3. Open a pull request
 - "\n    * Describe my changes\n"
 - "    * Mention all the members of my team\n        * Ask for feedback\n\n"
-- "+ Create a list by starting a line with `+`, `-`, or `"
-- "*`\n"
+- "+ Create a list by starting a line with `+`, `-`, or "
+- "`*`\n"
 - "+ Sub-lists are made by indenting 2 spaces:"
 - "\n  - Marker character change forces new list start:"
 - "\n    * Ac tristique libero volutpat at\n"
