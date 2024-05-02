@@ -253,29 +253,35 @@ expression: chunks
 - "3."
 - Open a pull
 - request
-- "* Describe my"
+- "*"
+- Describe my
 - changes
-- "* Mention all"
-- the members of
-- my team
-- "* Ask for"
-- feedback
-- + Create a list
-- by starting a
-- "line with `+`,"
-- "`-`, or `*`"
-- + Sub-lists are
+- "*"
+- Mention all the
+- members of my
+- team
+- "*"
+- Ask for feedback
+- +
+- Create a list by
+- starting a line
+- "with `+`, `-`"
+- ", or `*`"
+- +
+- Sub-lists are
 - made by
 - indenting 2
 - "spaces:"
-- "- Marker"
-- character change
-- forces new list
-- "start:"
-- "* Ac tristique"
+- "-"
+- Marker character
+- change forces
+- "new list start:"
+- "*"
+- Ac tristique
 - libero volutpat
 - at
-- + Facilisis in
+- +
+- Facilisis in
 - pretium nisl
 - aliquet
 - "-"
@@ -307,7 +313,8 @@ expression: chunks
 - "- [ ] this is an"
 - incomplete item
 - "```"
-- "- [x] Finish my"
+- "- [x]"
+- Finish my
 - changes
 - "- [ ]"
 - Push my commits
@@ -330,7 +337,8 @@ expression: chunks
 - "- [ ]"
 - this is a
 - complete item
-- "- [ ] this is an"
+- "- [ ]"
+- this is an
 - incomplete item
 - "------"
 - "#"
@@ -943,7 +951,7 @@ expression: chunks
 - "|"
 - "| Command |"
 - Description
-- " |\n| --- | --- |"
+- "|\n| --- | --- |"
 - "| git status |"
 - List all new or
 - modified files |
@@ -954,7 +962,7 @@ expression: chunks
 - t been staged |
 - "| Command |"
 - Description
-- " |\n| --- | --- |"
+- "|\n| --- | --- |"
 - "| `git status` |"
 - List all *new or
 - modified* files

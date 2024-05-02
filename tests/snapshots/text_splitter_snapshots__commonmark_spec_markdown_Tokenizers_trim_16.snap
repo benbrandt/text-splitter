@@ -7912,8 +7912,8 @@ expression: chunks
 - "Starting at the top of the delimiter stack, we look backwards"
 - "through the stack for an opening `[` or `![`"
 - delimiter.
-- "- If we don't find one, we return a literal text node `"
-- "]`."
+- "- If we don't find one, we return a literal text node"
+- "`]`."
 - "- If we do find one, but it's not *active*"
 - ", we remove the inactive"
 - "delimiter from the stack, and return a literal text node `]`"

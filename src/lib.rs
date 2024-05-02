@@ -3,8 +3,10 @@
 
 use std::{cmp::Ordering, ops::Range};
 
+use auto_enums::auto_enum;
 use chunk_size::MemoizedChunkSizer;
 use itertools::Itertools;
+use strum::{EnumIter, IntoEnumIterator};
 use trim::{Trim, TrimOption};
 
 mod chunk_size;
@@ -20,12 +22,43 @@ pub use chunk_size::{
 #[cfg(feature = "markdown")]
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
+use unicode_segmentation::UnicodeSegmentation;
+
+/// When using a custom semantic level, it is possible that none of them will
+/// be small enough to fit into the chunk size. In order to make sure we can
+/// still move the cursor forward, we fallback to unicode segmentation.
+#[derive(Clone, Copy, Debug, EnumIter, Eq, PartialEq, Ord, PartialOrd)]
+enum FallbackLevel {
+    /// Split by individual chars. May be larger than a single byte,
+    /// but we don't go lower so we always have valid UTF str's.
+    Char,
+    /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
+    GraphemeCluster,
+    /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    Word,
+    /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    Sentence,
+}
+
+impl FallbackLevel {
+    #[auto_enum(Iterator)]
+    fn sections(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
+        match self {
+            Self::Char => text.char_indices().map(move |(i, c)| {
+                (
+                    i,
+                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
+                )
+            }),
+            Self::GraphemeCluster => text.grapheme_indices(true),
+            Self::Word => text.split_word_bound_indices(),
+            Self::Sentence => text.split_sentence_bound_indices(),
+        }
+    }
+}
 
 /// Custom-defined levels of semantic splitting for custom document types.
 trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
-    /// Levels that are always considered in splitting text, because they are always present.
-    const PERSISTENT_LEVELS: &'static [Self];
-
     /// Generate a list of offsets for each semantic level within the text.
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)>;
 
@@ -111,12 +144,8 @@ where
     /// Return a unique, sorted list of all line break levels present before the next max level, added
     /// to all of the base semantic levels, in order from smallest to largest
     fn levels_in_remaining_text(&self, offset: usize) -> impl Iterator<Item = Level> + '_ {
-        let existing_levels = self.ranges_after_offset(offset).map(|(l, _)| l);
-
-        Level::PERSISTENT_LEVELS
-            .iter()
-            .copied()
-            .chain(existing_levels)
+        self.ranges_after_offset(offset)
+            .map(|(l, _)| l)
             .sorted()
             .dedup()
     }
@@ -349,16 +378,15 @@ where
     fn update_next_sections(&mut self) {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
-        // Get starting level
-        let mut levels_in_remaining_text =
-            self.semantic_split.levels_in_remaining_text(self.cursor);
-        let mut semantic_level = levels_in_remaining_text
-            .next()
-            .expect("Need at least one level to progress");
+
         // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
         let mut max_encoded_offset = None;
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
+
+        // Get starting level
+        let levels_in_remaining_text = self.semantic_split.levels_in_remaining_text(self.cursor);
+        let mut semantic_level = None;
 
         let levels_with_chunks = levels_in_remaining_text
             .filter_map(|level| {
@@ -375,6 +403,7 @@ where
                     Err(((a_level, a_str), (b_level, b_str)))
                 }
             });
+
         for (level, str) in levels_with_chunks {
             let chunk_size = self
                 .chunk_sizer
@@ -385,21 +414,67 @@ where
                 break;
             }
             // Otherwise break up the text with the next level
-            semantic_level = level;
+            semantic_level = Some(level);
         }
 
-        let sections = self
-            .semantic_split
-            .semantic_chunks(self.cursor, remaining_text, semantic_level)
-            // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-            // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-            // so we should be safe to break once we reach it.
-            .take_while_inclusive(move |(offset, _)| {
-                max_encoded_offset.map_or(true, |max| offset <= &max)
-            })
-            .filter(|(_, str)| !str.is_empty());
+        if let Some(semantic_level) = semantic_level {
+            let sections = self
+                .semantic_split
+                .semantic_chunks(self.cursor, remaining_text, semantic_level)
+                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+                // so we should be safe to break once we reach it.
+                .take_while_inclusive(move |(offset, _)| {
+                    max_encoded_offset.map_or(true, |max| offset <= &max)
+                })
+                .filter(|(_, str)| !str.is_empty());
+            self.next_sections.extend(sections);
+        } else {
+            let mut levels = FallbackLevel::iter();
+            // Default to the first one at least.
+            let mut semantic_level = levels.next().unwrap();
+            let levels_with_chunks = FallbackLevel::iter()
+                .filter_map(|level| {
+                    level
+                        .sections(remaining_text)
+                        .next()
+                        .map(|(_, str)| (level, str))
+                })
+                // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
+                .coalesce(|(a_level, a_str), (b_level, b_str)| {
+                    if a_str.len() >= b_str.len() {
+                        Ok((b_level, b_str))
+                    } else {
+                        Err(((a_level, a_str), (b_level, b_str)))
+                    }
+                });
 
-        self.next_sections.extend(sections);
+            for (level, str) in levels_with_chunks {
+                let chunk_size = self
+                    .chunk_sizer
+                    .check_capacity(self.trim_chunk(self.cursor, str));
+                // If this no longer fits, we use the level we are at.
+                if chunk_size.fits().is_gt() {
+                    max_encoded_offset = chunk_size.max_chunk_size_offset();
+                    break;
+                }
+                // Otherwise break up the text with the next level
+                semantic_level = level;
+            }
+
+            let sections = semantic_level
+                .sections(remaining_text)
+                .map(|(offset, text)| (self.cursor + offset, text))
+                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+                // so we should be safe to break once we reach it.
+                .take_while_inclusive(move |(offset, _)| {
+                    max_encoded_offset.map_or(true, |max| offset <= &max)
+                })
+                .filter(|(_, str)| !str.is_empty());
+
+            self.next_sections.extend(sections);
+        }
     }
 }
 

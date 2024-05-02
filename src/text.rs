@@ -5,7 +5,6 @@ Semantic splitting of text documents.
 
 use std::{iter::once, ops::Range};
 
-use auto_enums::auto_enum;
 use either::Either;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
@@ -110,18 +109,6 @@ where
 /// as well as a fallback in case a given fallback is too large.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 enum TextLevel {
-    /// Split by individual chars. May be larger than a single byte,
-    /// but we don't go lower so we always have valid UTF str's.
-    Char,
-    /// Split by [unicode grapheme clusters](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)    Grapheme,
-    /// Falls back to [`Self::Char`]
-    GraphemeCluster,
-    /// Split by [unicode words](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    /// Falls back to [`Self::GraphemeCluster`]
-    Word,
-    /// Split by [unicode sentences](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    /// Falls back to [`Self::Word`]
-    Sentence,
     /// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
     /// Falls back to the next lower number, or else [`Self::Sentence`]
     LineBreak(usize),
@@ -176,13 +163,6 @@ impl TextLevel {
 static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 impl SemanticLevel for TextLevel {
-    const PERSISTENT_LEVELS: &'static [Self] = &[
-        Self::Char,
-        Self::GraphemeCluster,
-        Self::Word,
-        Self::Sentence,
-    ];
-
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
         LINEBREAKS.find_iter(text).map(|m| {
             let range = m.range();
@@ -193,7 +173,7 @@ impl SemanticLevel for TextLevel {
                 .count();
             (
                 match level {
-                    0 => Self::Sentence,
+                    0 => unreachable!("regex should always match at least one newline"),
                     n => Self::LineBreak(n),
                 },
                 range,
@@ -201,22 +181,12 @@ impl SemanticLevel for TextLevel {
         })
     }
 
-    #[auto_enum(Iterator)]
     fn sections(
         self,
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
         match self {
-            Self::Char => text.char_indices().map(move |(i, c)| {
-                (
-                    i,
-                    text.get(i..i + c.len_utf8()).expect("char should be valid"),
-                )
-            }),
-            Self::GraphemeCluster => text.grapheme_indices(true),
-            Self::Word => text.split_word_bound_indices(),
-            Self::Sentence => text.split_sentence_bound_indices(),
             Self::LineBreak(_) => Self::split_str_by_separator(text, level_ranges.map(|(_, r)| r)),
         }
     }
