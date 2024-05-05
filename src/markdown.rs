@@ -10,10 +10,7 @@ use either::Either;
 use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 
-use crate::{
-    trim::{Trim, TrimOption},
-    ChunkConfig, ChunkSizer, SemanticLevel, TextChunks,
-};
+use crate::{trim::Trim, ChunkConfig, ChunkSizer, SemanticLevel, TextChunks};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -245,6 +242,8 @@ impl MarkdownLevel {
 }
 
 impl SemanticLevel for MarkdownLevel {
+    const TRIM: Trim = Trim::PreserveIndentation;
+
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
         Parser::new_ext(text, Options::all())
             .into_offset_iter()
@@ -297,10 +296,6 @@ impl SemanticLevel for MarkdownLevel {
                 Self::split_str_by_separator(text, level_ranges)
             }
         }
-    }
-
-    fn trim_behavior() -> impl Trim {
-        TrimOption::PreserveIndentation
     }
 }
 
