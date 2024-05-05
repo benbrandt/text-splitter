@@ -2,16 +2,11 @@
 Different trimming behaviors for different splitter types.
 */
 
-/// Trim trait for different trimming behaviors.
-pub trait Trim {
-    /// Trim the str and adjust the offset if necessary.
-    fn trim<'text>(&self, offset: usize, chunk: &'text str) -> (usize, &'text str);
-}
-
 /// Out-of-the-box trim options.
 /// If you need a custom trim behavior, you can implement the `Trim` trait.
 #[allow(clippy::module_name_repetitions)]
-pub enum TrimOption {
+#[derive(Clone, Copy, Debug)]
+pub enum Trim {
     /// Will remove all leading and trailing whitespaces.
     All,
     /// Will remove all leading newlines and all trailing whitespace.
@@ -25,8 +20,8 @@ pub enum TrimOption {
 
 const NEWLINES: [char; 2] = ['\n', '\r'];
 
-impl Trim for TrimOption {
-    fn trim<'text>(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
+impl Trim {
+    pub fn trim(self, offset: usize, chunk: &str) -> (usize, &str) {
         match self {
             Self::All => {
                 // Figure out how many bytes we lose trimming the beginning
@@ -53,7 +48,7 @@ mod tests {
     #[test]
     fn trim_all() {
         let chunk = "  hello world  ";
-        let (offset, chunk) = TrimOption::All.trim(0, chunk);
+        let (offset, chunk) = Trim::All.trim(0, chunk);
         assert_eq!(offset, 2);
         assert_eq!(chunk, "hello world");
     }
@@ -61,7 +56,7 @@ mod tests {
     #[test]
     fn trim_indentation_fallback() {
         let chunk = "  hello world  ";
-        let (offset, chunk) = TrimOption::PreserveIndentation.trim(0, chunk);
+        let (offset, chunk) = Trim::PreserveIndentation.trim(0, chunk);
         assert_eq!(offset, 2);
         assert_eq!(chunk, "hello world");
     }
@@ -69,7 +64,7 @@ mod tests {
     #[test]
     fn trim_indentation_preserved() {
         let chunk = "\n  hello\n  world  ";
-        let (offset, chunk) = TrimOption::PreserveIndentation.trim(0, chunk);
+        let (offset, chunk) = Trim::PreserveIndentation.trim(0, chunk);
         assert_eq!(offset, 1);
         assert_eq!(chunk, "  hello\n  world");
     }

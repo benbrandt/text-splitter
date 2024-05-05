@@ -7,7 +7,7 @@ use auto_enums::auto_enum;
 use chunk_size::MemoizedChunkSizer;
 use itertools::Itertools;
 use strum::{EnumIter, IntoEnumIterator};
-use trim::{Trim, TrimOption};
+use trim::Trim;
 
 mod chunk_size;
 #[cfg(feature = "markdown")]
@@ -59,6 +59,9 @@ impl FallbackLevel {
 
 /// Custom-defined levels of semantic splitting for custom document types.
 trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
+    /// Trimming behavior to use when trimming chunks
+    const TRIM: Trim = Trim::All;
+
     /// Generate a list of offsets for each semantic level within the text.
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)>;
 
@@ -69,11 +72,6 @@ trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)>;
-
-    /// Trimming behavior to use when trimming chunks
-    fn trim_behavior() -> impl Trim {
-        TrimOption::All
-    }
 }
 
 /// Captures information about document structure for a given text, and their
@@ -205,21 +203,12 @@ where
     fn new(chunk_config: &'sizer ChunkConfig<Sizer>, text: &'text str) -> Self {
         Self {
             chunk_config,
-            chunk_sizer: chunk_config.memoized_sizer(),
+            chunk_sizer: MemoizedChunkSizer::new(chunk_config, Level::TRIM),
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(Level::offsets(text).collect()),
             text,
-        }
-    }
-
-    /// If trim chunks is on, trim the str and adjust the offset
-    fn trim_chunk(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
-        if self.chunk_config.trim() {
-            Level::trim_behavior().trim(offset, chunk)
-        } else {
-            (offset, chunk)
         }
     }
 
@@ -239,7 +228,7 @@ where
 
         let chunk = self.text.get(start..end)?;
         // Trim whitespace if user requested it
-        Some(self.trim_chunk(start, chunk))
+        Some(self.chunk_sizer.trim_chunk(start, chunk))
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
@@ -257,9 +246,7 @@ where
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
-            let chunk_size = self
-                .chunk_sizer
-                .check_capacity(self.trim_chunk(start, chunk));
+            let chunk_size = self.chunk_sizer.check_capacity(start, chunk, false);
 
             match chunk_size.fits() {
                 Ordering::Less => {
@@ -311,9 +298,7 @@ where
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
                 let chunk = self.text.get(start..text_end)?;
-                let size = self
-                    .chunk_sizer
-                    .check_capacity(self.trim_chunk(start, chunk));
+                let size = self.chunk_sizer.check_capacity(start, chunk, false);
                 if size.size() <= chunk_size.size() {
                     if text_end > end {
                         end = text_end;
@@ -349,12 +334,11 @@ where
         while low <= high {
             let mid = low + (high - low) / 2;
             let (offset, _) = self.next_sections[mid];
-            let (_, chunk) =
-                self.trim_chunk(offset, self.text.get(offset..end).expect("Invalid range"));
-            let chunk_size = self
-                .chunk_config
-                .sizer()
-                .chunk_size(chunk, &self.chunk_config.overlap().into());
+            let chunk_size = self.chunk_sizer.check_capacity(
+                offset,
+                self.text.get(offset..end).expect("Invalid range"),
+                true,
+            );
 
             // We got further than the last one, so update start
             if chunk_size.fits().is_le() && offset < start && offset > self.cursor {
@@ -405,9 +389,7 @@ where
             });
 
         for (level, str) in levels_with_chunks {
-            let chunk_size = self
-                .chunk_sizer
-                .check_capacity(self.trim_chunk(self.cursor, str));
+            let chunk_size = self.chunk_sizer.check_capacity(self.cursor, str, false);
             // If this no longer fits, we use the level we are at.
             if chunk_size.fits().is_gt() {
                 max_encoded_offset = chunk_size.max_chunk_size_offset();
@@ -450,9 +432,7 @@ where
                 });
 
             for (level, str) in levels_with_chunks {
-                let chunk_size = self
-                    .chunk_sizer
-                    .check_capacity(self.trim_chunk(self.cursor, str));
+                let chunk_size = self.chunk_sizer.check_capacity(self.cursor, str, false);
                 // If this no longer fits, we use the level we are at.
                 if chunk_size.fits().is_gt() {
                     max_encoded_offset = chunk_size.max_chunk_size_offset();
