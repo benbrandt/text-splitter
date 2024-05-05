@@ -241,12 +241,6 @@ impl ChunkSize {
         self.fits
     }
 
-    /// max byte offset of the text that fit within the given `ChunkCapacity`.
-    #[must_use]
-    pub fn max_chunk_size_offset(&self) -> Option<usize> {
-        self.max_chunk_size_offset
-    }
-
     /// Size of the chunk, in units used by the sizer.
     #[must_use]
     pub fn size(&self) -> usize {
@@ -705,7 +699,7 @@ mod tests {
         assert_eq!(
             memoized_sizer
                 .chunk_config
-                .sizer
+                .sizer()
                 .calls
                 .load(atomic::Ordering::SeqCst),
             1
@@ -724,7 +718,7 @@ mod tests {
         assert_eq!(
             memoized_sizer
                 .chunk_config
-                .sizer
+                .sizer()
                 .calls
                 .load(atomic::Ordering::SeqCst),
             10
@@ -744,7 +738,7 @@ mod tests {
         assert_eq!(
             memoized_sizer
                 .chunk_config
-                .sizer
+                .sizer()
                 .calls
                 .load(atomic::Ordering::SeqCst),
             10
@@ -769,13 +763,13 @@ mod tests {
         let config = ChunkConfig::new(10);
         assert_eq!(config.capacity, 10.into());
         assert_eq!(config.sizer, Characters);
-        assert!(config.trim);
+        assert!(config.trim());
     }
 
     #[test]
     fn disable_trimming() {
         let config = ChunkConfig::new(10).with_trim(false);
-        assert!(!config.trim);
+        assert!(!config.trim());
     }
 
     #[test]
@@ -792,7 +786,7 @@ mod tests {
         let config = ChunkConfig::new(10).with_sizer(BasicSizer);
         assert_eq!(config.capacity, 10.into());
         assert_eq!(config.sizer, BasicSizer);
-        assert!(config.trim);
+        assert!(config.trim());
     }
 
     #[test]
