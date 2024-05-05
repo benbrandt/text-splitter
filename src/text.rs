@@ -124,33 +124,27 @@ impl TextLevel {
         let mut final_match = false;
         separator_ranges
             .batching(move |it| {
-                loop {
-                    match it.next() {
-                        // If we've hit the end, actually return None
-                        None if final_match => return None,
-                        // First time we hit None, return the final section of the text
-                        None => {
-                            final_match = true;
-                            return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
-                        }
-                        // Return text preceding match + the match
-                        Some(range) => {
-                            if range.start < cursor {
-                                continue;
-                            }
-
-                            let offset = cursor;
-                            let prev_section = text
-                                .get(offset..range.start)
-                                .expect("invalid character sequence");
-                            let separator = text
-                                .get(range.start..range.end)
-                                .expect("invalid character sequence");
-                            cursor = range.end;
-                            return Some(Either::Right(
-                                [(offset, prev_section), (range.start, separator)].into_iter(),
-                            ));
-                        }
+                match it.next() {
+                    // If we've hit the end, actually return None
+                    None if final_match => None,
+                    // First time we hit None, return the final section of the text
+                    None => {
+                        final_match = true;
+                        return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
+                    }
+                    // Return text preceding match + the match
+                    Some(range) => {
+                        let offset = cursor;
+                        let prev_section = text
+                            .get(offset..range.start)
+                            .expect("invalid character sequence");
+                        let separator = text
+                            .get(range.start..range.end)
+                            .expect("invalid character sequence");
+                        cursor = range.end;
+                        Some(Either::Right(
+                            [(offset, prev_section), (range.start, separator)].into_iter(),
+                        ))
                     }
                 }
             })
