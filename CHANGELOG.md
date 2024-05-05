@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.13.0
+
+### What's New / Breaking Changes
+
+**Unicode Segmentation is now only used as a fallback**. This prioritizes the semantic levels of each splitter, and only uses Unicode grapheme/word/sentence segmentation when none of the semantic levels can be split at the desired capacity.
+
+In most cases, this won't change the behavior of the splitter, and will likely mean that speed will improve because it is able to skip several semantic levels at the start, acting as a bisect or binary search, and only go back to the lower levels if it can't fit.
+
+However, for the `MarkdownSplitter` at very small sizes (i.e., less than 16 tokens), this may produce different output, becuase prior to this change, the splitter may have used Unicode sentence segmentation instead of the Markdown semantic levels, due to an optimization in the level selection. Now, the splitter will prioritize the parsed Markdown levels before it falls back to Unicode segmentation, which preserves better structure at small sizes.
+
+**So, it is likely in most cases, this is a non-breaking update**. However, if you were using extremely small chunk sizes for Markdown, the behavior is different, and I wanted to inidicate that with a major version bump.
+
 ## v0.12.3
 
 ### Bug Fix
