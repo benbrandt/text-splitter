@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use std::{cmp::Ordering, ops::Range};
+use std::{cmp::Ordering, fmt, ops::Range};
 
 use auto_enums::auto_enum;
 use chunk_size::MemoizedChunkSizer;
@@ -58,7 +58,7 @@ impl FallbackLevel {
 }
 
 /// Custom-defined levels of semantic splitting for custom document types.
-trait SemanticLevel: Copy + Ord + PartialOrd + 'static {
+trait SemanticLevel: Copy + fmt::Debug + Ord + PartialOrd + 'static {
     /// Trimming behavior to use when trimming chunks
     const TRIM: Trim = Trim::All;
 
@@ -363,41 +363,19 @@ where
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
 
-        // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
-        let mut max_encoded_offset = None;
-
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        // Get starting level
-        let levels_in_remaining_text = self.semantic_split.levels_in_remaining_text(self.cursor);
-        let mut semantic_level = None;
-
-        let levels_with_chunks = levels_in_remaining_text
-            .filter_map(|level| {
-                self.semantic_split
-                    .semantic_chunks(self.cursor, remaining_text, level)
-                    .next()
-                    .map(|(_, str)| (level, str))
-            })
-            // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
-            .coalesce(|(a_level, a_str), (b_level, b_str)| {
-                if a_str.len() >= b_str.len() {
-                    Ok((b_level, b_str))
-                } else {
-                    Err(((a_level, a_str), (b_level, b_str)))
-                }
-            });
-
-        for (level, str) in levels_with_chunks {
-            let chunk_size = self.chunk_sizer.check_capacity(self.cursor, str, false);
-            // If this no longer fits, we use the level we are at.
-            if chunk_size.fits().is_gt() {
-                max_encoded_offset = chunk_size.max_chunk_size_offset();
-                break;
-            }
-            // Otherwise break up the text with the next level
-            semantic_level = Some(level);
-        }
+        let (semantic_level, max_encoded_offset) = self.chunk_sizer.find_correct_level(
+            self.cursor,
+            self.semantic_split
+                .levels_in_remaining_text(self.cursor)
+                .filter_map(|level| {
+                    self.semantic_split
+                        .semantic_chunks(self.cursor, remaining_text, level)
+                        .next()
+                        .map(|(_, str)| (level, str))
+                }),
+        );
 
         if let Some(semantic_level) = semantic_level {
             let sections = self
@@ -412,37 +390,21 @@ where
                 .filter(|(_, str)| !str.is_empty());
             self.next_sections.extend(sections);
         } else {
-            let mut levels = FallbackLevel::iter();
-            // Default to the first one at least.
-            let mut semantic_level = levels.next().unwrap();
-            let levels_with_chunks = FallbackLevel::iter()
-                .filter_map(|level| {
-                    level
-                        .sections(remaining_text)
-                        .next()
-                        .map(|(_, str)| (level, str))
-                })
-                // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
-                .coalesce(|(a_level, a_str), (b_level, b_str)| {
-                    if a_str.len() >= b_str.len() {
-                        Ok((b_level, b_str))
-                    } else {
-                        Err(((a_level, a_str), (b_level, b_str)))
-                    }
-                });
+            let (semantic_level, fallback_max_encoded_offset) =
+                self.chunk_sizer.find_correct_level(
+                    self.cursor,
+                    FallbackLevel::iter().filter_map(|level| {
+                        level
+                            .sections(remaining_text)
+                            .next()
+                            .map(|(_, str)| (level, str))
+                    }),
+                );
 
-            for (level, str) in levels_with_chunks {
-                let chunk_size = self.chunk_sizer.check_capacity(self.cursor, str, false);
-                // If this no longer fits, we use the level we are at.
-                if chunk_size.fits().is_gt() {
-                    max_encoded_offset = chunk_size.max_chunk_size_offset();
-                    break;
-                }
-                // Otherwise break up the text with the next level
-                semantic_level = level;
-            }
+            let max_encoded_offset = fallback_max_encoded_offset.or(max_encoded_offset);
 
             let sections = semantic_level
+                .unwrap_or(FallbackLevel::Char)
                 .sections(remaining_text)
                 .map(|(offset, text)| (self.cursor + offset, text))
                 // We don't want to return items at this level that go beyond the next highest semantic level, as that is most

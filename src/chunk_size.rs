@@ -1,9 +1,12 @@
 use std::{
     cmp::Ordering,
+    fmt,
     ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
 };
 
 use ahash::AHashMap;
+use itertools::Itertools;
+use thiserror::Error;
 
 mod characters;
 #[cfg(feature = "tokenizers")]
@@ -13,10 +16,8 @@ mod rust_tokenizers;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 
-pub use characters::Characters;
-use thiserror::Error;
-
 use crate::trim::Trim;
+pub use characters::Characters;
 
 /// Indicates there was an error with the chunk capacity configuration.
 /// The `Display` implementation will provide a human-readable error message to
@@ -462,6 +463,40 @@ where
         } else {
             (offset, chunk)
         }
+    }
+
+    /// Find the best level to start splitting the text
+    pub fn find_correct_level<'text, L: fmt::Debug>(
+        &mut self,
+        offset: usize,
+        levels_with_first_chunk: impl Iterator<Item = (L, &'text str)>,
+    ) -> (Option<L>, Option<usize>) {
+        // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
+        let mut max_encoded_offset = None;
+        let mut semantic_level = None;
+
+        // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
+        let levels_with_first_chunk =
+            levels_with_first_chunk.coalesce(|(a_level, a_str), (b_level, b_str)| {
+                if a_str.len() >= b_str.len() {
+                    Ok((b_level, b_str))
+                } else {
+                    Err(((a_level, a_str), (b_level, b_str)))
+                }
+            });
+
+        for (level, str) in levels_with_first_chunk {
+            let chunk_size = self.check_capacity(offset, str, false);
+            // If this no longer fits, we use the level we are at.
+            if chunk_size.fits.is_gt() {
+                max_encoded_offset = chunk_size.max_chunk_size_offset;
+                break;
+            }
+            // Otherwise break up the text with the next level
+            semantic_level = Some(level);
+        }
+
+        (semantic_level, max_encoded_offset)
     }
 
     /// Clear the cached values. Once we've moved the cursor,
