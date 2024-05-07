@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.1
+
+Fix a bug in the fallback logic to make sure we are still respecting the maximum bytes we should be searching in. Again, this only affects Markdown splitting at very small sizes.
+
 ## v0.13.0
 
 ### What's New / Breaking Changes

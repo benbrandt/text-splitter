@@ -661,10 +661,11 @@ expression: chunks
 - "3021"
 - namespace
 - "MyApplication\n{"
-- "[Obsolete(\"...\")"
-- "]"
-- "class Program :"
-- "IInterface\n    {"
+- "[Obsolete(\"..."
+- "\")]"
+- class Program
+- ": IInterface"
+- "{"
 - public static
 - List<int>
 - JustDoIt(int
@@ -672,11 +673,11 @@ expression: chunks
 - Console.WriteLin
 - "e($\"Hello {Name}"
 - "!\");"
-- return new List<
-- "int>(new int[] {"
-- "1, 2, 3 })"
-- "        }\n    }"
-- "}\n```"
+- return
+- new List<int>(
+- "new int[] { 1, 2"
+- ", 3 })\n        }"
+- "    }\n}\n```"
 - "```css"
 - "@font-face {"
 - "font-family:"
@@ -704,14 +705,14 @@ expression: chunks
 - initHighlight(
 - "block, cls) {"
 - "try {"
-- if (cls.search(/
-- "\\bno\\-highlight\\"
-- b/) != -1)
+- if (cls.search(
+- "/\\bno\\-highlight"
+- "\\b/) != -1)"
 - return process(
 - "block, true,"
 - "0x0F) +"
-- "` class=\"${cls}\""
-- "`;"
+- "` class="
+- "\"${cls}\"`;"
 - "} catch (e) {"
 - /* handle
 - "exception */\n  }"
@@ -723,9 +724,9 @@ expression: chunks
 - checkCondition(
 - "classes[i]) ==="
 - undefined)
-- "console.log('"
-- "undefined');\n  }"
-- "}"
+- console.log(
+- "'undefined');"
+- "  }\n}"
 - export  $
 - initHighlight;
 - "```"
@@ -746,8 +747,8 @@ expression: chunks
 - "Factory\n{"
 - abstract
 - function test();
-- public static $
-- st1 = 1;
+- public static
+- $st1 = 1;
 - "const ME = \"Yo\";"
 - var $list = NULL
 - ;
@@ -763,8 +764,9 @@ expression: chunks
 - "= array(), $uri"
 - "= 'http')\n    {"
 - echo __METHOD__;
-- "$uri = explode('"
-- ":', $uri, 0b10);"
+- $uri = explode(
+- "':', $uri, 0b10)"
+- ;
 - $schemeSpecific
 - "= isset($uri[1])"
 - "? $uri[1] : '';"
@@ -776,19 +778,20 @@ expression: chunks
 - if (!
 - ctype_alnum($
 - "scheme)) {"
-- throw new
+- throw
+- new
 - Zend_Uri_Excepti
 - "on('Illegal"
 - "scheme');"
 - "}"
-- $this->var = 0 -
-- "self::$st;"
-- $this->list =
-- "list(Array(\"1\"=>"
-- "2, 2=>self::ME,"
-- "3 => \\Location\\"
-- "Web\\URI::class))"
-- ;
+- $this->var
+- "= 0 - self::$st;"
+- $this->list
+- "= list(Array(\"1\""
+- "=> 2, 2=>self::"
+- "ME, 3 => \\"
+- "Location\\Web\\URI"
+- "::class));"
 - "return ["
 - "'uri'   => $uri,"
 - "'value' => null,"
