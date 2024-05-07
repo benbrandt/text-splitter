@@ -4,23 +4,35 @@ mod tests {
 
     use tree_sitter::{Node, Parser, Tree, TreeCursor};
 
-    fn cursor_based_offsets(
-        collection: &mut Vec<(usize, Range<usize>)>,
-        cursor: &mut TreeCursor<'_>,
-    ) {
-        let cursor_depth = cursor.depth() as usize;
-        if cursor_depth > 0 {
-            collection.push((cursor_depth, cursor.node().byte_range()));
-        }
+    /// New type around a tree-sitter cursor to allow for implementing an iterator.
+    struct CursorOffsets<'cursor> {
+        cursor: TreeCursor<'cursor>,
+    }
 
-        // There are children
-        if cursor.goto_first_child()
-            // There are sibling elements to grab because we are the deepest level
-            || cursor.goto_next_sibling()
-            // Go up and over to continue along the tree
-            || (cursor.goto_parent() && cursor.goto_next_sibling())
-        {
-            cursor_based_offsets(collection, cursor);
+    impl<'cursor> CursorOffsets<'cursor> {
+        fn new(cursor: TreeCursor<'cursor>) -> Self {
+            Self { cursor }
+        }
+    }
+
+    impl<'cursor> Iterator for CursorOffsets<'cursor> {
+        type Item = (usize, Range<usize>);
+
+        fn next(&mut self) -> Option<Self::Item> {
+            // There are children (can call this initially because we don't want the root node)
+            if self.cursor.goto_first_child()
+                // There are sibling elements to grab because we are the deepest level
+                || self.cursor.goto_next_sibling()
+                // Go up and over to continue along the tree
+                || (self.cursor.goto_parent() && self.cursor.goto_next_sibling())
+            {
+                Some((
+                    self.cursor.depth() as usize,
+                    self.cursor.node().byte_range(),
+                ))
+            } else {
+                None
+            }
         }
     }
 
@@ -38,13 +50,9 @@ mod tests {
             .parse(source_code, None)
             .expect("Error parsing source code");
 
-        let mut cursor = tree.walk();
-        let mut a_offsets = vec![];
-        cursor_based_offsets(&mut a_offsets, &mut cursor);
+        let offsets = CursorOffsets::new(tree.walk()).collect::<Vec<_>>();
 
-        let b_offsets = naive_offsets(&tree);
-
-        assert_eq!(a_offsets, b_offsets);
+        assert_eq!(offsets, naive_offsets(&tree));
     }
 
     fn naive_offsets(tree: &Tree) -> Vec<(usize, Range<usize>)> {
