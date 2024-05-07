@@ -8,8 +8,11 @@ use chunk_size::MemoizedChunkSizer;
 use itertools::Itertools;
 use strum::{EnumIter, IntoEnumIterator};
 use trim::Trim;
+use unicode_segmentation::UnicodeSegmentation;
 
 mod chunk_size;
+#[cfg(feature = "code")]
+mod code;
 #[cfg(feature = "markdown")]
 mod markdown;
 mod text;
@@ -22,7 +25,6 @@ pub use chunk_size::{
 #[cfg(feature = "markdown")]
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
-use unicode_segmentation::UnicodeSegmentation;
 
 /// When using a custom semantic level, it is possible that none of them will
 /// be small enough to fit into the chunk size. In order to make sure we can
