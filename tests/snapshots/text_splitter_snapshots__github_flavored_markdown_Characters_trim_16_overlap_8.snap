@@ -818,9 +818,10 @@ expression: chunks
 - "414, 3021"
 - namespace
 - " MyApplication\n{"
-- "[Obsolete(\"...\")"
+- "[Obsolete(\"..."
 - "(\"...\")]"
-- "class Program :"
+- class Program
+- "Program :"
 - ": IInterface"
 - "{"
 - public static
@@ -832,6 +833,7 @@ expression: chunks
 - "WriteLine($\""
 - "($\"Hello {Name}!"
 - "{Name}!\");"
+- return
 - return new List<
 - List<int>(new
 - "int>(new int[] {"
@@ -867,7 +869,7 @@ expression: chunks
 - $initHighlight(
 - "(block, cls) {"
 - "try {"
-- if (cls.search(/
+- if (cls.search(
 - "(/\\bno\\-"
 - "/\\bno\\-highlight"
 - "\\b/) != -1)"
@@ -875,6 +877,7 @@ expression: chunks
 - "process(block,"
 - "(block, true,"
 - ", true, 0x0F) +"
+- "` class="
 - "` class=\"${cls}\""
 - "\"${cls}\"`;"
 - "} catch (e) {"
@@ -890,7 +893,7 @@ expression: chunks
 - "(classes[i]) ==="
 - "]) === undefined"
 - )
-- "console.log('"
+- console.log(
 - "('undefined');"
 - "  }\n}"
 - export  $
@@ -914,7 +917,7 @@ expression: chunks
 - " Factory\n{"
 - abstract
 - function test();
-- public static $
+- public static
 - static $st1 = 1;
 - "const ME = \"Yo\";"
 - var $list = NULL
@@ -933,7 +936,8 @@ expression: chunks
 - "(), $uri = 'http"
 - " = 'http')\n    {"
 - echo __METHOD__;
-- "$uri = explode('"
+- $uri = explode(
+- "explode(':', $"
 - "(':', $uri, 0b10"
 - ", 0b10);"
 - $schemeSpecific
@@ -948,15 +952,17 @@ expression: chunks
 - if (!
 - ctype_alnum($
 - "($scheme)) {"
+- throw
 - throw new
 - Zend_Uri_Excepti
 - "_Exception('"
 - "('Illegal scheme"
 - "scheme');"
 - "}"
-- $this->var = 0 -
-- "= 0 - self::$st;"
-- $this->list =
+- $this->var
+- "->var = 0 - self"
+- "0 - self::$st;"
+- $this->list
 - "->list = list("
 - "= list(Array(\"1\""
 - "(\"1\"=> 2, 2=>"
@@ -1089,9 +1095,9 @@ expression: chunks
 - "| Right-aligned"
 - "-aligned |"
 - "| :---         |"
-- "|     :---:"
+- "|     :--"
 - ":---:      |"
-- "|          ---:"
+- "|          -"
 - "---: |"
 - "| git status   |"
 - "| git status"

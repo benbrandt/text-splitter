@@ -14644,7 +14644,8 @@ expression: chunks
 - "=-)"
 - list_item
 - paragraph
-- "\"Qui *quodsi"
+- "\"Qui"
+- "*quodsi"
 - "iracundia*\""
 - "-> list_item"
 - "-> paragraph"
@@ -14902,7 +14903,8 @@ expression: chunks
 - "=-)"
 - "-> list_item"
 - "-> paragraph"
-- "\"Qui *quodsi"
+- "\"Qui"
+- "*quodsi"
 - "iracundia*\"\n```"
 - "The fourth line,"
 - "``` markdown"
@@ -14939,7 +14941,8 @@ expression: chunks
 - "=-)"
 - list_item
 - paragraph
-- "\"Qui *quodsi"
+- "\"Qui"
+- "*quodsi"
 - "iracundia*\""
 - "-> list_item"
 - "-> paragraph"

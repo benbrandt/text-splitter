@@ -401,7 +401,10 @@ where
                     }),
                 );
 
-            let max_encoded_offset = fallback_max_encoded_offset.or(max_encoded_offset);
+            let max_encoded_offset = match (fallback_max_encoded_offset, max_encoded_offset) {
+                (Some(fallback), Some(max)) => Some(fallback.min(max)),
+                (fallback, max) => fallback.or(max),
+            };
 
             let sections = semantic_level
                 .unwrap_or(FallbackLevel::Char)

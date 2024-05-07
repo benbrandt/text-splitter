@@ -4545,7 +4545,7 @@ expression: chunks
 - "````````````````"
 - "```````` example"
 - ~~~~    ruby
-- ruby startline=3
+- ruby startline=
 - "=3 $%@#$"
 - def foo(x)
 - "  return 3\nend"
@@ -11096,7 +11096,7 @@ expression: chunks
 - "baz`\n."
 - "<p><code>foo"
 - code>foo   bar
-- bar  baz</code><
+- bar  baz</code>
 - "</code></p>"
 - "````````````````"
 - "````````````````"
@@ -18599,6 +18599,7 @@ expression: chunks
 - "=-)"
 - list_item
 - paragraph
+- "\"Qui"
 - "\"Qui *quodsi"
 - quodsi iracundia
 - "*\""
@@ -18917,6 +18918,7 @@ expression: chunks
 - "=-)"
 - "-> list_item"
 - "-> paragraph"
+- "\"Qui"
 - "\"Qui *quodsi"
 - quodsi iracundia
 - "*\"\n```"
@@ -18961,6 +18963,7 @@ expression: chunks
 - "=-)"
 - list_item
 - paragraph
+- "\"Qui"
 - "\"Qui *quodsi"
 - quodsi iracundia
 - "*\""
