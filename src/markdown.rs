@@ -177,7 +177,7 @@ impl MarkdownLevel {
 impl SemanticLevel for MarkdownLevel {
     const TRIM: Trim = Trim::PreserveIndentation;
 
-    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
+    fn offsets(text: &str) -> Vec<(Self, Range<usize>)> {
         Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
@@ -217,6 +217,7 @@ impl SemanticLevel for MarkdownLevel {
                 // End events are identical to start, so no need to grab them.
                 Event::End(_) => None,
             })
+            .collect()
     }
 
     fn sections(
@@ -480,9 +481,9 @@ mod tests {
 
     #[test]
     fn test_no_markdown_separators() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("Some text without any markdown separators").collect(),
-        );
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets(
+            "Some text without any markdown separators",
+        ));
 
         assert_eq!(
             vec![
@@ -495,9 +496,9 @@ mod tests {
 
     #[test]
     fn test_checklist() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("- [ ] incomplete task\n- [x] completed task").collect(),
-        );
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets(
+            "- [ ] incomplete task\n- [x] completed task",
+        ));
 
         assert_eq!(
             vec![
@@ -515,7 +516,7 @@ mod tests {
 
     #[test]
     fn test_footnote_reference() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("Footnote[^1]").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("Footnote[^1]"));
 
         assert_eq!(
             vec![
@@ -529,7 +530,7 @@ mod tests {
 
     #[test]
     fn test_inline_code() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("`bash`").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("`bash`"));
 
         assert_eq!(
             vec![
@@ -542,7 +543,7 @@ mod tests {
 
     #[test]
     fn test_emphasis() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("*emphasis*").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("*emphasis*"));
 
         assert_eq!(
             vec![
@@ -556,7 +557,7 @@ mod tests {
 
     #[test]
     fn test_strong() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("**emphasis**").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("**emphasis**"));
 
         assert_eq!(
             vec![
@@ -570,7 +571,7 @@ mod tests {
 
     #[test]
     fn test_strikethrough() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("~~emphasis~~").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("~~emphasis~~"));
 
         assert_eq!(
             vec![
@@ -584,7 +585,7 @@ mod tests {
 
     #[test]
     fn test_link() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("[link](url)").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("[link](url)"));
 
         assert_eq!(
             vec![
@@ -598,7 +599,7 @@ mod tests {
 
     #[test]
     fn test_image() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("![link](url)").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("![link](url)"));
 
         assert_eq!(
             vec![
@@ -612,8 +613,7 @@ mod tests {
 
     #[test]
     fn test_inline_html() {
-        let markdown =
-            SemanticSplitRanges::new(MarkdownLevel::offsets("<span>Some text</span>").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("<span>Some text</span>"));
 
         assert_eq!(
             vec![
@@ -628,8 +628,7 @@ mod tests {
 
     #[test]
     fn test_html() {
-        let markdown =
-            SemanticSplitRanges::new(MarkdownLevel::offsets("<div>Some text</div>").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("<div>Some text</div>"));
 
         assert_eq!(
             vec![(MarkdownLevel::Block, 0..20), (MarkdownLevel::Block, 0..20)],
@@ -639,10 +638,9 @@ mod tests {
 
     #[test]
     fn test_table() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |")
-                .collect(),
-        );
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets(
+            "| Header 1 | Header 2 |\n| --- | --- |\n| Cell 1 | Cell 2 |",
+        ));
         assert_eq!(
             vec![
                 (MarkdownLevel::Block, 0..57),
@@ -663,9 +661,8 @@ mod tests {
 
     #[test]
     fn test_softbreak() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("Some text\nwith a softbreak").collect(),
-        );
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("Some text\nwith a softbreak"));
 
         assert_eq!(
             vec![
@@ -680,9 +677,8 @@ mod tests {
 
     #[test]
     fn test_hardbreak() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("Some text\\\nwith a hardbreak").collect(),
-        );
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("Some text\\\nwith a hardbreak"));
 
         assert_eq!(
             vec![
@@ -697,8 +693,7 @@ mod tests {
 
     #[test]
     fn test_footnote_def() {
-        let markdown =
-            SemanticSplitRanges::new(MarkdownLevel::offsets("[^first]: Footnote").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("[^first]: Footnote"));
 
         assert_eq!(
             vec![
@@ -712,7 +707,7 @@ mod tests {
 
     #[test]
     fn test_code_block() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("```\ncode\n```").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("```\ncode\n```"));
 
         assert_eq!(
             vec![
@@ -725,7 +720,7 @@ mod tests {
 
     #[test]
     fn test_block_quote() {
-        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("> quote").collect());
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets("> quote"));
 
         assert_eq!(
             vec![
@@ -739,9 +734,8 @@ mod tests {
 
     #[test]
     fn test_with_rule() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("Some text\n\n---\n\nwith a rule").collect(),
-        );
+        let markdown =
+            SemanticSplitRanges::new(MarkdownLevel::offsets("Some text\n\n---\n\nwith a rule"));
 
         assert_eq!(
             vec![
@@ -768,9 +762,8 @@ mod tests {
         .into_iter()
         .enumerate()
         {
-            let markdown = SemanticSplitRanges::new(
-                MarkdownLevel::offsets(&format!("{heading} Heading")).collect(),
-            );
+            let markdown =
+                SemanticSplitRanges::new(MarkdownLevel::offsets(&format!("{heading} Heading")));
 
             assert_eq!(
                 vec![
@@ -784,9 +777,9 @@ mod tests {
 
     #[test]
     fn test_ranges_after_offset_block() {
-        let markdown = SemanticSplitRanges::new(
-            MarkdownLevel::offsets("- [ ] incomplete task\n- [x] completed task").collect(),
-        );
+        let markdown = SemanticSplitRanges::new(MarkdownLevel::offsets(
+            "- [ ] incomplete task\n- [x] completed task",
+        ));
 
         assert_eq!(
             vec![
