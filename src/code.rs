@@ -4,6 +4,8 @@ mod tests {
 
     use tree_sitter::{Node, Parser, Tree, TreeCursor};
 
+    use crate::SemanticLevel;
+
     /// New type around a usize to capture the depth of a given code node.
     /// Custom type so that we can implement custom ordering, since we want to
     /// sort items of lower depth as higher priority.
@@ -53,6 +55,18 @@ mod tests {
             } else {
                 None
             }
+        }
+    }
+
+    impl SemanticLevel for Depth {
+        fn offsets(text: &str) -> Vec<(Self, Range<usize>)> {
+            let mut parser = Parser::new();
+            parser
+                .set_language(&tree_sitter_rust::language())
+                .expect("Error loading Rust grammar");
+            let tree = parser.parse(text, None).expect("Error parsing source code");
+
+            CursorOffsets::new(tree.walk()).collect()
         }
     }
 

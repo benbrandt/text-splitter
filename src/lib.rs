@@ -66,7 +66,7 @@ trait SemanticLevel: Copy + fmt::Debug + Ord + PartialOrd + 'static {
     const TRIM: Trim = Trim::All;
 
     /// Generate a list of offsets for each semantic level within the text.
-    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)>;
+    fn offsets(text: &str) -> Vec<(Self, Range<usize>)>;
 
     /// Given a level, split the text into sections based on the level.
     /// Level ranges are also provided of items that are equal to or greater than the current level.
@@ -248,7 +248,7 @@ where
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,
-            semantic_split: SemanticSplitRanges::new(Level::offsets(text).collect()),
+            semantic_split: SemanticSplitRanges::new(Level::offsets(text)),
             text,
         }
     }

@@ -114,22 +114,25 @@ struct LineBreaks(usize);
 static CAPTURE_LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 impl SemanticLevel for LineBreaks {
-    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
-        CAPTURE_LINEBREAKS.find_iter(text).map(|m| {
-            let range = m.range();
-            let level = text
-                .get(range.start..range.end)
-                .unwrap()
-                .graphemes(true)
-                .count();
-            (
-                match level {
-                    0 => unreachable!("regex should always match at least one newline"),
-                    n => Self(n),
-                },
-                range,
-            )
-        })
+    fn offsets(text: &str) -> Vec<(Self, Range<usize>)> {
+        CAPTURE_LINEBREAKS
+            .find_iter(text)
+            .map(|m| {
+                let range = m.range();
+                let level = text
+                    .get(range.start..range.end)
+                    .unwrap()
+                    .graphemes(true)
+                    .count();
+                (
+                    match level {
+                        0 => unreachable!("regex should always match at least one newline"),
+                        n => Self(n),
+                    },
+                    range,
+                )
+            })
+            .collect()
     }
 }
 
@@ -372,7 +375,7 @@ mod tests {
     #[test]
     fn correctly_determines_newlines() {
         let text = "\r\n\r\ntext\n\n\ntext2";
-        let linebreaks = SemanticSplitRanges::new(LineBreaks::offsets(text).collect());
+        let linebreaks = SemanticSplitRanges::new(LineBreaks::offsets(text));
         assert_eq!(
             vec![(LineBreaks(2), 0..4), (LineBreaks(3), 8..11)],
             linebreaks.ranges
