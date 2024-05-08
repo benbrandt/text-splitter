@@ -3,10 +3,8 @@
 Semantic splitting of text documents.
 */
 
-use std::{iter::once, ops::Range};
+use std::ops::Range;
 
-use either::Either;
-use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
@@ -134,43 +132,6 @@ impl SemanticLevel for TextLevel {
                 range,
             )
         })
-    }
-
-    fn sections(
-        self,
-        text: &str,
-        level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
-    ) -> impl Iterator<Item = (usize, &str)> {
-        let mut cursor = 0;
-        let mut final_match = false;
-        level_ranges
-            .batching(move |it| {
-                match it.next() {
-                    // If we've hit the end, actually return None
-                    None if final_match => None,
-                    // First time we hit None, return the final section of the text
-                    None => {
-                        final_match = true;
-                        return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
-                    }
-                    // Return text preceding match + the match
-                    Some((_, range)) => {
-                        let offset = cursor;
-                        let prev_section = text
-                            .get(offset..range.start)
-                            .expect("invalid character sequence");
-                        let separator = text
-                            .get(range.start..range.end)
-                            .expect("invalid character sequence");
-                        cursor = range.end;
-                        Some(Either::Right(
-                            [(offset, prev_section), (range.start, separator)].into_iter(),
-                        ))
-                    }
-                }
-            })
-            .flatten()
-            .filter(|(_, s)| !s.is_empty())
     }
 }
 

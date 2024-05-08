@@ -1,10 +1,11 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
-use std::{cmp::Ordering, fmt, ops::Range};
+use std::{cmp::Ordering, fmt, iter::once, ops::Range};
 
 use auto_enums::auto_enum;
 use chunk_size::MemoizedChunkSizer;
+use either::Either;
 use itertools::Itertools;
 use strum::{EnumIter, IntoEnumIterator};
 use trim::Trim;
@@ -69,11 +70,49 @@ trait SemanticLevel: Copy + fmt::Debug + Ord + PartialOrd + 'static {
 
     /// Given a level, split the text into sections based on the level.
     /// Level ranges are also provided of items that are equal to or greater than the current level.
+    /// Default implementation assumes that all level ranges should be treated
+    /// as their own item.
     fn sections(
         self,
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
-    ) -> impl Iterator<Item = (usize, &str)>;
+    ) -> impl Iterator<Item = (usize, &str)> {
+        let mut cursor = 0;
+        let mut final_match = false;
+        level_ranges
+            .batching(move |it| {
+                loop {
+                    match it.next() {
+                        // If we've hit the end, actually return None
+                        None if final_match => return None,
+                        // First time we hit None, return the final section of the text
+                        None => {
+                            final_match = true;
+                            return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
+                        }
+                        // Return text preceding match + the match
+                        Some((_, range)) => {
+                            if range.start < cursor {
+                                continue;
+                            }
+                            let offset = cursor;
+                            let prev_section = text
+                                .get(offset..range.start)
+                                .expect("invalid character sequence");
+                            let separator = text
+                                .get(range.start..range.end)
+                                .expect("invalid character sequence");
+                            cursor = range.end;
+                            return Some(Either::Right(
+                                [(offset, prev_section), (range.start, separator)].into_iter(),
+                            ));
+                        }
+                    }
+                }
+            })
+            .flatten()
+            .filter(|(_, s)| !s.is_empty())
+    }
 }
 
 /// Captures information about document structure for a given text, and their
