@@ -76,7 +76,7 @@ jobs:
       - uses: taiki-e/install-action@cargo-hack
       - name: cargo hack
         # Check that all feature combinations work
-        run: cargo hack --feature-powerset check
+        run: cargo hack check --feature-powerset --no-dev-deps
 
   semver:
     name: semver
