@@ -172,15 +172,61 @@ impl MarkdownLevel {
             Self::Block => true,
         }
     }
+}
 
-    /// Given a list of separator ranges, construct the sections of the text
-    fn split_str_by_separator(
+impl SemanticLevel for MarkdownLevel {
+    const TRIM: Trim = Trim::PreserveIndentation;
+
+    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
+        Parser::new_ext(text, Options::all())
+            .into_offset_iter()
+            .filter_map(|(event, range)| match event {
+                Event::Start(
+                    Tag::Emphasis
+                    | Tag::Strong
+                    | Tag::Strikethrough
+                    | Tag::Link { .. }
+                    | Tag::Image { .. }
+                    | Tag::TableCell,
+                )
+                | Event::Text(_)
+                | Event::HardBreak
+                | Event::Code(_)
+                | Event::InlineHtml(_)
+                | Event::FootnoteReference(_)
+                | Event::TaskListMarker(_) => Some((Self::InlineElement, range)),
+                Event::SoftBreak => Some((Self::SoftBreak, range)),
+                Event::Html(_)
+                | Event::Start(
+                    Tag::Paragraph
+                    | Tag::CodeBlock(_)
+                    | Tag::FootnoteDefinition(_)
+                    | Tag::MetadataBlock(_)
+                    | Tag::TableHead
+                    | Tag::BlockQuote
+                    | Tag::TableRow
+                    | Tag::Item
+                    | Tag::HtmlBlock
+                    | Tag::List(_)
+                    | Tag::Table(_),
+                ) => Some((Self::Block, range)),
+                Event::Rule => Some((Self::Rule, range)),
+                Event::Start(Tag::Heading { level, .. }) => {
+                    Some((Self::Heading(level.into()), range))
+                }
+                // End events are identical to start, so no need to grab them.
+                Event::End(_) => None,
+            })
+    }
+
+    fn sections(
+        self,
         text: &str,
-        separator_ranges: impl Iterator<Item = (Self, Range<usize>)>,
+        level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
         let mut cursor = 0;
         let mut final_match = false;
-        separator_ranges
+        level_ranges
             .batching(move |it| {
                 loop {
                     match it.next() {
@@ -238,64 +284,6 @@ impl MarkdownLevel {
             })
             .flatten()
             .filter(|(_, s)| !s.is_empty())
-    }
-}
-
-impl SemanticLevel for MarkdownLevel {
-    const TRIM: Trim = Trim::PreserveIndentation;
-
-    fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
-        Parser::new_ext(text, Options::all())
-            .into_offset_iter()
-            .filter_map(|(event, range)| match event {
-                Event::Start(
-                    Tag::Emphasis
-                    | Tag::Strong
-                    | Tag::Strikethrough
-                    | Tag::Link { .. }
-                    | Tag::Image { .. }
-                    | Tag::TableCell,
-                )
-                | Event::Text(_)
-                | Event::HardBreak
-                | Event::Code(_)
-                | Event::InlineHtml(_)
-                | Event::FootnoteReference(_)
-                | Event::TaskListMarker(_) => Some((Self::InlineElement, range)),
-                Event::SoftBreak => Some((Self::SoftBreak, range)),
-                Event::Html(_)
-                | Event::Start(
-                    Tag::Paragraph
-                    | Tag::CodeBlock(_)
-                    | Tag::FootnoteDefinition(_)
-                    | Tag::MetadataBlock(_)
-                    | Tag::TableHead
-                    | Tag::BlockQuote
-                    | Tag::TableRow
-                    | Tag::Item
-                    | Tag::HtmlBlock
-                    | Tag::List(_)
-                    | Tag::Table(_),
-                ) => Some((Self::Block, range)),
-                Event::Rule => Some((Self::Rule, range)),
-                Event::Start(Tag::Heading { level, .. }) => {
-                    Some((Self::Heading(level.into()), range))
-                }
-                // End events are identical to start, so no need to grab them.
-                Event::End(_) => None,
-            })
-    }
-
-    fn sections(
-        self,
-        text: &str,
-        level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
-    ) -> impl Iterator<Item = (usize, &str)> {
-        match self {
-            Self::SoftBreak | Self::InlineElement | Self::Block | Self::Heading(_) | Self::Rule => {
-                Self::split_str_by_separator(text, level_ranges)
-            }
-        }
     }
 }
 

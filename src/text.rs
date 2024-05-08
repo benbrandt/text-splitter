@@ -114,45 +114,6 @@ enum TextLevel {
     LineBreak(usize),
 }
 
-impl TextLevel {
-    /// Given a list of separator ranges, construct the sections of the text
-    fn split_str_by_separator(
-        text: &str,
-        separator_ranges: impl Iterator<Item = Range<usize>>,
-    ) -> impl Iterator<Item = (usize, &str)> {
-        let mut cursor = 0;
-        let mut final_match = false;
-        separator_ranges
-            .batching(move |it| {
-                match it.next() {
-                    // If we've hit the end, actually return None
-                    None if final_match => None,
-                    // First time we hit None, return the final section of the text
-                    None => {
-                        final_match = true;
-                        return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
-                    }
-                    // Return text preceding match + the match
-                    Some(range) => {
-                        let offset = cursor;
-                        let prev_section = text
-                            .get(offset..range.start)
-                            .expect("invalid character sequence");
-                        let separator = text
-                            .get(range.start..range.end)
-                            .expect("invalid character sequence");
-                        cursor = range.end;
-                        Some(Either::Right(
-                            [(offset, prev_section), (range.start, separator)].into_iter(),
-                        ))
-                    }
-                }
-            })
-            .flatten()
-            .filter(|(_, s)| !s.is_empty())
-    }
-}
-
 // Lazy so that we don't have to compile them more than once
 static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
@@ -180,9 +141,36 @@ impl SemanticLevel for TextLevel {
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
-        match self {
-            Self::LineBreak(_) => Self::split_str_by_separator(text, level_ranges.map(|(_, r)| r)),
-        }
+        let mut cursor = 0;
+        let mut final_match = false;
+        level_ranges
+            .batching(move |it| {
+                match it.next() {
+                    // If we've hit the end, actually return None
+                    None if final_match => None,
+                    // First time we hit None, return the final section of the text
+                    None => {
+                        final_match = true;
+                        return text.get(cursor..).map(|t| Either::Left(once((cursor, t))));
+                    }
+                    // Return text preceding match + the match
+                    Some((_, range)) => {
+                        let offset = cursor;
+                        let prev_section = text
+                            .get(offset..range.start)
+                            .expect("invalid character sequence");
+                        let separator = text
+                            .get(range.start..range.end)
+                            .expect("invalid character sequence");
+                        cursor = range.end;
+                        Some(Either::Right(
+                            [(offset, prev_section), (range.start, separator)].into_iter(),
+                        ))
+                    }
+                }
+            })
+            .flatten()
+            .filter(|(_, s)| !s.is_empty())
     }
 }
 
