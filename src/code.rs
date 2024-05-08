@@ -1,10 +1,30 @@
 #[cfg(test)]
 mod tests {
-    use std::ops::Range;
+    use std::{cmp::Ordering, ops::Range};
 
     use tree_sitter::{Node, Parser, Tree, TreeCursor};
 
+    /// New type around a usize to capture the depth of a given code node.
+    /// Custom type so that we can implement custom ordering, since we want to
+    /// sort items of lower depth as higher priority.
+    #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+    struct Depth(usize);
+
+    impl PartialOrd for Depth {
+        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+            Some(other.0.cmp(&self.0))
+        }
+    }
+
+    impl Ord for Depth {
+        fn cmp(&self, other: &Self) -> Ordering {
+            self.partial_cmp(other).unwrap()
+        }
+    }
+
     /// New type around a tree-sitter cursor to allow for implementing an iterator.
+    /// Each call to `next()` will return the next node in the tree in a depth-first
+    /// order.
     struct CursorOffsets<'cursor> {
         cursor: TreeCursor<'cursor>,
     }
@@ -16,7 +36,7 @@ mod tests {
     }
 
     impl<'cursor> Iterator for CursorOffsets<'cursor> {
-        type Item = (usize, Range<usize>);
+        type Item = (Depth, Range<usize>);
 
         fn next(&mut self) -> Option<Self::Item> {
             // There are children (can call this initially because we don't want the root node)
@@ -27,13 +47,28 @@ mod tests {
                 || (self.cursor.goto_parent() && self.cursor.goto_next_sibling())
             {
                 Some((
-                    self.cursor.depth() as usize,
+                    Depth(self.cursor.depth() as usize),
                     self.cursor.node().byte_range(),
                 ))
             } else {
                 None
             }
         }
+    }
+
+    #[test]
+    fn depth_ordering() {
+        assert!(Depth(0) > Depth(1));
+        assert!(Depth(1) > Depth(2));
+        assert!(Depth(1) == Depth(1));
+        assert!(Depth(2) < Depth(1));
+    }
+
+    #[test]
+    fn depth_sorting() {
+        let mut depths = vec![Depth(0), Depth(1), Depth(2)];
+        depths.sort();
+        assert_eq!(depths, [Depth(2), Depth(1), Depth(0)]);
     }
 
     /// Checks that the optimized version of the code produces the same results as the naive version.
@@ -55,7 +90,7 @@ mod tests {
         assert_eq!(offsets, naive_offsets(&tree));
     }
 
-    fn naive_offsets(tree: &Tree) -> Vec<(usize, Range<usize>)> {
+    fn naive_offsets(tree: &Tree) -> Vec<(Depth, Range<usize>)> {
         let root_node = tree.root_node();
         let mut offsets = vec![];
         recursive_naive_offsets(&mut offsets, root_node, 0);
@@ -66,13 +101,13 @@ mod tests {
     // documentation, this is not efficient for large trees. But because it is the easiest
     // to reason about it is a good check for correctness.
     fn recursive_naive_offsets(
-        collection: &mut Vec<(usize, Range<usize>)>,
+        collection: &mut Vec<(Depth, Range<usize>)>,
         node: Node<'_>,
         depth: usize,
     ) {
         // We can skip the root node
         if depth > 0 {
-            collection.push((depth, node.byte_range()));
+            collection.push((Depth(depth), node.byte_range()));
         }
 
         for child in node.children(&mut node.walk()) {
