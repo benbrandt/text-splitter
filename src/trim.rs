@@ -15,9 +15,11 @@ pub enum Trim {
     /// leading whitespace will be trimmed.
     /// Useful for text like Markdown or code, where indentation is important to
     /// the meaning of the text.
+    #[cfg(any(feature = "markdown", feature = "code"))]
     PreserveIndentation,
 }
 
+#[cfg(any(feature = "markdown", feature = "code"))]
 const NEWLINES: [char; 2] = ['\n', '\r'];
 
 impl Trim {
@@ -28,6 +30,7 @@ impl Trim {
                 let diff = chunk.len() - chunk.trim_start().len();
                 (offset + diff, chunk.trim())
             }
+            #[cfg(any(feature = "markdown", feature = "code"))]
             Self::PreserveIndentation => {
                 // Preserve indentation if we have newlines inside the element
                 if chunk.trim().contains(NEWLINES) {
