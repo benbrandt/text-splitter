@@ -98,26 +98,24 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::<Sizer, TextLevel>::new(&self.chunk_config, text)
+        TextChunks::<Sizer, LineBreaks>::new(&self.chunk_config, text)
     }
 }
 
 /// Different semantic levels that text can be split by.
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
+///
+/// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-enum TextLevel {
-    /// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
-    /// Falls back to the next lower number, or else [`Self::Sentence`]
-    LineBreak(usize),
-}
+struct LineBreaks(usize);
 
 // Lazy so that we don't have to compile them more than once
-static LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
+static CAPTURE_LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
-impl SemanticLevel for TextLevel {
+impl SemanticLevel for LineBreaks {
     fn offsets(text: &str) -> impl Iterator<Item = (Self, Range<usize>)> {
-        LINEBREAKS.find_iter(text).map(|m| {
+        CAPTURE_LINEBREAKS.find_iter(text).map(|m| {
             let range = m.range();
             let level = text
                 .get(range.start..range.end)
@@ -127,7 +125,7 @@ impl SemanticLevel for TextLevel {
             (
                 match level {
                     0 => unreachable!("regex should always match at least one newline"),
-                    n => Self::LineBreak(n),
+                    n => Self(n),
                 },
                 range,
             )
@@ -148,7 +146,7 @@ mod tests {
     #[test]
     fn returns_one_chunk_if_text_is_shorter_than_max_chunk_size() {
         let text = Faker.fake::<String>();
-        let chunks = TextChunks::<_, TextLevel>::new(
+        let chunks = TextChunks::<_, LineBreaks>::new(
             &ChunkConfig::new(text.chars().count()).with_trim(false),
             &text,
         )
@@ -165,7 +163,7 @@ mod tests {
         // Round up to one above half so it goes to 2 chunks
         let max_chunk_size = text.chars().count() / 2 + 1;
 
-        let chunks = TextChunks::<_, TextLevel>::new(
+        let chunks = TextChunks::<_, LineBreaks>::new(
             &ChunkConfig::new(max_chunk_size).with_trim(false),
             &text,
         )
@@ -190,16 +188,17 @@ mod tests {
     #[test]
     fn empty_string() {
         let text = "";
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(100).with_trim(false), text)
-            .map(|(_, c)| c)
-            .collect::<Vec<_>>();
+        let chunks =
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(100).with_trim(false), text)
+                .map(|(_, c)| c)
+                .collect::<Vec<_>>();
         assert!(chunks.is_empty());
     }
 
     #[test]
     fn can_handle_unicode_characters() {
         let text = "éé"; // Char that is more than one byte
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(1).with_trim(false), text)
             .map(|(_, c)| c)
             .collect::<Vec<_>>();
         assert_eq!(vec!["é", "é"], chunks);
@@ -220,7 +219,7 @@ mod tests {
     #[test]
     fn custom_len_function() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::<_, TextLevel>::new(
+        let chunks = TextChunks::<_, LineBreaks>::new(
             &ChunkConfig::new(2).with_sizer(Str).with_trim(false),
             text,
         )
@@ -232,7 +231,7 @@ mod tests {
     #[test]
     fn handles_char_bigger_than_len() {
         let text = "éé"; // Char that is two bytes each
-        let chunks = TextChunks::<_, TextLevel>::new(
+        let chunks = TextChunks::<_, LineBreaks>::new(
             &ChunkConfig::new(1).with_sizer(Str).with_trim(false),
             text,
         )
@@ -246,7 +245,7 @@ mod tests {
     fn chunk_by_graphemes() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(3).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(3).with_trim(false), text)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         // \r\n is grouped together not separated
@@ -258,7 +257,7 @@ mod tests {
         let text = " a b ";
 
         let chunks =
-            TextChunks::<_, TextLevel>::new(&ChunkConfig::new(1), text).collect::<Vec<_>>();
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(1), text).collect::<Vec<_>>();
         assert_eq!(vec![(1, "a"), (3, "b")], chunks);
     }
 
@@ -266,7 +265,7 @@ mod tests {
     fn graphemes_fallback_to_chars() {
         let text = "a̐éö̲\r\n";
 
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(1).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(1).with_trim(false), text)
             .map(|(_, g)| g)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -280,7 +279,7 @@ mod tests {
         let text = "\r\na̐éö̲\r\n";
 
         let chunks =
-            TextChunks::<_, TextLevel>::new(&ChunkConfig::new(3), text).collect::<Vec<_>>();
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(3), text).collect::<Vec<_>>();
         assert_eq!(vec![(2, "a̐é"), (7, "ö̲")], chunks);
     }
 
@@ -288,7 +287,7 @@ mod tests {
     fn chunk_by_words() {
         let text = "The quick (\"brown\") fox can't jump 32.3 feet, right?";
 
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(10).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(10).with_trim(false), text)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -307,7 +306,7 @@ mod tests {
     #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(2).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(2).with_trim(false), text)
             .map(|(_, w)| w)
             .collect::<Vec<_>>();
         assert_eq!(vec!["Th", "é ", "qu", "ic", "k", "\r\n"], chunks);
@@ -317,7 +316,7 @@ mod tests {
     fn trim_word_indices() {
         let text = "Some text from a document";
         let chunks =
-            TextChunks::<_, TextLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (10, "from a"), (17, "document")],
             chunks
@@ -327,7 +326,7 @@ mod tests {
     #[test]
     fn chunk_by_sentences() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(21).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(21).with_trim(false), text)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -339,7 +338,7 @@ mod tests {
     #[test]
     fn sentences_falls_back_to_words() {
         let text = "Mr. Fox jumped. [...] The dog was too lazy.";
-        let chunks = TextChunks::<_, TextLevel>::new(&ChunkConfig::new(16).with_trim(false), text)
+        let chunks = TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(16).with_trim(false), text)
             .map(|(_, s)| s)
             .collect::<Vec<_>>();
         assert_eq!(
@@ -352,7 +351,7 @@ mod tests {
     fn trim_sentence_indices() {
         let text = "Some text. From a document.";
         let chunks =
-            TextChunks::<_, TextLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text."), (11, "From a"), (18, "document.")],
             chunks
@@ -363,7 +362,7 @@ mod tests {
     fn trim_paragraph_indices() {
         let text = "Some text\n\nfrom a\ndocument";
         let chunks =
-            TextChunks::<_, TextLevel>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
+            TextChunks::<_, LineBreaks>::new(&ChunkConfig::new(10), text).collect::<Vec<_>>();
         assert_eq!(
             vec![(0, "Some text"), (11, "from a"), (18, "document")],
             chunks
@@ -373,12 +372,9 @@ mod tests {
     #[test]
     fn correctly_determines_newlines() {
         let text = "\r\n\r\ntext\n\n\ntext2";
-        let linebreaks = SemanticSplitRanges::new(TextLevel::offsets(text).collect());
+        let linebreaks = SemanticSplitRanges::new(LineBreaks::offsets(text).collect());
         assert_eq!(
-            vec![
-                (TextLevel::LineBreak(2), 0..4),
-                (TextLevel::LineBreak(3), 8..11)
-            ],
+            vec![(LineBreaks(2), 0..4), (LineBreaks(3), 8..11)],
             linebreaks.ranges
         );
     }
