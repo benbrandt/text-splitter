@@ -4,7 +4,7 @@ mod tests {
 
     use tree_sitter::{Node, Parser, Tree, TreeCursor};
 
-    use crate::SemanticLevel;
+    use crate::splitter::SemanticLevel;
 
     /// New type around a usize to capture the depth of a given code node.
     /// Custom type so that we can implement custom ordering, since we want to

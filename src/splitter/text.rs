@@ -9,7 +9,10 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{ChunkConfig, ChunkSizer, SemanticLevel, Splitter};
+use crate::{
+    splitter::{SemanticLevel, Splitter},
+    ChunkConfig, ChunkSizer,
+};
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -151,7 +154,7 @@ mod tests {
 
     use fake::{Fake, Faker};
 
-    use crate::{ChunkCapacity, ChunkSize, SemanticSplitRanges};
+    use crate::{splitter::SemanticSplitRanges, ChunkCapacity, ChunkSize};
 
     use super::*;
 

@@ -10,7 +10,11 @@ use either::Either;
 use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 
-use crate::{trim::Trim, ChunkConfig, ChunkSizer, SemanticLevel, Splitter};
+use crate::{
+    splitter::{SemanticLevel, Splitter},
+    trim::Trim,
+    ChunkConfig, ChunkSizer,
+};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -303,7 +307,7 @@ mod tests {
 
     use fake::{Fake, Faker};
 
-    use crate::SemanticSplitRanges;
+    use crate::splitter::SemanticSplitRanges;
 
     use super::*;
 
