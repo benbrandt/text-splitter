@@ -9,7 +9,7 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use unicode_segmentation::UnicodeSegmentation;
 
-use crate::{ChunkConfig, ChunkSizer, SemanticLevel, Splitter, TextChunks};
+use crate::{ChunkConfig, ChunkSizer, SemanticLevel, Splitter};
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -78,7 +78,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        self.chunk_indices(text).map(|(_, t)| t)
+        Splitter::<_, _>::chunks(self, text)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -98,14 +98,18 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::<Sizer, LineBreaks>::new(&self.chunk_config, text, self.parse(text))
+        Splitter::<_, _>::chunk_indices(self, text)
     }
 }
 
-impl<Sizer> Splitter<LineBreaks> for TextSplitter<Sizer>
+impl<Sizer> Splitter<LineBreaks, Sizer> for TextSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
+    fn chunk_config(&self) -> &ChunkConfig<Sizer> {
+        &self.chunk_config
+    }
+
     fn parse(&self, text: &str) -> Vec<(LineBreaks, Range<usize>)> {
         CAPTURE_LINEBREAKS
             .find_iter(text)
