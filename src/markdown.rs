@@ -10,7 +10,7 @@ use either::Either;
 use itertools::Itertools;
 use pulldown_cmark::{Event, Options, Parser, Tag};
 
-use crate::{trim::Trim, ChunkConfig, ChunkSizer, SemanticLevel, Splitter, TextChunks};
+use crate::{trim::Trim, ChunkConfig, ChunkSizer, SemanticLevel, Splitter};
 
 /// Markdown splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will
@@ -79,7 +79,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        self.chunk_indices(text).map(|(_, t)| t)
+        Splitter::<_, _>::chunks(self, text)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -99,14 +99,18 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        TextChunks::<Sizer, MarkdownLevel>::new(&self.chunk_config, text, self.parse(text))
+        Splitter::<_, _>::chunk_indices(self, text)
     }
 }
 
-impl<Sizer> Splitter<MarkdownLevel> for MarkdownSplitter<Sizer>
+impl<Sizer> Splitter<MarkdownLevel, Sizer> for MarkdownSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
+    fn chunk_config(&self) -> &ChunkConfig<Sizer> {
+        &self.chunk_config
+    }
+
     fn parse(&self, text: &str) -> Vec<(MarkdownLevel, Range<usize>)> {
         Parser::new_ext(text, Options::all())
             .into_offset_iter()

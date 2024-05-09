@@ -208,12 +208,42 @@ where
     }
 }
 
-trait Splitter<Level>
+/// Shared interface for splitters that can generate chunks of text based on the
+/// associated semantic level.
+trait Splitter<Level, Sizer>
 where
     Level: SemanticLevel,
+    Sizer: ChunkSizer,
 {
+    /// Retrieve the splitter chunk configuration
+    fn chunk_config(&self) -> &ChunkConfig<Sizer>;
+
     /// Generate a list of offsets for each semantic level within the text.
     fn parse(&self, text: &str) -> Vec<(Level, Range<usize>)>;
+
+    /// Returns an iterator over chunks of the text and their byte offsets.
+    /// Each chunk will be up to the max size of the `ChunkConfig`.
+    fn chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter
+    where
+        Sizer: 'splitter,
+    {
+        TextChunks::<Sizer, Level>::new(self.chunk_config(), text, self.parse(text))
+    }
+
+    /// Generate a list of chunks from a given text.
+    /// Each chunk will be up to the max size of the `ChunkConfig`.
+    fn chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = &'text str> + 'splitter
+    where
+        Sizer: 'splitter,
+    {
+        self.chunk_indices(text).map(|(_, t)| t)
+    }
 }
 
 /// Returns chunks of text with their byte offsets as an iterator.
