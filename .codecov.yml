@@ -1,5 +1,4 @@
 ignore:
-  - "tests" # we also don't care about coverage of test code
   - "bindings"
   - "benches"
 coverage:
@@ -9,6 +8,9 @@ coverage:
       default:
         # Avoid false negatives
         threshold: 1%
-# Make comments less noisy
+    patch:
+      default:
+        # Avoid false negatives
+        threshold: 1%
 comment:
   require_changes: true
