@@ -2,19 +2,150 @@
 mod tests {
     use std::{cmp::Ordering, ops::Range};
 
-    use tree_sitter::{Node, Parser, Tree, TreeCursor};
+    use tree_sitter::{Language, Node, Parser, Tree, TreeCursor};
 
-    use crate::splitter::SemanticLevel;
+    use crate::{
+        splitter::{SemanticLevel, Splitter},
+        trim::Trim,
+        ChunkConfig, ChunkSizer,
+    };
+
+    /// Source code splitter. Recursively splits chunks into the largest
+    /// semantic units that fit within the chunk size. Also will attempt to merge
+    /// neighboring chunks if they can fit within the given chunk size.
+    #[derive(Debug)]
+    #[allow(clippy::module_name_repetitions)]
+    pub struct CodeSplitter<Sizer>
+    where
+        Sizer: ChunkSizer,
+    {
+        /// Method of determining chunk sizes.
+        chunk_config: ChunkConfig<Sizer>,
+        /// Language to use for parsing the code.
+        language: Language,
+    }
+
+    impl<Sizer> CodeSplitter<Sizer>
+    where
+        Sizer: ChunkSizer,
+    {
+        /// Creates a new [`CodeSplitter`].
+        ///
+        /// ```
+        /// use text_splitter::CodeSplitter;
+        ///
+        /// // By default, the chunk sizer is based on characters.
+        /// let splitter = CodeSplitter::new(512);
+        /// ```
+        #[must_use]
+        pub fn new(language: Language, chunk_config: impl Into<ChunkConfig<Sizer>>) -> Self {
+            // Verify that this is a valid language so we can rely on that later.
+            let mut parser = Parser::new();
+            parser
+                .set_language(&language)
+                .expect("Error loading language");
+            Self {
+                chunk_config: chunk_config.into(),
+                language,
+            }
+        }
+
+        /// Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+        ///
+        /// ## Method
+        ///
+        /// To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
+        //
+        // 1. Split the text by a increasing semantic levels.
+        // 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
+        // 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length.
+        //    Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
+        //
+        // The boundaries used to split the text if using the `chunks` method, in ascending order:
+        //
+        // 1. Characters
+        // 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+        // 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+        // 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+        // 5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`)
+        //    Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
+        //
+        // Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+        ///
+        /// ```
+        /// use text_splitter::CodeSplitter;
+        ///
+        /// let splitter = CodeSplitter::new(10);
+        /// let text = "Some text\n\nfrom a\ndocument";
+        /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
+        ///
+        /// assert_eq!(vec!["Some text", "from a", "document"], chunks);
+        /// ```
+        pub fn chunks<'splitter, 'text: 'splitter>(
+            &'splitter self,
+            text: &'text str,
+        ) -> impl Iterator<Item = &'text str> + 'splitter {
+            Splitter::<_>::chunks(self, text)
+        }
+
+        /// Returns an iterator over chunks of the text and their byte offsets.
+        /// Each chunk will be up to the `chunk_capacity`.
+        ///
+        /// See [`CodeSplitter::chunks`] for more information.
+        ///
+        /// ```
+        /// use text_splitter::{Characters, CodeSplitter};
+        ///
+        /// let splitter = CodeSplitter::new(10);
+        /// let text = "Some text\n\nfrom a\ndocument";
+        /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
+        ///
+        /// assert_eq!(vec![(0, "Some text"), (11, "from a"), (18, "document")], chunks);
+        pub fn chunk_indices<'splitter, 'text: 'splitter>(
+            &'splitter self,
+            text: &'text str,
+        ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+            Splitter::<_>::chunk_indices(self, text)
+        }
+    }
+
+    impl<Sizer> Splitter<Sizer> for CodeSplitter<Sizer>
+    where
+        Sizer: ChunkSizer,
+    {
+        type Level = Depth;
+
+        const TRIM: Trim = Trim::PreserveIndentation;
+
+        fn chunk_config(&self) -> &ChunkConfig<Sizer> {
+            &self.chunk_config
+        }
+
+        fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
+            let mut parser = Parser::new();
+            parser
+                .set_language(&self.language)
+                // We verify at initialization that the language is valid, so this should be safe.
+                .expect("Error loading language");
+            // The only reason the tree would be None is:
+            // - No language was set (we do that)
+            // - There was a timeout or cancellation option set (we don't)
+            // - So it should be safe to unwrap here
+            let tree = parser.parse(text, None).expect("Error parsing source code");
+
+            CursorOffsets::new(tree.walk()).collect()
+        }
+    }
 
     /// New type around a usize to capture the depth of a given code node.
     /// Custom type so that we can implement custom ordering, since we want to
     /// sort items of lower depth as higher priority.
     #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-    struct Depth(usize);
+    pub struct Depth(usize);
 
     impl PartialOrd for Depth {
         fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
+            Some(self.cmp(other))
         }
     }
 
@@ -58,21 +189,27 @@ mod tests {
         }
     }
 
-    impl SemanticLevel for Depth {
-        // const TRIM: Trim = Trim::PreserveIndentation;
-        // fn offsets(text: &str) -> Vec<(Self, Range<usize>)> {
-        //     let mut parser = Parser::new();
-        //     parser
-        //         .set_language(&tree_sitter_rust::language())
-        //         .expect("Error loading Rust grammar");
-        //     // The only reason the tree would be None is:
-        //     // - No language was set (we do that)
-        //     // - There was a timeout or cancellation option set (we don't)
-        //     // - So it should be safe to unwrap here
-        //     let tree = parser.parse(text, None).expect("Error parsing source code");
+    impl SemanticLevel for Depth {}
 
-        //     CursorOffsets::new(tree.walk()).collect()
-        // }
+    #[test]
+    fn rust_splitter() {
+        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16);
+        let text = "fn main() {\n    let x = 5;\n}";
+        let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+        assert_eq!(chunks, vec!["fn main()", "{\n    let x = 5;", "}"]);
+    }
+
+    #[test]
+    fn rust_splitter_indices() {
+        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16);
+        let text = "fn main() {\n    let x = 5;\n}";
+        let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
+
+        assert_eq!(
+            chunks,
+            vec![(0, "fn main()"), (10, "{\n    let x = 5;"), (27, "}")]
+        );
     }
 
     #[test]
