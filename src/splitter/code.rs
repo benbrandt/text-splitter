@@ -59,6 +59,7 @@ mod tests {
     }
 
     impl SemanticLevel for Depth {
+        // const TRIM: Trim = Trim::PreserveIndentation;
         // fn offsets(text: &str) -> Vec<(Self, Range<usize>)> {
         //     let mut parser = Parser::new();
         //     parser
