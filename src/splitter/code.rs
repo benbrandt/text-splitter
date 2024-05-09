@@ -14,13 +14,13 @@ mod tests {
 
     impl PartialOrd for Depth {
         fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-            Some(other.0.cmp(&self.0))
+        Some(self.cmp(other))
         }
     }
 
     impl Ord for Depth {
         fn cmp(&self, other: &Self) -> Ordering {
-            self.partial_cmp(other).unwrap()
+            other.0.cmp(&self.0)
         }
     }
 
@@ -76,11 +76,19 @@ mod tests {
     }
 
     #[test]
-    fn depth_ordering() {
-        assert!(Depth(0) > Depth(1));
-        assert!(Depth(1) > Depth(2));
-        assert!(Depth(1) == Depth(1));
-        assert!(Depth(2) < Depth(1));
+    fn depth_partialord() {
+        assert_eq!(Depth(0).partial_cmp(&Depth(1)), Some(Ordering::Greater));
+        assert_eq!(Depth(1).partial_cmp(&Depth(2)), Some(Ordering::Greater));
+        assert_eq!(Depth(1).partial_cmp(&Depth(1)), Some(Ordering::Equal));
+        assert_eq!(Depth(2).partial_cmp(&Depth(1)), Some(Ordering::Less));
+    }
+
+    #[test]
+    fn depth_ord() {
+        assert_eq!(Depth(0).cmp(&Depth(1)), Ordering::Greater);
+        assert_eq!(Depth(1).cmp(&Depth(2)), Ordering::Greater);
+        assert_eq!(Depth(1).cmp(&Depth(1)), Ordering::Equal);
+        assert_eq!(Depth(2).cmp(&Depth(1)), Ordering::Less);
     }
 
     #[test]
