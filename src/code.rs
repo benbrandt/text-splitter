@@ -64,6 +64,10 @@ mod tests {
             parser
                 .set_language(&tree_sitter_rust::language())
                 .expect("Error loading Rust grammar");
+            // The only reason the tree would be None is:
+            // - No language was set (we do that)
+            // - There was a timeout or cancellation option set (we don't)
+            // - So it should be safe to unwrap here
             let tree = parser.parse(text, None).expect("Error parsing source code");
 
             CursorOffsets::new(tree.walk()).collect()
