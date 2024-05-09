@@ -27,6 +27,9 @@ where
     Level: SemanticLevel,
     Sizer: ChunkSizer,
 {
+    /// Trimming behavior to use when trimming chunks
+    const TRIM: Trim = Trim::All;
+
     /// Retrieve the splitter chunk configuration
     fn chunk_config(&self) -> &ChunkConfig<Sizer>;
 
@@ -42,7 +45,7 @@ where
     where
         Sizer: 'splitter,
     {
-        TextChunks::<Sizer, Level>::new(self.chunk_config(), text, self.parse(text))
+        TextChunks::<Sizer, Level>::new(self.chunk_config(), text, self.parse(text), Self::TRIM)
     }
 
     /// Generate a list of chunks from a given text.
@@ -60,15 +63,11 @@ where
 
 /// Custom-defined levels of semantic splitting for custom document types.
 trait SemanticLevel: Copy + fmt::Debug + Ord + PartialOrd + 'static {
-    /// Trimming behavior to use when trimming chunks
-    const TRIM: Trim = Trim::All;
-
     /// Given a level, split the text into sections based on the level.
     /// Level ranges are also provided of items that are equal to or greater than the current level.
     /// Default implementation assumes that all level ranges should be treated
     /// as their own item.
     fn sections(
-        self,
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
@@ -224,13 +223,12 @@ where
         text: &'text str,
         semantic_level: Level,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        semantic_level
-            .sections(
-                text,
-                self.level_ranges_after_offset(offset, semantic_level)
-                    .map(move |(l, sep)| (l, sep.start - offset..sep.end - offset)),
-            )
-            .map(move |(i, str)| (offset + i, str))
+        Level::sections(
+            text,
+            self.level_ranges_after_offset(offset, semantic_level)
+                .map(move |(l, sep)| (l, sep.start - offset..sep.end - offset)),
+        )
+        .map(move |(i, str)| (offset + i, str))
     }
 
     /// Clear out ranges we have moved past so future iterations are faster
@@ -273,10 +271,11 @@ where
         chunk_config: &'sizer ChunkConfig<Sizer>,
         text: &'text str,
         offsets: Vec<(Level, Range<usize>)>,
+        trim: Trim,
     ) -> Self {
         Self {
             chunk_config,
-            chunk_sizer: MemoizedChunkSizer::new(chunk_config, Level::TRIM),
+            chunk_sizer: MemoizedChunkSizer::new(chunk_config, trim),
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,

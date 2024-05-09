@@ -111,6 +111,8 @@ impl<Sizer> Splitter<MarkdownLevel, Sizer> for MarkdownSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
+    const TRIM: Trim = Trim::PreserveIndentation;
+
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
     }
@@ -231,10 +233,7 @@ impl MarkdownLevel {
 }
 
 impl SemanticLevel for MarkdownLevel {
-    const TRIM: Trim = Trim::PreserveIndentation;
-
     fn sections(
-        self,
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
     ) -> impl Iterator<Item = (usize, &str)> {
