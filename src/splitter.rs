@@ -22,11 +22,12 @@ pub use text::TextSplitter;
 
 /// Shared interface for splitters that can generate chunks of text based on the
 /// associated semantic level.
-trait Splitter<Level, Sizer>
+trait Splitter<Sizer>
 where
-    Level: SemanticLevel,
     Sizer: ChunkSizer,
 {
+    type Level: SemanticLevel;
+
     /// Trimming behavior to use when trimming chunks
     const TRIM: Trim = Trim::All;
 
@@ -34,7 +35,7 @@ where
     fn chunk_config(&self) -> &ChunkConfig<Sizer>;
 
     /// Generate a list of offsets for each semantic level within the text.
-    fn parse(&self, text: &str) -> Vec<(Level, Range<usize>)>;
+    fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)>;
 
     /// Returns an iterator over chunks of the text and their byte offsets.
     /// Each chunk will be up to the max size of the `ChunkConfig`.
@@ -45,7 +46,12 @@ where
     where
         Sizer: 'splitter,
     {
-        TextChunks::<Sizer, Level>::new(self.chunk_config(), text, self.parse(text), Self::TRIM)
+        TextChunks::<Sizer, Self::Level>::new(
+            self.chunk_config(),
+            text,
+            self.parse(text),
+            Self::TRIM,
+        )
     }
 
     /// Generate a list of chunks from a given text.

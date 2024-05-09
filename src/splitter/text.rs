@@ -81,7 +81,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        Splitter::<_, _>::chunks(self, text)
+        Splitter::<_>::chunks(self, text)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -101,19 +101,21 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        Splitter::<_, _>::chunk_indices(self, text)
+        Splitter::<_>::chunk_indices(self, text)
     }
 }
 
-impl<Sizer> Splitter<LineBreaks, Sizer> for TextSplitter<Sizer>
+impl<Sizer> Splitter<Sizer> for TextSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
+    type Level = LineBreaks;
+
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
     }
 
-    fn parse(&self, text: &str) -> Vec<(LineBreaks, Range<usize>)> {
+    fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
         CAPTURE_LINEBREAKS
             .find_iter(text)
             .map(|m| {
@@ -141,7 +143,7 @@ where
 ///
 /// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-struct LineBreaks(usize);
+pub struct LineBreaks(usize);
 
 // Lazy so that we don't have to compile them more than once
 static CAPTURE_LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());

@@ -83,7 +83,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        Splitter::<_, _>::chunks(self, text)
+        Splitter::<_>::chunks(self, text)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -103,21 +103,23 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        Splitter::<_, _>::chunk_indices(self, text)
+        Splitter::<_>::chunk_indices(self, text)
     }
 }
 
-impl<Sizer> Splitter<MarkdownLevel, Sizer> for MarkdownSplitter<Sizer>
+impl<Sizer> Splitter<Sizer> for MarkdownSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
+    type Level = Element;
+
     const TRIM: Trim = Trim::PreserveIndentation;
 
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
     }
 
-    fn parse(&self, text: &str) -> Vec<(MarkdownLevel, Range<usize>)> {
+    fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
         Parser::new_ext(text, Options::all())
             .into_offset_iter()
             .filter_map(|(event, range)| match event {
@@ -134,8 +136,8 @@ where
                 | Event::Code(_)
                 | Event::InlineHtml(_)
                 | Event::FootnoteReference(_)
-                | Event::TaskListMarker(_) => Some((MarkdownLevel::InlineElement, range)),
-                Event::SoftBreak => Some((MarkdownLevel::SoftBreak, range)),
+                | Event::TaskListMarker(_) => Some((Element::Inline, range)),
+                Event::SoftBreak => Some((Element::SoftBreak, range)),
                 Event::Html(_)
                 | Event::Start(
                     Tag::Paragraph
@@ -149,10 +151,10 @@ where
                     | Tag::HtmlBlock
                     | Tag::List(_)
                     | Tag::Table(_),
-                ) => Some((MarkdownLevel::Block, range)),
-                Event::Rule => Some((MarkdownLevel::Rule, range)),
+                ) => Some((Element::Block, range)),
+                Event::Rule => Some((Element::Rule, range)),
                 Event::Start(Tag::Heading { level, .. }) => {
-                    Some((MarkdownLevel::Heading(level.into()), range))
+                    Some((Element::Heading(level.into()), range))
                 }
                 // End events are identical to start, so no need to grab them.
                 Event::End(_) => None,
@@ -164,7 +166,7 @@ where
 /// Heading levels in markdown.
 /// Sorted in reverse order for sorting purposes.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-enum HeadingLevel {
+pub enum HeadingLevel {
     H6,
     H5,
     H4,
@@ -199,12 +201,12 @@ enum SemanticSplitPosition {
 /// Each level provides a method of splitting text into chunks of a given level
 /// as well as a fallback in case a given fallback is too large.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
-enum MarkdownLevel {
+pub enum Element {
     /// Single line break, which isn't necessarily a new element in Markdown
     SoftBreak,
     /// An inline element that is within a larger element such as a paragraph, but
     /// more specific than a sentence.
-    InlineElement,
+    Inline,
     /// Paragraph, code block, metadata, a row/item within a table or list, block quote, that can contain other "block" type elements, List or table that contains items
     Block,
     /// thematic break/horizontal rule
@@ -213,12 +215,10 @@ enum MarkdownLevel {
     Heading(HeadingLevel),
 }
 
-impl MarkdownLevel {
+impl Element {
     fn split_position(self) -> SemanticSplitPosition {
         match self {
-            Self::SoftBreak | Self::Block | Self::Rule | Self::InlineElement => {
-                SemanticSplitPosition::Own
-            }
+            Self::SoftBreak | Self::Block | Self::Rule | Self::Inline => SemanticSplitPosition::Own,
             // Attach it to the next text
             Self::Heading(_) => SemanticSplitPosition::Next,
         }
@@ -226,13 +226,13 @@ impl MarkdownLevel {
 
     fn treat_whitespace_as_previous(self) -> bool {
         match self {
-            Self::SoftBreak | Self::InlineElement | Self::Rule | Self::Heading(_) => false,
+            Self::SoftBreak | Self::Inline | Self::Rule | Self::Heading(_) => false,
             Self::Block => true,
         }
     }
 }
 
-impl SemanticLevel for MarkdownLevel {
+impl SemanticLevel for Element {
     fn sections(
         text: &str,
         level_ranges: impl Iterator<Item = (Self, Range<usize>)>,
@@ -496,10 +496,7 @@ mod tests {
             SemanticSplitRanges::new(splitter.parse("Some text without any markdown separators"));
 
         assert_eq!(
-            vec![
-                (MarkdownLevel::Block, 0..41),
-                (MarkdownLevel::InlineElement, 0..41)
-            ],
+            vec![(Element::Block, 0..41), (Element::Inline, 0..41)],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
@@ -512,13 +509,13 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..42),
-                (MarkdownLevel::Block, 0..22),
-                (MarkdownLevel::InlineElement, 2..5),
-                (MarkdownLevel::InlineElement, 6..21),
-                (MarkdownLevel::Block, 22..42),
-                (MarkdownLevel::InlineElement, 24..27),
-                (MarkdownLevel::InlineElement, 28..42),
+                (Element::Block, 0..42),
+                (Element::Block, 0..22),
+                (Element::Inline, 2..5),
+                (Element::Inline, 6..21),
+                (Element::Block, 22..42),
+                (Element::Inline, 24..27),
+                (Element::Inline, 28..42),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -531,9 +528,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..12),
-                (MarkdownLevel::InlineElement, 0..8),
-                (MarkdownLevel::InlineElement, 8..12),
+                (Element::Block, 0..12),
+                (Element::Inline, 0..8),
+                (Element::Inline, 8..12),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -545,10 +542,7 @@ mod tests {
         let markdown = SemanticSplitRanges::new(splitter.parse("`bash`"));
 
         assert_eq!(
-            vec![
-                (MarkdownLevel::Block, 0..6),
-                (MarkdownLevel::InlineElement, 0..6)
-            ],
+            vec![(Element::Block, 0..6), (Element::Inline, 0..6)],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
@@ -560,9 +554,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..10),
-                (MarkdownLevel::InlineElement, 0..10),
-                (MarkdownLevel::InlineElement, 1..9),
+                (Element::Block, 0..10),
+                (Element::Inline, 0..10),
+                (Element::Inline, 1..9),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -575,9 +569,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..12),
-                (MarkdownLevel::InlineElement, 0..12),
-                (MarkdownLevel::InlineElement, 2..10),
+                (Element::Block, 0..12),
+                (Element::Inline, 0..12),
+                (Element::Inline, 2..10),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -590,9 +584,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..12),
-                (MarkdownLevel::InlineElement, 0..12),
-                (MarkdownLevel::InlineElement, 2..10),
+                (Element::Block, 0..12),
+                (Element::Inline, 0..12),
+                (Element::Inline, 2..10),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -605,9 +599,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..11),
-                (MarkdownLevel::InlineElement, 0..11),
-                (MarkdownLevel::InlineElement, 1..5),
+                (Element::Block, 0..11),
+                (Element::Inline, 0..11),
+                (Element::Inline, 1..5),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -620,9 +614,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..12),
-                (MarkdownLevel::InlineElement, 0..12),
-                (MarkdownLevel::InlineElement, 2..6),
+                (Element::Block, 0..12),
+                (Element::Inline, 0..12),
+                (Element::Inline, 2..6),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -635,10 +629,10 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..22),
-                (MarkdownLevel::InlineElement, 0..6),
-                (MarkdownLevel::InlineElement, 6..15),
-                (MarkdownLevel::InlineElement, 15..22),
+                (Element::Block, 0..22),
+                (Element::Inline, 0..6),
+                (Element::Inline, 6..15),
+                (Element::Inline, 15..22),
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -650,7 +644,7 @@ mod tests {
         let markdown = SemanticSplitRanges::new(splitter.parse("<div>Some text</div>"));
 
         assert_eq!(
-            vec![(MarkdownLevel::Block, 0..20), (MarkdownLevel::Block, 0..20)],
+            vec![(Element::Block, 0..20), (Element::Block, 0..20)],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
@@ -663,17 +657,17 @@ mod tests {
         );
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..57),
-                (MarkdownLevel::Block, 0..24),
-                (MarkdownLevel::InlineElement, 1..11),
-                (MarkdownLevel::InlineElement, 2..10),
-                (MarkdownLevel::InlineElement, 12..22),
-                (MarkdownLevel::InlineElement, 13..21),
-                (MarkdownLevel::Block, 38..57),
-                (MarkdownLevel::InlineElement, 39..47),
-                (MarkdownLevel::InlineElement, 40..46),
-                (MarkdownLevel::InlineElement, 48..56),
-                (MarkdownLevel::InlineElement, 49..55)
+                (Element::Block, 0..57),
+                (Element::Block, 0..24),
+                (Element::Inline, 1..11),
+                (Element::Inline, 2..10),
+                (Element::Inline, 12..22),
+                (Element::Inline, 13..21),
+                (Element::Block, 38..57),
+                (Element::Inline, 39..47),
+                (Element::Inline, 40..46),
+                (Element::Inline, 48..56),
+                (Element::Inline, 49..55)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -686,10 +680,10 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..26),
-                (MarkdownLevel::InlineElement, 0..9),
-                (MarkdownLevel::SoftBreak, 9..10),
-                (MarkdownLevel::InlineElement, 10..26)
+                (Element::Block, 0..26),
+                (Element::Inline, 0..9),
+                (Element::SoftBreak, 9..10),
+                (Element::Inline, 10..26)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -702,10 +696,10 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..27),
-                (MarkdownLevel::InlineElement, 0..9),
-                (MarkdownLevel::InlineElement, 9..11),
-                (MarkdownLevel::InlineElement, 11..27)
+                (Element::Block, 0..27),
+                (Element::Inline, 0..9),
+                (Element::Inline, 9..11),
+                (Element::Inline, 11..27)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -718,9 +712,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..18),
-                (MarkdownLevel::Block, 10..18),
-                (MarkdownLevel::InlineElement, 10..18)
+                (Element::Block, 0..18),
+                (Element::Block, 10..18),
+                (Element::Inline, 10..18)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -732,10 +726,7 @@ mod tests {
         let markdown = SemanticSplitRanges::new(splitter.parse("```\ncode\n```"));
 
         assert_eq!(
-            vec![
-                (MarkdownLevel::Block, 0..12),
-                (MarkdownLevel::InlineElement, 4..9)
-            ],
+            vec![(Element::Block, 0..12), (Element::Inline, 4..9)],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
     }
@@ -747,9 +738,9 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..7),
-                (MarkdownLevel::Block, 2..7),
-                (MarkdownLevel::InlineElement, 2..7)
+                (Element::Block, 0..7),
+                (Element::Block, 2..7),
+                (Element::Inline, 2..7)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -762,11 +753,11 @@ mod tests {
 
         assert_eq!(
             vec![
-                (MarkdownLevel::Block, 0..10),
-                (MarkdownLevel::InlineElement, 0..9),
-                (MarkdownLevel::Rule, 11..15),
-                (MarkdownLevel::Block, 16..27),
-                (MarkdownLevel::InlineElement, 16..27)
+                (Element::Block, 0..10),
+                (Element::Inline, 0..9),
+                (Element::Rule, 11..15),
+                (Element::Block, 16..27),
+                (Element::Inline, 16..27)
             ],
             markdown.ranges_after_offset(0).collect::<Vec<_>>()
         );
@@ -790,8 +781,8 @@ mod tests {
 
             assert_eq!(
                 vec![
-                    (MarkdownLevel::Heading(level), 0..9 + index),
-                    (MarkdownLevel::InlineElement, 2 + index..9 + index)
+                    (Element::Heading(level), 0..9 + index),
+                    (Element::Inline, 2 + index..9 + index)
                 ],
                 markdown.ranges_after_offset(0).collect::<Vec<_>>()
             );
@@ -805,12 +796,9 @@ mod tests {
             SemanticSplitRanges::new(splitter.parse("- [ ] incomplete task\n- [x] completed task"));
 
         assert_eq!(
-            vec![
-                (MarkdownLevel::Block, 0..22),
-                (MarkdownLevel::Block, 22..42),
-            ],
+            vec![(Element::Block, 0..22), (Element::Block, 22..42),],
             markdown
-                .level_ranges_after_offset(0, MarkdownLevel::Block)
+                .level_ranges_after_offset(0, Element::Block)
                 .collect::<Vec<_>>()
         );
     }
