@@ -65,9 +65,6 @@ trait SemanticLevel: Copy + fmt::Debug + Ord + PartialOrd + 'static {
     /// Trimming behavior to use when trimming chunks
     const TRIM: Trim = Trim::All;
 
-    /// Generate a list of offsets for each semantic level within the text.
-    fn offsets(text: &str) -> Vec<(Self, Range<usize>)>;
-
     /// Given a level, split the text into sections based on the level.
     /// Level ranges are also provided of items that are equal to or greater than the current level.
     /// Default implementation assumes that all level ranges should be treated
@@ -211,6 +208,14 @@ where
     }
 }
 
+trait Splitter<Level>
+where
+    Level: SemanticLevel,
+{
+    /// Generate a list of offsets for each semantic level within the text.
+    fn parse(&self, text: &str) -> Vec<(Level, Range<usize>)>;
+}
+
 /// Returns chunks of text with their byte offsets as an iterator.
 #[derive(Debug)]
 struct TextChunks<'text, 'sizer, Sizer, Level>
@@ -241,14 +246,18 @@ where
 {
     /// Generate new [`TextChunks`] iterator for a given text.
     /// Starts with an offset of 0
-    fn new(chunk_config: &'sizer ChunkConfig<Sizer>, text: &'text str) -> Self {
+    fn new(
+        chunk_config: &'sizer ChunkConfig<Sizer>,
+        text: &'text str,
+        offsets: Vec<(Level, Range<usize>)>,
+    ) -> Self {
         Self {
             chunk_config,
             chunk_sizer: MemoizedChunkSizer::new(chunk_config, Level::TRIM),
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,
-            semantic_split: SemanticSplitRanges::new(Level::offsets(text)),
+            semantic_split: SemanticSplitRanges::new(offsets),
             text,
         }
     }
