@@ -1,199 +1,231 @@
-#[cfg(test)]
-mod tests {
-    use std::{cmp::Ordering, ops::Range};
+use std::{cmp::Ordering, ops::Range};
 
-    use tree_sitter::{Language, Node, Parser, Tree, TreeCursor};
+use thiserror::Error;
+use tree_sitter::{Language, LanguageError, Parser, TreeCursor, MIN_COMPATIBLE_LANGUAGE_VERSION};
 
-    use crate::{
-        splitter::{SemanticLevel, Splitter},
-        trim::Trim,
-        ChunkConfig, ChunkSizer,
-    };
+use crate::{
+    splitter::{SemanticLevel, Splitter},
+    trim::Trim,
+    ChunkConfig, ChunkSizer,
+};
 
-    /// Source code splitter. Recursively splits chunks into the largest
-    /// semantic units that fit within the chunk size. Also will attempt to merge
-    /// neighboring chunks if they can fit within the given chunk size.
-    #[derive(Debug)]
-    #[allow(clippy::module_name_repetitions)]
-    pub struct CodeSplitter<Sizer>
-    where
-        Sizer: ChunkSizer,
-    {
-        /// Method of determining chunk sizes.
-        chunk_config: ChunkConfig<Sizer>,
-        /// Language to use for parsing the code.
+/// Indicates there was an error with creating a `ExperimentalCodeSplitter`.
+/// The `Display` implementation will provide a human-readable error message to
+/// help debug the issue that caused the error.
+#[derive(Error, Debug)]
+#[error(transparent)]
+#[allow(clippy::module_name_repetitions)]
+pub struct CodeSplitterError(#[from] CodeSplitterErrorRepr);
+
+/// Private error and free to change across minor version of the crate.
+#[derive(Error, Debug)]
+enum CodeSplitterErrorRepr {
+    #[error(
+        "Language version {0:?} is too old. Expected at least version {}",
+        MIN_COMPATIBLE_LANGUAGE_VERSION
+    )]
+    LanguageError(LanguageError),
+}
+
+/// Source code splitter. Recursively splits chunks into the largest
+/// semantic units that fit within the chunk size. Also will attempt to merge
+/// neighboring chunks if they can fit within the given chunk size.
+///
+/// NOTE: This is still an experimental feature and output is not guaranteed
+/// to be stable, even between minor versions, until the Experimental name is removed.
+#[derive(Debug)]
+#[allow(clippy::module_name_repetitions)]
+pub struct ExperimentalCodeSplitter<Sizer>
+where
+    Sizer: ChunkSizer,
+{
+    /// Method of determining chunk sizes.
+    chunk_config: ChunkConfig<Sizer>,
+    /// Language to use for parsing the code.
+    language: Language,
+}
+
+impl<Sizer> ExperimentalCodeSplitter<Sizer>
+where
+    Sizer: ChunkSizer,
+{
+    /// Creates a new [`ExperimentalCodeSplitter`].
+    ///
+    /// ```
+    /// use text_splitter::ExperimentalCodeSplitter;
+    ///
+    /// // By default, the chunk sizer is based on characters.
+    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 512).expect("Invalid language");
+    /// ```
+    ///
+    /// # Errors
+    ///
+    /// Will return an error if the language version is too old to be compatible
+    /// with the current version of the tree-sitter crate.
+    pub fn new(
         language: Language,
+        chunk_config: impl Into<ChunkConfig<Sizer>>,
+    ) -> Result<Self, CodeSplitterError> {
+        // Verify that this is a valid language so we can rely on that later.
+        let mut parser = Parser::new();
+        parser
+            .set_language(&language)
+            .map_err(CodeSplitterErrorRepr::LanguageError)?;
+        Ok(Self {
+            chunk_config: chunk_config.into(),
+            language,
+        })
     }
 
-    impl<Sizer> CodeSplitter<Sizer>
-    where
-        Sizer: ChunkSizer,
-    {
-        /// Creates a new [`CodeSplitter`].
-        ///
-        /// ```
-        /// use text_splitter::CodeSplitter;
-        ///
-        /// // By default, the chunk sizer is based on characters.
-        /// let splitter = CodeSplitter::new(512);
-        /// ```
-        #[must_use]
-        pub fn new(language: Language, chunk_config: impl Into<ChunkConfig<Sizer>>) -> Self {
-            // Verify that this is a valid language so we can rely on that later.
-            let mut parser = Parser::new();
-            parser
-                .set_language(&language)
-                .expect("Error loading language");
-            Self {
-                chunk_config: chunk_config.into(),
-                language,
-            }
-        }
-
-        /// Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
-        ///
-        /// ## Method
-        ///
-        /// To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
-        //
-        // 1. Split the text by a increasing semantic levels.
-        // 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
-        // 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length.
-        //    Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
-        //
-        // The boundaries used to split the text if using the `chunks` method, in ascending order:
-        //
-        // 1. Characters
-        // 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-        // 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-        // 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-        // 5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`)
-        //    Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
-        //
-        // Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
-        ///
-        /// ```
-        /// use text_splitter::CodeSplitter;
-        ///
-        /// let splitter = CodeSplitter::new(10);
-        /// let text = "Some text\n\nfrom a\ndocument";
-        /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
-        ///
-        /// assert_eq!(vec!["Some text", "from a", "document"], chunks);
-        /// ```
-        pub fn chunks<'splitter, 'text: 'splitter>(
-            &'splitter self,
-            text: &'text str,
-        ) -> impl Iterator<Item = &'text str> + 'splitter {
-            Splitter::<_>::chunks(self, text)
-        }
-
-        /// Returns an iterator over chunks of the text and their byte offsets.
-        /// Each chunk will be up to the `chunk_capacity`.
-        ///
-        /// See [`CodeSplitter::chunks`] for more information.
-        ///
-        /// ```
-        /// use text_splitter::{Characters, CodeSplitter};
-        ///
-        /// let splitter = CodeSplitter::new(10);
-        /// let text = "Some text\n\nfrom a\ndocument";
-        /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
-        ///
-        /// assert_eq!(vec![(0, "Some text"), (11, "from a"), (18, "document")], chunks);
-        pub fn chunk_indices<'splitter, 'text: 'splitter>(
-            &'splitter self,
-            text: &'text str,
-        ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-            Splitter::<_>::chunk_indices(self, text)
-        }
+    /// Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+    ///
+    /// ## Method
+    ///
+    /// To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
+    //
+    // 1. Split the text by a increasing semantic levels.
+    // 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
+    // 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length.
+    //    Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
+    //
+    // The boundaries used to split the text if using the `chunks` method, in ascending order:
+    //
+    // 1. Characters
+    // 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    // 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    // 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    // 5. Ascending depth of the syntax tree. So function would have a higher level than a statement inside of the function, and so on.
+    //
+    // Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+    ///
+    /// ```
+    /// use text_splitter::ExperimentalCodeSplitter;
+    ///
+    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
+    ///
+    /// assert_eq!(vec!["Some text", "from a", "document"], chunks);
+    /// ```
+    pub fn chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = &'text str> + 'splitter {
+        Splitter::<_>::chunks(self, text)
     }
 
-    impl<Sizer> Splitter<Sizer> for CodeSplitter<Sizer>
-    where
-        Sizer: ChunkSizer,
-    {
-        type Level = Depth;
+    /// Returns an iterator over chunks of the text and their byte offsets.
+    /// Each chunk will be up to the `chunk_capacity`.
+    ///
+    /// See [`ExperimentalCodeSplitter::chunks`] for more information.
+    ///
+    /// ```
+    /// use text_splitter::ExperimentalCodeSplitter;
+    ///
+    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
+    ///
+    /// assert_eq!(vec![(0, "Some text"), (11, "from a"), (18, "document")], chunks);
+    pub fn chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
+        Splitter::<_>::chunk_indices(self, text)
+    }
+}
 
-        const TRIM: Trim = Trim::PreserveIndentation;
+impl<Sizer> Splitter<Sizer> for ExperimentalCodeSplitter<Sizer>
+where
+    Sizer: ChunkSizer,
+{
+    type Level = Depth;
 
-        fn chunk_config(&self) -> &ChunkConfig<Sizer> {
-            &self.chunk_config
-        }
+    const TRIM: Trim = Trim::PreserveIndentation;
 
-        fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
-            let mut parser = Parser::new();
-            parser
-                .set_language(&self.language)
-                // We verify at initialization that the language is valid, so this should be safe.
-                .expect("Error loading language");
-            // The only reason the tree would be None is:
-            // - No language was set (we do that)
-            // - There was a timeout or cancellation option set (we don't)
-            // - So it should be safe to unwrap here
-            let tree = parser.parse(text, None).expect("Error parsing source code");
-
-            CursorOffsets::new(tree.walk()).collect()
-        }
+    fn chunk_config(&self) -> &ChunkConfig<Sizer> {
+        &self.chunk_config
     }
 
-    /// New type around a usize to capture the depth of a given code node.
-    /// Custom type so that we can implement custom ordering, since we want to
-    /// sort items of lower depth as higher priority.
-    #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-    pub struct Depth(usize);
+    fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
+        let mut parser = Parser::new();
+        parser
+            .set_language(&self.language)
+            // We verify at initialization that the language is valid, so this should be safe.
+            .expect("Error loading language");
+        // The only reason the tree would be None is:
+        // - No language was set (we do that)
+        // - There was a timeout or cancellation option set (we don't)
+        // - So it should be safe to unwrap here
+        let tree = parser.parse(text, None).expect("Error parsing source code");
 
-    impl PartialOrd for Depth {
-        fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-            Some(self.cmp(other))
-        }
+        CursorOffsets::new(tree.walk()).collect()
     }
+}
 
-    impl Ord for Depth {
-        fn cmp(&self, other: &Self) -> Ordering {
-            other.0.cmp(&self.0)
-        }
+/// New type around a usize to capture the depth of a given code node.
+/// Custom type so that we can implement custom ordering, since we want to
+/// sort items of lower depth as higher priority.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct Depth(usize);
+
+impl PartialOrd for Depth {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
+}
 
-    /// New type around a tree-sitter cursor to allow for implementing an iterator.
-    /// Each call to `next()` will return the next node in the tree in a depth-first
-    /// order.
-    struct CursorOffsets<'cursor> {
-        cursor: TreeCursor<'cursor>,
+impl Ord for Depth {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other.0.cmp(&self.0)
     }
+}
 
-    impl<'cursor> CursorOffsets<'cursor> {
-        fn new(cursor: TreeCursor<'cursor>) -> Self {
-            Self { cursor }
-        }
+/// New type around a tree-sitter cursor to allow for implementing an iterator.
+/// Each call to `next()` will return the next node in the tree in a depth-first
+/// order.
+struct CursorOffsets<'cursor> {
+    cursor: TreeCursor<'cursor>,
+}
+
+impl<'cursor> CursorOffsets<'cursor> {
+    fn new(cursor: TreeCursor<'cursor>) -> Self {
+        Self { cursor }
     }
+}
 
-    impl<'cursor> Iterator for CursorOffsets<'cursor> {
-        type Item = (Depth, Range<usize>);
+impl<'cursor> Iterator for CursorOffsets<'cursor> {
+    type Item = (Depth, Range<usize>);
 
-        fn next(&mut self) -> Option<Self::Item> {
-            // There are children (can call this initially because we don't want the root node)
-            if self.cursor.goto_first_child()
+    fn next(&mut self) -> Option<Self::Item> {
+        // There are children (can call this initially because we don't want the root node)
+        if self.cursor.goto_first_child()
                 // There are sibling elements to grab because we are the deepest level
                 || self.cursor.goto_next_sibling()
                 // Go up and over to continue along the tree
                 || (self.cursor.goto_parent() && self.cursor.goto_next_sibling())
-            {
-                Some((
-                    Depth(self.cursor.depth() as usize),
-                    self.cursor.node().byte_range(),
-                ))
-            } else {
-                None
-            }
+        {
+            Some((
+                Depth(self.cursor.depth() as usize),
+                self.cursor.node().byte_range(),
+            ))
+        } else {
+            None
         }
     }
+}
 
-    impl SemanticLevel for Depth {}
+impl SemanticLevel for Depth {}
+
+#[cfg(test)]
+mod tests {
+    use tree_sitter::{Node, Tree};
+
+    use super::*;
 
     #[test]
     fn rust_splitter() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16);
+        let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
@@ -202,7 +234,7 @@ mod tests {
 
     #[test]
     fn rust_splitter_indices() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16);
+        let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
 
