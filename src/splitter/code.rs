@@ -199,18 +199,27 @@ impl<'cursor> Iterator for CursorOffsets<'cursor> {
 
     fn next(&mut self) -> Option<Self::Item> {
         // There are children (can call this initially because we don't want the root node)
-        if self.cursor.goto_first_child()
-                // There are sibling elements to grab because we are the deepest level
-                || self.cursor.goto_next_sibling()
-                // Go up and over to continue along the tree
-                || (self.cursor.goto_parent() && self.cursor.goto_next_sibling())
-        {
-            Some((
+        if self.cursor.goto_first_child() {
+            return Some((
                 Depth(self.cursor.depth() as usize),
                 self.cursor.node().byte_range(),
-            ))
-        } else {
-            None
+            ));
+        }
+
+        loop {
+            // There are sibling elements to grab
+            if self.cursor.goto_next_sibling() {
+                return Some((
+                    Depth(self.cursor.depth() as usize),
+                    self.cursor.node().byte_range(),
+                ));
+            // Start going back up the tree and check for next sibling on next iteration.
+            } else if self.cursor.goto_parent() {
+                continue;
+            }
+
+            // We have no more siblings or parents, so we're done.
+            return None;
         }
     }
 }
@@ -277,6 +286,26 @@ mod tests {
         let source_code = "fn test() {
     let x = 1;
 }";
+        let tree = parser
+            .parse(source_code, None)
+            .expect("Error parsing source code");
+
+        let offsets = CursorOffsets::new(tree.walk()).collect::<Vec<_>>();
+
+        assert_eq!(offsets, naive_offsets(&tree));
+    }
+
+    #[test]
+    fn multiple_top_siblings() {
+        let mut parser = Parser::new();
+        parser
+            .set_language(&tree_sitter_rust::language())
+            .expect("Error loading Rust grammar");
+        let source_code = "
+fn fn1() {}
+fn fn2() {}
+fn fn3() {}
+fn fn4() {}";
         let tree = parser
             .parse(source_code, None)
             .expect("Error parsing source code");
