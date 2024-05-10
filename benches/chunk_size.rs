@@ -8,7 +8,7 @@ use divan::AllocProfiler;
 #[global_allocator]
 static ALLOC: AllocProfiler = AllocProfiler::system();
 
-const CHUNK_SIZES: [usize; 4] = [64, 512, 4096, 32768];
+const CHUNK_SIZES: [usize; 3] = [64, 1024, 16384];
 
 fn main() {
     // Run registered benchmarks.
@@ -171,6 +171,89 @@ mod markdown {
                         .unwrap(),
                 ),
             )
+        });
+    }
+}
+
+#[cfg(feature = "code")]
+#[divan::bench_group]
+mod code {
+    use std::fs;
+
+    use divan::{black_box_drop, counter::BytesCount, Bencher};
+    use text_splitter::{ChunkConfig, ChunkSizer, ExperimentalCodeSplitter};
+
+    use crate::CHUNK_SIZES;
+
+    const CODE_FILENAMES: &[&str] = &["hashbrown_set_rs"];
+
+    fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
+    where
+        G: Fn() -> ExperimentalCodeSplitter<S> + Sync,
+        S: ChunkSizer,
+    {
+        bencher
+            .with_inputs(|| {
+                (
+                    gen_splitter(),
+                    fs::read_to_string(format!("tests/inputs/code/{filename}.txt")).unwrap(),
+                )
+            })
+            .input_counter(|(_, text)| BytesCount::of_str(text))
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text).for_each(black_box_drop);
+            });
+    }
+
+    #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
+    fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench(bencher, filename, || {
+            ExperimentalCodeSplitter::new(tree_sitter_rust::language(), N).unwrap()
+        });
+    }
+
+    #[cfg(feature = "tiktoken-rs")]
+    #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
+    fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench(bencher, filename, || {
+            ExperimentalCodeSplitter::new(
+                tree_sitter_rust::language(),
+                ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
+            )
+            .unwrap()
+        });
+    }
+
+    #[cfg(feature = "tokenizers")]
+    #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
+    fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench(bencher, filename, || {
+            ExperimentalCodeSplitter::new(
+                tree_sitter_rust::language(),
+                ChunkConfig::new(N).with_sizer(
+                    tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
+                ),
+            )
+            .unwrap()
+        });
+    }
+    #[cfg(feature = "rust-tokenizers")]
+    #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
+    fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        use crate::download_file_to_cache;
+
+        bench(bencher, filename, || {
+            let vocab_path = download_file_to_cache(
+                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+            );
+            ExperimentalCodeSplitter::new(
+                tree_sitter_rust::language(),
+                ChunkConfig::new(N).with_sizer(
+                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
+                        .unwrap(),
+                ),
+            )
+            .unwrap()
         });
     }
 }
