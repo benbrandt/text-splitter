@@ -166,7 +166,11 @@ impl<Level> SemanticSplitRanges<Level>
 where
     Level: SemanticLevel,
 {
-    fn new(ranges: Vec<(Level, Range<usize>)>) -> Self {
+    fn new(mut ranges: Vec<(Level, Range<usize>)>) -> Self {
+        // Sort by start. If start is equal, sort by end in reverse order, so larger ranges come first.
+        ranges.sort_unstable_by(|(_, a), (_, b)| {
+            a.start.cmp(&b.start).then_with(|| b.end.cmp(&a.end))
+        });
         Self { ranges }
     }
 
@@ -533,5 +537,22 @@ where
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn semantic_ranges_are_sorted() {
+        impl SemanticLevel for usize {}
+
+        let ranges = SemanticSplitRanges::new(vec![(0, 0..1), (1, 0..2), (0, 1..2), (2, 0..4)]);
+
+        assert_eq!(
+            ranges.ranges,
+            vec![(2, 0..4), (1, 0..2), (0, 0..1), (0, 1..2)]
+        );
     }
 }
