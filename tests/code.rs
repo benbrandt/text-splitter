@@ -78,3 +78,28 @@ fn fn4() {}";
         ["fn fn1() {}\nfn fn2() {}", "fn fn3() {}\nfn fn4() {}"]
     );
 }
+
+#[cfg(feature = "code")]
+#[test]
+fn groups_functions_with_children() {
+    let text = "
+fn fn1() {}
+fn fn2() {
+    let x = 4;
+}
+fn fn3() {}
+fn fn4() {}";
+
+    let splitter =
+        ExperimentalCodeSplitter::new(tree_sitter_rust::language(), ChunkConfig::new(30)).unwrap();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(
+        chunks,
+        [
+            "fn fn1() {}",
+            "fn fn2() {\n    let x = 4;\n}",
+            "fn fn3() {}\nfn fn4() {}"
+        ]
+    );
+}
