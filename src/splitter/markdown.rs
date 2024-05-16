@@ -135,17 +135,19 @@ where
                 | Event::HardBreak
                 | Event::Code(_)
                 | Event::InlineHtml(_)
+                | Event::InlineMath(_)
                 | Event::FootnoteReference(_)
                 | Event::TaskListMarker(_) => Some((Element::Inline, range)),
                 Event::SoftBreak => Some((Element::SoftBreak, range)),
                 Event::Html(_)
+                | Event::DisplayMath(_)
                 | Event::Start(
                     Tag::Paragraph
                     | Tag::CodeBlock(_)
                     | Tag::FootnoteDefinition(_)
                     | Tag::MetadataBlock(_)
                     | Tag::TableHead
-                    | Tag::BlockQuote
+                    | Tag::BlockQuote(_)
                     | Tag::TableRow
                     | Tag::Item
                     | Tag::HtmlBlock
