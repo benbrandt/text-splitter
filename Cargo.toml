@@ -64,12 +64,12 @@ auto_enums = "0.8.5"
 either = "1.11.0"
 itertools = "0.12.1"
 once_cell = "1.19.0"
-pulldown-cmark = { version = "0.10.3", default-features = false, optional = true }
+pulldown-cmark = { version = "0.11.0", default-features = false, optional = true }
 regex = "1.10.4"
 rust_tokenizers = { version = "8.1.1", optional = true }
 strum = { version = "0.26.2", features = ["derive"] }
 thiserror = "1.0.60"
-tiktoken-rs = { version = "0.5.8", optional = true }
+tiktoken-rs = { version = "0.5.9", optional = true }
 tokenizers = { version = "0.19.1", default_features = false, features = [
     "onig",
 ], optional = true }
