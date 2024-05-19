@@ -3,6 +3,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://benbrandt.github.io',
+  base: 'text-splitter',
 	integrations: [
 		starlight({
 			title: 'text-splitter',
