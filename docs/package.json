@@ -1,6 +1,7 @@
 {
   "name": "text-splitter-docs",
   "type": "module",
+  "packageManager": "pnpm@latest",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
