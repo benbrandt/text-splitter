@@ -23,7 +23,7 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/docs"
     schedule:
       interval: "daily"
     allow:
