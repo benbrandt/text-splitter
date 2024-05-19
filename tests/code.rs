@@ -103,3 +103,29 @@ fn fn4() {}";
         ]
     );
 }
+
+#[cfg(feature = "code")]
+#[test]
+fn functions_overlap() {
+    let text = "
+fn fn1() {}
+fn fn2() {}
+fn fn3() {}
+fn fn4() {}";
+
+    let splitter = ExperimentalCodeSplitter::new(
+        tree_sitter_rust::language(),
+        ChunkConfig::new(24).with_overlap(12).unwrap(),
+    )
+    .unwrap();
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(
+        chunks,
+        [
+            "fn fn1() {}\nfn fn2() {}",
+            "fn fn2() {}\nfn fn3() {}",
+            "fn fn3() {}\nfn fn4() {}"
+        ]
+    );
+}
