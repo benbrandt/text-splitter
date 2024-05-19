@@ -22,6 +22,10 @@ permissions:
   pages: write
   id-token: write
 
+defaults:
+  run:
+    working-directory: ./docs
+
 jobs:
   build:
     runs-on: ubuntu-latest
