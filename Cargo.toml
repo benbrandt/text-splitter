@@ -74,7 +74,7 @@ tiktoken-rs = { version = "0.5.9", optional = true }
 tokenizers = { version = "0.19.1", default_features = false, features = [
     "onig",
 ], optional = true }
-tree-sitter = { version = "0.22.6", optional = true }
+tree-sitter = { version = "0.20.2", optional = true }
 unicode-segmentation = "1.11.0"
 
 [dev-dependencies]
