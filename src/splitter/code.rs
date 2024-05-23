@@ -194,19 +194,35 @@ impl<'cursor> CursorOffsets<'cursor> {
     }
 }
 
+fn cursor_depth(cursor: &TreeCursor<'_>) -> usize {
+    let mut node = cursor.node();
+    let mut depth = 0;
+    while let Some(parent) = node.parent() {
+        depth += 1;
+        node = parent;
+    }
+    depth
+}
+
 impl<'cursor> Iterator for CursorOffsets<'cursor> {
     type Item = (Depth, Range<usize>);
 
     fn next(&mut self) -> Option<Self::Item> {
         // There are children (can call this initially because we don't want the root node)
         if self.cursor.goto_first_child() {
-            return Some((Depth(0), self.cursor.node().byte_range()));
+            return Some((
+                Depth(cursor_depth(&self.cursor)),
+                self.cursor.node().byte_range(),
+            ));
         }
 
         loop {
             // There are sibling elements to grab
             if self.cursor.goto_next_sibling() {
-                return Some((Depth(0), self.cursor.node().byte_range()));
+                return Some((
+                    Depth(cursor_depth(&self.cursor)),
+                    self.cursor.node().byte_range(),
+                ));
             // Start going back up the tree and check for next sibling on next iteration.
             } else if self.cursor.goto_parent() {
                 continue;
