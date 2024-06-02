@@ -16,7 +16,7 @@ mod text;
 
 #[cfg(feature = "code")]
 #[allow(clippy::module_name_repetitions)]
-pub use code::{CodeSplitterError, ExperimentalCodeSplitter};
+pub use code::{CodeSplitter, CodeSplitterError};
 #[cfg(feature = "markdown")]
 #[allow(clippy::module_name_repetitions)]
 pub use markdown::MarkdownSplitter;

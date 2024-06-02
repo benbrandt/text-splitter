@@ -181,7 +181,7 @@ mod code {
     use std::fs;
 
     use divan::{black_box_drop, counter::BytesCount, Bencher};
-    use text_splitter::{ChunkConfig, ChunkSizer, ExperimentalCodeSplitter};
+    use text_splitter::{ChunkConfig, ChunkSizer, CodeSplitter};
 
     use crate::CHUNK_SIZES;
 
@@ -189,7 +189,7 @@ mod code {
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
-        G: Fn() -> ExperimentalCodeSplitter<S> + Sync,
+        G: Fn() -> CodeSplitter<S> + Sync,
         S: ChunkSizer,
     {
         bencher
@@ -208,7 +208,7 @@ mod code {
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
-            ExperimentalCodeSplitter::new(tree_sitter_rust::language(), N).unwrap()
+            CodeSplitter::new(tree_sitter_rust::language(), N).unwrap()
         });
     }
 
@@ -216,7 +216,7 @@ mod code {
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
-            ExperimentalCodeSplitter::new(
+            CodeSplitter::new(
                 tree_sitter_rust::language(),
                 ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
             )
@@ -228,7 +228,7 @@ mod code {
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
-            ExperimentalCodeSplitter::new(
+            CodeSplitter::new(
                 tree_sitter_rust::language(),
                 ChunkConfig::new(N).with_sizer(
                     tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
@@ -246,7 +246,7 @@ mod code {
             let vocab_path = download_file_to_cache(
                 "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
             );
-            ExperimentalCodeSplitter::new(
+            CodeSplitter::new(
                 tree_sitter_rust::language(),
                 ChunkConfig::new(N).with_sizer(
                     rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)

@@ -9,7 +9,7 @@ use crate::{
     ChunkConfig, ChunkSizer,
 };
 
-/// Indicates there was an error with creating a `ExperimentalCodeSplitter`.
+/// Indicates there was an error with creating a `CodeSplitter`.
 /// The `Display` implementation will provide a human-readable error message to
 /// help debug the issue that caused the error.
 #[derive(Error, Debug)]
@@ -30,12 +30,9 @@ enum CodeSplitterErrorRepr {
 /// Source code splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
-///
-/// NOTE: This is still an experimental feature and output is not guaranteed
-/// to be stable, even between minor versions, until the Experimental name is removed.
 #[derive(Debug)]
 #[allow(clippy::module_name_repetitions)]
-pub struct ExperimentalCodeSplitter<Sizer>
+pub struct CodeSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
@@ -45,17 +42,17 @@ where
     language: Language,
 }
 
-impl<Sizer> ExperimentalCodeSplitter<Sizer>
+impl<Sizer> CodeSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
-    /// Creates a new [`ExperimentalCodeSplitter`].
+    /// Creates a new [`CodeSplitter`].
     ///
     /// ```
-    /// use text_splitter::ExperimentalCodeSplitter;
+    /// use text_splitter::CodeSplitter;
     ///
     /// // By default, the chunk sizer is based on characters.
-    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 512).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 512).expect("Invalid language");
     /// ```
     ///
     /// # Errors
@@ -99,9 +96,9 @@ where
     // Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
     ///
     /// ```
-    /// use text_splitter::ExperimentalCodeSplitter;
+    /// use text_splitter::CodeSplitter;
     ///
-    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
     ///
@@ -117,12 +114,12 @@ where
     /// Returns an iterator over chunks of the text and their byte offsets.
     /// Each chunk will be up to the `chunk_capacity`.
     ///
-    /// See [`ExperimentalCodeSplitter::chunks`] for more information.
+    /// See [`CodeSplitter::chunks`] for more information.
     ///
     /// ```
-    /// use text_splitter::ExperimentalCodeSplitter;
+    /// use text_splitter::CodeSplitter;
     ///
-    /// let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
     ///
@@ -135,7 +132,7 @@ where
     }
 }
 
-impl<Sizer> Splitter<Sizer> for ExperimentalCodeSplitter<Sizer>
+impl<Sizer> Splitter<Sizer> for CodeSplitter<Sizer>
 where
     Sizer: ChunkSizer,
 {
@@ -234,7 +231,7 @@ mod tests {
 
     #[test]
     fn rust_splitter() {
-        let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
@@ -243,7 +240,7 @@ mod tests {
 
     #[test]
     fn rust_splitter_indices() {
-        let splitter = ExperimentalCodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
 

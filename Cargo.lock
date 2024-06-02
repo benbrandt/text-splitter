@@ -1879,6 +1879,7 @@ dependencies = [
  "text-splitter",
  "tiktoken-rs",
  "tokenizers",
+ "tree-sitter",
 ]
 
 [[package]]
