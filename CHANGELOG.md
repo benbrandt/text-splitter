@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.13.2
+
+### What's New
+
+New `CodeSplitter` for splitting code in any languages that [tree-sitter grammars](https://tree-sitter.github.io/tree-sitter/#parsers) are available for. It should provide decent chunks, but please provide feedback if you notice any strange behavior.
+
+#### Rust Usage
+
+```sh
+cargo add text-splitter --features code
+cargo add tree-sitter-<language>
+```
+
+```rust
+use text_splitter::CodeSplitter;
+// Default implementation uses character count for chunk size.
+// Can also use all of the same tokenizer implementations as `TextSplitter`.
+let splitter = CodeSplitter::new(tree_sitter_rust::language(), 1000).expect("Invalid tree-sitter language");
+
+let chunks = splitter.chunks("your code file");
+```
+
+#### Python Usage
+
+```python
+from semantic_text_splitter import CodeSplitter
+import tree_sitter_python
+
+# Default implementation uses character count for chunk size.
+# Can also use all of the same tokenizer implementations as `TextSplitter`.
+splitter = CodeSplitter(tree_sitter_python.language(), capacity=1000)
+
+chunks = splitter.chunks("your code file");
+```
+
 ## v0.13.1
 
 Fix a bug in the fallback logic to make sure we are still respecting the maximum bytes we should be searching in. Again, this only affects Markdown splitting at very small sizes.
