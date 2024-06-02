@@ -56,7 +56,7 @@ jobs:
         run: |
           set -e
           pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
-          pip install pytest tokenizers
+          pip install pytest tokenizers tree-sitter tree-sitter-python@git+https://github.com/tree-sitter/tree-sitter-python
           pytest
 
   linux:
@@ -93,7 +93,7 @@ jobs:
         run: |
           set -e
           pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
-          pip install pytest tokenizers
+          pip install pytest tokenizers tree-sitter tree-sitter-python@git+https://github.com/tree-sitter/tree-sitter-python
           pytest
 
   windows:
@@ -130,7 +130,7 @@ jobs:
         run: |
           set -e
           pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
-          pip install pytest tokenizers
+          pip install pytest tokenizers tree-sitter tree-sitter-python@git+https://github.com/tree-sitter/tree-sitter-python
           pytest
 
   macos:
@@ -166,7 +166,7 @@ jobs:
         run: |
           set -e
           pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
-          pip install pytest tokenizers
+          pip install pytest tokenizers tree-sitter tree-sitter-python@git+https://github.com/tree-sitter/tree-sitter-python
           pytest
 
   sdist:
