@@ -118,6 +118,26 @@ let splitter = MarkdownSplitter::new(max_characters);
 let chunks = splitter.chunks("# Header\n\nyour document text");
 ```
 
+### Code
+
+All of the above examples also can also work with code that can be [parsed with tree-sitter](https://tree-sitter.github.io/tree-sitter/#parsers). If you enable the `code` feature, you can use the `CodeSplitter` in the same ways as the `TextSplitter`.
+
+```sh
+cargo add text-splitter --features code
+cargo add tree-sitter-<language>
+```
+
+```rust
+use text_splitter::CodeSplitter;
+// Maximum number of characters in a chunk. Can also use a range.
+let max_characters = 1000;
+// Default implementation uses character count for chunk size.
+// Can also use all of the same tokenizer implementations as `TextSplitter`.
+let splitter = CodeSplitter::new(tree_sitter_rust::language(), max_characters).expect("Invalid tree-sitter language");
+
+let chunks = splitter.chunks("your code file");
+```
+
 ## Method
 
 To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
@@ -154,6 +174,16 @@ Markdown is parsed according to the CommonMark spec, along with some optional fe
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
+### `CodeSplitter` Semantic Levels
+
+1. Characters
+2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+5. Ascending depth of the syntax tree. So function would have a higher level than a statement inside of the function, and so on.
+
+Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+
 ### Note on sentences
 
 There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.
@@ -164,6 +194,7 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 
 | Feature    | Description                                                                                   |
 | ---------- | --------------------------------------------------------------------------------------------- |
+| `code`     | Enables the `CodeSplitter` struct for parsing code documents via [tree-sitter parsers](https://tree-sitter.github.io/tree-sitter/#parsers). |
 | `markdown` | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec. |
 
 ### Tokenizer Support

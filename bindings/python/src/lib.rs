@@ -480,7 +480,7 @@ impl PyTextSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text. Each chunk will be up to the `capacity`.
 
 
     ## Method
@@ -513,7 +513,7 @@ impl PyTextSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
 
     See `chunks` for more information.
 
@@ -585,10 +585,10 @@ from semantic_text_splitter import MarkdownSplitter
 # Maximum number of characters in a chunk
 max_characters = 1000
 # Optionally can also have the splitter not trim whitespace for you
-splitter = MarkdownSplitter()
-# splitter = MarkdownSplitter(trim_chunks=False)
+splitter = MarkdownSplitter(max_characters)
+# splitter = MarkdownSplitter(max_characters, trim=False)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_characters)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Range for Chunk Capacity
@@ -602,11 +602,11 @@ It is always possible that a chunk may be returned that is less than the `start`
 ```python
 from semantic_text_splitter import MarkdownSplitter
 
-splitter = MarkdownSplitter()
+splitter = MarkdownSplitter((200,1000))
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Hugging Face Tokenizer
@@ -618,9 +618,9 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer)
+splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Tiktoken Tokenizer
@@ -631,9 +631,9 @@ from semantic_text_splitter import MarkdownSplitter
 
 # Maximum number of tokens in a chunk
 max_tokens = 1000
-splitter = MarkdownSplitter.from_tiktoken_model("gpt-3.5-turbo")
+splitter = MarkdownSplitter.from_tiktoken_model("gpt-3.5-turbo", max_tokens)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Custom Callback
@@ -642,11 +642,11 @@ chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
 from semantic_text_splitter import MarkdownSplitter
 
 # Optionally can also have the splitter trim whitespace for you
-splitter = MarkdownSplitter.from_callback(lambda text: len(text))
+splitter = MarkdownSplitter.from_callback(lambda text: len(text), (200,1000))
 
 # Maximum number of tokens in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 Args:
@@ -890,7 +890,7 @@ impl PyMarkdownSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text. Each chunk will be up to the `capacity`.
 
     ## Method
 
@@ -918,7 +918,7 @@ impl PyMarkdownSplitter {
         text (str): Text to split.
 
     Returns:
-        A list of strings, one for each chunk. If `trim_chunks` was specified in the text
+        A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
     fn chunks<'text, 'splitter: 'text>(&'splitter self, text: &'text str) -> Vec<&'text str> {
@@ -926,7 +926,7 @@ impl PyMarkdownSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
 
     See `chunks` for more information.
 
@@ -936,7 +936,7 @@ impl PyMarkdownSplitter {
     Returns:
         A list of tuples, one for each chunk. The first item will be the character offset relative
         to the original text. The second item is the chunk itself.
-        If `trim_chunks` was specified in the text splitter, then each chunk will already be
+        If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
     fn chunk_indices<'text, 'splitter: 'text>(
@@ -990,18 +990,20 @@ impl CodeSplitterOptions {
 /**
 Code splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
 
+Uses [tree-sitter grammars](https://tree-sitter.github.io/tree-sitter/#parsers) for parsing the code.
+
 ### By Number of Characters
 
 ```python
 from semantic_text_splitter import CodeSplitter
+# Import the tree-sitter grammar you want to use
+import tree_sitter_python
 
 # Maximum number of characters in a chunk
 max_characters = 1000
-# Optionally can also have the splitter not trim whitespace for you
-splitter = CodeSplitter()
-# splitter = CodeSplitter(trim_chunks=False)
+splitter = CodeSplitter(tree_sitter_python.language(), max_characters)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_characters)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Range for Chunk Capacity
@@ -1014,12 +1016,14 @@ It is always possible that a chunk may be returned that is less than the `start`
 
 ```python
 from semantic_text_splitter import CodeSplitter
+# Import the tree-sitter grammar you want to use
+import tree_sitter_python
 
-splitter = CodeSplitter()
+splitter = CodeSplitter(tree_sitter_python.language(), (200,1000))
 
 # Maximum number of characters in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Hugging Face Tokenizer
@@ -1027,13 +1031,15 @@ chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1
 ```python
 from semantic_text_splitter import CodeSplitter
 from tokenizers import Tokenizer
+# Import the tree-sitter grammar you want to use
+import tree_sitter_python
 
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-splitter = CodeSplitter.from_huggingface_tokenizer(tokenizer)
+splitter = CodeSplitter.from_huggingface_tokenizer(tree_sitter_python.language(), tokenizer, max_tokens)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Tiktoken Tokenizer
@@ -1041,28 +1047,34 @@ chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
 
 ```python
 from semantic_text_splitter import CodeSplitter
+# Import the tree-sitter grammar you want to use
+import tree_sitter_python
 
 # Maximum number of tokens in a chunk
 max_tokens = 1000
-splitter = CodeSplitter.from_tiktoken_model("gpt-3.5-turbo")
+splitter = CodeSplitter.from_tiktoken_model(tree_sitter_python.language(), "gpt-3.5-turbo", max_tokens)
 
-chunks = splitter.chunks("# Header\n\nyour document text", max_tokens)
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 ### Using a Custom Callback
 
 ```python
 from semantic_text_splitter import CodeSplitter
+# Import the tree-sitter grammar you want to use
+import tree_sitter_python
 
 # Optionally can also have the splitter trim whitespace for you
-splitter = CodeSplitter.from_callback(lambda text: len(text))
+splitter = CodeSplitter.from_callback(tree_sitter_python.language(), lambda text: len(text), (200,1000))
 
 # Maximum number of tokens in a chunk. Will fill up the
 # chunk until it is somewhere in this range.
-chunks = splitter.chunks("# Header\n\nyour document text", chunk_capacity=(200,1000))
+chunks = splitter.chunks("# Header\n\nyour document text")
 ```
 
 Args:
+    language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+        to use for parsing the code.
     capacity (int | (int, int)): The capacity of characters in each chunk. If a
         single int, then chunks will be filled up as much as possible, without going over
         that number. If a tuple of two integers is provided, a chunk will be considered
@@ -1111,9 +1123,11 @@ impl PyCodeSplitter {
     }
 
     /**
-    Instantiate a new markdown splitter from a Hugging Face Tokenizer instance.
+    Instantiate a new code splitter from a Hugging Face Tokenizer instance.
 
     Args:
+        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+            to use for parsing the code.
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
             chunk.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
@@ -1128,7 +1142,7 @@ impl PyCodeSplitter {
             string. Defaults to True.
 
     Returns:
-        The new markdown splitter
+        The new code splitter
     */
     #[staticmethod]
     #[pyo3(signature = (language, tokenizer, capacity, overlap=0, trim=true))]
@@ -1160,9 +1174,11 @@ impl PyCodeSplitter {
     }
 
     /**
-    Instantiate a new markdown splitter from the given Hugging Face Tokenizer JSON string.
+    Instantiate a new code splitter from the given Hugging Face Tokenizer JSON string.
 
     Args:
+        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+            to use for parsing the code.
         json (str): A valid JSON string representing a previously serialized
             Hugging Face Tokenizer
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
@@ -1177,7 +1193,7 @@ impl PyCodeSplitter {
             string. Defaults to True.
 
     Returns:
-        The new markdown splitter
+        The new code splitter
     */
     #[staticmethod]
     #[pyo3(signature = (language, json, capacity, overlap=0, trim=true))]
@@ -1208,9 +1224,11 @@ impl PyCodeSplitter {
     }
 
     /**
-    Instantiate a new markdown splitter from the Hugging Face tokenizer file at the given path.
+    Instantiate a new code splitter from the Hugging Face tokenizer file at the given path.
 
     Args:
+        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+            to use for parsing the code.
         path (str): A path to a local JSON file representing a previously serialized
             Hugging Face tokenizer.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
@@ -1225,7 +1243,7 @@ impl PyCodeSplitter {
             string. Defaults to True.
 
     Returns:
-        The new markdown splitter
+        The new code splitter
     */
     #[staticmethod]
     #[pyo3(signature = (language, path, capacity, overlap=0, trim=true))]
@@ -1254,9 +1272,11 @@ impl PyCodeSplitter {
     }
 
     /**
-    Instantiate a new markdown splitter based on an OpenAI Tiktoken tokenizer.
+    Instantiate a new code splitter based on an OpenAI Tiktoken tokenizer.
 
     Args:
+        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+            to use for parsing the code.
         model (str): The OpenAI model name you want to retrieve a tokenizer for.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
             single int, then chunks will be filled up as much as possible, without going over
@@ -1270,7 +1290,7 @@ impl PyCodeSplitter {
             string. Defaults to True.
 
     Returns:
-        The new markdown splitter
+        The new code splitter
     */
     #[staticmethod]
     #[pyo3(signature = (language, model, capacity, overlap=0, trim=true))]
@@ -1300,9 +1320,11 @@ impl PyCodeSplitter {
     }
 
     /**
-    Instantiate a markdown text splitter based on a custom callback.
+    Instantiate a code text splitter based on a custom callback.
 
     Args:
+        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+            to use for parsing the code.
         callback (Callable[[str], int]): A lambda or other function that can be called. It will be
             provided a piece of text, and it should return an integer value for the size.
         capacity (int | (int, int)): The capacity of each chunk. If a
@@ -1317,7 +1339,7 @@ impl PyCodeSplitter {
             string. Defaults to True.
 
     Returns:
-        The new markdown splitter
+        The new code splitter
     */
     #[staticmethod]
     #[pyo3(signature = (language, callback, capacity, overlap=0, trim=true))]
@@ -1344,7 +1366,7 @@ impl PyCodeSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text. Each chunk will be up to the `capacity`.
 
     ## Method
 
@@ -1360,19 +1382,13 @@ impl PyCodeSplitter {
     2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
     3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
     4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    5. Soft line breaks (single newline) which isn't necessarily a new element in Code.
-    6. Inline elements such as: text nodes, emphasis, strong, strikethrough, link, image, table cells, inline code, footnote references, task list markers, and inline html.
-    7. Block elements suce as: paragraphs, code blocks, footnote definitions, metadata. Also, a block quote or row/item within a table or list that can contain other "block" type elements, and a list or table that contains items.
-    8. Thematic breaks or horizontal rules.
-    9. Headings by level
-
-    Code is parsed according to the Commonmark spec, along with some optional features such as GitHub Flavored Code.
+    5. Ascending depth of the syntax tree. So function would have a higher level than a statement inside of the function, and so on.
 
     Args:
         text (str): Text to split.
 
     Returns:
-        A list of strings, one for each chunk. If `trim_chunks` was specified in the text
+        A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
     fn chunks<'text, 'splitter: 'text>(&'splitter self, text: &'text str) -> Vec<&'text str> {
@@ -1380,7 +1396,7 @@ impl PyCodeSplitter {
     }
 
     /**
-    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `chunk_capacity`.
+    Generate a list of chunks from a given text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
 
     See `chunks` for more information.
 
@@ -1390,7 +1406,7 @@ impl PyCodeSplitter {
     Returns:
         A list of tuples, one for each chunk. The first item will be the character offset relative
         to the original text. The second item is the chunk itself.
-        If `trim_chunks` was specified in the text splitter, then each chunk will already be
+        If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
     fn chunk_indices<'text, 'splitter: 'text>(
@@ -1408,8 +1424,8 @@ impl PyCodeSplitter {
 #[doc = include_str!("../README.md")]
 #[pymodule]
 fn semantic_text_splitter(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_class::<PyCodeSplitter>()?;
-    m.add_class::<PyMarkdownSplitter>()?;
     m.add_class::<PyTextSplitter>()?;
+    m.add_class::<PyMarkdownSplitter>()?;
+    m.add_class::<PyCodeSplitter>()?;
     Ok(())
 }
