@@ -13,4 +13,4 @@ pub use chunk_size::{
 pub use splitter::MarkdownSplitter;
 pub use splitter::TextSplitter;
 #[cfg(feature = "code")]
-pub use splitter::{CodeSplitterError, ExperimentalCodeSplitter};
+pub use splitter::{CodeSplitter, CodeSplitterError};

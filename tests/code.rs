@@ -4,7 +4,7 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 #[cfg(feature = "code")]
-use text_splitter::{ChunkConfig, ExperimentalCodeSplitter};
+use text_splitter::{ChunkConfig, CodeSplitter};
 
 #[cfg(feature = "code")]
 #[test]
@@ -13,7 +13,7 @@ fn random_chunk_size() {
 
     for _ in 0..10 {
         let max_characters = Faker.fake();
-        let splitter = ExperimentalCodeSplitter::new(
+        let splitter = CodeSplitter::new(
             tree_sitter_rust::language(),
             ChunkConfig::new(max_characters).with_trim(false),
         )
@@ -34,7 +34,7 @@ fn random_chunk_indices_increase() {
 
     for _ in 0..10 {
         let max_characters = Faker.fake::<usize>();
-        let splitter = ExperimentalCodeSplitter::new(
+        let splitter = CodeSplitter::new(
             tree_sitter_rust::language(),
             ChunkConfig::new(max_characters),
         )
@@ -50,7 +50,7 @@ fn random_chunk_indices_increase() {
 fn can_handle_invalid_code() {
     let text = "No code here";
 
-    let splitter = ExperimentalCodeSplitter::new(
+    let splitter = CodeSplitter::new(
         tree_sitter_rust::language(),
         ChunkConfig::new(5).with_trim(false),
     )
@@ -69,8 +69,7 @@ fn fn2() {}
 fn fn3() {}
 fn fn4() {}";
 
-    let splitter =
-        ExperimentalCodeSplitter::new(tree_sitter_rust::language(), ChunkConfig::new(24)).unwrap();
+    let splitter = CodeSplitter::new(tree_sitter_rust::language(), ChunkConfig::new(24)).unwrap();
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
@@ -90,8 +89,7 @@ fn fn2() {
 fn fn3() {}
 fn fn4() {}";
 
-    let splitter =
-        ExperimentalCodeSplitter::new(tree_sitter_rust::language(), ChunkConfig::new(30)).unwrap();
+    let splitter = CodeSplitter::new(tree_sitter_rust::language(), ChunkConfig::new(30)).unwrap();
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
     assert_eq!(
@@ -113,7 +111,7 @@ fn fn2() {}
 fn fn3() {}
 fn fn4() {}";
 
-    let splitter = ExperimentalCodeSplitter::new(
+    let splitter = CodeSplitter::new(
         tree_sitter_rust::language(),
         ChunkConfig::new(24).with_overlap(12).unwrap(),
     )

@@ -7,7 +7,7 @@ use rayon::prelude::*;
 use rust_tokenizers::tokenizer::BertTokenizer;
 use strum::{Display, EnumIter, IntoEnumIterator};
 #[cfg(feature = "code")]
-use text_splitter::ExperimentalCodeSplitter;
+use text_splitter::CodeSplitter;
 #[cfg(feature = "markdown")]
 use text_splitter::MarkdownSplitter;
 use text_splitter::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer, TextSplitter};
@@ -379,8 +379,7 @@ fn code_trim_false() {
                 .with_sizer(sizer)
                 .with_trim(false);
             let capacity = *config.capacity();
-            let splitter =
-                ExperimentalCodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
@@ -408,8 +407,7 @@ fn code_trim() {
             let sizer = Characters;
             let config = ChunkConfig::new(chunk_size).with_sizer(sizer);
             let capacity = *config.capacity();
-            let splitter =
-                ExperimentalCodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
@@ -440,8 +438,7 @@ fn code_overlap_trim_false() {
                 .unwrap()
                 .with_trim(false);
             let capacity = *config.capacity();
-            let splitter =
-                ExperimentalCodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
@@ -471,8 +468,7 @@ fn code_overlap_trim() {
                 .with_overlap(overlap)
                 .unwrap();
             let capacity = *config.capacity();
-            let splitter =
-                ExperimentalCodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
