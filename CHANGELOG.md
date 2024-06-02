@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.13.3
+
+Fixes broken PyPI publish because of a bad dev dependency specification.
+
 ## v0.13.2
 
 ### What's New
