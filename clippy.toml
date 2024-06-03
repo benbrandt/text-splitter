@@ -1,6 +1,7 @@
 allowed-duplicate-crates = [
     "base64",
     "bitflags",
+    "heck",
     "itertools",
     "windows-sys",
     "windows-targets",
