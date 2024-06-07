@@ -13,10 +13,10 @@ importers:
         version: 0.7.0(typescript@5.4.5)
       '@astrojs/starlight':
         specifier: ^0.24.0
-        version: 0.24.0(astro@4.9.3(typescript@5.4.5))
+        version: 0.24.0(astro@4.10.0(typescript@5.4.5))
       astro:
-        specifier: ^4.9.3
-        version: 4.9.3(typescript@5.4.5)
+        specifier: ^4.10.0
+        version: 4.10.0(typescript@5.4.5)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -57,8 +57,8 @@ packages:
   '@astrojs/markdown-remark@5.1.0':
     resolution: {integrity: sha512-S6Z3K2hOB7MfjeDoHsotnP/q2UsnEDB8NlNAaCjMDsGBZfTUbWxyLW3CaphEWw08f6KLZi2ibK9yC3BaMhh2NQ==}
 
-  '@astrojs/mdx@3.0.1':
-    resolution: {integrity: sha512-UcPja14Qt6OEm7Wjak41Qa5f7G1M0oB2ARCsyIkXy6+Z65fJ6c1648UqEOqnEgR6Xtqq+V47wtK2qSP6KQKrAg==}
+  '@astrojs/mdx@3.1.0':
+    resolution: {integrity: sha512-yuGDaOcCAfYgLQvUAlJDezYGK4twHlzW1Kvpyg3inxtDJuAsHdyVyYLWl0Wo5nwkyrbZktdrjnoW5scqzoAqAg==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       astro: ^4.8.0
@@ -915,8 +915,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^3.3.0
 
-  astro@4.9.3:
-    resolution: {integrity: sha512-LhiKZMee56GI7+zIt15bXZVX4JSnj4syTrQdkYNgE+Y0udMad0x8RgJGzc2NMOK31e6w/SL+NFSvnt/d1kgs5w==}
+  astro@4.10.0:
+    resolution: {integrity: sha512-UNVGGZIwdEPIUumcwgIQnd90b4/PslReY9q3xy/Q6bIq/kvK0duIWCbhFPwf06xu+1tExziP9Jl+klvLXM0LfA==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1109,8 +1109,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.4.792:
-    resolution: {integrity: sha512-rkg5/N3L+Y844JyfgPUyuKK0Hk0efo3JNxUDKvz3HgP6EmN4rNGhr2D8boLsfTV/hGo7ZGAL8djw+jlg99zQyA==}
+  electron-to-chromium@1.4.794:
+    resolution: {integrity: sha512-6FApLtsYhDCY0Vglq3AptsdxQ+PJLc6AxlAM0HjEihUAiOPPbkASEsq9gtxUeZY9o0sJIEa3WnF0vVH4VT4iug==}
 
   emmet@2.4.7:
     resolution: {integrity: sha512-O5O5QNqtdlnQM2bmKHtJgyChcrFMgQuulI+WdiOw2NArzprUqqxUW6bgYtKvzKgrsYpuLWalOkdhNP+1jluhCA==}
@@ -2451,12 +2451,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.0.1(astro@4.9.3(typescript@5.4.5))':
+  '@astrojs/mdx@3.1.0(astro@4.10.0(typescript@5.4.5))':
     dependencies:
       '@astrojs/markdown-remark': 5.1.0
       '@mdx-js/mdx': 3.0.1
       acorn: 8.11.3
-      astro: 4.9.3(typescript@5.4.5)
+      astro: 4.10.0(typescript@5.4.5)
       es-module-lexer: 1.5.3
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -2482,15 +2482,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.24.0(astro@4.9.3(typescript@5.4.5))':
+  '@astrojs/starlight@0.24.0(astro@4.10.0(typescript@5.4.5))':
     dependencies:
-      '@astrojs/mdx': 3.0.1(astro@4.9.3(typescript@5.4.5))
+      '@astrojs/mdx': 3.1.0(astro@4.10.0(typescript@5.4.5))
       '@astrojs/sitemap': 3.1.5
       '@pagefind/default-ui': 1.1.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.9.3(typescript@5.4.5)
-      astro-expressive-code: 0.35.3(astro@4.9.3(typescript@5.4.5))
+      astro: 4.10.0(typescript@5.4.5)
+      astro-expressive-code: 0.35.3(astro@4.10.0(typescript@5.4.5))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -3248,12 +3248,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.3(astro@4.9.3(typescript@5.4.5)):
+  astro-expressive-code@0.35.3(astro@4.10.0(typescript@5.4.5)):
     dependencies:
-      astro: 4.9.3(typescript@5.4.5)
+      astro: 4.10.0(typescript@5.4.5)
       rehype-expressive-code: 0.35.3
 
-  astro@4.9.3(typescript@5.4.5):
+  astro@4.10.0(typescript@5.4.5):
     dependencies:
       '@astrojs/compiler': 2.8.0
       '@astrojs/internal-helpers': 0.4.0
@@ -3369,7 +3369,7 @@ snapshots:
   browserslist@4.23.0:
     dependencies:
       caniuse-lite: 1.0.30001629
-      electron-to-chromium: 1.4.792
+      electron-to-chromium: 1.4.794
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.0)
 
@@ -3499,7 +3499,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.4.792: {}
+  electron-to-chromium@1.4.794: {}
 
   emmet@2.4.7:
     dependencies:
