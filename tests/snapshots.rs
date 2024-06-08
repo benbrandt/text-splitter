@@ -306,6 +306,7 @@ fn markdown_trim() {
     });
 }
 
+#[cfg(feature = "markdown")]
 #[test]
 fn markdown_overlap_trim_false() {
     insta::glob!("inputs/markdown/*.md", |path| {
@@ -337,6 +338,7 @@ fn markdown_overlap_trim_false() {
     });
 }
 
+#[cfg(feature = "markdown")]
 #[test]
 fn markdown_overlap_trim() {
     insta::glob!("inputs/markdown/*.md", |path| {
@@ -424,6 +426,7 @@ fn code_trim() {
     });
 }
 
+#[cfg(feature = "code")]
 #[test]
 fn code_overlap_trim_false() {
     insta::glob!("inputs/code/*.txt", |path| {
@@ -455,6 +458,7 @@ fn code_overlap_trim_false() {
     });
 }
 
+#[cfg(feature = "code")]
 #[test]
 fn code_overlap_trim() {
     insta::glob!("inputs/code/*.txt", |path| {
