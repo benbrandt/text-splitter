@@ -125,6 +125,9 @@ struct SemanticSplitRanges<Level>
 where
     Level: SemanticLevel,
 {
+    /// Current cursor in the ranges list, so that we can skip over items we've
+    /// already processed.
+    cursor: usize,
     /// Range of each semantic item and its precalculated semantic level
     ranges: Vec<(Level, Range<usize>)>,
 }
@@ -138,7 +141,7 @@ where
         ranges.sort_unstable_by(|(_, a), (_, b)| {
             a.start.cmp(&b.start).then_with(|| b.end.cmp(&a.end))
         });
-        Self { ranges }
+        Self { cursor: 0, ranges }
     }
 
     /// Retrieve ranges for all sections of a given level after an offset
@@ -146,7 +149,7 @@ where
         &self,
         offset: usize,
     ) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
-        self.ranges
+        self.ranges[self.cursor..]
             .iter()
             .filter(move |(_, sep)| sep.start >= offset)
             .map(|(l, r)| (*l, r.start..r.end))
@@ -212,8 +215,11 @@ where
     }
 
     /// Clear out ranges we have moved past so future iterations are faster
-    fn update_ranges(&mut self, cursor: usize) {
-        self.ranges.retain(|(_, range)| range.start >= cursor);
+    fn update_cursor(&mut self, cursor: usize) {
+        self.cursor += self.ranges[self.cursor..]
+            .iter()
+            .position(|(_, range)| range.start >= cursor)
+            .unwrap_or_else(|| self.ranges.len() - self.cursor);
     }
 }
 
@@ -270,7 +276,7 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         // Reset caches so we can reuse the memory allocation
         self.chunk_sizer.clear_cache();
-        self.semantic_split.update_ranges(self.cursor);
+        self.semantic_split.update_cursor(self.cursor);
         self.update_next_sections();
 
         let (start, end) = self.binary_search_next_chunk()?;
@@ -511,15 +517,27 @@ where
 mod tests {
     use super::*;
 
+    impl SemanticLevel for usize {}
+
     #[test]
     fn semantic_ranges_are_sorted() {
-        impl SemanticLevel for usize {}
-
         let ranges = SemanticSplitRanges::new(vec![(0, 0..1), (1, 0..2), (0, 1..2), (2, 0..4)]);
 
         assert_eq!(
             ranges.ranges,
             vec![(2, 0..4), (1, 0..2), (0, 0..1), (0, 1..2)]
+        );
+    }
+
+    #[test]
+    fn semantic_ranges_skip_previous_ranges() {
+        let mut ranges = SemanticSplitRanges::new(vec![(0, 0..1), (1, 0..2), (0, 1..2), (2, 0..4)]);
+
+        ranges.update_cursor(1);
+
+        assert_eq!(
+            ranges.ranges_after_offset(0).collect::<Vec<_>>(),
+            vec![(0, 1..2)]
         );
     }
 }

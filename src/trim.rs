@@ -56,6 +56,7 @@ mod tests {
         assert_eq!(chunk, "hello world");
     }
 
+    #[cfg(any(feature = "markdown", feature = "code"))]
     #[test]
     fn trim_indentation_fallback() {
         let chunk = "  hello world  ";
@@ -64,6 +65,7 @@ mod tests {
         assert_eq!(chunk, "hello world");
     }
 
+    #[cfg(any(feature = "markdown", feature = "code"))]
     #[test]
     fn trim_indentation_preserved() {
         let chunk = "\n  hello\n  world  ";
