@@ -71,7 +71,7 @@ rust_tokenizers = { version = "8.1.1", optional = true }
 strum = { version = "0.26.2", features = ["derive"] }
 thiserror = "1.0.61"
 tiktoken-rs = { version = "0.5.9", optional = true }
-tokenizers = { version = "0.19.1", default_features = false, features = [
+tokenizers = { version = "0.19.1", default-features = false, features = [
     "onig",
 ], optional = true }
 tree-sitter = { version = "0.22.6", optional = true }

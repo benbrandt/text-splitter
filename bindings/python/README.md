@@ -115,7 +115,7 @@ Splitting doesn't occur below the character level, otherwise you could get parti
 
 ### `MarkdownSplitter` Semantic Levels
 
-Markdown is parsed according to the CommonMark spec, along with some optional features such as GitHub Flavored Markdown.
+Markdown is parsed according to the `CommonMark` spec, along with some optional features such as GitHub Flavored Markdown.
 
 1. Characters
 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)

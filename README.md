@@ -160,7 +160,7 @@ Splitting doesn't occur below the character level, otherwise you could get parti
 
 ### `MarkdownSplitter` Semantic Levels
 
-Markdown is parsed according to the CommonMark spec, along with some optional features such as GitHub Flavored Markdown.
+Markdown is parsed according to the `CommonMark` spec, along with some optional features such as GitHub Flavored Markdown.
 
 1. Characters
 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
@@ -195,14 +195,14 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 | Feature    | Description                                                                                   |
 | ---------- | --------------------------------------------------------------------------------------------- |
 | `code`     | Enables the `CodeSplitter` struct for parsing code documents via [tree-sitter parsers](https://tree-sitter.github.io/tree-sitter/#parsers). |
-| `markdown` | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the CommonMark spec. |
+| `markdown` | Enables the `MarkdownSplitter` struct for parsing Markdown documents via the `CommonMark` spec. |
 
 ### Tokenizer Support
 
 | Dependency Feature | Version Supported | Description                                                                                                                                                                    |
 | ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `rust_tokenizers`  | `8.1.1`           | Enables `(Text/Markdown)Splitter::new` to take any of the provided tokenizers as an argument.                                                                                  |
-| `tiktoken-rs`      | `0.5.8`           | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for OpenAI models.                                     |
+| `tiktoken-rs`      | `0.5.8`           | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for `OpenAI` models.                                     |
 | `tokenizers`       | `0.19.1`          | Enables `(Text/Markdown)Splitter::new` to take `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
 
 ## Inspiration
