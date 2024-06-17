@@ -277,9 +277,9 @@ where
         // Reset caches so we can reuse the memory allocation
         self.chunk_sizer.clear_cache();
         self.semantic_split.update_cursor(self.cursor);
-        self.update_next_sections();
+        let low = self.update_next_sections();
 
-        let (start, end) = self.binary_search_next_chunk()?;
+        let (start, end) = self.binary_search_next_chunk(low)?;
 
         // Optionally move cursor back if overlap is desired
         self.update_cursor(end);
@@ -290,11 +290,10 @@ where
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
-    fn binary_search_next_chunk(&mut self) -> Option<(usize, usize)> {
+    fn binary_search_next_chunk(&mut self, mut low: usize) -> Option<(usize, usize)> {
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
-        let mut low = 0;
         let mut high = self.next_sections.len().saturating_sub(1);
         let mut successful_index = None;
         let mut successful_chunk_size = None;
@@ -417,7 +416,7 @@ where
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
-    fn update_next_sections(&mut self) {
+    fn update_next_sections(&mut self) -> usize {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
 
@@ -435,18 +434,18 @@ where
                 }),
         );
 
-        if let Some(semantic_level) = semantic_level {
-            let sections = self
-                .semantic_split
-                .semantic_chunks(self.cursor, remaining_text, semantic_level)
-                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-                // so we should be safe to break once we reach it.
-                .take_while_inclusive(move |(offset, _)| {
-                    max_encoded_offset.map_or(true, |max| offset <= &max)
-                })
-                .filter(|(_, str)| !str.is_empty());
-            self.next_sections.extend(sections);
+        let mut sections = if let Some(semantic_level) = semantic_level {
+            Either::Left(
+                self.semantic_split
+                    .semantic_chunks(self.cursor, remaining_text, semantic_level)
+                    // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+                    // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+                    // so we should be safe to break once we reach it.
+                    .take_while_inclusive(move |(offset, _)| {
+                        max_encoded_offset.map_or(true, |max| offset <= &max)
+                    })
+                    .filter(|(_, str)| !str.is_empty()),
+            )
         } else {
             let (semantic_level, fallback_max_encoded_offset) =
                 self.chunk_sizer.find_correct_level(
@@ -464,20 +463,60 @@ where
                 (fallback, max) => fallback.or(max),
             };
 
-            let sections = semantic_level
-                .unwrap_or(FallbackLevel::Char)
-                .sections(remaining_text)
-                .map(|(offset, text)| (self.cursor + offset, text))
-                // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-                // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-                // so we should be safe to break once we reach it.
-                .take_while_inclusive(move |(offset, _)| {
-                    max_encoded_offset.map_or(true, |max| offset <= &max)
-                })
-                .filter(|(_, str)| !str.is_empty());
+            Either::Right(
+                semantic_level
+                    .unwrap_or(FallbackLevel::Char)
+                    .sections(remaining_text)
+                    .map(|(offset, text)| (self.cursor + offset, text))
+                    // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
+                    // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
+                    // so we should be safe to break once we reach it.
+                    .take_while_inclusive(move |(offset, _)| {
+                        max_encoded_offset.map_or(true, |max| offset <= &max)
+                    })
+                    .filter(|(_, str)| !str.is_empty()),
+            )
+        };
 
-            self.next_sections.extend(sections);
+        // Start filling up the next sections. Since calculating the size of the chunk gets more expensive
+        // the farther we go, we conservatively check for a smaller range to do the later binary search in.
+        let mut low = 0;
+        loop {
+            let size = self.next_sections.len();
+            self.next_sections
+                // Default to at least several items for the binary search
+                .extend((0..size.max(2)).map_while(|_| sections.next()));
+            let new_size = self.next_sections.len();
+            // If we've iterated through the whole iterator, break here.
+            if new_size == size {
+                break;
+            }
+            // Check if the last item fits
+            if let Some(&(offset, str)) = self.next_sections.last() {
+                let text_end = offset + str.len();
+                let chunk_size = self.chunk_sizer.check_capacity(
+                    offset,
+                    self.text.get(self.cursor..text_end).expect("Invalid range"),
+                    false,
+                );
+                match chunk_size.fits() {
+                    Ordering::Less => {
+                        // We know we can go higher
+                        low = new_size.saturating_sub(1);
+                        continue;
+                    }
+                    Ordering::Equal => {
+                        // Keep going, but don't update low because it could be a range
+                        continue;
+                    }
+                    Ordering::Greater => {
+                        break;
+                    }
+                };
+            }
         }
+
+        low
     }
 }
 
