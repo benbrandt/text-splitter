@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.14.0
+
+### What's New
+
+- Performance optimizations.
+
+### Breaking Changes
+
+- Chunk output may be slightly different because of the changes to the search optimizations. The previous optimization occasionally caused the splitter to stop too soon. For most cases, you may see no difference. It was most pronounced in the `MarkdownSplitter` at very small sizes, and any splitter using `RustTokenizers` because of its offset behavior.
+
+#### Rust
+
+- `ChunkSize::from_offsets` was removed. This was only used to create an internal optimization, which turned out to not be very accurate anyway. It often required in tokenization implementations to do more work to calculate the size as well, which is no longer necessary. It should be simple to convert to the `ChunkSize::from_size` method (and likely simplify your code as well), which is now the only way to create a `ChunkSize`.
+
 ## v0.13.3
 
 Fixes broken PyPI publish because of a bad dev dependency specification.
