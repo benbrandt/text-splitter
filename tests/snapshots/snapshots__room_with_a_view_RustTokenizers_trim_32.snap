@@ -36,8 +36,8 @@ expression: chunks
 - "“Any nook does for me,” Miss Bartlett continued; “but it does seem hard that you shouldn’t have a view.”"
 - "Lucy felt that she had been selfish. “Charlotte, you mustn’t spoil me:"
 - "of course, you must look over the Arno, too. I meant that."
-- "The first vacant room in the front—” “You must have it,” said Miss Bartlett, part of whose travelling expenses were paid by Lucy’s"
-- "mother—a piece of generosity to which she made many a tactful allusion.\n\n“No, no. You must have it.”"
+- "The first vacant room in the front—” “You must have it,” said Miss Bartlett, part of whose travelling expenses were paid by Lucy’s mother"
+- "—a piece of generosity to which she made many a tactful allusion.\n\n“No, no. You must have it.”"
 - "“I insist on it. Your mother would never forgive me, Lucy.”\n\n“She would never forgive _me_.”"
 - "The ladies’ voices grew animated, and—if the sad truth be owned—a little peevish."
 - "They were tired, and under the guise of unselfishness they wrangled."
@@ -87,15 +87,15 @@ expression: chunks
 - But he came forward pleasantly enough and accepted the chair into which he was beckoned by Lucy.
 - "“I _am_ so glad to see you,” said the girl, who was in a state of spiritual starvation, and would have been glad to see"
 - "the waiter if her cousin had permitted it. “Just fancy how small the world is. Summer Street, too, makes it so specially funny.”"
-- "“Miss Honeychurch lives in the parish of Summer Street,” said Miss Bartlett, filling up the gap, “and she happened to tell me in the course"
-- of conversation that you have just accepted the living—”
+- "“Miss Honeychurch lives in the parish of Summer Street,” said Miss Bartlett, filling up the gap, “and she happened to tell me in the course of"
+- conversation that you have just accepted the living—”
 - "“Yes, I heard from mother so last week."
 - "She didn’t know that I knew you at Tunbridge Wells; but I wrote back at once, and I said: ‘Mr. Beebe is—’”"
 - "“Quite right,” said the clergyman. “I move into the Rectory at Summer Street next June."
 - I am lucky to be appointed to such a charming neighbourhood.”
 - "“Oh, how glad I am! The name of our house is Windy Corner.” Mr. Beebe bowed."
-- "“There is mother and me generally, and my brother, though it’s not often we get him to ch—— The church is rather far"
-- "off, I mean.”\n\n“Lucy, dearest, let Mr. Beebe eat his dinner.”"
+- "“There is mother and me generally, and my brother, though it’s not often we get him to ch—— The church is rather far off,"
+- "I mean.”\n\n“Lucy, dearest, let Mr. Beebe eat his dinner.”"
 - "“I am eating it, thank you, and enjoying it.”"
 - "He preferred to talk to Lucy, whose playing he remembered, rather than to Miss Bartlett, who probably remembered his sermons."
 - "He asked the girl whether she knew Florence well, and was informed at some length that she had never been there before."
@@ -345,8 +345,8 @@ expression: chunks
 - "they are going into the church, too. Oh, the Britisher abroad!”"
 - “We sat opposite them at dinner last night. They have given us their rooms. They were so very kind.”
 - “Look at their figures!” laughed Miss Lavish. “They walk through my Italy like a pair of cows.
-- "It’s very naughty of me, but I would like to set an examination paper at Dover, and turn back every tourist who couldn’t pass it"
-- ".”\n\n“What would you ask us?”"
+- "It’s very naughty of me, but I would like to set an examination paper at Dover, and turn back every tourist who couldn’t pass it."
+- "”\n\n“What would you ask us?”"
 - "Miss Lavish laid her hand pleasantly on Lucy’s arm, as if to suggest that she, at all events, would get full marks."
 - "In this exalted mood they reached the steps of the great church, and were about to enter it when Miss Lavish stopped, squeaked, flung up her"
 - "arms, and cried:\n\n“There goes my local-colour box! I must have a word with him!”"
@@ -396,8 +396,8 @@ expression: chunks
 - "“That woman understands everything,” was Mr. Emerson’s reply. “But what are you doing here? Are you doing the church?"
 - Are you through with the church?”
 - "“No,” cried Lucy, remembering her grievance."
-- "“I came here with Miss Lavish, who was to explain everything; and just by the door—it is too bad!—she simply ran away,"
-- "and after waiting quite a time, I had to come in by myself.”\n\n“Why shouldn’t you?” said Mr. Emerson."
+- "“I came here with Miss Lavish, who was to explain everything; and just by the door—it is too bad!—she simply ran away, and"
+- "after waiting quite a time, I had to come in by myself.”\n\n“Why shouldn’t you?” said Mr. Emerson."
 - "“Yes, why shouldn’t you come by yourself?” said the son, addressing the young lady for the first time."
 - “But Miss Lavish has even taken away Baedeker.”
 - “Baedeker?” said Mr. Emerson. “I’m glad it’s _that_ you minded.
@@ -1044,10 +1044,10 @@ expression: chunks
 - "."
 - She had been told that this was the only safe way to carry money in Italy; it must only be broached within the walls of the English bank.
 - "As she groped she murmured: “Whether it is Mr. Beebe who forgot to tell Mr. Eager, or Mr."
-- "Eager who forgot when he told us, or whether they have decided to leave Eleanor out altogether—which they could scarcely do—but in any case we must"
-- be prepared. It is you they really want; I am only asked for appearances.
-- "You shall go with the two gentlemen, and I and Eleanor will follow behind. A one-horse carriage would do for us."
-- "Yet how difficult it is!”\n\n“It is indeed,” replied the girl, with a gravity that sounded sympathetic."
+- "Eager who forgot when he told us, or whether they have decided to leave Eleanor out altogether—which they could scarcely do—but in any case we must be"
+- "prepared. It is you they really want; I am only asked for appearances. You shall go with the two gentlemen, and I and Eleanor will follow behind."
+- A one-horse carriage would do for us. Yet how difficult it is!”
+- "“It is indeed,” replied the girl, with a gravity that sounded sympathetic."
 - "“What do you think about it?” asked Miss Bartlett, flushed from the struggle, and buttoning up her dress."
 - "“I don’t know what I think, nor what I want.”"
 - "“Oh, dear, Lucy! I do hope Florence isn’t boring you. Speak the word,"
@@ -1503,9 +1503,9 @@ expression: chunks
 - "supplication.\n\n“Time they did.”\n\n“I am glad that Cecil is asking her this once more.”"
 - "“It’s his third go, isn’t it?”\n\n“Freddy I do call the way you talk unkind.”"
 - "“I didn’t mean to be unkind.” Then he added: “But I do think Lucy might have got this off her chest in Italy."
-- "I don’t know how girls manage things, but she can’t have said ‘No’ properly before, or she wouldn’t have to"
-- say it again now. Over the whole thing—I can’t explain—I do feel so uncomfortable.”
-- "“Do you indeed, dear? How interesting!”\n\n“I feel—never mind.”\n\nHe returned to his work."
+- "I don’t know how girls manage things, but she can’t have said ‘No’ properly before, or she wouldn’t have to say it"
+- "again now. Over the whole thing—I can’t explain—I do feel so uncomfortable.”\n\n“Do you indeed, dear? How interesting!”"
+- "“I feel—never mind.”\n\nHe returned to his work."
 - "“Just listen to what I have written to Mrs. Vyse. I said: ‘Dear Mrs.\nVyse.’”"
 - "“Yes, mother, you told me. A jolly good letter.”"
 - "“I said: ‘Dear Mrs. Vyse, Cecil has just asked my permission about it,"
@@ -1525,8 +1525,8 @@ expression: chunks
 - "For a brief space they were silent. Close by, beyond the curtains, the gentle murmur of a long conversation had never ceased."
 - "“The bother is this: I have put my foot in it with Cecil most awfully.”"
 - He gave a nervous gulp.
-- "“Not content with ‘permission’, which I did give—that is to say, I said, ‘I don’t mind’"
-- "—well, not content with that, he wanted to know whether I wasn’t off my head with joy."
+- "“Not content with ‘permission’, which I did give—that is to say, I said, ‘I don’t mind’—well, not"
+- "content with that, he wanted to know whether I wasn’t off my head with joy."
 - "He practically put it like this: Wasn’t it a splendid thing for Lucy and for Windy Corner generally if he married her?"
 - "And he would have an answer—he said it would strengthen his hand.”\n\n“I hope you gave a careful answer, dear.”"
 - "“I answered ‘No’” said the boy, grinding his teeth. “There! Fly into a stew!"
@@ -1544,8 +1544,8 @@ expression: chunks
 - "I don’t hate him, but I don’t like him. What I mind is that he’ll tell Lucy.”"
 - He glanced at the curtains dismally.
 - "“Well, _I_ like him,” said Mrs. Honeychurch."
-- "“I know his mother; he’s good, he’s clever, he’s rich, he’s well connected—Oh,"
-- "you needn’t kick the piano! He’s well connected—I’ll say it again if you like: he’s well connected.”"
+- "“I know his mother; he’s good, he’s clever, he’s rich, he’s well connected—Oh, you"
+- "needn’t kick the piano! He’s well connected—I’ll say it again if you like: he’s well connected.”"
 - "She paused, as if rehearsing her eulogy, but her face remained dissatisfied. She added: “And he has beautiful manners.”"
 - “I liked him till just now.
 - I suppose it’s having him spoiling Lucy’s first week at home; and it’s also something that Mr.
@@ -1733,8 +1733,8 @@ expression: chunks
 - "She has learnt—you will let me talk freely, as I have begun freely—she has learnt what it is to love: the greatest lesson, some people"
 - "will tell you, that our earthly life provides.” It was now time for him to wave his hat at the approaching trio."
 - He did not omit to do so.
-- "“She has learnt through you,” and if his voice was still clerical, it was now also sincere; “let it be your care that her knowledge"
-- "is profitable to her.”\n\n“Grazie tante!” said Cecil, who did not like parsons."
+- "“She has learnt through you,” and if his voice was still clerical, it was now also sincere; “let it be your care that her knowledge is"
+- "profitable to her.”\n\n“Grazie tante!” said Cecil, who did not like parsons."
 - "“Have you heard?” shouted Mrs. Honeychurch as she toiled up the sloping garden. “Oh, Mr."
 - "Beebe, have you heard the news?”\n\nFreddy, now full of geniality, whistled the wedding march. Youth seldom criticizes the accomplished fact."
 - “Indeed I have!” he cried. He looked at Lucy.
@@ -1810,8 +1810,8 @@ expression: chunks
 - "She missed Cecil’s epigram, but grasped the feeling that prompted it.\n\n“Don’t you like Mr. Beebe?” she asked thoughtfully."
 - “I never said so!” he cried. “I consider him far above the average.
 - "I only denied—” And he swept off on the subject of fences again, and was brilliant."
-- "“Now, a clergyman that I do hate,” said she wanting to say something sympathetic, “a clergyman that does have fences, and the most dreadful"
-- "ones, is Mr. Eager, the English chaplain at Florence. He was truly insincere—not merely the manner unfortunate."
+- "“Now, a clergyman that I do hate,” said she wanting to say something sympathetic, “a clergyman that does have fences, and the most dreadful ones"
+- ", is Mr. Eager, the English chaplain at Florence. He was truly insincere—not merely the manner unfortunate."
 - "He was a snob, and so conceited, and he did say such unkind things.”\n\n“What sort of things?”"
 - "“There was an old man at the Bertolini whom he said had murdered his wife.”\n\n“Perhaps he had.”\n\n“No!”"
 - "“Why ‘no’?”\n\n“He was such a nice old man, I’m sure.”"
@@ -2112,8 +2112,8 @@ expression: chunks
 - "“I was merely going to remark, Freddy, that I trusted they were no relations of Emerson the philosopher, a most trying man."
 - "Pray, does that satisfy you?”"
 - "“Oh, yes,” he grumbled."
-- "“And you will be satisfied, too, for they’re friends of Cecil; so”—elaborate irony—“you and the other country families"
-- "will be able to call in perfect safety.”\n\n“_Cecil?_” exclaimed Lucy."
+- "“And you will be satisfied, too, for they’re friends of Cecil; so”—elaborate irony—“you and the other country families will be"
+- "able to call in perfect safety.”\n\n“_Cecil?_” exclaimed Lucy."
 - "“Don’t be rude, dear,” said his mother placidly. “Lucy, don’t screech."
 - "It’s a new bad habit you’re getting into.”\n\n“But has Cecil—”"
 - "“Friends of Cecil’s,” he repeated, “‘and so really dee-sire-rebel."
@@ -2123,8 +2123,8 @@ expression: chunks
 - She might well “screech” when she heard that it came partly from her lover. Mr.
 - "Vyse was a tease—something worse than a tease: he took a malicious pleasure in thwarting people."
 - "The clergyman, knowing this, looked at Miss Honeychurch with more than his usual kindness."
-- "When she exclaimed, “But Cecil’s Emersons—they can’t possibly be the same ones—there is that—” he did not consider"
-- "that the exclamation was strange, but saw in it an opportunity of diverting the conversation while she recovered her composure. He diverted it as follows:"
+- "When she exclaimed, “But Cecil’s Emersons—they can’t possibly be the same ones—there is that—” he did not consider that the"
+- "exclamation was strange, but saw in it an opportunity of diverting the conversation while she recovered her composure. He diverted it as follows:"
 - "“The Emersons who were at Florence, do you mean? No, I don’t suppose it will prove to be them."
 - "It is probably a long cry from them to friends of Mr. Vyse’s. Oh, Mrs. Honeychurch, the oddest people!"
 - "The queerest people! For our part we liked them, didn’t we?” He appealed to Lucy."
@@ -2174,8 +2174,8 @@ expression: chunks
 - "“But, Cecil—” proceeded hilariously."
 - "“In the course of conversation they said that they wanted a country cottage—the father to live there, the son to run down for week-ends."
 - "I thought, ‘What a chance of scoring off Sir Harry!’"
-- "and I took their address and a London reference, found they weren’t actual blackguards—it was great sport—and wrote to him, making"
-- "out—”\n\n“Cecil! No, it’s not fair. I’ve probably met them before—”\n\nHe bore her down."
+- "and I took their address and a London reference, found they weren’t actual blackguards—it was great sport—and wrote to him, making out"
+- "—”\n\n“Cecil! No, it’s not fair. I’ve probably met them before—”\n\nHe bore her down."
 - “Perfectly fair. Anything is fair that punishes a snob. That old man will do the neighbourhood a world of good.
 - Sir Harry is too disgusting with his ‘decayed gentlewomen.’ I meant to read him a lesson some time.
 - "No, Lucy, the classes ought to mix, and before long you’ll agree with me."
@@ -2199,8 +2199,8 @@ expression: chunks
 - "Beebe planned pleasant moments for the new-comers, and told Mrs. Honeychurch that Freddy must call on them as soon as they arrived."
 - "Indeed, so ample was the Muse’s equipment that she permitted Mr."
 - "Harris, never a very robust criminal, to droop his head, to be forgotten, and to die."
-- "Lucy—to descend from bright heaven to earth, whereon there are shadows because there are hills—Lucy was at first plunged into despair, but settled after"
-- a little thought that it did not matter the very least.
+- "Lucy—to descend from bright heaven to earth, whereon there are shadows because there are hills—Lucy was at first plunged into despair, but settled after a"
+- little thought that it did not matter the very least.
 - "Now that she was engaged, the Emersons would scarcely insult her and were welcome into the neighbourhood. And Cecil was welcome to bring whom he would into the neighbourhood."
 - Therefore Cecil was welcome to bring the Emersons into the neighbourhood.
 - "But, as I say, this took a little thinking, and—so illogical are girls—the event remained rather greater and rather more dreadful than it should"
@@ -2261,8 +2261,8 @@ expression: chunks
 - "She played Schumann. “Now some Beethoven” called Cecil, when the querulous beauty of the music had died."
 - "She shook her head and played Schumann again. The melody rose, unprofitably magical."
 - "It broke; it was resumed broken, not marching once from the cradle to the grave."
-- "The sadness of the incomplete—the sadness that is often Life, but should never be Art—throbbed in its disjected phrases, and made the nerves"
-- of the audience throb.
+- "The sadness of the incomplete—the sadness that is often Life, but should never be Art—throbbed in its disjected phrases, and made the nerves of"
+- the audience throb.
 - "Not thus had she played on the little draped piano at the Bertolini, and “Too much Schumann” was not the remark that Mr."
 - Beebe had passed to himself when she returned.
 - "When the guests were gone, and Lucy had gone to bed, Mrs."
@@ -2280,8 +2280,8 @@ expression: chunks
 - "“But her music!” he exclaimed. “The style of her! How she kept to Schumann when, like an idiot, I wanted Beethoven."
 - "Schumann was right for this evening. Schumann was the thing. Do you know, mother, I shall have our children educated just like Lucy."
 - "Bring them up among honest country folks for freshness, send them to Italy for subtlety, and then—not till then—let them come to London."
-- "I don’t believe in these London educations—” He broke off, remembering that he had had one himself, and concluded, “At all events"
-- ", not for women.”\n\n“Make her one of us,” repeated Mrs. Vyse, and processed to bed."
+- "I don’t believe in these London educations—” He broke off, remembering that he had had one himself, and concluded, “At all events,"
+- "not for women.”\n\n“Make her one of us,” repeated Mrs. Vyse, and processed to bed."
 - "As she was dozing off, a cry—the cry of nightmare—rang from Lucy’s room."
 - Lucy could ring for the maid if she liked but Mrs. Vyse thought it kind to go herself.
 - "She found the girl sitting upright with her hand on her cheek.\n\n“I am so sorry, Mrs. Vyse—it is these dreams.”"
@@ -2548,12 +2548,11 @@ expression: chunks
 - Cecil glanced at them as he proceeded to his toilet and they impeded Mary with her brood of hot-water cans. Then Mrs.
 - "Honeychurch opened her door and said: “Lucy, what a noise you’re making! I have something to say to you."
 - Did you say you had had a letter from Charlotte?” and Freddy ran away.
-- "“Yes. I really can’t stop. I must dress too.”\n\n“How’s Charlotte?”\n\n“All right.”"
-- "“Lucy!”\n\nThe unfortunate girl returned."
-- "“You’ve a bad habit of hurrying away in the middle of one’s sentences.\nDid Charlotte mention her boiler?”"
+- "“Yes. I really can’t stop. I must dress too.”\n\n“How’s Charlotte?”\n\n“All right.”\n\n“Lucy!”"
+- "The unfortunate girl returned.\n\n“You’ve a bad habit of hurrying away in the middle of one’s sentences.\nDid Charlotte mention her boiler?”"
 - “Her _what?_”
-- "“Don’t you remember that her boiler was to be had out in October, and her bath cistern cleaned out, and all kinds of terrible to"
-- "-doings?”"
+- "“Don’t you remember that her boiler was to be had out in October, and her bath cistern cleaned out, and all kinds of terrible to-"
+- doings?”
 - "“I can’t remember all Charlotte’s worries,” said Lucy bitterly."
 - "“I shall have enough of my own, now that you are not pleased with Cecil.”"
 - Mrs. Honeychurch might have flamed out. She did not.
@@ -2571,8 +2570,8 @@ expression: chunks
 - "“Oh, very slightly. I mean, Charlotte knew them even less than I did.”"
 - "“Oh, that reminds me—you never told me what Charlotte said in her letter.”"
 - "“One thing and another,” said Lucy, wondering whether she would get through the meal without a lie."
-- "“Among other things, that an awful friend of hers had been bicycling through Summer Street, wondered if she’d come up and see us"
-- ", and mercifully didn’t.”\n\n“Lucy, I do call the way you talk unkind.”"
+- "“Among other things, that an awful friend of hers had been bicycling through Summer Street, wondered if she’d come up and see us,"
+- "and mercifully didn’t.”\n\n“Lucy, I do call the way you talk unkind.”"
 - "“She was a novelist,” said Lucy craftily. The remark was a happy one,"
 - for nothing roused Mrs. Honeychurch so much as literature in the hands of females.
 - She would abandon every topic to inveigh against those women who (instead of minding their houses and their children) seek notoriety by print.
@@ -2580,8 +2579,8 @@ expression: chunks
 - "played at “This year, next year, now, never,”"
 - "with his plum-stones, and Lucy artfully fed the flames of her mother’s wrath."
 - "But soon the conflagration died down, and the ghosts began to gather in the darkness. There were too many ghosts about."
-- The original ghost—that touch of lips on her cheek—had surely been laid long ago; it could be nothing to her that a man had kissed her
-- on a mountain once.
+- The original ghost—that touch of lips on her cheek—had surely been laid long ago; it could be nothing to her that a man had kissed her on
+- a mountain once.
 - "But it had begotten a spectral family—Mr. Harris, Miss Bartlett’s letter, Mr."
 - Beebe’s memories of violets—and one or other of these was bound to haunt her before Cecil’s very eyes.
 - "It was Miss Bartlett who returned now, and with appalling vividness."
@@ -2591,8 +2590,8 @@ expression: chunks
 - "“Then, depend upon it, it _is_ the boiler. I know myself how water preys upon one’s mind."
 - "I would rather anything else—even a misfortune with the meat.”\n\nCecil laid his hand over his eyes."
 - "“So would I,” asserted Freddy, backing his mother up—backing up the spirit of her remark rather than the substance."
-- "“And I have been thinking,” she added rather nervously, “surely we could squeeze Charlotte in here next week, and give her a nice holiday while"
-- the plumbers at Tunbridge Wells finish. I have not seen poor Charlotte for so long.”
+- "“And I have been thinking,” she added rather nervously, “surely we could squeeze Charlotte in here next week, and give her a nice holiday while the"
+- plumbers at Tunbridge Wells finish. I have not seen poor Charlotte for so long.”
 - It was more than her nerves could stand. And she could not protest violently after her mother’s goodness to her upstairs.
 - "“Mother, no!” she pleaded. “It’s impossible."
 - We can’t have Charlotte on the top of the other things; we’re squeezed to death as it is.
@@ -2624,10 +2623,10 @@ expression: chunks
 - "The ghosts were returning; they filled Italy, they were even usurping the places she had known as a child."
 - "The Sacred Lake would never be the same again, and, on Sunday week, something would even happen to Windy Corner. How would she fight against ghosts?"
 - "For a moment the visible world faded away, and memories and emotions alone seemed real."
-- "“I suppose Miss Bartlett must come, since she boils eggs so well,” said Cecil, who was in rather a happier frame of mind, thanks"
-- to the admirable cooking.
-- "“I didn’t mean the egg was _well_ boiled,” corrected Freddy, “because in point of fact she forgot to take it off,"
-- and as a matter of fact I don’t care for eggs. I only meant how jolly kind she seemed.”
+- "“I suppose Miss Bartlett must come, since she boils eggs so well,” said Cecil, who was in rather a happier frame of mind, thanks to"
+- the admirable cooking.
+- "“I didn’t mean the egg was _well_ boiled,” corrected Freddy, “because in point of fact she forgot to take it off, and"
+- as a matter of fact I don’t care for eggs. I only meant how jolly kind she seemed.”
 - "Cecil frowned again. Oh, these Honeychurches! Eggs, boilers,"
 - "hydrangeas, maids—of such were their lives compact. “May me and Lucy get down from our chairs?”"
 - "he asked, with scarcely veiled insolence.\n“We don’t want no dessert.”"
@@ -2755,8 +2754,8 @@ expression: chunks
 - "Either country was spanned by a cloudless sky, and in either arose the tinkle of church bells."
 - "The garden of Windy Corners was deserted except for a red book, which lay sunning itself upon the gravel path."
 - "From the house came incoherent sounds, as of females preparing for worship."
-- "“The men say they won’t go”—“Well, I don’t blame them”—Minnie says, “"
-- "need she go?”—“Tell her,"
+- "“The men say they won’t go”—“Well, I don’t blame them”—Minnie says, “need she go?”—"
+- "“Tell her,"
 - "no nonsense”—“Anne! Mary! Hook me behind!”—“Dearest Lucia, may I trespass upon you for a pin?”"
 - For Miss Bartlett had announced that she at all events was one for church.
 - "The sun rose higher on its journey, guided, not by Phaethon, but by Apollo, competent, unswerving, divine."
@@ -2822,8 +2821,8 @@ expression: chunks
 - Why all this twiddling and twaddling over two Miss Alans?”
 - "“There is a certain amount of kindness, just as there is a certain amount of light,” he continued in measured tones."
 - "“We cast a shadow on something wherever we stand, and it is no good moving from place to place to save things; because the shadow always follows."
-- "Choose a place where you won’t do harm—yes, choose a place where you won’t do very much harm, and stand in it for"
-- "all you are worth, facing the sunshine.”\n\n“Oh, Mr. Emerson, I see you’re clever!”\n\n“Eh—?”"
+- "Choose a place where you won’t do harm—yes, choose a place where you won’t do very much harm, and stand in it for all"
+- "you are worth, facing the sunshine.”\n\n“Oh, Mr. Emerson, I see you’re clever!”\n\n“Eh—?”"
 - “I see you’re going to be clever. I hope you didn’t go behaving like that to poor Freddy.”
 - "George’s eyes laughed, and Lucy suspected that he and her mother would get on rather well."
 - "“No, I didn’t,” he said. “He behaved that way to me. It is his philosophy."
@@ -2875,13 +2874,13 @@ expression: chunks
 - "But the bell was ringing for lunch, and, as often happened, Cecil had paid no great attention to her remarks."
 - "Charm, not argument, was to be her forte."
 - Lunch was a cheerful meal. Generally Lucy was depressed at meals.
-- "Some one had to be soothed—either Cecil or Miss Bartlett or a Being not visible to the mortal eye—a Being who whispered to her soul:"
-- "“It will not last, this cheerfulness. In January you must go to London to entertain the grandchildren of celebrated men.”"
+- "Some one had to be soothed—either Cecil or Miss Bartlett or a Being not visible to the mortal eye—a Being who whispered to her soul: “"
+- "It will not last, this cheerfulness. In January you must go to London to entertain the grandchildren of celebrated men.”"
 - "But to-day she felt she had received a guarantee. Her mother would always sit there, her brother here."
 - "The sun, though it had moved a little since the morning,"
 - would never be hidden behind the western hills. After luncheon they asked her to play.
-- "She had seen Gluck’s Armide that year, and played from memory the music of the enchanted garden—the music to which Renaud approaches, beneath the light"
-- "of an eternal dawn, the music that never gains, never wanes, but ripples for ever like the tideless seas of fairyland."
+- "She had seen Gluck’s Armide that year, and played from memory the music of the enchanted garden—the music to which Renaud approaches, beneath the light of"
+- "an eternal dawn, the music that never gains, never wanes, but ripples for ever like the tideless seas of fairyland."
 - "Such music is not for the piano, and her audience began to get restive, and Cecil, sharing the discontent, called out: “Now play us the"
 - "other garden—the one in Parsifal.”\n\nShe closed the instrument."
 - "*** END OF THE PROJECT GUTENBERG EBOOK A ROOM WITH A VIEW ***"

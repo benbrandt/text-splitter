@@ -115,7 +115,7 @@ expression: chunks
 - require explicit item
 - continuation.
 - This paragraph is part of the
-- " preceding list item.\n\n    2."
+- "preceding list item.\n\n    2."
 - List item b.
 - This paragraph belongs to item
 - "two of the outer list.\n```"

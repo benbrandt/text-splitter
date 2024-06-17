@@ -220,10 +220,7 @@ mod tests {
 
     impl ChunkSizer for Str {
         fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-            ChunkSize::from_offsets(
-                chunk.as_bytes().iter().enumerate().map(|(i, _)| (i..i)),
-                capacity,
-            )
+            ChunkSize::from_size(chunk.as_bytes().len(), capacity)
         }
     }
 

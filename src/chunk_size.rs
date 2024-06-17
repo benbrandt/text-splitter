@@ -193,8 +193,6 @@ impl From<RangeToInclusive<usize>> for ChunkCapacity {
 pub struct ChunkSize {
     /// Whether or not the entire chunk fits within the `ChunkCapacity`
     fits: Ordering,
-    /// max byte offset of the text that fit within the given `ChunkCapacity`.
-    max_chunk_size_offset: Option<usize>,
     /// Size of the chunk, in units used by the sizer.
     size: usize,
 }
@@ -206,33 +204,8 @@ impl ChunkSize {
     pub fn from_size(size: usize, capacity: &ChunkCapacity) -> Self {
         Self {
             fits: capacity.fits(size),
-            max_chunk_size_offset: None,
             size,
         }
-    }
-
-    /// Generate a chunk size from an iterator of byte ranges for each encoded
-    /// element in the chunk.
-    pub fn from_offsets(
-        offsets: impl Iterator<Item = Range<usize>>,
-        capacity: &ChunkCapacity,
-    ) -> Self {
-        let mut chunk_size = offsets.fold(
-            Self {
-                fits: Ordering::Less,
-                max_chunk_size_offset: None,
-                size: 0,
-            },
-            |mut acc, range| {
-                acc.size += 1;
-                if acc.size <= capacity.max {
-                    acc.max_chunk_size_offset = Some(range.end);
-                }
-                acc
-            },
-        );
-        chunk_size.fits = capacity.fits(chunk_size.size);
-        chunk_size
     }
 
     /// Determine whether the chunk size fits within the capacity or not
@@ -442,12 +415,7 @@ where
     /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
     pub fn check_capacity(&mut self, offset: usize, chunk: &str, is_overlap: bool) -> ChunkSize {
         let (offset, chunk) = self.trim_chunk(offset, chunk);
-        let mut chunk_size = self.chunk_size(offset, chunk, is_overlap);
-
-        if let Some(max_chunk_size_offset) = chunk_size.max_chunk_size_offset.as_mut() {
-            *max_chunk_size_offset += offset;
-        }
-        chunk_size
+        self.chunk_size(offset, chunk, is_overlap)
     }
 
     /// If trim chunks is on, trim the str and adjust the offset
@@ -464,9 +432,7 @@ where
         &mut self,
         offset: usize,
         levels_with_first_chunk: impl Iterator<Item = (L, &'text str)>,
-    ) -> (Option<L>, Option<usize>) {
-        // If we aren't at the highest semantic level, stop iterating sections that go beyond the range of the next level.
-        let mut max_encoded_offset = None;
+    ) -> Option<L> {
         let mut semantic_level = None;
 
         // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
@@ -483,14 +449,13 @@ where
             let chunk_size = self.check_capacity(offset, str, false);
             // If this no longer fits, we use the level we are at.
             if chunk_size.fits.is_gt() {
-                max_encoded_offset = chunk_size.max_chunk_size_offset;
                 break;
             }
             // Otherwise break up the text with the next level
             semantic_level = Some(level);
         }
 
-        (semantic_level, max_encoded_offset)
+        semantic_level
     }
 
     /// Clear the cached values. Once we've moved the cursor,
@@ -632,48 +597,6 @@ mod tests {
         );
     }
 
-    #[test]
-    fn chunk_size_from_offsets() {
-        let offsets = [0..1, 1..2, 2..3];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1.into());
-        assert_eq!(
-            ChunkSize {
-                fits: Ordering::Greater,
-                size: offsets.len(),
-                max_chunk_size_offset: Some(1)
-            },
-            chunk_size
-        );
-    }
-
-    #[test]
-    fn chunk_size_from_empty_offsets() {
-        let offsets = [];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &1.into());
-        assert_eq!(
-            ChunkSize {
-                fits: Ordering::Less,
-                size: offsets.len(),
-                max_chunk_size_offset: None
-            },
-            chunk_size
-        );
-    }
-
-    #[test]
-    fn chunk_size_from_small_offsets() {
-        let offsets = [0..1, 1..2, 2..3];
-        let chunk_size = ChunkSize::from_offsets(offsets.clone().into_iter(), &4.into());
-        assert_eq!(
-            ChunkSize {
-                fits: Ordering::Less,
-                size: offsets.len(),
-                max_chunk_size_offset: Some(3)
-            },
-            chunk_size
-        );
-    }
-
     #[derive(Default)]
     struct CountingSizer {
         calls: AtomicUsize,
@@ -752,7 +675,6 @@ mod tests {
             ChunkSize {
                 fits: Ordering::Equal,
                 size: 10,
-                max_chunk_size_offset: None
             },
             chunk_size
         );
