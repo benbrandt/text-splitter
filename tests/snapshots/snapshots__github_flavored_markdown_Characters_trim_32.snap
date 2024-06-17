@@ -87,7 +87,7 @@ expression: chunks
 - Open a pull request
 - "* Describe my changes"
 - "* Mention all the members of my"
-- " team\n        * Ask for feedback"
+- "team\n        * Ask for feedback"
 - + Create a list by starting a
 - "line with `+`, `-`, or `*`"
 - + Sub-lists are made by
@@ -365,11 +365,10 @@ expression: chunks
 - "{"
 - public static List<int> JustDoIt
 - "(int count)\n        {"
-- "Console.WriteLine($\"Hello"
-- "{Name}!\");"
-- return new List<int>(new
-- " int[] { 1, 2, 3 })\n        }"
-- "    }\n}\n```"
+- "Console.WriteLine($\"Hello {Name}"
+- "!\");"
+- "return new List<int>(new int[] {"
+- "1, 2, 3 })\n        }\n    }\n}\n```"
 - "```css"
 - "@font-face {"
 - "font-family: Chunkfive; src: url"
@@ -388,15 +387,15 @@ expression: chunks
 - "cls) {\n  try {"
 - "if (cls.search(/\\bno\\-highlight\\"
 - b/) != -1)
-- "return process(block, true,"
-- "0x0F) +"
+- "return process(block, true, 0x0F"
+- ) +
 - "` class=\"${cls}\"`;"
 - "} catch (e) {"
 - "    /* handle exception */\n  }"
 - for (var i = 0 / 2; i <
 - "classes.length; i++) {"
-- "if (checkCondition(classes[i])"
-- "=== undefined)"
+- "if (checkCondition(classes[i]) ="
+- "== undefined)"
 - "console.log('undefined');"
 - "  }\n}\n\nexport  $initHighlight;"
 - "```"
@@ -419,18 +418,18 @@ expression: chunks
 - "$stats = array(), $uri = 'http')"
 - "    {\n        echo __METHOD__;"
 - "$uri = explode(':', $uri, 0b10);"
-- $schemeSpecific = isset($uri
-- "[1]) ? $uri[1] : '';"
+- "$schemeSpecific = isset($uri[1])"
+- "? $uri[1] : '';"
 - "$desc = 'Multi"
 - "line description';"
 - // Security check
 - "if (!ctype_alnum($scheme)) {"
-- throw new Zend_Uri_Exception(
-- "'Illegal scheme');\n        }"
+- "throw new Zend_Uri_Exception('"
+- "Illegal scheme');\n        }"
 - "$this->var = 0 - self::$st;"
-- "$this->list = list(Array(\""
-- "1\"=> 2, 2=>self::ME, 3 => \\"
-- "Location\\Web\\URI::class));"
+- "$this->list = list(Array(\"1\"=> 2"
+- ", 2=>self::ME, 3 => \\Location\\"
+- "Web\\URI::class));"
 - "return ["
 - "'uri'   => $uri,"
 - "'value' => null,"

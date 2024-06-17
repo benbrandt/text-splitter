@@ -422,7 +422,7 @@ where
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        let (semantic_level, max_encoded_offset) = self.chunk_sizer.find_correct_level(
+        let semantic_level = self.chunk_sizer.find_correct_level(
             self.cursor,
             self.semantic_split
                 .levels_in_remaining_text(self.cursor)
@@ -438,42 +438,24 @@ where
             Either::Left(
                 self.semantic_split
                     .semantic_chunks(self.cursor, remaining_text, semantic_level)
-                    // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-                    // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-                    // so we should be safe to break once we reach it.
-                    .take_while_inclusive(move |(offset, _)| {
-                        max_encoded_offset.map_or(true, |max| offset <= &max)
-                    })
                     .filter(|(_, str)| !str.is_empty()),
             )
         } else {
-            let (semantic_level, fallback_max_encoded_offset) =
-                self.chunk_sizer.find_correct_level(
-                    self.cursor,
-                    FallbackLevel::iter().filter_map(|level| {
-                        level
-                            .sections(remaining_text)
-                            .next()
-                            .map(|(_, str)| (level, str))
-                    }),
-                );
-
-            let max_encoded_offset = match (fallback_max_encoded_offset, max_encoded_offset) {
-                (Some(fallback), Some(max)) => Some(fallback.min(max)),
-                (fallback, max) => fallback.or(max),
-            };
+            let semantic_level = self.chunk_sizer.find_correct_level(
+                self.cursor,
+                FallbackLevel::iter().filter_map(|level| {
+                    level
+                        .sections(remaining_text)
+                        .next()
+                        .map(|(_, str)| (level, str))
+                }),
+            );
 
             Either::Right(
                 semantic_level
                     .unwrap_or(FallbackLevel::Char)
                     .sections(remaining_text)
                     .map(|(offset, text)| (self.cursor + offset, text))
-                    // We don't want to return items at this level that go beyond the next highest semantic level, as that is most
-                    // likely a meaningful breakpoint we want to preserve. We already know that the next highest doesn't fit anyway,
-                    // so we should be safe to break once we reach it.
-                    .take_while_inclusive(move |(offset, _)| {
-                        max_encoded_offset.map_or(true, |max| offset <= &max)
-                    })
                     .filter(|(_, str)| !str.is_empty()),
             )
         };
