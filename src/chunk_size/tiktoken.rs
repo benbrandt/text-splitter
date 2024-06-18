@@ -1,18 +1,18 @@
 use tiktoken_rs::CoreBPE;
 
-use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
+use crate::ChunkSizer;
 
 impl ChunkSizer for &CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        ChunkSize::from_size(self.encode_ordinary(chunk).len(), capacity)
+    fn size(&self, chunk: &str) -> usize {
+        self.encode_ordinary(chunk).len()
     }
 }
 
 impl ChunkSizer for CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        (&self).chunk_size(chunk, capacity)
+    fn size(&self, chunk: &str) -> usize {
+        (&self).size(chunk)
     }
 }
 
@@ -25,8 +25,7 @@ mod tests {
     #[test]
     fn returns_offsets() {
         let tokenizer = cl100k_base().unwrap();
-        let capacity = 10;
-        let offsets = tokenizer.chunk_size("An apple a", &capacity.into());
-        assert_eq!(offsets, ChunkSize::from_size(3, &capacity.into()));
+        let size = tokenizer.size("An apple a");
+        assert_eq!(size, 3);
     }
 }

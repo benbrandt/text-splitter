@@ -5,7 +5,11 @@ use itertools::Itertools;
 use strum::IntoEnumIterator;
 
 use self::fallback::FallbackLevel;
-use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkConfig, ChunkSize, ChunkSizer};
+use crate::{
+    chunk_size::{ChunkSize, MemoizedChunkSizer},
+    trim::Trim,
+    ChunkConfig, ChunkSizer,
+};
 
 #[cfg(feature = "code")]
 mod code;

@@ -10,7 +10,7 @@ use strum::{Display, EnumIter, IntoEnumIterator};
 use text_splitter::CodeSplitter;
 #[cfg(feature = "markdown")]
 use text_splitter::MarkdownSplitter;
-use text_splitter::{Characters, ChunkCapacity, ChunkConfig, ChunkSize, ChunkSizer, TextSplitter};
+use text_splitter::{Characters, ChunkConfig, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};
 #[cfg(feature = "tokenizers")]
@@ -61,15 +61,15 @@ enum SizerOption {
 }
 
 impl ChunkSizer for SizerOption {
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
+    fn size(&self, chunk: &str) -> usize {
         match self {
-            Self::Characters => Characters.chunk_size(chunk, capacity),
+            Self::Characters => Characters.size(chunk),
             #[cfg(feature = "rust-tokenizers")]
-            Self::RustTokenizers => BERT_UNCASED_TOKENIZER.chunk_size(chunk, capacity),
+            Self::RustTokenizers => BERT_UNCASED_TOKENIZER.size(chunk),
             #[cfg(feature = "tokenizers")]
-            Self::Tokenizers => HUGGINGFACE_TOKENIZER.chunk_size(chunk, capacity),
+            Self::Tokenizers => HUGGINGFACE_TOKENIZER.size(chunk),
             #[cfg(feature = "tiktoken-rs")]
-            Self::TikToken => TIKTOKEN_TOKENIZER.chunk_size(chunk, capacity),
+            Self::TikToken => TIKTOKEN_TOKENIZER.size(chunk),
         }
     }
 }
@@ -93,7 +93,7 @@ fn trim_false() {
 
                     assert_eq!(chunks.join(""), text);
                     for chunk in &chunks {
-                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                        assert!(capacity.fits(sizer.size(chunk)).is_le());
                     }
                     insta::assert_yaml_snapshot!(
                         format!(
@@ -123,7 +123,7 @@ fn trim() {
                     let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
                     for chunk in &chunks {
-                        assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                        assert!(capacity.fits(sizer.size(chunk)).is_le());
                     }
                     insta::assert_yaml_snapshot!(
                         format!(
@@ -150,7 +150,7 @@ fn range_trim_false() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(Characters.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -175,7 +175,7 @@ fn range_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(Characters.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(Characters.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -206,7 +206,7 @@ fn overlap_trim_false() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -236,7 +236,7 @@ fn overlap_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -266,7 +266,7 @@ fn markdown_trim_false() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -293,7 +293,7 @@ fn markdown_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -325,7 +325,7 @@ fn markdown_overlap_trim_false() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -356,7 +356,7 @@ fn markdown_overlap_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -386,7 +386,7 @@ fn code_trim_false() {
 
             assert_eq!(chunks.join(""), text);
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -413,7 +413,7 @@ fn code_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -445,7 +445,7 @@ fn code_overlap_trim_false() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(
@@ -476,7 +476,7 @@ fn code_overlap_trim() {
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
-                assert!(sizer.chunk_size(chunk, &capacity).fits().is_le());
+                assert!(capacity.fits(sizer.size(chunk)).is_le());
             }
             insta::assert_yaml_snapshot!(
                 format!(

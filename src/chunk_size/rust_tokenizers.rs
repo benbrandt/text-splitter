@@ -9,22 +9,18 @@ use rust_tokenizers::{
     vocab::Vocab,
 };
 
-use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
+use crate::ChunkSizer;
 
-fn chunk_size_from_offsets<V: Vocab, T: Tokenizer<V>>(
-    tokenizer: &T,
-    chunk: &str,
-    capacity: &ChunkCapacity,
-) -> ChunkSize {
-    ChunkSize::from_size(tokenizer.tokenize(chunk).len(), capacity)
+fn chunk_size_from_offsets<V: Vocab, T: Tokenizer<V>>(tokenizer: &T, chunk: &str) -> usize {
+    tokenizer.tokenize(chunk).len()
 }
 
 impl<V> ChunkSizer for &BaseTokenizer<V>
 where
     V: Vocab + Sync + Send,
 {
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        chunk_size_from_offsets(*self, chunk, capacity)
+    fn size(&self, chunk: &str) -> usize {
+        chunk_size_from_offsets(*self, chunk)
     }
 }
 
@@ -32,22 +28,22 @@ impl<V> ChunkSizer for BaseTokenizer<V>
 where
     V: Vocab + Sync + Send,
 {
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        (&self).chunk_size(chunk, capacity)
+    fn size(&self, chunk: &str) -> usize {
+        (&self).size(chunk)
     }
 }
 
 macro_rules! impl_chunk_sizer {
     ($($t:ty),+) => {
         $(impl ChunkSizer for &$t {
-            fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-                chunk_size_from_offsets(*self, chunk, capacity)
+            fn size(&self, chunk: &str) -> usize {
+                chunk_size_from_offsets(*self, chunk)
             }
         }
 
         impl ChunkSizer for $t {
-            fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-                (&self).chunk_size(chunk, capacity)
+            fn size(&self, chunk: &str) -> usize {
+                (&self).size(chunk)
             }
         })+
     }
@@ -109,9 +105,8 @@ mod tests {
             "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
         );
         let tokenizer = BertTokenizer::from_file(vocab_path, false, false).unwrap();
-        let capacity = 10;
-        let offsets = tokenizer.chunk_size(" An apple a", &capacity.into());
-        assert_eq!(offsets, ChunkSize::from_size(3, &capacity.into()));
+        let size = tokenizer.size(" An apple a");
+        assert_eq!(size, 3);
     }
 
     #[test]
@@ -119,8 +114,8 @@ mod tests {
         let sizes = TokenizerOption::iter()
             .collect::<Vec<_>>()
             .into_par_iter()
-            .map(|tokenizer| tokenizer.tokenizer().chunk_size(" An apple a", &10.into()));
-        assert!(sizes.all(|chunk_size| chunk_size.size > 0));
+            .map(|tokenizer| tokenizer.tokenizer().size(" An apple a"));
+        assert!(sizes.all(|size| size > 0));
     }
 
     #[derive(EnumIter)]

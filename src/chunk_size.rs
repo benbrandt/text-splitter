@@ -130,6 +130,13 @@ impl ChunkCapacity {
             Ordering::Equal
         }
     }
+
+    /// Generates a chunk size object based on the size provided from a sizer
+    /// Calculates and stores whether or not it fits within the capacity
+    #[must_use]
+    fn chunk_size(&self, size: usize) -> ChunkSize {
+        ChunkSize::new(self.fits(size), size)
+    }
 }
 
 impl From<usize> for ChunkCapacity {
@@ -198,14 +205,9 @@ pub struct ChunkSize {
 }
 
 impl ChunkSize {
-    /// Generate a chunk size from a given size. Will not be able to compute the
-    /// max byte offset that fits within the capacity.
     #[must_use]
-    pub fn from_size(size: usize, capacity: &ChunkCapacity) -> Self {
-        Self {
-            fits: capacity.fits(size),
-            size,
-        }
+    fn new(fits: Ordering, size: usize) -> Self {
+        Self { fits, size }
     }
 
     /// Determine whether the chunk size fits within the capacity or not
@@ -224,7 +226,7 @@ impl ChunkSize {
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
+    fn size(&self, chunk: &str) -> usize;
 }
 
 /// Indicates there was an error with the chunk configuration.
@@ -409,7 +411,7 @@ where
 
         *cache
             .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| self.chunk_config.sizer.chunk_size(chunk, &capacity))
+            .or_insert_with(|| capacity.chunk_size(self.chunk_config.sizer.size(chunk)))
     }
 
     /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
@@ -479,14 +481,23 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &4.into()).fits,
+            ChunkCapacity::from(4)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &5.into()).fits,
+            ChunkCapacity::from(5)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
-        assert_eq!(Characters.chunk_size(chunk, &6.into()).fits, Ordering::Less);
+        assert_eq!(
+            ChunkCapacity::from(6)
+                .chunk_size(Characters.size(chunk))
+                .fits,
+            Ordering::Less
+        );
     }
 
     #[test]
@@ -494,19 +505,27 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..0).into()).fits,
+            ChunkCapacity::from(0..0)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..5).into()).fits,
+            ChunkCapacity::from(0..5)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(5..6).into()).fits,
+            ChunkCapacity::from(5..6)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(6..100).into()).fits,
+            ChunkCapacity::from(6..100)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Less
         );
     }
@@ -516,15 +535,21 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..).into()).fits,
+            ChunkCapacity::from(0..)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(5..).into()).fits,
+            ChunkCapacity::from(5..)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(6..).into()).fits,
+            ChunkCapacity::from(6..)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Less
         );
     }
@@ -534,7 +559,9 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(..).into()).fits,
+            ChunkCapacity::from(..)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
     }
@@ -544,19 +571,27 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(0..=4).into()).fits,
+            ChunkCapacity::from(0..=4)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(5..=6).into()).fits,
+            ChunkCapacity::from(5..=6)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(4..=5).into()).fits,
+            ChunkCapacity::from(4..=5)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(6..=100).into()).fits,
+            ChunkCapacity::from(6..=100)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Less
         );
     }
@@ -566,15 +601,21 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(..0).into()).fits,
+            ChunkCapacity::from(..0)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(..5).into()).fits,
+            ChunkCapacity::from(..5)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(..6).into()).fits,
+            ChunkCapacity::from(..6)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
     }
@@ -584,15 +625,21 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            Characters.chunk_size(chunk, &(..=4).into()).fits,
+            ChunkCapacity::from(..=4)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Greater
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(..=5).into()).fits,
+            ChunkCapacity::from(..=5)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
         assert_eq!(
-            Characters.chunk_size(chunk, &(..=6).into()).fits,
+            ChunkCapacity::from(..=6)
+                .chunk_size(Characters.size(chunk))
+                .fits,
             Ordering::Equal
         );
     }
@@ -604,9 +651,9 @@ mod tests {
 
     impl ChunkSizer for CountingSizer {
         // Return character version, but count calls
-        fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
+        fn size(&self, chunk: &str) -> usize {
             self.calls.fetch_add(1, atomic::Ordering::SeqCst);
-            Characters.chunk_size(chunk, capacity)
+            Characters.size(chunk)
         }
     }
 
@@ -669,18 +716,6 @@ mod tests {
     }
 
     #[test]
-    fn test_chunk_size_from_size() {
-        let chunk_size = ChunkSize::from_size(10, &10.into());
-        assert_eq!(
-            ChunkSize {
-                fits: Ordering::Equal,
-                size: 10,
-            },
-            chunk_size
-        );
-    }
-
-    #[test]
     fn basic_chunk_config() {
         let config = ChunkConfig::new(10);
         assert_eq!(config.capacity, 10.into());
@@ -700,7 +735,7 @@ mod tests {
         struct BasicSizer;
 
         impl ChunkSizer for BasicSizer {
-            fn chunk_size(&self, _chunk: &str, _capacity: &ChunkCapacity) -> ChunkSize {
+            fn size(&self, _chunk: &str) -> usize {
                 unimplemented!()
             }
         }

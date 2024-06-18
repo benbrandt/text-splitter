@@ -12,7 +12,26 @@
 
 #### Rust
 
-- `ChunkSize::from_offsets` was removed. This was only used to create an internal optimization, which turned out to not be very accurate anyway. It often required in tokenization implementations to do more work to calculate the size as well, which is no longer necessary. It should be simple to convert to the `ChunkSize::from_size` method (and likely simplify your code as well), which is now the only way to create a `ChunkSize`.
+- `ChunkSize` has been removed. This was a holdover from a previous internal optimization, which turned out to not be very accurate anyway.
+- This makes implementing a custom `ChunkSizer` much easier, as you now only need to generate the size of the chunk as a `usize`. It often required in tokenization implementations to do more work to calculate the size as well, which is no longer necessary.
+
+##### Before
+
+```rust
+pub trait ChunkSizer {
+    // Required method
+    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize;
+}
+```
+
+##### After
+
+```rust
+pub trait ChunkSizer {
+    // Required method
+    fn size(&self, chunk: &str) -> usize;
+}
+```
 
 ## v0.13.3
 
