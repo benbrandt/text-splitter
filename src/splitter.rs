@@ -5,7 +5,7 @@ use itertools::Itertools;
 use strum::IntoEnumIterator;
 
 use self::fallback::FallbackLevel;
-use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkConfig, ChunkSizer};
+use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkConfig, ChunkSize, ChunkSizer};
 
 #[cfg(feature = "code")]
 mod code;
@@ -463,14 +463,18 @@ where
         // Start filling up the next sections. Since calculating the size of the chunk gets more expensive
         // the farther we go, we conservatively check for a smaller range to do the later binary search in.
         let mut low = 0;
+        let mut prev_equals: Option<ChunkSize> = None;
+        let max_chunk_size = self.chunk_config.capacity().max();
+        let mut num_sections = 3;
+
         loop {
-            let size = self.next_sections.len();
+            let prev_num = self.next_sections.len();
+            // Default to at least several items for the binary search
             self.next_sections
-                // Default to at least several items for the binary search
-                .extend((0..size.max(2)).map_while(|_| sections.next()));
-            let new_size = self.next_sections.len();
+                .extend((0..num_sections).map_while(|_| sections.next()));
+            let new_num = self.next_sections.len();
             // If we've iterated through the whole iterator, break here.
-            if new_size == size {
+            if new_num - prev_num < num_sections {
                 break;
             }
             // Check if the last item fits
@@ -481,14 +485,27 @@ where
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                     false,
                 );
+                // Average size of each section
+                let average_size = (chunk_size.size() / num_sections).max(1);
+                num_sections = (max_chunk_size / average_size + 1)
+                    .saturating_sub(num_sections)
+                    .max(1);
+
                 match chunk_size.fits() {
                     Ordering::Less => {
                         // We know we can go higher
-                        low = new_size.saturating_sub(1);
+                        low = new_num.saturating_sub(1);
                         continue;
                     }
                     Ordering::Equal => {
-                        // Keep going, but don't update low because it could be a range
+                        // Don't update low because it could be a range
+                        // If we've seen a previous equals, we can break if the size is bigger already
+                        if let Some(prev) = prev_equals {
+                            if prev.size() < chunk_size.size() {
+                                break;
+                            }
+                        }
+                        prev_equals = Some(chunk_size);
                         continue;
                     }
                     Ordering::Greater => {
