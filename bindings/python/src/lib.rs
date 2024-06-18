@@ -13,8 +13,8 @@ use pyo3::{
     pybacked::PyBackedStr,
 };
 use text_splitter::{
-    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSize,
-    ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
+    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
+    CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
 };
 use tiktoken_rs::{get_bpe_from_model, CoreBPE};
 use tokenizers::Tokenizer;
@@ -88,16 +88,13 @@ struct CustomCallback(PyObject);
 
 impl ChunkSizer for CustomCallback {
     /// Determine the size of a given chunk to use for validation
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
+    fn size(&self, chunk: &str) -> usize {
         Python::with_gil(|py| {
-            let size = self
-                .0
+            self.0
                 .call_bound(py, (chunk,), None)
                 .unwrap()
                 .extract::<usize>(py)
-                .unwrap();
-
-            ChunkSize::from_size(size, capacity)
+                .unwrap()
         })
     }
 }

@@ -156,7 +156,7 @@ mod tests {
 
     use fake::{Fake, Faker};
 
-    use crate::{splitter::SemanticSplitRanges, ChunkCapacity, ChunkSize};
+    use crate::splitter::SemanticSplitRanges;
 
     use super::*;
 
@@ -219,8 +219,8 @@ mod tests {
     struct Str;
 
     impl ChunkSizer for Str {
-        fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-            ChunkSize::from_size(chunk.as_bytes().len(), capacity)
+        fn size(&self, chunk: &str) -> usize {
+            chunk.as_bytes().len()
         }
     }
 

@@ -1,4 +1,4 @@
-use crate::{ChunkCapacity, ChunkSize, ChunkSizer};
+use crate::ChunkSizer;
 
 /// Used for splitting a piece of text into chunks based on the number of
 /// characters in each chunk.
@@ -14,8 +14,8 @@ pub struct Characters;
 
 impl ChunkSizer for Characters {
     /// Determine the size of a given chunk to use for validation.
-    fn chunk_size(&self, chunk: &str, capacity: &ChunkCapacity) -> ChunkSize {
-        ChunkSize::from_size(chunk.chars().count(), capacity)
+    fn size(&self, chunk: &str) -> usize {
+        chunk.chars().count()
     }
 }
 
@@ -25,8 +25,7 @@ mod tests {
 
     #[test]
     fn returns_size() {
-        let capacity = 10;
-        let offsets = Characters.chunk_size("eé", &capacity.into());
-        assert_eq!(offsets, ChunkSize::from_size(2, &capacity.into()));
+        let offsets = Characters.size("eé");
+        assert_eq!(offsets, 2);
     }
 }

@@ -6,8 +6,7 @@ mod splitter;
 mod trim;
 
 pub use chunk_size::{
-    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSize,
-    ChunkSizer,
+    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
 };
 #[cfg(feature = "markdown")]
 pub use splitter::MarkdownSplitter;
