@@ -12,8 +12,8 @@ importers:
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.4.5)
       '@astrojs/starlight':
-        specifier: ^0.24.2
-        version: 0.24.2(astro@4.10.3(typescript@5.4.5))
+        specifier: ^0.24.3
+        version: 0.24.3(astro@4.10.3(typescript@5.4.5))
       astro:
         specifier: ^4.10.3
         version: 4.10.3(typescript@5.4.5)
@@ -70,8 +70,8 @@ packages:
   '@astrojs/sitemap@3.1.6':
     resolution: {integrity: sha512-1Qp2NvAzVImqA6y+LubKi1DVhve/hXXgFvB0szxiipzh7BvtuKe4oJJ9dXSqaubaTkt4nMa6dv6RCCAYeB6xaQ==}
 
-  '@astrojs/starlight@0.24.2':
-    resolution: {integrity: sha512-hXFVBHcr2a4UwX5GDCNQEZsRXdgVlNzZ7txpI2jlMvtzbgfoLEGOHjaHpB5QTW/OCrRAMjcx9Zx0HxRliohaxQ==}
+  '@astrojs/starlight@0.24.3':
+    resolution: {integrity: sha512-4f5luN/2eH9Q2ysRbnNAXSwjtQS601R55Km3kTS80AoTuIeiKhQY23BHazSCS9pmHvJZWM9C7NGANsH7cbB3wA==}
     peerDependencies:
       astro: ^4.8.6
 
@@ -971,8 +971,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.4.805:
-    resolution: {integrity: sha512-8W4UJwX/w9T0QSzINJckTKG6CYpAUTqsaWcWIsdud3I1FYJcMgW9QqT1/4CBff/pP/TihWh13OmiyY8neto6vw==}
+  electron-to-chromium@1.4.806:
+    resolution: {integrity: sha512-nkoEX2QIB8kwCOtvtgwhXWy2IHVcOLQZu9Qo36uaGB835mdX/h8uLRlosL6QIhLVUnAiicXRW00PwaPZC74Nrg==}
 
   emmet@2.4.7:
     resolution: {integrity: sha512-O5O5QNqtdlnQM2bmKHtJgyChcrFMgQuulI+WdiOw2NArzprUqqxUW6bgYtKvzKgrsYpuLWalOkdhNP+1jluhCA==}
@@ -2339,7 +2339,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.24.2(astro@4.10.3(typescript@5.4.5))':
+  '@astrojs/starlight@0.24.3(astro@4.10.3(typescript@5.4.5))':
     dependencies:
       '@astrojs/mdx': 3.1.1(astro@4.10.3(typescript@5.4.5))
       '@astrojs/sitemap': 3.1.6
@@ -3157,7 +3157,7 @@ snapshots:
   browserslist@4.23.1:
     dependencies:
       caniuse-lite: 1.0.30001636
-      electron-to-chromium: 1.4.805
+      electron-to-chromium: 1.4.806
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
@@ -3287,7 +3287,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.4.805: {}
+  electron-to-chromium@1.4.806: {}
 
   emmet@2.4.7:
     dependencies:
