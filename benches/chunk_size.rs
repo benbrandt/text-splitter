@@ -1,9 +1,11 @@
 #![allow(missing_docs)]
 
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
+use ahash::AHashMap;
 use cached_path::Cache;
 use divan::AllocProfiler;
+use once_cell::sync::Lazy;
 
 #[global_allocator]
 static ALLOC: AllocProfiler = AllocProfiler::system();
@@ -30,16 +32,46 @@ fn download_file_to_cache(src: &str) -> PathBuf {
         .unwrap()
 }
 
+const TEXT_FILENAMES: &[&str] = &["romeo_and_juliet", "room_with_a_view"];
+const MARKDOWN_FILENAMES: &[&str] = &["commonmark_spec"];
+const CODE_FILENAMES: &[&str] = &["hashbrown_set_rs"];
+
+static FILES: Lazy<AHashMap<&'static str, String>> = Lazy::new(|| {
+    let mut m = AHashMap::new();
+    for &name in TEXT_FILENAMES {
+        m.insert(
+            name,
+            fs::read_to_string(format!("tests/inputs/text/{name}.txt")).unwrap(),
+        );
+    }
+    for &name in MARKDOWN_FILENAMES {
+        m.insert(
+            name,
+            fs::read_to_string(format!("tests/inputs/markdown/{name}.md")).unwrap(),
+        );
+    }
+    for &name in CODE_FILENAMES {
+        m.insert(
+            name,
+            fs::read_to_string(format!("tests/inputs/code/{name}.txt")).unwrap(),
+        );
+    }
+    m
+});
+
+static BERT_TOKENIZER: Lazy<rust_tokenizers::tokenizer::BertTokenizer> = Lazy::new(|| {
+    let vocab_path = download_file_to_cache(
+        "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+    );
+    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false).unwrap()
+});
+
 #[divan::bench_group]
 mod text {
-    use std::fs;
-
     use divan::{black_box_drop, counter::BytesCount, Bencher};
     use text_splitter::{ChunkConfig, ChunkSizer, TextSplitter};
 
-    use crate::CHUNK_SIZES;
-
-    const TEXT_FILENAMES: &[&str] = &["romeo_and_juliet", "room_with_a_view"];
+    use crate::{CHUNK_SIZES, FILES, TEXT_FILENAMES};
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
@@ -47,12 +79,7 @@ mod text {
         S: ChunkSizer,
     {
         bencher
-            .with_inputs(|| {
-                (
-                    gen_splitter(),
-                    fs::read_to_string(format!("tests/inputs/text/{filename}.txt")).unwrap(),
-                )
-            })
+            .with_inputs(|| (gen_splitter(), FILES.get(filename).unwrap().clone()))
             .input_counter(|(_, text)| BytesCount::of_str(text))
             .bench_values(|(splitter, text)| {
                 splitter.chunks(&text).for_each(black_box_drop);
@@ -86,18 +113,10 @@ mod text {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        use crate::download_file_to_cache;
+        use crate::BERT_TOKENIZER;
 
         bench(bencher, filename, || {
-            let vocab_path = download_file_to_cache(
-                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
-            );
-            TextSplitter::new(
-                ChunkConfig::new(N).with_sizer(
-                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
-                        .unwrap(),
-                ),
-            )
+            TextSplitter::new(ChunkConfig::new(N).with_sizer(&*BERT_TOKENIZER))
         });
     }
 }
@@ -105,14 +124,10 @@ mod text {
 #[cfg(feature = "markdown")]
 #[divan::bench_group]
 mod markdown {
-    use std::fs;
-
     use divan::{black_box_drop, counter::BytesCount, Bencher};
     use text_splitter::{ChunkConfig, ChunkSizer, MarkdownSplitter};
 
-    use crate::CHUNK_SIZES;
-
-    const MARKDOWN_FILENAMES: &[&str] = &["commonmark_spec"];
+    use crate::{CHUNK_SIZES, FILES, MARKDOWN_FILENAMES};
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
@@ -120,12 +135,7 @@ mod markdown {
         S: ChunkSizer,
     {
         bencher
-            .with_inputs(|| {
-                (
-                    gen_splitter(),
-                    fs::read_to_string(format!("tests/inputs/markdown/{filename}.md")).unwrap(),
-                )
-            })
+            .with_inputs(|| (gen_splitter(), FILES.get(filename).unwrap().clone()))
             .input_counter(|(_, text)| BytesCount::of_str(text))
             .bench_values(|(splitter, text)| {
                 splitter.chunks(&text).for_each(black_box_drop);
@@ -159,18 +169,10 @@ mod markdown {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        use crate::download_file_to_cache;
+        use crate::BERT_TOKENIZER;
 
         bench(bencher, filename, || {
-            let vocab_path = download_file_to_cache(
-                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
-            );
-            MarkdownSplitter::new(
-                ChunkConfig::new(N).with_sizer(
-                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
-                        .unwrap(),
-                ),
-            )
+            MarkdownSplitter::new(ChunkConfig::new(N).with_sizer(&*BERT_TOKENIZER))
         });
     }
 }
@@ -178,14 +180,10 @@ mod markdown {
 #[cfg(feature = "code")]
 #[divan::bench_group]
 mod code {
-    use std::fs;
-
     use divan::{black_box_drop, counter::BytesCount, Bencher};
     use text_splitter::{ChunkConfig, ChunkSizer, CodeSplitter};
 
-    use crate::CHUNK_SIZES;
-
-    const CODE_FILENAMES: &[&str] = &["hashbrown_set_rs"];
+    use crate::{CHUNK_SIZES, CODE_FILENAMES, FILES};
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
@@ -193,12 +191,7 @@ mod code {
         S: ChunkSizer,
     {
         bencher
-            .with_inputs(|| {
-                (
-                    gen_splitter(),
-                    fs::read_to_string(format!("tests/inputs/code/{filename}.txt")).unwrap(),
-                )
-            })
+            .with_inputs(|| (gen_splitter(), FILES.get(filename).unwrap().clone()))
             .input_counter(|(_, text)| BytesCount::of_str(text))
             .bench_values(|(splitter, text)| {
                 splitter.chunks(&text).for_each(black_box_drop);
@@ -240,18 +233,12 @@ mod code {
     #[cfg(feature = "rust-tokenizers")]
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn rust_tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
-        use crate::download_file_to_cache;
+        use crate::BERT_TOKENIZER;
 
         bench(bencher, filename, || {
-            let vocab_path = download_file_to_cache(
-                "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
-            );
             CodeSplitter::new(
                 tree_sitter_rust::language(),
-                ChunkConfig::new(N).with_sizer(
-                    rust_tokenizers::tokenizer::BertTokenizer::from_file(vocab_path, false, false)
-                        .unwrap(),
-                ),
+                ChunkConfig::new(N).with_sizer(&*BERT_TOKENIZER),
             )
             .unwrap()
         });

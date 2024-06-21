@@ -248,6 +248,8 @@ where
     semantic_split: SemanticSplitRanges<Level>,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
+    /// Average number of sections in a chunk for each level
+    chunk_stats: ChunkStats,
 }
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunks<'text, 'sizer, Sizer, Level>
@@ -271,6 +273,7 @@ where
             prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(offsets),
             text,
+            chunk_stats: ChunkStats::new(),
         }
     }
 
@@ -289,6 +292,9 @@ where
         self.update_cursor(end);
 
         let chunk = self.text.get(start..end)?;
+
+        self.chunk_stats.update_max_chunk_size(end - start);
+
         // Trim whitespace if user requested it
         Some(self.chunk_sizer.trim_chunk(start, chunk))
     }
@@ -426,7 +432,7 @@ where
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
 
-        let semantic_level = self.chunk_sizer.find_correct_level(
+        let (semantic_level, mut max_offset) = self.chunk_sizer.find_correct_level(
             self.cursor,
             self.semantic_split
                 .levels_in_remaining_text(self.cursor)
@@ -438,14 +444,14 @@ where
                 }),
         );
 
-        let mut sections = if let Some(semantic_level) = semantic_level {
-            Either::Left(
-                self.semantic_split
-                    .semantic_chunks(self.cursor, remaining_text, semantic_level)
-                    .filter(|(_, str)| !str.is_empty()),
-            )
+        let sections = if let Some(semantic_level) = semantic_level {
+            Either::Left(self.semantic_split.semantic_chunks(
+                self.cursor,
+                remaining_text,
+                semantic_level,
+            ))
         } else {
-            let semantic_level = self.chunk_sizer.find_correct_level(
+            let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
                 FallbackLevel::iter().filter_map(|level| {
                     level
@@ -455,32 +461,45 @@ where
                 }),
             );
 
+            max_offset = match (fallback_max_offset, max_offset) {
+                (Some(fallback), Some(max)) => Some(fallback.min(max)),
+                (fallback, max) => fallback.or(max),
+            };
+
+            let fallback_level = semantic_level.unwrap_or(FallbackLevel::Char);
+
             Either::Right(
-                semantic_level
-                    .unwrap_or(FallbackLevel::Char)
+                fallback_level
                     .sections(remaining_text)
-                    .map(|(offset, text)| (self.cursor + offset, text))
-                    .filter(|(_, str)| !str.is_empty()),
+                    .map(|(offset, text)| (self.cursor + offset, text)),
             )
         };
+
+        let mut sections = sections
+            .take_while(move |(offset, _)| max_offset.map_or(true, |max| *offset <= max))
+            .filter(|(_, str)| !str.is_empty());
 
         // Start filling up the next sections. Since calculating the size of the chunk gets more expensive
         // the farther we go, we conservatively check for a smaller range to do the later binary search in.
         let mut low = 0;
         let mut prev_equals: Option<ChunkSize> = None;
-        let max_chunk_size = self.chunk_config.capacity().max();
-        let mut num_sections = 3;
+        let max = self.chunk_config.capacity().max();
+        let mut target_offset = self.chunk_stats.max_chunk_size.unwrap_or(max);
 
         loop {
             let prev_num = self.next_sections.len();
-            // Default to at least several items for the binary search
-            self.next_sections
-                .extend((0..num_sections).map_while(|_| sections.next()));
+            for (offset, str) in sections.by_ref() {
+                self.next_sections.push((offset, str));
+                if offset + str.len() > (self.cursor.saturating_add(target_offset)) {
+                    break;
+                }
+            }
             let new_num = self.next_sections.len();
             // If we've iterated through the whole iterator, break here.
-            if new_num - prev_num < num_sections {
+            if new_num - prev_num == 0 {
                 break;
             }
+
             // Check if the last item fits
             if let Some(&(offset, str)) = self.next_sections.last() {
                 let text_end = offset + str.len();
@@ -489,13 +508,22 @@ where
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                     false,
                 );
-                // Average size of each section
-                let average_size = (chunk_size.size() / num_sections).max(1);
-                num_sections = (max_chunk_size / average_size + 1)
-                    .saturating_sub(num_sections)
-                    .max(1);
 
-                match chunk_size.fits() {
+                let fits = chunk_size.fits();
+                if fits.is_le() {
+                    let final_offset = offset + str.len() - self.cursor;
+                    let size = chunk_size.size().max(1);
+                    let diff = (max - size).max(1);
+                    let avg_size = (final_offset / size) + 1;
+
+                    target_offset = final_offset.saturating_add(
+                        diff.saturating_mul(avg_size)
+                            .max(final_offset / 10)
+                            .saturating_add(1),
+                    );
+                }
+
+                match fits {
                     Ordering::Less => {
                         // We know we can go higher
                         low = new_num.saturating_sub(1);
@@ -555,9 +583,49 @@ where
     }
 }
 
+/// Keeps track of the average size of chunks as we go
+#[derive(Debug, Default)]
+struct ChunkStats {
+    /// The size of the biggest chunk we've seen, if we have seen at least one
+    max_chunk_size: Option<usize>,
+}
+
+impl ChunkStats {
+    fn new() -> Self {
+        Self::default()
+    }
+
+    /// Update statistics after the chunk has been produced
+    fn update_max_chunk_size(&mut self, size: usize) {
+        self.max_chunk_size = self.max_chunk_size.map(|s| s.max(size)).or(Some(size));
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn chunk_stats_empty() {
+        let stats = ChunkStats::new();
+        assert_eq!(stats.max_chunk_size, None);
+    }
+
+    #[test]
+    fn chunk_stats_one() {
+        let mut stats = ChunkStats::new();
+        stats.update_max_chunk_size(10);
+        assert_eq!(stats.max_chunk_size, Some(10));
+    }
+
+    #[test]
+    fn chunk_stats_multiple() {
+        let mut stats = ChunkStats::new();
+        stats.update_max_chunk_size(10);
+        stats.update_max_chunk_size(20);
+        stats.update_max_chunk_size(30);
+        assert_eq!(stats.max_chunk_size, Some(30));
+    }
 
     impl SemanticLevel for usize {}
 
