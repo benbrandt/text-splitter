@@ -434,8 +434,9 @@ where
         &mut self,
         offset: usize,
         levels_with_first_chunk: impl Iterator<Item = (L, &'text str)>,
-    ) -> Option<L> {
+    ) -> (Option<L>, Option<usize>) {
         let mut semantic_level = None;
+        let mut max_offset = None;
 
         // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
         let levels_with_first_chunk =
@@ -451,13 +452,14 @@ where
             let chunk_size = self.check_capacity(offset, str, false);
             // If this no longer fits, we use the level we are at.
             if chunk_size.fits.is_gt() {
+                max_offset = Some(offset + str.len());
                 break;
             }
             // Otherwise break up the text with the next level
             semantic_level = Some(level);
         }
 
-        semantic_level
+        (semantic_level, max_offset)
     }
 
     /// Clear the cached values. Once we've moved the cursor,
