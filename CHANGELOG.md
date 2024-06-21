@@ -4,7 +4,9 @@
 
 ### What's New
 
-- Performance optimizations.
+**Performance fixes for large documents.** The worst-case performance for certain documents was abysmal, leading to documents [that ran forever](https://github.com/benbrandt/text-splitter/issues/184). This release makes sure that in the worst case, the splitter won't be binary searching over the entire document, which it was before. This is prohibitively expensive especially for the tokenizer implementations, and now this should always have a safe upper bound to the search space.
+
+For the "happy path", this new approach also led to big speed gains in the `CodeSplitter` (50%+ speed increase in some cases), marginal regressions in the `MarkdownSplitter`, and not much difference in the `TextSplitter`. But overall, the performance should be more consistent across documents, since it wasn't uncommon for a document with certain formatting to hit the worst-case scenario previously.
 
 ### Breaking Changes
 
