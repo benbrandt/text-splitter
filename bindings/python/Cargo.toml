@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 auto_enums = "0.8.5"
-pyo3 = { version = "0.21.2", features = ["abi3-py38"] }
+pyo3 = { version = "0.22.0", features = ["abi3-py38"] }
 text-splitter = { path = "../..", features = [
     "code",
     "markdown",
