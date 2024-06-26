@@ -13,10 +13,10 @@ importers:
         version: 0.7.0(typescript@5.5.2)
       '@astrojs/starlight':
         specifier: ^0.24.4
-        version: 0.24.4(astro@4.11.1(typescript@5.5.2))
+        version: 0.24.4(astro@4.11.2(typescript@5.5.2))
       astro:
-        specifier: ^4.11.1
-        version: 4.11.1(typescript@5.5.2)
+        specifier: ^4.11.2
+        version: 4.11.2(typescript@5.5.2)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -774,8 +774,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^3.3.0
 
-  astro@4.11.1:
-    resolution: {integrity: sha512-6e9/9nafmnxzaLSq2+9VNpi+7j0E4UoK2IJ7gkhyv1wk3XfciA6zHc3ESx7/Sk/rjenz9NSTTzAwcmVzWWHv/g==}
+  astro@4.11.2:
+    resolution: {integrity: sha512-8ulWb74qY5VBFhDTjw1KMCMEf+EXOoSBy4QC6J1oHIq5tzMGCVRt3sUPzUxD737HVPb+CxOIbj35skN0w535fw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -818,8 +818,8 @@ packages:
     resolution: {integrity: sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==}
     engines: {node: '>=14.16'}
 
-  caniuse-lite@1.0.30001636:
-    resolution: {integrity: sha512-bMg2vmr8XBsbL6Lr0UHXy/21m84FTxDLWn2FSqMd5PrlbMxwJlQnC2YWYxVgp66PZE+BBNF2jYQUBKCo1FDeZg==}
+  caniuse-lite@1.0.30001637:
+    resolution: {integrity: sha512-1x0qRI1mD1o9e+7mBI7XtzFAP4XszbHaVWsMiGbSPLYekKTJF7K+FNk6AsXH4sUpc+qrsI3pVgf1Jdl/uGkuSQ==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -968,8 +968,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.4.811:
-    resolution: {integrity: sha512-CDyzcJ5XW78SHzsIOdn27z8J4ist8eaFLhdto2hSMSJQgsiwvbv2fbizcKUICryw1Wii1TI/FEkvzvJsR3awrA==}
+  electron-to-chromium@1.4.812:
+    resolution: {integrity: sha512-7L8fC2Ey/b6SePDFKR2zHAy4mbdp1/38Yk5TsARO66W3hC5KEaeKMMHoxwtuH+jcu2AYLSn9QX04i95t6Fl1Hg==}
 
   emmet@2.4.7:
     resolution: {integrity: sha512-O5O5QNqtdlnQM2bmKHtJgyChcrFMgQuulI+WdiOw2NArzprUqqxUW6bgYtKvzKgrsYpuLWalOkdhNP+1jluhCA==}
@@ -1078,9 +1078,6 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
-  function-bind@1.1.2:
-    resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
-
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
@@ -1118,10 +1115,6 @@ packages:
   has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
     engines: {node: '>=4'}
-
-  hasown@2.0.2:
-    resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
-    engines: {node: '>= 0.4'}
 
   hast-util-embedded@3.0.0:
     resolution: {integrity: sha512-naH8sld4Pe2ep03qqULEtvYr7EjrLK2QHY8KJR6RJkTUjPGObe1vnx585uzem2hGra+s1q08DZZpfgDVYRbaXA==}
@@ -1217,10 +1210,6 @@ packages:
   is-binary-path@2.1.0:
     resolution: {integrity: sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw==}
     engines: {node: '>=8'}
-
-  is-core-module@2.14.0:
-    resolution: {integrity: sha512-a5dFJih5ZLYlRtDc0dZWP7RiKr6xIKzmn/oAYCDvdLThadVgyJwlaoQPmRtMSpz+rk0OGAgIu+TcM9HUF0fk1A==}
-    engines: {node: '>= 0.4'}
 
   is-decimal@2.0.1:
     resolution: {integrity: sha512-AAB9hiomQs5DXWcRB1rqsxGUstbRroFOPPVAomNk/3XHR5JyEZChOyTWe2oayKnsSsr/kcGqF+z6yuH6HHpN0A==}
@@ -1644,9 +1633,6 @@ packages:
     resolution: {integrity: sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ==}
     engines: {node: '>=12'}
 
-  path-parse@1.0.7:
-    resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
-
   path-to-regexp@6.2.2:
     resolution: {integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==}
 
@@ -1753,10 +1739,6 @@ packages:
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
-
-  resolve@1.22.8:
-    resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
-    hasBin: true
 
   restore-cursor@4.0.0:
     resolution: {integrity: sha512-I9fPXU9geO9bHOt9pHHOhOkYerIMsmVaWB0rA2AI9ERh/+x/i7MV5HKBNrg+ljO5eoPVgCcnFuRjJ9uH6I/3eg==}
@@ -1900,10 +1882,6 @@ packages:
   supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
-
-  supports-preserve-symlinks-flag@1.0.0:
-    resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
-    engines: {node: '>= 0.4'}
 
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
@@ -2250,12 +2228,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.2(astro@4.11.1(typescript@5.5.2))':
+  '@astrojs/mdx@3.1.2(astro@4.11.2(typescript@5.5.2))':
     dependencies:
       '@astrojs/markdown-remark': 5.1.1
       '@mdx-js/mdx': 3.0.1
       acorn: 8.12.0
-      astro: 4.11.1(typescript@5.5.2)
+      astro: 4.11.2(typescript@5.5.2)
       es-module-lexer: 1.5.4
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -2281,15 +2259,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.24.4(astro@4.11.1(typescript@5.5.2))':
+  '@astrojs/starlight@0.24.4(astro@4.11.2(typescript@5.5.2))':
     dependencies:
-      '@astrojs/mdx': 3.1.2(astro@4.11.1(typescript@5.5.2))
+      '@astrojs/mdx': 3.1.2(astro@4.11.2(typescript@5.5.2))
       '@astrojs/sitemap': 3.1.6
       '@pagefind/default-ui': 1.1.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.11.1(typescript@5.5.2)
-      astro-expressive-code: 0.35.3(astro@4.11.1(typescript@5.5.2))
+      astro: 4.11.2(typescript@5.5.2)
+      astro-expressive-code: 0.35.3(astro@4.11.2(typescript@5.5.2))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -2974,12 +2952,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.3(astro@4.11.1(typescript@5.5.2)):
+  astro-expressive-code@0.35.3(astro@4.11.2(typescript@5.5.2)):
     dependencies:
-      astro: 4.11.1(typescript@5.5.2)
+      astro: 4.11.2(typescript@5.5.2)
       rehype-expressive-code: 0.35.3
 
-  astro@4.11.1(typescript@5.5.2):
+  astro@4.11.2(typescript@5.5.2):
     dependencies:
       '@astrojs/compiler': 2.8.1
       '@astrojs/internal-helpers': 0.4.1
@@ -3030,7 +3008,6 @@ snapshots:
       preferred-pm: 3.1.3
       prompts: 2.4.2
       rehype: 13.0.1
-      resolve: 1.22.8
       semver: 7.6.2
       shiki: 1.9.1
       string-width: 7.1.0
@@ -3094,14 +3071,14 @@ snapshots:
 
   browserslist@4.23.1:
     dependencies:
-      caniuse-lite: 1.0.30001636
-      electron-to-chromium: 1.4.811
+      caniuse-lite: 1.0.30001637
+      electron-to-chromium: 1.4.812
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
   camelcase@7.0.1: {}
 
-  caniuse-lite@1.0.30001636: {}
+  caniuse-lite@1.0.30001637: {}
 
   ccount@2.0.1: {}
 
@@ -3225,7 +3202,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.4.811: {}
+  electron-to-chromium@1.4.812: {}
 
   emmet@2.4.7:
     dependencies:
@@ -3367,8 +3344,6 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
-  function-bind@1.1.2: {}
-
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
@@ -3395,10 +3370,6 @@ snapshots:
       strip-bom-string: 1.0.0
 
   has-flag@3.0.0: {}
-
-  hasown@2.0.2:
-    dependencies:
-      function-bind: 1.1.2
 
   hast-util-embedded@3.0.0:
     dependencies:
@@ -3609,10 +3580,6 @@ snapshots:
   is-binary-path@2.1.0:
     dependencies:
       binary-extensions: 2.3.0
-
-  is-core-module@2.14.0:
-    dependencies:
-      hasown: 2.0.2
 
   is-decimal@2.0.1: {}
 
@@ -4297,8 +4264,6 @@ snapshots:
 
   path-key@4.0.0: {}
 
-  path-parse@1.0.7: {}
-
   path-to-regexp@6.2.2: {}
 
   periscopic@3.1.0:
@@ -4463,12 +4428,6 @@ snapshots:
   request-light@0.7.0: {}
 
   require-directory@2.1.1: {}
-
-  resolve@1.22.8:
-    dependencies:
-      is-core-module: 2.14.0
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
 
   restore-cursor@4.0.0:
     dependencies:
@@ -4652,8 +4611,6 @@ snapshots:
   supports-color@5.5.0:
     dependencies:
       has-flag: 3.0.0
-
-  supports-preserve-symlinks-flag@1.0.0: {}
 
   to-fast-properties@2.0.0: {}
 
