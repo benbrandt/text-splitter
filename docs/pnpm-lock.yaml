@@ -13,10 +13,10 @@ importers:
         version: 0.7.0(typescript@5.5.2)
       '@astrojs/starlight':
         specifier: ^0.24.4
-        version: 0.24.4(astro@4.11.2(typescript@5.5.2))
+        version: 0.24.4(astro@4.11.3(typescript@5.5.2))
       astro:
-        specifier: ^4.11.2
-        version: 4.11.2(typescript@5.5.2)
+        specifier: ^4.11.3
+        version: 4.11.3(typescript@5.5.2)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -774,8 +774,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^3.3.0
 
-  astro@4.11.2:
-    resolution: {integrity: sha512-8ulWb74qY5VBFhDTjw1KMCMEf+EXOoSBy4QC6J1oHIq5tzMGCVRt3sUPzUxD737HVPb+CxOIbj35skN0w535fw==}
+  astro@4.11.3:
+    resolution: {integrity: sha512-SuZbB/71XVn+WqWNCe7XOfHuqhS+k4gj8+A3wluTZQrORGaHUFRn/f8F9Tu5yESQZB1q8UKhahvHwkTV3AdVsg==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -818,8 +818,8 @@ packages:
     resolution: {integrity: sha512-xlx1yCK2Oc1APsPXDL2LdlNP6+uu8OCDdhOBSVT279M/S+y75O30C2VuD8T2ogdePBBl7PfPF4504tnLgX3zfw==}
     engines: {node: '>=14.16'}
 
-  caniuse-lite@1.0.30001637:
-    resolution: {integrity: sha512-1x0qRI1mD1o9e+7mBI7XtzFAP4XszbHaVWsMiGbSPLYekKTJF7K+FNk6AsXH4sUpc+qrsI3pVgf1Jdl/uGkuSQ==}
+  caniuse-lite@1.0.30001638:
+    resolution: {integrity: sha512-5SuJUJ7cZnhPpeLHaH0c/HPAnAHZvS6ElWyHK9GSIbVOQABLzowiI2pjmpvZ1WEbkyz46iFd4UXlOHR5SqgfMQ==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -1897,8 +1897,8 @@ packages:
   trough@2.2.0:
     resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
 
-  tsconfck@3.1.0:
-    resolution: {integrity: sha512-CMjc5zMnyAjcS9sPLytrbFmj89st2g+JYtY/c02ug4Q+CZaAtCgbyviI0n1YvjZE/pzoc6FbNsINS13DOL1B9w==}
+  tsconfck@3.1.1:
+    resolution: {integrity: sha512-00eoI6WY57SvZEVjm13stEVE90VkEdJAFGgpFLTsZbJyW/LwFQ7uQxJHWpZ2hzSWgCPKc9AnBnNP+0X7o3hAmQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
     peerDependencies:
@@ -2228,12 +2228,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.2(astro@4.11.2(typescript@5.5.2))':
+  '@astrojs/mdx@3.1.2(astro@4.11.3(typescript@5.5.2))':
     dependencies:
       '@astrojs/markdown-remark': 5.1.1
       '@mdx-js/mdx': 3.0.1
       acorn: 8.12.0
-      astro: 4.11.2(typescript@5.5.2)
+      astro: 4.11.3(typescript@5.5.2)
       es-module-lexer: 1.5.4
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -2259,15 +2259,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.24.4(astro@4.11.2(typescript@5.5.2))':
+  '@astrojs/starlight@0.24.4(astro@4.11.3(typescript@5.5.2))':
     dependencies:
-      '@astrojs/mdx': 3.1.2(astro@4.11.2(typescript@5.5.2))
+      '@astrojs/mdx': 3.1.2(astro@4.11.3(typescript@5.5.2))
       '@astrojs/sitemap': 3.1.6
       '@pagefind/default-ui': 1.1.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.11.2(typescript@5.5.2)
-      astro-expressive-code: 0.35.3(astro@4.11.2(typescript@5.5.2))
+      astro: 4.11.3(typescript@5.5.2)
+      astro-expressive-code: 0.35.3(astro@4.11.3(typescript@5.5.2))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -2952,12 +2952,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.3(astro@4.11.2(typescript@5.5.2)):
+  astro-expressive-code@0.35.3(astro@4.11.3(typescript@5.5.2)):
     dependencies:
-      astro: 4.11.2(typescript@5.5.2)
+      astro: 4.11.3(typescript@5.5.2)
       rehype-expressive-code: 0.35.3
 
-  astro@4.11.2(typescript@5.5.2):
+  astro@4.11.3(typescript@5.5.2):
     dependencies:
       '@astrojs/compiler': 2.8.1
       '@astrojs/internal-helpers': 0.4.1
@@ -3012,7 +3012,7 @@ snapshots:
       shiki: 1.9.1
       string-width: 7.1.0
       strip-ansi: 7.1.0
-      tsconfck: 3.1.0(typescript@5.5.2)
+      tsconfck: 3.1.1(typescript@5.5.2)
       unist-util-visit: 5.0.0
       vfile: 6.0.1
       vite: 5.3.1
@@ -3071,14 +3071,14 @@ snapshots:
 
   browserslist@4.23.1:
     dependencies:
-      caniuse-lite: 1.0.30001637
+      caniuse-lite: 1.0.30001638
       electron-to-chromium: 1.4.812
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
 
   camelcase@7.0.1: {}
 
-  caniuse-lite@1.0.30001637: {}
+  caniuse-lite@1.0.30001638: {}
 
   ccount@2.0.1: {}
 
@@ -4622,7 +4622,7 @@ snapshots:
 
   trough@2.2.0: {}
 
-  tsconfck@3.1.0(typescript@5.5.2):
+  tsconfck@3.1.1(typescript@5.5.2):
     optionalDependencies:
       typescript: 5.5.2
 
