@@ -13,10 +13,10 @@ importers:
         version: 0.7.0(typescript@5.5.3)
       '@astrojs/starlight':
         specifier: ^0.24.5
-        version: 0.24.5(astro@4.11.3(typescript@5.5.3))
+        version: 0.24.5(astro@4.11.5(typescript@5.5.3))
       astro:
-        specifier: ^4.11.3
-        version: 4.11.3(typescript@5.5.3)
+        specifier: ^4.11.5
+        version: 4.11.5(typescript@5.5.3)
       sharp:
         specifier: ^0.33.4
         version: 0.33.4
@@ -774,8 +774,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^3.3.0
 
-  astro@4.11.3:
-    resolution: {integrity: sha512-SuZbB/71XVn+WqWNCe7XOfHuqhS+k4gj8+A3wluTZQrORGaHUFRn/f8F9Tu5yESQZB1q8UKhahvHwkTV3AdVsg==}
+  astro@4.11.5:
+    resolution: {integrity: sha512-TCRhuaLwrxwMhS8S1GG+ZTdrAXigX9C8E/YUTs/r2t+owHxDgwl86IV9xH1IHrCPoqhK6civyAQNOT+GKmkb0A==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1846,8 +1846,8 @@ packages:
     resolution: {integrity: sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==}
     engines: {node: '>=12'}
 
-  string-width@7.1.0:
-    resolution: {integrity: sha512-SEIJCWiX7Kg4c129n48aDRwLbFb2LJmXXFrWBG4NGaRtMQ3myKPKbwrD1BKqQn74oCoNMBVrfDEr5M9YxCsrkw==}
+  string-width@7.2.0:
+    resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
 
   stringify-entities@4.0.4:
@@ -2146,8 +2146,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  yocto-queue@1.0.0:
-    resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
+  yocto-queue@1.1.1:
+    resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
 
   zod-to-json-schema@3.23.1:
@@ -2228,12 +2228,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.2(astro@4.11.3(typescript@5.5.3))':
+  '@astrojs/mdx@3.1.2(astro@4.11.5(typescript@5.5.3))':
     dependencies:
       '@astrojs/markdown-remark': 5.1.1
       '@mdx-js/mdx': 3.0.1
       acorn: 8.12.1
-      astro: 4.11.3(typescript@5.5.3)
+      astro: 4.11.5(typescript@5.5.3)
       es-module-lexer: 1.5.4
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -2259,15 +2259,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.24.5(astro@4.11.3(typescript@5.5.3))':
+  '@astrojs/starlight@0.24.5(astro@4.11.5(typescript@5.5.3))':
     dependencies:
-      '@astrojs/mdx': 3.1.2(astro@4.11.3(typescript@5.5.3))
+      '@astrojs/mdx': 3.1.2(astro@4.11.5(typescript@5.5.3))
       '@astrojs/sitemap': 3.1.6
       '@pagefind/default-ui': 1.1.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.11.3(typescript@5.5.3)
-      astro-expressive-code: 0.35.3(astro@4.11.3(typescript@5.5.3))
+      astro: 4.11.5(typescript@5.5.3)
+      astro-expressive-code: 0.35.3(astro@4.11.5(typescript@5.5.3))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -2952,12 +2952,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.3(astro@4.11.3(typescript@5.5.3)):
+  astro-expressive-code@0.35.3(astro@4.11.5(typescript@5.5.3)):
     dependencies:
-      astro: 4.11.3(typescript@5.5.3)
+      astro: 4.11.5(typescript@5.5.3)
       rehype-expressive-code: 0.35.3
 
-  astro@4.11.3(typescript@5.5.3):
+  astro@4.11.5(typescript@5.5.3):
     dependencies:
       '@astrojs/compiler': 2.8.1
       '@astrojs/internal-helpers': 0.4.1
@@ -3010,7 +3010,7 @@ snapshots:
       rehype: 13.0.1
       semver: 7.6.2
       shiki: 1.10.1
-      string-width: 7.1.0
+      string-width: 7.2.0
       strip-ansi: 7.1.0
       tsconfck: 3.1.1(typescript@5.5.3)
       unist-util-visit: 5.0.0
@@ -4192,7 +4192,7 @@ snapshots:
       is-unicode-supported: 2.0.0
       log-symbols: 6.0.0
       stdin-discarder: 0.2.2
-      string-width: 7.1.0
+      string-width: 7.2.0
       strip-ansi: 7.1.0
 
   p-limit@2.3.0:
@@ -4205,7 +4205,7 @@ snapshots:
 
   p-limit@5.0.0:
     dependencies:
-      yocto-queue: 1.0.0
+      yocto-queue: 1.1.1
 
   p-locate@4.1.0:
     dependencies:
@@ -4575,7 +4575,7 @@ snapshots:
       emoji-regex: 9.2.2
       strip-ansi: 7.1.0
 
-  string-width@7.1.0:
+  string-width@7.2.0:
     dependencies:
       emoji-regex: 10.3.0
       get-east-asian-width: 1.2.0
@@ -4862,7 +4862,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  yocto-queue@1.0.0: {}
+  yocto-queue@1.1.1: {}
 
   zod-to-json-schema@3.23.1(zod@3.23.8):
     dependencies:
