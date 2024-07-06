@@ -503,6 +503,9 @@ where
             // Check if the last item fits
             if let Some(&(offset, str)) = self.next_sections.last() {
                 let text_end = offset + str.len();
+                if text_end < target_offset {
+                    break;
+                }
                 let chunk_size = self.chunk_sizer.check_capacity(
                     offset,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
@@ -514,13 +517,11 @@ where
                     let final_offset = offset + str.len() - self.cursor;
                     let size = chunk_size.size().max(1);
                     let diff = (max - size).max(1);
-                    let avg_size = (final_offset / size) + 1;
+                    let avg_size = final_offset.div_ceil(size);
 
-                    target_offset = final_offset.saturating_add(
-                        diff.saturating_mul(avg_size)
-                            .max(final_offset / 10)
-                            .saturating_add(1),
-                    );
+                    target_offset = final_offset
+                        .saturating_add(diff.saturating_mul(avg_size))
+                        .saturating_add(final_offset.div_ceil(10));
                 }
 
                 match fits {

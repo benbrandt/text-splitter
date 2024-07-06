@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.14.1
+
+### What's New
+
+- Small performance improvements where checking the size of the chunk is avoided if we already know it is too small or we don't need to.
+
 ## v0.14.0
 
 ### What's New
