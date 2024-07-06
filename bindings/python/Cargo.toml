@@ -15,19 +15,17 @@ name = "semantic_text_splitter"
 crate-type = ["cdylib"]
 
 [dependencies]
-auto_enums = "0.8.5"
-pyo3 = { version = "0.22.0", features = ["abi3-py38"] }
+auto_enums = "0.8"
+pyo3 = { version = "0.22", features = ["abi3-py38"] }
 text-splitter = { path = "../..", features = [
     "code",
     "markdown",
     "tiktoken-rs",
     "tokenizers",
 ] }
-tiktoken-rs = "0.5.9"
-tokenizers = { version = "0.19.1", default-features = false, features = [
-    "onig",
-] }
-tree-sitter = "0.22.6"
+tiktoken-rs = "0.5"
+tokenizers = { version = "0.19", default-features = false, features = ["onig"] }
+tree-sitter = "0.22"
 
 [lints]
 workspace = true
