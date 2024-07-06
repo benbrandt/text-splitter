@@ -5,7 +5,6 @@
 
 use std::str::FromStr;
 
-use auto_enums::auto_enum;
 use pyo3::{
     exceptions::{PyException, PyValueError},
     ffi,
@@ -16,7 +15,7 @@ use text_splitter::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
     CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
 };
-use tiktoken_rs::{get_bpe_from_model, CoreBPE};
+use tiktoken_rs::get_bpe_from_model;
 use tokenizers::Tokenizer;
 use tree_sitter::{ffi::TSLanguage, Language};
 
@@ -127,39 +126,18 @@ impl<'text> ByteToCharOffsetTracker<'text> {
     }
 }
 
-#[allow(clippy::large_enum_variant)]
-enum TextSplitterOptions {
-    Characters(TextSplitter<Characters>),
-    CustomCallback(TextSplitter<CustomCallback>),
-    Huggingface(TextSplitter<Tokenizer>),
-    Tiktoken(TextSplitter<CoreBPE>),
+/// Allows for dynamically choosing between different chunk sizers
+struct Sizer(Box<dyn ChunkSizer + 'static + Send>);
+
+impl Sizer {
+    fn new(sizer: impl ChunkSizer + 'static + Send) -> Self {
+        Self(Box::new(sizer))
+    }
 }
 
-impl TextSplitterOptions {
-    #[auto_enum(Iterator)]
-    fn chunks<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = &'text str> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunks(text),
-            Self::CustomCallback(splitter) => splitter.chunks(text),
-            Self::Huggingface(splitter) => splitter.chunks(text),
-            Self::Tiktoken(splitter) => splitter.chunks(text),
-        }
-    }
-
-    #[auto_enum(Iterator)]
-    fn chunk_indices<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunk_indices(text),
-            Self::CustomCallback(splitter) => splitter.chunk_indices(text),
-            Self::Huggingface(splitter) => splitter.chunk_indices(text),
-            Self::Tiktoken(splitter) => splitter.chunk_indices(text),
-        }
+impl ChunkSizer for Sizer {
+    fn size(&self, chunk: &str) -> usize {
+        self.0.size(chunk)
     }
 }
 
@@ -250,7 +228,7 @@ Args:
 */
 #[pyclass(frozen, name = "TextSplitter")]
 struct PyTextSplitter {
-    splitter: TextSplitterOptions,
+    splitter: TextSplitter<Sizer>,
 }
 
 #[pymethods]
@@ -259,12 +237,13 @@ impl PyTextSplitter {
     #[pyo3(signature = (capacity, overlap=0, trim=true))]
     fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
         Ok(Self {
-            splitter: TextSplitterOptions::Characters(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_trim(trim),
-            )),
+                    .with_trim(trim)
+                    .with_sizer(Sizer::new(Characters)),
+            ),
         })
     }
 
@@ -302,13 +281,13 @@ impl PyTextSplitter {
             Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -340,18 +319,18 @@ impl PyTextSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer = json
+        let tokenizer: Tokenizer = json
             .parse()
             .map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -386,13 +365,13 @@ impl PyTextSplitter {
         let tokenizer =
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
-            splitter: TextSplitterOptions::Huggingface(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -427,13 +406,13 @@ impl PyTextSplitter {
             get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: TextSplitterOptions::Tiktoken(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -466,13 +445,13 @@ impl PyTextSplitter {
         trim: bool,
     ) -> PyResult<Self> {
         Ok(Self {
-            splitter: TextSplitterOptions::CustomCallback(TextSplitter::new(
+            splitter: TextSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(CustomCallback(callback))
+                    .with_sizer(Sizer::new(CustomCallback(callback)))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -532,42 +511,6 @@ impl PyTextSplitter {
             .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
             .collect()
-    }
-}
-
-#[allow(clippy::large_enum_variant)]
-enum MarkdownSplitterOptions {
-    Characters(MarkdownSplitter<Characters>),
-    CustomCallback(MarkdownSplitter<CustomCallback>),
-    Huggingface(MarkdownSplitter<Tokenizer>),
-    Tiktoken(MarkdownSplitter<CoreBPE>),
-}
-
-impl MarkdownSplitterOptions {
-    #[auto_enum(Iterator)]
-    fn chunks<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = &'text str> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunks(text),
-            Self::CustomCallback(splitter) => splitter.chunks(text),
-            Self::Huggingface(splitter) => splitter.chunks(text),
-            Self::Tiktoken(splitter) => splitter.chunks(text),
-        }
-    }
-
-    #[auto_enum(Iterator)]
-    fn chunk_indices<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunk_indices(text),
-            Self::CustomCallback(splitter) => splitter.chunk_indices(text),
-            Self::Huggingface(splitter) => splitter.chunk_indices(text),
-            Self::Tiktoken(splitter) => splitter.chunk_indices(text),
-        }
     }
 }
 
@@ -660,7 +603,7 @@ Args:
 */
 #[pyclass(frozen, name = "MarkdownSplitter")]
 struct PyMarkdownSplitter {
-    splitter: MarkdownSplitterOptions,
+    splitter: MarkdownSplitter<Sizer>,
 }
 
 #[pymethods]
@@ -669,12 +612,13 @@ impl PyMarkdownSplitter {
     #[pyo3(signature = (capacity, overlap=0, trim=true))]
     fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Characters(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(Characters))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -712,13 +656,13 @@ impl PyMarkdownSplitter {
             Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -750,18 +694,18 @@ impl PyMarkdownSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer = json
+        let tokenizer: Tokenizer = json
             .parse()
             .map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -796,13 +740,13 @@ impl PyMarkdownSplitter {
         let tokenizer =
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Huggingface(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -837,13 +781,13 @@ impl PyMarkdownSplitter {
             get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: MarkdownSplitterOptions::Tiktoken(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(tokenizer)
+                    .with_sizer(Sizer::new(tokenizer))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -876,13 +820,13 @@ impl PyMarkdownSplitter {
         trim: bool,
     ) -> PyResult<Self> {
         Ok(Self {
-            splitter: MarkdownSplitterOptions::CustomCallback(MarkdownSplitter::new(
+            splitter: MarkdownSplitter::new(
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
-                    .with_sizer(CustomCallback(callback))
+                    .with_sizer(Sizer::new(CustomCallback(callback)))
                     .with_trim(trim),
-            )),
+            ),
         })
     }
 
@@ -945,42 +889,6 @@ impl PyMarkdownSplitter {
             .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
             .collect()
-    }
-}
-
-#[allow(clippy::large_enum_variant)]
-enum CodeSplitterOptions {
-    Characters(CodeSplitter<Characters>),
-    CustomCallback(CodeSplitter<CustomCallback>),
-    Huggingface(CodeSplitter<Tokenizer>),
-    Tiktoken(CodeSplitter<CoreBPE>),
-}
-
-impl CodeSplitterOptions {
-    #[auto_enum(Iterator)]
-    fn chunks<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = &'text str> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunks(text),
-            Self::CustomCallback(splitter) => splitter.chunks(text),
-            Self::Huggingface(splitter) => splitter.chunks(text),
-            Self::Tiktoken(splitter) => splitter.chunks(text),
-        }
-    }
-
-    #[auto_enum(Iterator)]
-    fn chunk_indices<'splitter, 'text: 'splitter>(
-        &'splitter self,
-        text: &'text str,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        match self {
-            Self::Characters(splitter) => splitter.chunk_indices(text),
-            Self::CustomCallback(splitter) => splitter.chunk_indices(text),
-            Self::Huggingface(splitter) => splitter.chunk_indices(text),
-            Self::Tiktoken(splitter) => splitter.chunk_indices(text),
-        }
     }
 }
 
@@ -1085,7 +993,7 @@ Args:
 */
 #[pyclass(frozen, name = "CodeSplitter")]
 struct PyCodeSplitter {
-    splitter: CodeSplitterOptions,
+    splitter: CodeSplitter<Sizer>,
 }
 
 impl PyCodeSplitter {
@@ -1106,16 +1014,15 @@ impl PyCodeSplitter {
         trim: bool,
     ) -> PyResult<Self> {
         Ok(Self {
-            splitter: CodeSplitterOptions::Characters(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(Characters))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1156,17 +1063,15 @@ impl PyCodeSplitter {
             Tokenizer::from_str(&json).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: CodeSplitterOptions::Huggingface(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_sizer(tokenizer)
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(tokenizer))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1201,22 +1106,20 @@ impl PyCodeSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer = json
+        let tokenizer: Tokenizer = json
             .parse()
             .map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: CodeSplitterOptions::Huggingface(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_sizer(tokenizer)
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(tokenizer))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1254,17 +1157,15 @@ impl PyCodeSplitter {
         let tokenizer =
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
-            splitter: CodeSplitterOptions::Huggingface(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_sizer(tokenizer)
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(tokenizer))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1302,17 +1203,15 @@ impl PyCodeSplitter {
             get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
-            splitter: CodeSplitterOptions::Tiktoken(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_sizer(tokenizer)
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(tokenizer))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1348,17 +1247,15 @@ impl PyCodeSplitter {
         trim: bool,
     ) -> PyResult<Self> {
         Ok(Self {
-            splitter: CodeSplitterOptions::CustomCallback(
-                CodeSplitter::new(
-                    Self::load_language(language),
-                    ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
-                        .with_overlap(overlap)
-                        .map_err(PyChunkConfigError)?
-                        .with_sizer(CustomCallback(callback))
-                        .with_trim(trim),
-                )
-                .map_err(PyCodeSplitterError)?,
-            ),
+            splitter: CodeSplitter::new(
+                Self::load_language(language),
+                ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
+                    .with_overlap(overlap)
+                    .map_err(PyChunkConfigError)?
+                    .with_sizer(Sizer::new(CustomCallback(callback)))
+                    .with_trim(trim),
+            )
+            .map_err(PyCodeSplitterError)?,
         })
     }
 
@@ -1420,9 +1317,11 @@ impl PyCodeSplitter {
 
 #[doc = include_str!("../README.md")]
 #[pymodule]
-fn semantic_text_splitter(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_class::<PyTextSplitter>()?;
-    m.add_class::<PyMarkdownSplitter>()?;
-    m.add_class::<PyCodeSplitter>()?;
-    Ok(())
+mod semantic_text_splitter {
+    #[pymodule_export]
+    use super::PyCodeSplitter;
+    #[pymodule_export]
+    use super::PyMarkdownSplitter;
+    #[pymodule_export]
+    use super::PyTextSplitter;
 }

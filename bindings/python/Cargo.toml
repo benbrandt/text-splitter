@@ -15,7 +15,6 @@ name = "semantic_text_splitter"
 crate-type = ["cdylib"]
 
 [dependencies]
-auto_enums = "0.8"
 pyo3 = { version = "0.22", features = ["abi3-py38"] }
 text-splitter = { path = "../..", features = [
     "code",
