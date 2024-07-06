@@ -5,6 +5,7 @@
 ### What's New
 
 - Small performance improvements where checking the size of the chunk is avoided if we already know it is too small or we don't need to.
+- Loosen dependency ranges for Rust crates to allow for more flexibility in the versions you can use.
 
 ## v0.14.0
 
