@@ -2,7 +2,7 @@
 members = ["bindings/*"]
 
 [workspace.package]
-version = "0.14.0"
+version = "0.14.1"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens, and is callable from Rust and Python."
@@ -109,10 +109,4 @@ workspace = true
 
 # Tokenizers and indirect deps can cause slow runtime
 [profile.dev.package."*"]
-opt-level = 1
-
-[profile.dev.package.insta]
-opt-level = 3
-
-[profile.dev.package.similar]
 opt-level = 3

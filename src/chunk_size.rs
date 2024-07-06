@@ -206,7 +206,7 @@ pub struct ChunkSize {
 
 impl ChunkSize {
     #[must_use]
-    fn new(fits: Ordering, size: usize) -> Self {
+    pub fn new(fits: Ordering, size: usize) -> Self {
         Self { fits, size }
     }
 
@@ -437,6 +437,7 @@ where
     ) -> (Option<L>, Option<usize>) {
         let mut semantic_level = None;
         let mut max_offset = None;
+        let max_size = self.chunk_config.capacity.max;
 
         // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
         let levels_with_first_chunk =
@@ -449,11 +450,15 @@ where
             });
 
         for (level, str) in levels_with_first_chunk {
-            let chunk_size = self.check_capacity(offset, str, false);
-            // If this no longer fits, we use the level we are at.
-            if chunk_size.fits.is_gt() {
-                max_offset = Some(offset + str.len());
-                break;
+            // Skip tokenizing levels that we know are too small anyway.
+            let len = str.len();
+            if len > max_size {
+                let chunk_size = self.check_capacity(offset, str, false);
+                // If this no longer fits, we use the level we are at.
+                if chunk_size.fits.is_gt() {
+                    max_offset = Some(offset + len);
+                    break;
+                }
             }
             // Otherwise break up the text with the next level
             semantic_level = Some(level);

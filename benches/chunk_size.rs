@@ -59,6 +59,7 @@ static FILES: Lazy<AHashMap<&'static str, String>> = Lazy::new(|| {
     m
 });
 
+#[cfg(feature = "rust-tokenizers")]
 static BERT_TOKENIZER: Lazy<rust_tokenizers::tokenizer::BertTokenizer> = Lazy::new(|| {
     let vocab_path = download_file_to_cache(
         "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
