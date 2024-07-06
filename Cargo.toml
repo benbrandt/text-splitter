@@ -60,7 +60,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ahash = "0.8"
+ahash = "0.8.7"
 auto_enums = "0.8"
 either = "1.6"
 itertools = "0.13"
