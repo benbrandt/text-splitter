@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@astrojs/check':
-        specifier: ^0.8.0
-        version: 0.8.0(typescript@5.5.3)
+        specifier: ^0.8.1
+        version: 0.8.1(typescript@5.5.3)
       '@astrojs/starlight':
-        specifier: ^0.25.0
-        version: 0.25.0(astro@4.11.5(typescript@5.5.3))
+        specifier: ^0.25.1
+        version: 0.25.1(astro@4.11.5(typescript@5.5.3))
       astro:
         specifier: ^4.11.5
         version: 4.11.5(typescript@5.5.3)
@@ -30,8 +30,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@astrojs/check@0.8.0':
-    resolution: {integrity: sha512-2nh0Trn0yzMl3VVoPmDliFsgdApcbyspmbRV9chPuOYCHr7LZsapEGLHsLn5b2OMpydqRO38UpuvnzVPqtabHw==}
+  '@astrojs/check@0.8.1':
+    resolution: {integrity: sha512-QTzCuiBWll3SLSe7OsWtWyZRbwChXwxM4Y0Jb84jdPOdYobzHad9ubU7V23qmK3Y0BNwgzCbEP5C5FPVitb31Q==}
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -42,8 +42,8 @@ packages:
   '@astrojs/internal-helpers@0.4.1':
     resolution: {integrity: sha512-bMf9jFihO8YP940uD70SI/RDzIhUHJAolWVcO1v5PUivxGKvfLZTLTVVxEYzGYyPsA3ivdLNqMnL5VgmQySa+g==}
 
-  '@astrojs/language-server@2.11.0':
-    resolution: {integrity: sha512-GmhF4A2rDCFzk/U0k1ySa8d/p6binaQZQJwSmHsY4Q8aHi5urjkG9csm0ZevKMPJmIRewE4jgh3pwzMGa4e0eQ==}
+  '@astrojs/language-server@2.11.1':
+    resolution: {integrity: sha512-WSIBBUK9lSeVD4KhPiZk2u3wsXdj7WEYvYPPs8ZsgbSVIOzUJWAKVcITHiXmcXlzZB5ubK44YUN/Hq+f2GeMyQ==}
     hasBin: true
     peerDependencies:
       prettier: ^3.0.0
@@ -70,8 +70,8 @@ packages:
   '@astrojs/sitemap@3.1.6':
     resolution: {integrity: sha512-1Qp2NvAzVImqA6y+LubKi1DVhve/hXXgFvB0szxiipzh7BvtuKe4oJJ9dXSqaubaTkt4nMa6dv6RCCAYeB6xaQ==}
 
-  '@astrojs/starlight@0.25.0':
-    resolution: {integrity: sha512-1T317AsdmMa+EP0tAPZY84G/9Ez79/8G6fHBaUr994GZSaptpr45vlyxyWtxlgIbdlio2EhKaXay4RVqqUKqXw==}
+  '@astrojs/starlight@0.25.1':
+    resolution: {integrity: sha512-tniE870QpwDs7stJk/qb1LwE78761Fi77qF/UsWedDU90gC6gPjGOHNrbQYUABAmkQ63t3/Jpq9/kmS6sfHT0g==}
     peerDependencies:
       astro: ^4.8.6
 
@@ -962,8 +962,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.4.823:
-    resolution: {integrity: sha512-4h+oPeAiGQOHFyUJOqpoEcPj/xxlicxBzOErVeYVMMmAiXUXsGpsFd0QXBMaUUbnD8hhSfLf9uw+MlsoIA7j5w==}
+  electron-to-chromium@1.4.825:
+    resolution: {integrity: sha512-OCcF+LwdgFGcsYPYC5keEEFC2XT0gBhrYbeGzHCx7i9qRFbzO/AqTmc/C/1xNhJj+JA7rzlN7mpBuStshh96Cg==}
 
   emmet@2.4.7:
     resolution: {integrity: sha512-O5O5QNqtdlnQM2bmKHtJgyChcrFMgQuulI+WdiOw2NArzprUqqxUW6bgYtKvzKgrsYpuLWalOkdhNP+1jluhCA==}
@@ -2158,9 +2158,9 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@astrojs/check@0.8.0(typescript@5.5.3)':
+  '@astrojs/check@0.8.1(typescript@5.5.3)':
     dependencies:
-      '@astrojs/language-server': 2.11.0(typescript@5.5.3)
+      '@astrojs/language-server': 2.11.1(typescript@5.5.3)
       chokidar: 3.6.0
       fast-glob: 3.3.2
       kleur: 4.1.5
@@ -2174,7 +2174,7 @@ snapshots:
 
   '@astrojs/internal-helpers@0.4.1': {}
 
-  '@astrojs/language-server@2.11.0(typescript@5.5.3)':
+  '@astrojs/language-server@2.11.1(typescript@5.5.3)':
     dependencies:
       '@astrojs/compiler': 2.8.2
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -2250,7 +2250,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.25.0(astro@4.11.5(typescript@5.5.3))':
+  '@astrojs/starlight@0.25.1(astro@4.11.5(typescript@5.5.3))':
     dependencies:
       '@astrojs/mdx': 3.1.2(astro@4.11.5(typescript@5.5.3))
       '@astrojs/sitemap': 3.1.6
@@ -3054,7 +3054,7 @@ snapshots:
   browserslist@4.23.2:
     dependencies:
       caniuse-lite: 1.0.30001641
-      electron-to-chromium: 1.4.823
+      electron-to-chromium: 1.4.825
       node-releases: 2.0.14
       update-browserslist-db: 1.1.0(browserslist@4.23.2)
 
@@ -3184,7 +3184,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.4.823: {}
+  electron-to-chromium@1.4.825: {}
 
   emmet@2.4.7:
     dependencies:
