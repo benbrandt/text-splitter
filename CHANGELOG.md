@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.15.0
+
+### What's New
+
+- Support version `0.20.0` of the `tokenizers` crate.
+
+#### Python
+
+- No longer cause a segmentation fault when using the wrong type for tree-sitter languages. Fixes [#265](https://github.com/benbrandt/text-splitter/issues/265)
+
 ## v0.14.1
 
 ### What's New
