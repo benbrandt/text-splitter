@@ -6,7 +6,7 @@
 use std::str::FromStr;
 
 use pyo3::{
-    exceptions::{PyException, PyValueError},
+    exceptions::{PyException, PyTypeError, PyValueError},
     ffi,
     prelude::*,
     pybacked::PyBackedStr,
@@ -998,8 +998,16 @@ struct PyCodeSplitter {
 
 impl PyCodeSplitter {
     /// Converts the output of a Python tree-sitter language object into a `Language` struct.
-    fn load_language(language: &Bound<'_, PyAny>) -> Language {
-        unsafe { Language::from_raw(ffi::PyLong_AsVoidPtr(language.as_ptr()) as *const TSLanguage) }
+    fn load_language(language: &Bound<'_, PyAny>) -> PyResult<Language> {
+        if language.get_type().name()? == "int" {
+            Ok(unsafe {
+                Language::from_raw(ffi::PyLong_AsVoidPtr(language.as_ptr()) as *const TSLanguage)
+            })
+        } else {
+            Err(PyTypeError::new_err(
+                "Expected an integer for the language. Try calling `language()` on the tree-sitter language.",
+            ))
+        }
     }
 }
 
@@ -1015,7 +1023,7 @@ impl PyCodeSplitter {
     ) -> PyResult<Self> {
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
@@ -1064,7 +1072,7 @@ impl PyCodeSplitter {
 
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
@@ -1112,7 +1120,7 @@ impl PyCodeSplitter {
 
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
@@ -1158,7 +1166,7 @@ impl PyCodeSplitter {
             Tokenizer::from_file(path).map_err(|e| PyException::new_err(format!("{e}")))?;
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
@@ -1204,7 +1212,7 @@ impl PyCodeSplitter {
 
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?
@@ -1248,7 +1256,7 @@ impl PyCodeSplitter {
     ) -> PyResult<Self> {
         Ok(Self {
             splitter: CodeSplitter::new(
-                Self::load_language(language),
+                Self::load_language(language)?,
                 ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
                     .with_overlap(overlap)
                     .map_err(PyChunkConfigError)?

@@ -1,7 +1,6 @@
 import pytest
 from semantic_text_splitter import CodeSplitter, MarkdownSplitter, TextSplitter
 from tokenizers import Tokenizer  # type: ignore
-from tree_sitter import Language
 import tree_sitter_python
 
 
@@ -256,7 +255,7 @@ def test_markdown_char_indices_with_multibyte_character() -> None:
 
 def test_invalid_chunk_range() -> None:
     with pytest.raises(ValueError):
-        splitter = TextSplitter((2, 1))
+        TextSplitter((2, 1))
 
 
 def test_code_splitter() -> None:
@@ -277,7 +276,12 @@ def bar():
 
 def test_invalid_language() -> None:
     with pytest.raises(ValueError):
-        splitter = CodeSplitter(tree_sitter_python.language() + 1, 40)
+        CodeSplitter(tree_sitter_python.language() + 1, 40)
+
+
+def test_invalid_language_type() -> None:
+    with pytest.raises(TypeError):
+        CodeSplitter(tree_sitter_python.language, 40)  # type: ignore
 
 
 def test_code_char_indices() -> None:
