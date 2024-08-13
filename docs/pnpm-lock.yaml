@@ -12,8 +12,8 @@ importers:
         specifier: ^0.9.2
         version: 0.9.2(typescript@5.5.4)
       '@astrojs/starlight':
-        specifier: ^0.25.4
-        version: 0.25.4(astro@4.13.3(typescript@5.5.4))
+        specifier: ^0.25.5
+        version: 0.25.5(astro@4.13.3(typescript@5.5.4))
       astro:
         specifier: ^4.13.3
         version: 4.13.3(typescript@5.5.4)
@@ -70,8 +70,8 @@ packages:
   '@astrojs/sitemap@3.1.6':
     resolution: {integrity: sha512-1Qp2NvAzVImqA6y+LubKi1DVhve/hXXgFvB0szxiipzh7BvtuKe4oJJ9dXSqaubaTkt4nMa6dv6RCCAYeB6xaQ==}
 
-  '@astrojs/starlight@0.25.4':
-    resolution: {integrity: sha512-TRPgRsd5opi2tCXvh8rWizpLsJsRRXbYecULG5b/1x4BFyp40ZJVB77cLMjTj3lHwqWs0Sybtq5OBpOy6fuIEQ==}
+  '@astrojs/starlight@0.25.5':
+    resolution: {integrity: sha512-JQsfoqRUX/HBpOW8LWPdiIxcfXZ5HOvi4Dz4Ez61U99hDyX3Ix2Q+pmsek1sH5R1MHWx/wlki2VPEqidtKXyiQ==}
     peerDependencies:
       astro: ^4.8.6
 
@@ -1627,8 +1627,8 @@ packages:
     peerDependencies:
       postcss: ^8.2.14
 
-  postcss-selector-parser@6.1.1:
-    resolution: {integrity: sha512-b4dlw/9V8A71rLIDsSwVmak9z2DuBUB7CA1/wSdelNEzqsjoSPeADTWNO09lpH49Diy3/JIZ2bSPB1dI3LJCHg==}
+  postcss-selector-parser@6.1.2:
+    resolution: {integrity: sha512-Q8qQfPiZ+THO/3ZrOrO0cJJKfpYCagtMUkXbnEfmgUjwXg6z/WBeOyS9APBBPCTSiDV+s4SwQGu8yFsiMRIudg==}
     engines: {node: '>=4'}
 
   postcss@8.4.41:
@@ -2227,7 +2227,7 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.25.4(astro@4.13.3(typescript@5.5.4))':
+  '@astrojs/starlight@0.25.5(astro@4.13.3(typescript@5.5.4))':
     dependencies:
       '@astrojs/mdx': 3.1.3(astro@4.13.3(typescript@5.5.4))
       '@astrojs/sitemap': 3.1.6
@@ -4207,9 +4207,9 @@ snapshots:
   postcss-nested@6.2.0(postcss@8.4.41):
     dependencies:
       postcss: 8.4.41
-      postcss-selector-parser: 6.1.1
+      postcss-selector-parser: 6.1.2
 
-  postcss-selector-parser@6.1.1:
+  postcss-selector-parser@6.1.2:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
