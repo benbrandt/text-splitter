@@ -65,7 +65,7 @@ auto_enums = "0.8"
 either = "1.6"
 itertools = "0.13"
 once_cell = "1.18"
-pulldown-cmark = { version = "0.11", default-features = false, optional = true }
+pulldown-cmark = { version = "0.12", default-features = false, optional = true }
 regex = "1.10.6"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.26", features = ["derive"] }
