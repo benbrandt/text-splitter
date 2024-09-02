@@ -381,7 +381,7 @@ fn code_trim_false() {
                 .with_sizer(sizer)
                 .with_trim(false);
             let capacity = *config.capacity();
-            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             assert_eq!(chunks.join(""), text);
@@ -409,7 +409,7 @@ fn code_trim() {
             let sizer = Characters;
             let config = ChunkConfig::new(chunk_size).with_sizer(sizer);
             let capacity = *config.capacity();
-            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
@@ -441,7 +441,7 @@ fn code_overlap_trim_false() {
                 .unwrap()
                 .with_trim(false);
             let capacity = *config.capacity();
-            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {
@@ -472,7 +472,7 @@ fn code_overlap_trim() {
                 .with_overlap(overlap)
                 .unwrap();
             let capacity = *config.capacity();
-            let splitter = CodeSplitter::new(tree_sitter_rust::language(), config).unwrap();
+            let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), config).unwrap();
             let chunks = splitter.chunks(&text).collect::<Vec<_>>();
 
             for chunk in &chunks {

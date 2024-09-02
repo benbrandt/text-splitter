@@ -231,7 +231,7 @@ mod tests {
 
     #[test]
     fn rust_splitter() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
@@ -240,7 +240,7 @@ mod tests {
 
     #[test]
     fn rust_splitter_indices() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::language(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
 
@@ -278,7 +278,7 @@ mod tests {
     fn optimized_code_offsets() {
         let mut parser = Parser::new();
         parser
-            .set_language(&tree_sitter_rust::language())
+            .set_language(&tree_sitter_rust::LANGUAGE.into())
             .expect("Error loading Rust grammar");
         let source_code = "fn test() {
     let x = 1;
@@ -296,7 +296,7 @@ mod tests {
     fn multiple_top_siblings() {
         let mut parser = Parser::new();
         parser
-            .set_language(&tree_sitter_rust::language())
+            .set_language(&tree_sitter_rust::LANGUAGE.into())
             .expect("Error loading Rust grammar");
         let source_code = "
 fn fn1() {}

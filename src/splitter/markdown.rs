@@ -152,7 +152,10 @@ where
                     | Tag::Item
                     | Tag::HtmlBlock
                     | Tag::List(_)
-                    | Tag::Table(_),
+                    | Tag::Table(_)
+                    | Tag::DefinitionList
+                    | Tag::DefinitionListTitle
+                    | Tag::DefinitionListDefinition,
                 ) => Some((Element::Block, range)),
                 Event::Rule => Some((Element::Rule, range)),
                 Event::Start(Tag::Heading { level, .. }) => {

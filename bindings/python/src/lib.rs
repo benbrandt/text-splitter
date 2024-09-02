@@ -999,14 +999,18 @@ struct PyCodeSplitter {
 impl PyCodeSplitter {
     /// Converts the output of a Python tree-sitter language object into a `Language` struct.
     fn load_language(language: &Bound<'_, PyAny>) -> PyResult<Language> {
-        if language.get_type().name()? == "int" {
-            Ok(unsafe {
-                Language::from_raw(ffi::PyLong_AsVoidPtr(language.as_ptr()) as *const TSLanguage)
-            })
-        } else {
-            Err(PyTypeError::new_err(
-                "Expected an integer for the language. Try calling `language()` on the tree-sitter language.",
-            ))
+        unsafe {
+            if ffi::PyCapsule_CheckExact(language.as_ptr()) > 0 {
+                let pointer = ffi::PyCapsule_GetPointer(
+                    language.as_ptr(),
+                    ffi::PyCapsule_GetName(language.as_ptr()),
+                );
+                Ok(Language::from_raw(pointer.cast::<TSLanguage>()))
+            } else {
+                Err(PyTypeError::new_err(
+                "Expected a pointer for the language. Try calling `language()` on the tree-sitter language.",
+                ))
+            }
         }
     }
 }
