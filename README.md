@@ -133,7 +133,7 @@ use text_splitter::CodeSplitter;
 let max_characters = 1000;
 // Default implementation uses character count for chunk size.
 // Can also use all of the same tokenizer implementations as `TextSplitter`.
-let splitter = CodeSplitter::new(tree_sitter_rust::language(), max_characters).expect("Invalid tree-sitter language");
+let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, max_characters).expect("Invalid tree-sitter language");
 
 let chunks = splitter.chunks("your code file");
 ```
