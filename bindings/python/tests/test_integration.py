@@ -274,11 +274,6 @@ def bar():
     ]
 
 
-def test_invalid_language() -> None:
-    with pytest.raises(ValueError):
-        CodeSplitter(tree_sitter_python.language() + 1, 40)
-
-
 def test_invalid_language_type() -> None:
     with pytest.raises(TypeError):
         CodeSplitter(tree_sitter_python.language, 40)  # type: ignore

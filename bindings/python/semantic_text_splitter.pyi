@@ -1,5 +1,4 @@
-from typing import Any, Callable, List, Tuple, Union, final
-
+from typing import Callable, List, Tuple, Union, final
 
 @final
 class TextSplitter:
@@ -91,7 +90,6 @@ class TextSplitter:
     def __init__(
         self, capacity: Union[int, Tuple[int, int]], overlap: int = 0, trim: bool = True
     ) -> None: ...
-
     @staticmethod
     def from_huggingface_tokenizer(
         tokenizer,
@@ -271,7 +269,6 @@ class TextSplitter:
             trimmed as well.
         """
 
-
 @final
 class MarkdownSplitter:
     """Markdown splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
@@ -364,7 +361,6 @@ class MarkdownSplitter:
     def __init__(
         self, capacity: Union[int, Tuple[int, int]], overlap: int = 0, trim: bool = True
     ) -> None: ...
-
     @staticmethod
     def from_huggingface_tokenizer(
         tokenizer,
@@ -547,7 +543,6 @@ class MarkdownSplitter:
             trimmed as well.
         """
 
-
 @final
 class CodeSplitter:
     """Code splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
@@ -635,7 +630,7 @@ class CodeSplitter:
     ```
 
     Args:
-        language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
+        language (object): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
             to use for parsing the code.
         capacity (int | (int, int)): The capacity of characters in each chunk. If a
             single int, then chunks will be filled up as much as possible, without going over
@@ -651,12 +646,11 @@ class CodeSplitter:
 
     def __init__(
         self,
-        language: int,
+        language: object,
         capacity: Union[int, Tuple[int, int]],
         overlap: int = 0,
         trim: bool = True,
     ) -> None: ...
-
     @staticmethod
     def from_huggingface_tokenizer(
         language: int,
