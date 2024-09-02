@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 - Update to `v0.23.0` of `tree-sitter`. There was a breaking change for language definitions, so this is also a breaking change for us, especially on the Python side, since we support passing the language in.
+- Minimum Python version for the Python bindings is now 3.9 since 3.8 will be EOL next month.
 
 #### Python
 
