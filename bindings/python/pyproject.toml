@@ -12,14 +12,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-test = [
-    "pytest",
-    "black",
-    "mypy",
-    "tokenizers",
-    "tree-sitter",
-    "tree-sitter-python",
-]
+test = ["pytest", "tokenizers", "tree-sitter-python"]
 docs = ["pdoc"]
 
 
