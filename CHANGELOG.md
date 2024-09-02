@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.16.0
+
+### Breaking Changes
+
+- Update to `v0.23.0` of `tree-sitter`. There was a breaking change for language definitions, so this is also a breaking change for us, especially on the Python side, since we support passing the language in.
+
+#### Python
+
+Make sure to upgrade to the latest version of your tree-sitter language package.
+
+#### Rust
+
+Make sure to upgrade to the latest version of your tree-sitter language package crate. These know have a `LANGUAGE` constant rather than a `language()` function.
+
+```rust
+// Before
+tree_sitter_rust::language()
+// After
+tree_sitter_rust::LANGUAGE
+```
+
+### What's New
+
+- `MarkdownSplitter` can better parse the Commonmark HS extension for Definition Lists.
+
 ## v0.15.0
 
 ### What's New
