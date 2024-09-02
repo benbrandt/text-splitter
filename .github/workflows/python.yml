@@ -119,7 +119,7 @@ jobs:
           path: bindings/python/dist
           if-no-files-found: error
       - name: pytest
-        if: ${{ !startsWith(matrix.target, 'aarch64') }}
+        if: ${{ !startsWith(matrix.target, 'x86') }}
         shell: bash
         run: |
           set -e
