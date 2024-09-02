@@ -202,7 +202,7 @@ mod code {
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
-            CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), N).unwrap()
+            CodeSplitter::new(tree_sitter_rust::LANGUAGE, N).unwrap()
         });
     }
 
@@ -211,7 +211,7 @@ mod code {
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
             CodeSplitter::new(
-                tree_sitter_rust::LANGUAGE.into(),
+                tree_sitter_rust::LANGUAGE,
                 ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
             )
             .unwrap()
@@ -223,7 +223,7 @@ mod code {
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
             CodeSplitter::new(
-                tree_sitter_rust::LANGUAGE.into(),
+                tree_sitter_rust::LANGUAGE,
                 ChunkConfig::new(N).with_sizer(
                     tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
                 ),
@@ -238,7 +238,7 @@ mod code {
 
         bench(bencher, filename, || {
             CodeSplitter::new(
-                tree_sitter_rust::LANGUAGE.into(),
+                tree_sitter_rust::LANGUAGE,
                 ChunkConfig::new(N).with_sizer(&*BERT_TOKENIZER),
             )
             .unwrap()

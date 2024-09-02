@@ -52,7 +52,7 @@ where
     /// use text_splitter::CodeSplitter;
     ///
     /// // By default, the chunk sizer is based on characters.
-    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 512).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 512).expect("Invalid language");
     /// ```
     ///
     /// # Errors
@@ -60,11 +60,12 @@ where
     /// Will return an error if the language version is too old to be compatible
     /// with the current version of the tree-sitter crate.
     pub fn new(
-        language: Language,
+        language: impl Into<Language>,
         chunk_config: impl Into<ChunkConfig<Sizer>>,
     ) -> Result<Self, CodeSplitterError> {
         // Verify that this is a valid language so we can rely on that later.
         let mut parser = Parser::new();
+        let language = language.into();
         parser
             .set_language(&language)
             .map_err(CodeSplitterErrorRepr::LanguageError)?;
@@ -98,7 +99,7 @@ where
     /// ```
     /// use text_splitter::CodeSplitter;
     ///
-    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 10).expect("Invalid language");
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunks(text).collect::<Vec<_>>();
     ///
@@ -119,7 +120,7 @@ where
     /// ```
     /// use text_splitter::CodeSplitter;
     ///
-    /// let splitter = CodeSplitter::new(tree_sitter_rust::language(), 10).expect("Invalid language");
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 10).expect("Invalid language");
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
     ///
@@ -231,7 +232,7 @@ mod tests {
 
     #[test]
     fn rust_splitter() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
@@ -240,7 +241,7 @@ mod tests {
 
     #[test]
     fn rust_splitter_indices() {
-        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE.into(), 16).unwrap();
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 16).unwrap();
         let text = "fn main() {\n    let x = 5;\n}";
         let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
 
