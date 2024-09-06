@@ -82,7 +82,7 @@ cached-path = { version = "0.6", default-features = false, features = [
 dirs = "5.0.1"
 divan = "0.1.14"
 fake = "2"
-insta = { version = "1.39", features = ["glob", "yaml"] }
+insta = { version = "1.40", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.10"
 tokenizers = { version = "0.20", default-features = false, features = [
