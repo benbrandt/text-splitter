@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.16.1
+
+### What's New
+
+Updates `pulldown-cmark` to `v0.12.1` to address an issue with high CPU usage for certain Markdown elements.
+
 ## v0.16.0
 
 ### Breaking Changes
