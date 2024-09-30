@@ -937,8 +937,8 @@ expression: chunks
 - "<p>&amp;nbsp &amp;x; &amp;#; &"
 - "amp;x; &amp;#; &amp;#x;"
 - "&amp;#87654321;\n&amp;#abcdef0;"
-- "&amp;ThisIsNotDefined; &amp;hi?"
-- ;</p>
+- "&amp;ThisIsNotDefined; &amp;hi?;"
+- ; &amp;hi?;</p>
 - "````````````````````````````````"
 - Although HTML5 does accept some
 - does accept some entity
@@ -2826,13 +2826,13 @@ expression: chunks
 - "document.getElementById(\"demo\")."
 - "(\"demo\").innerHTML = \"Hello"
 - "= \"Hello JavaScript!\";"
-- ";\n</script>\nokay\n."
+- "</script>\nokay\n."
 - "<script type=\"text/javascript\">"
 - // JavaScript example
 - "document.getElementById(\"demo\")."
 - "(\"demo\").innerHTML = \"Hello"
 - "= \"Hello JavaScript!\";"
-- ";\n</script>\n<p>okay</p>"
+- "</script>\n<p>okay</p>"
 - "````````````````````````````````"
 - "A textarea tag (type 1):"
 - "````````````````````````````````"
