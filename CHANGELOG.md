@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.17.0
+
+### Breaking Changes
+
+- Support `tree-sitter@v0.24` for CodeSplitters.
+- Due to a slight change in the backing unicode segmentation implementation, there are some slight shifts in behavior for CodeSplitters as well (in my tests, mostly that semicolons have a more logical grouping with previous content).
+
 ## v0.16.1
 
 ### What's New
