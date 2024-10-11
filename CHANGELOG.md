@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.17.1
+
+### What's New
+
+- Loosen `regex` crate version requirement
+
 ## v0.17.0
 
 ### Breaking Changes
