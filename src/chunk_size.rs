@@ -130,13 +130,6 @@ impl ChunkCapacity {
             Ordering::Equal
         }
     }
-
-    /// Generates a chunk size object based on the size provided from a sizer
-    /// Calculates and stores whether or not it fits within the capacity
-    #[must_use]
-    fn chunk_size(&self, size: usize) -> ChunkSize {
-        ChunkSize::new(self.fits(size), size)
-    }
 }
 
 impl From<usize> for ChunkCapacity {
@@ -198,27 +191,19 @@ impl From<RangeToInclusive<usize>> for ChunkCapacity {
 /// would fit within the given `ChunkCapacity`.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct ChunkSize {
-    /// Whether or not the entire chunk fits within the `ChunkCapacity`
-    fits: Ordering,
     /// Size of the chunk, in units used by the sizer.
     size: usize,
 }
 
 impl ChunkSize {
     #[must_use]
-    pub fn new(fits: Ordering, size: usize) -> Self {
-        Self { fits, size }
-    }
-
-    /// Determine whether the chunk size fits within the capacity or not
-    #[must_use]
-    pub fn fits(&self) -> Ordering {
-        self.fits
+    pub fn new(size: usize) -> Self {
+        Self { size }
     }
 
     /// Size of the chunk, in units used by the sizer.
     #[must_use]
-    pub fn size(&self) -> usize {
+    pub fn size(self) -> usize {
         self.size
     }
 }
@@ -403,15 +388,10 @@ where
         } else {
             &mut self.capacity_cache
         };
-        let capacity = if is_overlap {
-            self.chunk_config.overlap.into()
-        } else {
-            self.chunk_config.capacity
-        };
 
         *cache
             .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| capacity.chunk_size(self.chunk_config.sizer.size(chunk)))
+            .or_insert_with(|| ChunkSize::new(self.chunk_config.sizer.size(chunk)))
     }
 
     /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
@@ -454,8 +434,9 @@ where
             let len = str.len();
             if len > max_size {
                 let chunk_size = self.check_capacity(offset, str, false);
+                let fits = self.chunk_config.capacity.fits(chunk_size.size);
                 // If this no longer fits, we use the level we are at.
-                if chunk_size.fits.is_gt() {
+                if fits.is_gt() {
                     max_offset = Some(offset + len);
                     break;
                 }
@@ -488,21 +469,15 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(4)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(4).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(5)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(5).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(6)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(6).fits(Characters.size(chunk)),
             Ordering::Less
         );
     }
@@ -512,27 +487,19 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(0..0)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(0..0).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(0..5)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(0..5).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(5..6)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(5..6).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(6..100)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(6..100).fits(Characters.size(chunk)),
             Ordering::Less
         );
     }
@@ -542,21 +509,15 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(0..)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(0..).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(5..)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(5..).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(6..)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(6..).fits(Characters.size(chunk)),
             Ordering::Less
         );
     }
@@ -566,9 +527,7 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(..)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..).fits(Characters.size(chunk)),
             Ordering::Equal
         );
     }
@@ -578,27 +537,19 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(0..=4)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(0..=4).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(5..=6)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(5..=6).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(4..=5)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(4..=5).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(6..=100)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(6..=100).fits(Characters.size(chunk)),
             Ordering::Less
         );
     }
@@ -608,21 +559,15 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(..0)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..0).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(..5)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..5).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(..6)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..6).fits(Characters.size(chunk)),
             Ordering::Equal
         );
     }
@@ -632,21 +577,15 @@ mod tests {
         let chunk = "12345";
 
         assert_eq!(
-            ChunkCapacity::from(..=4)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..=4).fits(Characters.size(chunk)),
             Ordering::Greater
         );
         assert_eq!(
-            ChunkCapacity::from(..=5)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..=5).fits(Characters.size(chunk)),
             Ordering::Equal
         );
         assert_eq!(
-            ChunkCapacity::from(..=6)
-                .chunk_size(Characters.size(chunk))
-                .fits,
+            ChunkCapacity::from(..=6).fits(Characters.size(chunk)),
             Ordering::Equal
         );
     }
