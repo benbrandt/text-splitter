@@ -232,6 +232,8 @@ where
 {
     /// Chunk configuration for this iterator
     chunk_config: &'sizer ChunkConfig<Sizer>,
+    /// The trimming method to apply
+    trim: Trim,
     /// How to validate chunk sizes
     chunk_sizer: MemoizedChunkSizer<'sizer, Sizer>,
     /// Current byte offset in the `text`
@@ -261,16 +263,15 @@ where
         offsets: Vec<(Level, Range<usize>)>,
         trim: Trim,
     ) -> Self {
+        let trim = if chunk_config.trim() {
+            trim
+        } else {
+            Trim::None
+        };
         Self {
             chunk_config,
-            chunk_sizer: MemoizedChunkSizer::new(
-                chunk_config.sizer(),
-                if chunk_config.trim() {
-                    trim
-                } else {
-                    Trim::None
-                },
-            ),
+            trim,
+            chunk_sizer: MemoizedChunkSizer::new(chunk_config.sizer()),
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,
@@ -296,7 +297,7 @@ where
         self.update_cursor(end);
 
         // Trim whitespace if user requested it
-        Some(self.chunk_sizer.trim_chunk(start, chunk))
+        Some(self.trim.trim(start, chunk))
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
@@ -313,7 +314,7 @@ where
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
-            let chunk_size = self.chunk_sizer.chunk_size(start, chunk);
+            let chunk_size = self.chunk_sizer.chunk_size(start, chunk, self.trim);
             let fits = self.chunk_config.capacity().fits(chunk_size);
 
             match fits {
@@ -366,7 +367,7 @@ where
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
                 let chunk = self.text.get(start..text_end)?;
-                let size = self.chunk_sizer.chunk_size(start, chunk);
+                let size = self.chunk_sizer.chunk_size(start, chunk, self.trim);
                 if size <= chunk_size {
                     if text_end > end {
                         end = text_end;
@@ -402,9 +403,11 @@ where
         while low <= high {
             let mid = low + (high - low) / 2;
             let (offset, _) = self.next_sections[mid];
-            let chunk_size = self
-                .chunk_sizer
-                .chunk_size(offset, self.text.get(offset..end).expect("Invalid range"));
+            let chunk_size = self.chunk_sizer.chunk_size(
+                offset,
+                self.text.get(offset..end).expect("Invalid range"),
+                self.trim,
+            );
             let fits = ChunkCapacity::from(self.chunk_config.overlap()).fits(chunk_size);
 
             // We got further than the last one, so update start
@@ -444,6 +447,7 @@ where
                         .next()
                         .map(|(_, str)| (level, str))
                 }),
+            self.trim,
         );
 
         let sections = if let Some(semantic_level) = semantic_level {
@@ -462,6 +466,7 @@ where
                         .next()
                         .map(|(_, str)| (level, str))
                 }),
+                self.trim,
             );
 
             max_offset = match (fallback_max_offset, max_offset) {
@@ -512,6 +517,7 @@ where
                 let chunk_size = self.chunk_sizer.chunk_size(
                     offset,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
+                    self.trim,
                 );
                 let fits = self.chunk_config.capacity().fits(chunk_size);
 
