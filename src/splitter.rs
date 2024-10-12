@@ -286,17 +286,14 @@ where
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         self.semantic_split.update_cursor(self.cursor);
         let low = self.update_next_sections();
-
         let (start, end) = self.binary_search_next_chunk(low)?;
+        let chunk = self.text.get(start..end)?;
+        self.chunk_stats.update_max_chunk_size(end - start);
 
         // Reset caches so we can reuse the memory allocation
         self.chunk_sizer.clear_cache();
         // Optionally move cursor back if overlap is desired
         self.update_cursor(end);
-
-        let chunk = self.text.get(start..end)?;
-
-        self.chunk_stats.update_max_chunk_size(end - start);
 
         // Trim whitespace if user requested it
         Some(self.chunk_sizer.trim_chunk(start, chunk))
@@ -316,7 +313,7 @@ where
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
-            let chunk_size = self.chunk_sizer.check_capacity(start, chunk);
+            let chunk_size = self.chunk_sizer.chunk_size(start, chunk);
             let fits = self.chunk_config.capacity().fits(chunk_size);
 
             match fits {
@@ -369,7 +366,7 @@ where
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
                 let chunk = self.text.get(start..text_end)?;
-                let size = self.chunk_sizer.check_capacity(start, chunk);
+                let size = self.chunk_sizer.chunk_size(start, chunk);
                 if size <= chunk_size {
                     if text_end > end {
                         end = text_end;
@@ -407,7 +404,7 @@ where
             let (offset, _) = self.next_sections[mid];
             let chunk_size = self
                 .chunk_sizer
-                .check_capacity(offset, self.text.get(offset..end).expect("Invalid range"));
+                .chunk_size(offset, self.text.get(offset..end).expect("Invalid range"));
             let fits = ChunkCapacity::from(self.chunk_config.overlap()).fits(chunk_size);
 
             // We got further than the last one, so update start
@@ -512,7 +509,7 @@ where
                 if text_end < target_offset {
                     break;
                 }
-                let chunk_size = self.chunk_sizer.check_capacity(
+                let chunk_size = self.chunk_sizer.chunk_size(
                     offset,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                 );
