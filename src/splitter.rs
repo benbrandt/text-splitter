@@ -5,11 +5,7 @@ use itertools::Itertools;
 use strum::IntoEnumIterator;
 
 use self::fallback::FallbackLevel;
-use crate::{
-    chunk_size::{ChunkSize, MemoizedChunkSizer},
-    trim::Trim,
-    ChunkConfig, ChunkSizer,
-};
+use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, ChunkSizer};
 
 #[cfg(feature = "code")]
 mod code;
@@ -282,7 +278,7 @@ where
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
         // Reset caches so we can reuse the memory allocation
-        self.chunk_sizer.clear_cache();
+        self.chunk_sizer.clear_cache(self.cursor);
         self.semantic_split.update_cursor(self.cursor);
         let low = self.update_next_sections();
 
@@ -313,8 +309,8 @@ where
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
-            let chunk_size = self.chunk_sizer.check_capacity(start, chunk, false);
-            let fits = self.chunk_config.capacity().fits(chunk_size.size());
+            let chunk_size = self.chunk_sizer.check_capacity(start, chunk);
+            let fits = self.chunk_config.capacity().fits(chunk_size);
 
             match fits {
                 Ordering::Less => {
@@ -366,8 +362,8 @@ where
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
                 let chunk = self.text.get(start..text_end)?;
-                let size = self.chunk_sizer.check_capacity(start, chunk, false);
-                if size.size() <= chunk_size.size() {
+                let size = self.chunk_sizer.check_capacity(start, chunk);
+                if size <= chunk_size {
                     if text_end > end {
                         end = text_end;
                     }
@@ -402,12 +398,10 @@ where
         while low <= high {
             let mid = low + (high - low) / 2;
             let (offset, _) = self.next_sections[mid];
-            let chunk_size = self.chunk_sizer.check_capacity(
-                offset,
-                self.text.get(offset..end).expect("Invalid range"),
-                true,
-            );
-            let fits = self.chunk_config.capacity().fits(chunk_size.size());
+            let chunk_size = self
+                .chunk_sizer
+                .check_capacity(offset, self.text.get(offset..end).expect("Invalid range"));
+            let fits = ChunkCapacity::from(self.chunk_config.overlap()).fits(chunk_size);
 
             // We got further than the last one, so update start
             if fits.is_le() && offset < start && offset > self.cursor {
@@ -484,7 +478,7 @@ where
         // Start filling up the next sections. Since calculating the size of the chunk gets more expensive
         // the farther we go, we conservatively check for a smaller range to do the later binary search in.
         let mut low = 0;
-        let mut prev_equals: Option<ChunkSize> = None;
+        let mut prev_equals: Option<usize> = None;
         let max = self.chunk_config.capacity().max();
         let mut target_offset = self.chunk_stats.max_chunk_size.unwrap_or(max);
 
@@ -511,13 +505,12 @@ where
                 let chunk_size = self.chunk_sizer.check_capacity(
                     offset,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
-                    false,
                 );
-                let fits = self.chunk_config.capacity().fits(chunk_size.size());
+                let fits = self.chunk_config.capacity().fits(chunk_size);
 
                 if fits.is_le() {
                     let final_offset = offset + str.len() - self.cursor;
-                    let size = chunk_size.size().max(1);
+                    let size = chunk_size.max(1);
                     let diff = (max - size).max(1);
                     let avg_size = final_offset.div_ceil(size);
 
@@ -536,7 +529,7 @@ where
                         // Don't update low because it could be a range
                         // If we've seen a previous equals, we can break if the size is bigger already
                         if let Some(prev) = prev_equals {
-                            if prev.size() < chunk_size.size() {
+                            if prev < chunk_size {
                                 break;
                             }
                         }
