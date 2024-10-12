@@ -186,28 +186,6 @@ impl From<RangeToInclusive<usize>> for ChunkCapacity {
     }
 }
 
-/// Result returned from a `ChunkSizer`. Includes the size of the chunk, in units
-/// determined by the sizer, as well as the max byte offset of the text that
-/// would fit within the given `ChunkCapacity`.
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub struct ChunkSize {
-    /// Size of the chunk, in units used by the sizer.
-    size: usize,
-}
-
-impl ChunkSize {
-    #[must_use]
-    pub fn new(size: usize) -> Self {
-        Self { size }
-    }
-
-    /// Size of the chunk, in units used by the sizer.
-    #[must_use]
-    pub fn size(self) -> usize {
-        self.size
-    }
-}
-
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
@@ -357,11 +335,9 @@ where
     Sizer: ChunkSizer,
 {
     /// Cache of chunk sizes per byte offset range for base capacity
-    capacity_cache: AHashMap<Range<usize>, ChunkSize>,
+    size_cache: AHashMap<Range<usize>, usize>,
     /// The configuration for the chunk sizer
     chunk_config: &'sizer ChunkConfig<Sizer>,
-    /// Cache of chunk sizes per byte offset range for overlap ranges
-    overlap_cache: AHashMap<Range<usize>, ChunkSize>,
     /// Semantic level, used for determining trimming behavior
     trim: Trim,
 }
@@ -373,31 +349,25 @@ where
     /// Wrap any chunk sizer for memoization
     pub fn new(chunk_config: &'sizer ChunkConfig<Sizer>, trim: Trim) -> Self {
         Self {
-            capacity_cache: AHashMap::new(),
+            size_cache: AHashMap::new(),
             chunk_config,
-            overlap_cache: AHashMap::new(),
             trim,
         }
     }
 
     /// Determine the size of a given chunk to use for validation,
     /// returning a cached value if it exists, and storing the result if not.
-    fn chunk_size(&mut self, offset: usize, chunk: &str, is_overlap: bool) -> ChunkSize {
-        let cache = if is_overlap {
-            &mut self.overlap_cache
-        } else {
-            &mut self.capacity_cache
-        };
-
-        *cache
+    fn chunk_size(&mut self, offset: usize, chunk: &str) -> usize {
+        *self
+            .size_cache
             .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| ChunkSize::new(self.chunk_config.sizer.size(chunk)))
+            .or_insert_with(|| self.chunk_config.sizer.size(chunk))
     }
 
     /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
-    pub fn check_capacity(&mut self, offset: usize, chunk: &str, is_overlap: bool) -> ChunkSize {
+    pub fn check_capacity(&mut self, offset: usize, chunk: &str) -> usize {
         let (offset, chunk) = self.trim_chunk(offset, chunk);
-        self.chunk_size(offset, chunk, is_overlap)
+        self.chunk_size(offset, chunk)
     }
 
     /// If trim chunks is on, trim the str and adjust the offset
@@ -433,8 +403,8 @@ where
             // Skip tokenizing levels that we know are too small anyway.
             let len = str.len();
             if len > max_size {
-                let chunk_size = self.check_capacity(offset, str, false);
-                let fits = self.chunk_config.capacity.fits(chunk_size.size);
+                let chunk_size = self.check_capacity(offset, str);
+                let fits = self.chunk_config.capacity.fits(chunk_size);
                 // If this no longer fits, we use the level we are at.
                 if fits.is_gt() {
                     max_offset = Some(offset + len);
@@ -450,9 +420,8 @@ where
 
     /// Clear the cached values. Once we've moved the cursor,
     /// we don't need to keep the old values around.
-    pub fn clear_cache(&mut self) {
-        self.capacity_cache.clear();
-        self.overlap_cache.clear();
+    pub fn clear_cache(&mut self, offset: usize) {
+        self.size_cache.retain(|k, _| k.start >= offset);
     }
 }
 
@@ -609,7 +578,7 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
         let text = "1234567890";
         for _ in 0..10 {
-            memoized_sizer.chunk_size(0, text, false);
+            memoized_sizer.chunk_size(0, text);
         }
 
         assert_eq!(
@@ -628,7 +597,7 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
         let text = "1234567890";
         for i in 0..10 {
-            memoized_sizer.chunk_size(0, text.get(0..i).unwrap(), false);
+            memoized_sizer.chunk_size(0, text.get(0..i).unwrap());
         }
 
         assert_eq!(
@@ -647,8 +616,8 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
         let text = "1234567890";
         for _ in 0..10 {
-            memoized_sizer.chunk_size(0, text, false);
-            memoized_sizer.clear_cache();
+            memoized_sizer.chunk_size(0, text);
+            memoized_sizer.clear_cache(text.len());
         }
 
         assert_eq!(
