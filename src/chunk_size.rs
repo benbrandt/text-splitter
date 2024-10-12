@@ -336,8 +336,8 @@ where
 {
     /// Cache of chunk sizes per byte offset range for base capacity
     size_cache: AHashMap<Range<usize>, usize>,
-    /// The configuration for the chunk sizer
-    chunk_config: &'sizer ChunkConfig<Sizer>,
+    /// The sizer used for caluclating chunk sizes
+    sizer: &'sizer Sizer,
     /// Semantic level, used for determining trimming behavior
     trim: Trim,
 }
@@ -347,10 +347,10 @@ where
     Sizer: ChunkSizer,
 {
     /// Wrap any chunk sizer for memoization
-    pub fn new(chunk_config: &'sizer ChunkConfig<Sizer>, trim: Trim) -> Self {
+    pub fn new(sizer: &'sizer Sizer, trim: Trim) -> Self {
         Self {
             size_cache: AHashMap::new(),
-            chunk_config,
+            sizer,
             trim,
         }
     }
@@ -361,7 +361,7 @@ where
         *self
             .size_cache
             .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| self.chunk_config.sizer.size(chunk))
+            .or_insert_with(|| self.sizer.size(chunk))
     }
 
     /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
@@ -372,22 +372,18 @@ where
 
     /// If trim chunks is on, trim the str and adjust the offset
     pub fn trim_chunk<'text>(&self, offset: usize, chunk: &'text str) -> (usize, &'text str) {
-        if self.chunk_config.trim {
-            self.trim.trim(offset, chunk)
-        } else {
-            (offset, chunk)
-        }
+        self.trim.trim(offset, chunk)
     }
 
     /// Find the best level to start splitting the text
     pub fn find_correct_level<'text, L: fmt::Debug>(
         &mut self,
         offset: usize,
+        capacity: &ChunkCapacity,
         levels_with_first_chunk: impl Iterator<Item = (L, &'text str)>,
     ) -> (Option<L>, Option<usize>) {
         let mut semantic_level = None;
         let mut max_offset = None;
-        let max_size = self.chunk_config.capacity.max;
 
         // We assume that larger levels are also longer. We can skip lower levels if going to a higher level would result in a shorter text
         let levels_with_first_chunk =
@@ -402,9 +398,9 @@ where
         for (level, str) in levels_with_first_chunk {
             // Skip tokenizing levels that we know are too small anyway.
             let len = str.len();
-            if len > max_size {
+            if len > capacity.max {
                 let chunk_size = self.check_capacity(offset, str);
-                let fits = self.chunk_config.capacity.fits(chunk_size);
+                let fits = capacity.fits(chunk_size);
                 // If this no longer fits, we use the level we are at.
                 if fits.is_gt() {
                     max_offset = Some(offset + len);
@@ -574,46 +570,35 @@ mod tests {
 
     #[test]
     fn memoized_sizer_only_calculates_once_per_text() {
-        let chunk_config = ChunkConfig::new(10).with_sizer(CountingSizer::default());
-        let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer, Trim::All);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
         }
 
-        assert_eq!(
-            memoized_sizer
-                .chunk_config
-                .sizer()
-                .calls
-                .load(atomic::Ordering::SeqCst),
-            1
-        );
+        assert_eq!(memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst), 1);
     }
 
     #[test]
     fn memoized_sizer_calculates_once_per_different_text() {
-        let chunk_config = ChunkConfig::new(10).with_sizer(CountingSizer::default());
-        let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer, Trim::All);
         let text = "1234567890";
         for i in 0..10 {
             memoized_sizer.chunk_size(0, text.get(0..i).unwrap());
         }
 
         assert_eq!(
-            memoized_sizer
-                .chunk_config
-                .sizer()
-                .calls
-                .load(atomic::Ordering::SeqCst),
+            memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
             10
         );
     }
 
     #[test]
     fn can_clear_cache_on_memoized_sizer() {
-        let chunk_config = ChunkConfig::new(10).with_sizer(CountingSizer::default());
-        let mut memoized_sizer = MemoizedChunkSizer::new(&chunk_config, Trim::All);
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer, Trim::All);
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
@@ -621,11 +606,7 @@ mod tests {
         }
 
         assert_eq!(
-            memoized_sizer
-                .chunk_config
-                .sizer()
-                .calls
-                .load(atomic::Ordering::SeqCst),
+            memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
             10
         );
     }

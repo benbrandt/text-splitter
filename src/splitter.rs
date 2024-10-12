@@ -263,7 +263,14 @@ where
     ) -> Self {
         Self {
             chunk_config,
-            chunk_sizer: MemoizedChunkSizer::new(chunk_config, trim),
+            chunk_sizer: MemoizedChunkSizer::new(
+                chunk_config.sizer(),
+                if chunk_config.trim() {
+                    trim
+                } else {
+                    Trim::None
+                },
+            ),
             cursor: 0,
             next_sections: Vec::new(),
             prev_item_end: 0,
@@ -422,6 +429,7 @@ where
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
+    #[allow(clippy::too_many_lines)]
     fn update_next_sections(&mut self) -> usize {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
@@ -430,6 +438,7 @@ where
 
         let (semantic_level, mut max_offset) = self.chunk_sizer.find_correct_level(
             self.cursor,
+            self.chunk_config.capacity(),
             self.semantic_split
                 .levels_in_remaining_text(self.cursor)
                 .filter_map(|level| {
@@ -449,6 +458,7 @@ where
         } else {
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
+                self.chunk_config.capacity(),
                 FallbackLevel::iter().filter_map(|level| {
                     level
                         .sections(remaining_text)

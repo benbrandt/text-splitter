@@ -17,6 +17,8 @@ pub enum Trim {
     /// the meaning of the text.
     #[cfg(any(feature = "markdown", feature = "code"))]
     PreserveIndentation,
+    /// Apply no trimming
+    None,
 }
 
 #[cfg(any(feature = "markdown", feature = "code"))]
@@ -40,6 +42,7 @@ impl Trim {
                     Self::All.trim(offset, chunk)
                 }
             }
+            Self::None => (offset, chunk),
         }
     }
 }
