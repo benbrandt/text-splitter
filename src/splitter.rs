@@ -277,13 +277,13 @@ where
     /// Returns final byte offset and str.
     /// Will return `None` if given an invalid range.
     fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
-        // Reset caches so we can reuse the memory allocation
-        self.chunk_sizer.clear_cache(self.cursor);
         self.semantic_split.update_cursor(self.cursor);
         let low = self.update_next_sections();
 
         let (start, end) = self.binary_search_next_chunk(low)?;
 
+        // Reset caches so we can reuse the memory allocation
+        self.chunk_sizer.clear_cache();
         // Optionally move cursor back if overlap is desired
         self.update_cursor(end);
 

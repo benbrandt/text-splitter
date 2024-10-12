@@ -420,8 +420,8 @@ where
 
     /// Clear the cached values. Once we've moved the cursor,
     /// we don't need to keep the old values around.
-    pub fn clear_cache(&mut self, offset: usize) {
-        self.size_cache.retain(|k, _| k.start >= offset);
+    pub fn clear_cache(&mut self) {
+        self.size_cache.clear();
     }
 }
 
@@ -617,7 +617,7 @@ mod tests {
         let text = "1234567890";
         for _ in 0..10 {
             memoized_sizer.chunk_size(0, text);
-            memoized_sizer.clear_cache(text.len());
+            memoized_sizer.clear_cache();
         }
 
         assert_eq!(
