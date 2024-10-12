@@ -59,8 +59,8 @@ enum ChunkCapacityErrorRepr {
 /// higher semantic level when determining the chunk.
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct ChunkCapacity {
-    desired: usize,
-    max: usize,
+    pub(crate) desired: usize,
+    pub(crate) max: usize,
 }
 
 impl ChunkCapacity {
@@ -213,13 +213,13 @@ where
     Sizer: ChunkSizer,
 {
     /// The chunk capacity to use for filling chunks
-    capacity: ChunkCapacity,
+    pub(crate) capacity: ChunkCapacity,
     /// The amount of overlap between chunks. Defaults to 0.
-    overlap: usize,
+    pub(crate) overlap: usize,
     /// The chunk sizer to use for determining the size of each chunk
-    sizer: Sizer,
+    pub(crate) sizer: Sizer,
     /// Whether whitespace will be trimmed from the beginning and end of each chunk
-    trim: bool,
+    pub(crate) trim: bool,
 }
 
 impl ChunkConfig<Characters> {
