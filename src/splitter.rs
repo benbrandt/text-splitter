@@ -515,7 +515,7 @@ where
             // Check if the last item fits
             if let Some(&(offset, str)) = self.next_sections.last() {
                 let text_end = offset + str.len();
-                if text_end < target_offset {
+                if (text_end - self.cursor) < target_offset {
                     break;
                 }
                 let chunk_size = self.chunk_sizer.chunk_size(
