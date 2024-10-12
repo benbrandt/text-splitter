@@ -357,17 +357,12 @@ where
 
     /// Determine the size of a given chunk to use for validation,
     /// returning a cached value if it exists, and storing the result if not.
-    fn chunk_size(&mut self, offset: usize, chunk: &str) -> usize {
+    pub fn chunk_size(&mut self, offset: usize, chunk: &str) -> usize {
+        let (offset, chunk) = self.trim_chunk(offset, chunk);
         *self
             .size_cache
             .entry(offset..(offset + chunk.len()))
             .or_insert_with(|| self.sizer.size(chunk))
-    }
-
-    /// Check if the chunk is within the capacity. Chunk should be trimmed if necessary beforehand.
-    pub fn check_capacity(&mut self, offset: usize, chunk: &str) -> usize {
-        let (offset, chunk) = self.trim_chunk(offset, chunk);
-        self.chunk_size(offset, chunk)
     }
 
     /// If trim chunks is on, trim the str and adjust the offset
@@ -399,7 +394,7 @@ where
             // Skip tokenizing levels that we know are too small anyway.
             let len = str.len();
             if len > capacity.max {
-                let chunk_size = self.check_capacity(offset, str);
+                let chunk_size = self.chunk_size(offset, str);
                 let fits = capacity.fits(chunk_size);
                 // If this no longer fits, we use the level we are at.
                 if fits.is_gt() {
