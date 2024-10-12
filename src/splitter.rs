@@ -314,8 +314,9 @@ where
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.chunk_sizer.check_capacity(start, chunk, false);
+            let fits = self.chunk_config.capacity().fits(chunk_size.size());
 
-            match chunk_size.fits() {
+            match fits {
                 Ordering::Less => {
                     // We got further than the last one, so update end
                     if text_end > end {
@@ -344,7 +345,7 @@ where
             };
 
             // Adjust search area
-            if chunk_size.fits().is_lt() {
+            if fits.is_lt() {
                 low = mid + 1;
             } else if mid > 0 {
                 high = mid - 1;
@@ -406,14 +407,15 @@ where
                 self.text.get(offset..end).expect("Invalid range"),
                 true,
             );
+            let fits = self.chunk_config.capacity().fits(chunk_size.size());
 
             // We got further than the last one, so update start
-            if chunk_size.fits().is_le() && offset < start && offset > self.cursor {
+            if fits.is_le() && offset < start && offset > self.cursor {
                 start = offset;
             }
 
             // Adjust search area
-            if chunk_size.fits().is_lt() && mid > 0 {
+            if fits.is_lt() && mid > 0 {
                 high = mid - 1;
             } else {
                 low = mid + 1;
@@ -511,8 +513,8 @@ where
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                     false,
                 );
+                let fits = self.chunk_config.capacity().fits(chunk_size.size());
 
-                let fits = chunk_size.fits();
                 if fits.is_le() {
                     let final_offset = offset + str.len() - self.cursor;
                     let size = chunk_size.size().max(1);
