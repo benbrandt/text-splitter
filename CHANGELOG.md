@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.18.0
+
+### Breaking
+
+- Change supported `tiktoken-rs` version to `0.6.x`
+
 ## v0.17.1
 
 ### What's New
