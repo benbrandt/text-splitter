@@ -22,7 +22,7 @@ text-splitter = { path = "../..", features = [
     "tiktoken-rs",
     "tokenizers",
 ] }
-tiktoken-rs = "0.5"
+tiktoken-rs = "0.6"
 tokenizers = { version = "0.20", default-features = false, features = ["onig"] }
 tree-sitter = "0.24"
 
