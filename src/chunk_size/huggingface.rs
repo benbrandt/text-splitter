@@ -5,7 +5,7 @@ use crate::ChunkSizer;
 /// Compute the number of tokens that exist within an entire [`Encoding`] object.
 ///
 /// Take into account [`Encoding::get_overflowing`] for cases where the [`Tokenizer`] producing the [`Encoding`] has truncation parameters set.
-pub(crate) fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
+fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
     let base = encoding
         .get_ids()
         .iter()
