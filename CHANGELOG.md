@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.18.1
+
+### What's New
+
+- Ensure tokenizer sizers with truncation parameters count their overflow encodings
+
 ## v0.18.0
 
 ### Breaking
