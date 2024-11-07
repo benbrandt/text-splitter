@@ -1,8 +1,9 @@
 allowed-duplicate-crates = [
     "base64",
     "bitflags",
-    "heck",
     "itertools",
+    "thiserror",
+    "thiserror-impl",
     "windows-sys",
     "windows-targets",
     "windows_aarch64_gnullvm",
