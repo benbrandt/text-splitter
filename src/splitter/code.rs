@@ -21,8 +21,8 @@ pub struct CodeSplitterError(#[from] CodeSplitterErrorRepr);
 #[derive(Error, Debug)]
 enum CodeSplitterErrorRepr {
     #[error(
-        "Language version {0:?} is too old. Expected at least version {}",
-        MIN_COMPATIBLE_LANGUAGE_VERSION
+        "Language version {0:?} is too old. Expected at least version {min_version}",
+        min_version=MIN_COMPATIBLE_LANGUAGE_VERSION,
     )]
     LanguageError(LanguageError),
 }
