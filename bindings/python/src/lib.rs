@@ -90,7 +90,7 @@ impl ChunkSizer for CustomCallback {
     fn size(&self, chunk: &str) -> usize {
         Python::with_gil(|py| {
             self.0
-                .call_bound(py, (chunk,), None)
+                .call(py, (chunk,), None)
                 .unwrap()
                 .extract::<usize>(py)
                 .unwrap()
@@ -127,10 +127,10 @@ impl<'text> ByteToCharOffsetTracker<'text> {
 }
 
 /// Allows for dynamically choosing between different chunk sizers
-struct Sizer(Box<dyn ChunkSizer + 'static + Send>);
+struct Sizer(Box<dyn ChunkSizer + 'static + Send + Sync>);
 
 impl Sizer {
-    fn new(sizer: impl ChunkSizer + 'static + Send) -> Self {
+    fn new(sizer: impl ChunkSizer + 'static + Send + Sync) -> Self {
         Self(Box::new(sizer))
     }
 }
