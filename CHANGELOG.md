@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.0
+
+### Breaking Changes
+
+- Update to tokenizers v0.21
+
 ## v0.18.1
 
 ### What's New
