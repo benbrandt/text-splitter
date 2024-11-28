@@ -71,7 +71,7 @@ rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.26", features = ["derive"] }
 thiserror = "2.0.3"
 tiktoken-rs = { version = "0.6", optional = true }
-tokenizers = { version = "0.20", default-features = false, optional = true }
+tokenizers = { version = "0.21", default-features = false, optional = true }
 tree-sitter = { version = "0.24", optional = true }
 unicode-segmentation = "1.12"
 
@@ -85,7 +85,7 @@ fake = "3"
 insta = { version = "1.41", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.10"
-tokenizers = { version = "0.20", default-features = false, features = [
+tokenizers = { version = "0.21", default-features = false, features = [
     "onig",
     "http",
 ] }

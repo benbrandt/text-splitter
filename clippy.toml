@@ -4,6 +4,7 @@ allowed-duplicate-crates = [
     "itertools",
     "thiserror",
     "thiserror-impl",
+    "unicode-width",
     "windows-sys",
     "windows-targets",
     "windows_aarch64_gnullvm",
