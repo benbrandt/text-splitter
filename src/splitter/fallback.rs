@@ -1,6 +1,13 @@
 use auto_enums::auto_enum;
+use icu_segmenter::{GraphemeClusterSegmenter, SentenceSegmenter, WordSegmenter};
+use itertools::Itertools;
+use once_cell::sync::Lazy;
 use strum::EnumIter;
-use unicode_segmentation::UnicodeSegmentation;
+
+pub static GRAPHEME_SEGMENTER: Lazy<GraphemeClusterSegmenter> =
+    Lazy::new(GraphemeClusterSegmenter::new);
+static WORD_SEGMENTER: Lazy<WordSegmenter> = Lazy::new(WordSegmenter::new_dictionary);
+static SENTENCE_SEGMENTER: Lazy<SentenceSegmenter> = Lazy::new(SentenceSegmenter::new);
 
 /// When using a custom semantic level, it is possible that none of them will
 /// be small enough to fit into the chunk size. In order to make sure we can
@@ -29,9 +36,18 @@ impl FallbackLevel {
                     text.get(i..i + c.len_utf8()).expect("char should be valid"),
                 )
             }),
-            Self::GraphemeCluster => text.grapheme_indices(true),
-            Self::Word => text.split_word_bound_indices(),
-            Self::Sentence => text.split_sentence_bound_indices(),
+            Self::GraphemeCluster => GRAPHEME_SEGMENTER
+                .segment_str(text)
+                .tuple_windows()
+                .map(|(i, j)| (i, &text[i..j])),
+            Self::Word => WORD_SEGMENTER
+                .segment_str(text)
+                .tuple_windows()
+                .map(|(i, j)| (i, &text[i..j])),
+            Self::Sentence => SENTENCE_SEGMENTER
+                .segment_str(text)
+                .tuple_windows()
+                .map(|(i, j)| (i, &text[i..j])),
         }
     }
 }

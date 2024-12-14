@@ -5,14 +5,16 @@ Semantic splitting of text documents.
 
 use std::ops::Range;
 
+use itertools::Itertools;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use unicode_segmentation::UnicodeSegmentation;
 
 use crate::{
     splitter::{SemanticLevel, Splitter},
     ChunkConfig, ChunkSizer,
 };
+
+use super::fallback::GRAPHEME_SEGMENTER;
 
 /// Default plain-text splitter. Recursively splits chunks into the largest
 /// semantic units that fit within the chunk size. Also will attempt to merge
@@ -120,10 +122,9 @@ where
             .find_iter(text)
             .map(|m| {
                 let range = m.range();
-                let level = text
-                    .get(range.start..range.end)
-                    .unwrap()
-                    .graphemes(true)
+                let level = GRAPHEME_SEGMENTER
+                    .segment_str(text.get(range.start..range.end).unwrap())
+                    .tuple_windows::<(usize, usize)>()
                     .count();
                 (
                     match level {

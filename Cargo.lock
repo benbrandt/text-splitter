@@ -328,6 +328,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 
 [[package]]
+name = "core_maths"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3b02505ccb8c50b0aa21ace0fc08c3e53adebd4e58caa18a36152803c7709a3"
+dependencies = [
+ "libm",
+]
+
+[[package]]
 name = "cpufeatures"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1045,6 +1054,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "icu_segmenter"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a717725612346ffc2d7b42c94b820db6908048f39434504cb130e8b46256b0de"
+dependencies = [
+ "core_maths",
+ "displaydoc",
+ "icu_collections",
+ "icu_locid",
+ "icu_provider",
+ "icu_segmenter_data",
+ "utf8_iter",
+ "zerovec",
+]
+
+[[package]]
+name = "icu_segmenter_data"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f739ee737260d955e330bc83fdeaaf1631f7fb7ed218761d3c04bb13bb7d79df"
+
+[[package]]
 name = "ident_case"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1205,6 +1236,12 @@ name = "libc"
 version = "0.2.168"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5aaeb2981e0606ca11d79718f8bb01164f1d6ed75080182d3abf017e6d244b6d"
+
+[[package]]
+name = "libm"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "libredox"
@@ -2013,7 +2050,7 @@ dependencies = [
 
 [[package]]
 name = "semantic-text-splitter"
-version = "0.19.1"
+version = "0.20.0"
 dependencies = [
  "pyo3",
  "rayon",
@@ -2281,7 +2318,7 @@ dependencies = [
 
 [[package]]
 name = "text-splitter"
-version = "0.19.1"
+version = "0.20.0"
 dependencies = [
  "ahash",
  "auto_enums",
@@ -2290,6 +2327,8 @@ dependencies = [
  "divan",
  "either",
  "fake",
+ "icu_provider",
+ "icu_segmenter",
  "insta",
  "itertools 0.13.0",
  "more-asserts",
@@ -2304,7 +2343,6 @@ dependencies = [
  "tokenizers",
  "tree-sitter",
  "tree-sitter-rust",
- "unicode-segmentation",
 ]
 
 [[package]]

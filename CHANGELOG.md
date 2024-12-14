@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.20.0
+
+### Breaking Changes
+
+- Switched backing Unicode segmentation implementation from `unicode-segmentation` to `icu_segmenter`. This brings some modest performance gains, along with being able to leverage the official Unicode crate. There may be slight differences in chunk behavior in some edge cases, so treating this as a breaking change.
+
 ## v0.19.1
 
 ### What's New

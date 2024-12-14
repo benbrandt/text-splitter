@@ -137,4 +137,4 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 
 This crate was inspired by [LangChain's TextSplitter](https://api.python.langchain.com/en/latest/character/langchain_text_splitters.character.RecursiveCharacterTextSplitter.html#langchain_text_splitters.character.RecursiveCharacterTextSplitter). But, looking into the implementation, there was potential for better performance as well as better semantic chunking.
 
-A big thank you to the unicode-rs team for their [unicode-segmentation](https://crates.io/crates/unicode-segmentation) crate that manages a lot of the complexity of matching the Unicode rules for words and sentences.
+A big thank you to the Unicode team for their [icu_segmenter](https://crates.io/crates/icu_segmenter) crate that manages a lot of the complexity of matching the Unicode rules for words and sentences.
