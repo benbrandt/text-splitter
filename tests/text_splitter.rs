@@ -1,3 +1,4 @@
+//! Test for `TextSplitter` behavior.
 use std::fs;
 
 use fake::{Fake, Faker};

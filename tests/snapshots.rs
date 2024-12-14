@@ -1,3 +1,4 @@
+//! Snapshot tests for regressions in chunk output.
 use std::{fs, ops::RangeInclusive, path::PathBuf};
 
 use cached_path::Cache;

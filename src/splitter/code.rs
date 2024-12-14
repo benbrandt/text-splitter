@@ -192,7 +192,7 @@ impl<'cursor> CursorOffsets<'cursor> {
     }
 }
 
-impl<'cursor> Iterator for CursorOffsets<'cursor> {
+impl Iterator for CursorOffsets<'_> {
     type Item = (Depth, Range<usize>);
 
     fn next(&mut self) -> Option<Self::Item> {

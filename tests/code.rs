@@ -1,3 +1,4 @@
+//! Test for `CodeSplitter` behavior.
 use std::fs;
 
 use fake::{Fake, Faker};

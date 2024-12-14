@@ -1,3 +1,4 @@
+//! Test for `MarkdownSplitter` behavior.
 use std::fs;
 
 use fake::{Fake, Faker};
