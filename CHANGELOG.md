@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.19.1
+
+### What's New
+
+- Python splitters have new `chunk_all` and `chunk_all_indices` method so the multiple texts can be processed in parallel. (For Rust, you should be able to use `rayon` to do this already)
+
 ## v0.19.0
 
 ### Breaking Changes

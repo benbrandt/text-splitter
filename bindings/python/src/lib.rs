@@ -11,6 +11,7 @@ use pyo3::{
     prelude::*,
     pybacked::PyBackedStr,
 };
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use text_splitter::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
     CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
@@ -512,6 +513,55 @@ impl PyTextSplitter {
             .map(|c| offsets.map_byte_to_char(c))
             .collect()
     }
+
+    /**
+    Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of strings, one list for each text, and one item for each chunk.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all(&self, texts: Vec<String>) -> Vec<Vec<String>> {
+        texts
+            .into_par_iter()
+            .map(|text| self.splitter.chunks(&text).map(ToOwned::to_owned).collect())
+            .collect()
+    }
+
+    /**
+    Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of tuples, one list for each text, and one tuple for each chunk.
+        The first tuple item will be the character offset relative
+        to the original text. The second tuple item is the chunk itself.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all_indices(&self, texts: Vec<String>) -> Vec<Vec<(usize, String)>> {
+        texts
+            .into_par_iter()
+            .map(|text| {
+                let mut offsets = ByteToCharOffsetTracker::new(&text);
+                self.splitter
+                    .chunk_indices(&text)
+                    .map(|c| offsets.map_byte_to_char(c))
+                    .map(|(i, c)| (i, c.to_owned()))
+                    .collect()
+            })
+            .collect()
+    }
 }
 
 /**
@@ -888,6 +938,55 @@ impl PyMarkdownSplitter {
         self.splitter
             .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
+            .collect()
+    }
+
+    /**
+    Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of strings, one list for each text, and one item for each chunk.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all(&self, texts: Vec<String>) -> Vec<Vec<String>> {
+        texts
+            .into_par_iter()
+            .map(|text| self.splitter.chunks(&text).map(ToOwned::to_owned).collect())
+            .collect()
+    }
+
+    /**
+    Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of tuples, one list for each text, and one tuple for each chunk.
+        The first tuple item will be the character offset relative
+        to the original text. The second tuple item is the chunk itself.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all_indices(&self, texts: Vec<String>) -> Vec<Vec<(usize, String)>> {
+        texts
+            .into_par_iter()
+            .map(|text| {
+                let mut offsets = ByteToCharOffsetTracker::new(&text);
+                self.splitter
+                    .chunk_indices(&text)
+                    .map(|c| offsets.map_byte_to_char(c))
+                    .map(|(i, c)| (i, c.to_owned()))
+                    .collect()
+            })
             .collect()
     }
 }
@@ -1323,6 +1422,55 @@ impl PyCodeSplitter {
         self.splitter
             .chunk_indices(text)
             .map(|c| offsets.map_byte_to_char(c))
+            .collect()
+    }
+
+    /**
+    Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of strings, one list for each text, and one item for each chunk.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all(&self, texts: Vec<String>) -> Vec<Vec<String>> {
+        texts
+            .into_par_iter()
+            .map(|text| self.splitter.chunks(&text).map(ToOwned::to_owned).collect())
+            .collect()
+    }
+
+    /**
+    Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+    See `chunks` for more information.
+
+    Args:
+        texts (list(str)): Texts to split.
+
+    Returns:
+        A list of lists of tuples, one list for each text, and one tuple for each chunk.
+        The first tuple item will be the character offset relative
+        to the original text. The second tuple item is the chunk itself.
+        If `trim` was specified in the text splitter, then each chunk will already be
+        trimmed as well.
+    */
+    fn chunk_all_indices(&self, texts: Vec<String>) -> Vec<Vec<(usize, String)>> {
+        texts
+            .into_par_iter()
+            .map(|text| {
+                let mut offsets = ByteToCharOffsetTracker::new(&text);
+                self.splitter
+                    .chunk_indices(&text)
+                    .map(|c| offsets.map_byte_to_char(c))
+                    .map(|(i, c)| (i, c.to_owned()))
+                    .collect()
+            })
             .collect()
     }
 }
