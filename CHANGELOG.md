@@ -1,12 +1,12 @@
 # Changelog
 
-## v0.20.2
+## v0.21.0
+
+### Breaking Changes
+
+- Special tokens are now also encoded by both Huggingface and Tiktoken tokenizers. This is closer to the default behavior on the Python side, and should make sure if a model adds tokens at the beginning or end of a sequence, these are accounted for as well.
 
 ### What's New
-
-#### Python
-
-- Minor release to include latest pyo3 and tree-sitter dependencies.
 
 #### Rust
 
