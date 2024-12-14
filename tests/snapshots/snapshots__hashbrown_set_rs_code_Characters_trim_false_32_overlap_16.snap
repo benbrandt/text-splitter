@@ -1,6 +1,7 @@
 ---
 source: tests/snapshots.rs
 expression: chunks
+snapshot_kind: text
 ---
 - //
 - " https://github.com/rust-lang/"
@@ -1433,7 +1434,7 @@ expression: chunks
 - "(10).expect(\"why is the test "
 - "why is the test harness OOMing "
 - " harness OOMing on 10 bytes?\");\n"
-- "    /// ```\n    "
+- ";\n    /// ```\n    "
 - "#["
 - cfg_attr
 - "(feature = \"inline-more\", inline"
