@@ -269,6 +269,38 @@ class TextSplitter:
             trimmed as well.
         """
 
+    def chunk_all(self, texts: List[str]) -> List[List[str]]:
+        """
+        Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of strings, one list for each text, and one item for each chunk.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
+    def chunk_all_indices(self, texts: List[str]) -> List[List[Tuple[int, str]]]:
+        """
+        Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of tuples, one list for each text, and one tuple for each chunk.
+            The first tuple item will be the character offset relative
+            to the original text. The second tuple item is the chunk itself.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
 @final
 class MarkdownSplitter:
     """Markdown splitter. Recursively splits chunks into the largest semantic units that fit within the chunk size. Also will attempt to merge neighboring chunks if they can fit within the given chunk size.
@@ -539,6 +571,38 @@ class MarkdownSplitter:
         Returns:
             A list of tuples, one for each chunk. The first item will be the character offset relative
             to the original text. The second item is the chunk itself.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
+    def chunk_all(self, texts: List[str]) -> List[List[str]]:
+        """
+        Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of strings, one list for each text, and one item for each chunk.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
+    def chunk_all_indices(self, texts: List[str]) -> List[List[Tuple[int, str]]]:
+        """
+        Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of tuples, one list for each text, and one tuple for each chunk.
+            The first tuple item will be the character offset relative
+            to the original text. The second tuple item is the chunk itself.
             If `trim` was specified in the text splitter, then each chunk will already be
             trimmed as well.
         """
@@ -838,6 +902,38 @@ class CodeSplitter:
         Returns:
             A list of tuples, one for each chunk. The first item will be the character offset relative
             to the original text. The second item is the chunk itself.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
+    def chunk_all(self, texts: List[str]) -> List[List[str]]:
+        """
+        Generate a list of chunks for a given set of texts. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of strings, one list for each text, and one item for each chunk.
+            If `trim` was specified in the text splitter, then each chunk will already be
+            trimmed as well.
+        """
+
+    def chunk_all_indices(self, texts: List[str]) -> List[List[Tuple[int, str]]]:
+        """
+        Generate a list of chunks for a given set of text, along with their character offsets in the original text. Each chunk will be up to the `capacity`.
+
+        See `chunks` for more information.
+
+        Args:
+            texts (list(str)): Texts to split.
+
+        Returns:
+            A list of lists of tuples, one list for each text, and one tuple for each chunk.
+            The first tuple item will be the character offset relative
+            to the original text. The second tuple item is the chunk itself.
             If `trim` was specified in the text splitter, then each chunk will already be
             trimmed as well.
         """

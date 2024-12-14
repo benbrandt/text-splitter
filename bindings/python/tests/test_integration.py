@@ -298,3 +298,45 @@ def test_code_char_indices_with_multibyte_character() -> None:
         (4, "12ü"),
         (8, "12ü"),
     ]
+
+
+def test_chunk_all() -> None:
+    splitter = TextSplitter(4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all(texts)
+    assert chunks == [["123", "123"], ["456", "456"]]
+
+
+def test_chunk_all_indices() -> None:
+    splitter = TextSplitter(4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all_indices(texts)
+    assert chunks == [[(0, "123"), (4, "123")], [(0, "456"), (4, "456")]]
+
+
+def test_chunk_all_markdown() -> None:
+    splitter = MarkdownSplitter(4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all(texts)
+    assert chunks == [["123", "123"], ["456", "456"]]
+
+
+def test_chunk_all_indices_markdown() -> None:
+    splitter = MarkdownSplitter(4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all_indices(texts)
+    assert chunks == [[(0, "123"), (4, "123")], [(0, "456"), (4, "456")]]
+
+
+def test_chunk_all_code() -> None:
+    splitter = CodeSplitter(tree_sitter_python.language(), 4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all(texts)
+    assert chunks == [["123", "123"], ["456", "456"]]
+
+
+def test_chunk_all_indices_code() -> None:
+    splitter = CodeSplitter(tree_sitter_python.language(), 4)
+    texts = ["123\n123", "456\n456"]
+    chunks = splitter.chunk_all_indices(texts)
+    assert chunks == [[(0, "123"), (4, "123")], [(0, "456"), (4, "456")]]
