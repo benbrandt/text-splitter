@@ -71,7 +71,7 @@ pulldown-cmark = { version = "0.12", default-features = false, optional = true }
 regex = "1.10.6"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.26", features = ["derive"] }
-thiserror = "2.0.8"
+thiserror = "2.0.9"
 tiktoken-rs = { version = "0.6", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
 tree-sitter = { version = "0.24", optional = true }
