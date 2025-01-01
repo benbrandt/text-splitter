@@ -4,6 +4,7 @@ version: 2
 
 sphinx:
   builder: html
+  configuration: conf.py
 
 build:
   os: "ubuntu-22.04"
