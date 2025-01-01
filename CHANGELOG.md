@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.20.1
+
+### Fixes
+
+- Python: correctly specify version for compatibility with `uv` installations.
+
 ## v0.20.0
 
 ### Breaking Changes
