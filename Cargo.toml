@@ -71,7 +71,7 @@ pulldown-cmark = { version = "0.12", default-features = false, optional = true }
 regex = "1.10.6"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.26", features = ["derive"] }
-thiserror = "2.0.9"
+thiserror = "2.0.10"
 tiktoken-rs = { version = "0.6", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
 tree-sitter = { version = "0.24", optional = true }
@@ -83,7 +83,7 @@ cached-path = { version = "0.6", default-features = false, features = [
 dirs = "5.0.1"
 divan = "0.1.17"
 fake = "3"
-insta = { version = "1.41", features = ["glob", "yaml"] }
+insta = { version = "1.42", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.10"
 tokenizers = { version = "0.21", default-features = false, features = [
