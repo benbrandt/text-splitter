@@ -1,11 +1,10 @@
 #![allow(missing_docs)]
 
-use std::{fs, path::PathBuf};
+use std::{fs, path::PathBuf, sync::LazyLock};
 
 use ahash::AHashMap;
 use cached_path::Cache;
 use divan::AllocProfiler;
-use once_cell::sync::Lazy;
 
 #[global_allocator]
 static ALLOC: AllocProfiler = AllocProfiler::system();
@@ -36,7 +35,7 @@ const TEXT_FILENAMES: &[&str] = &["romeo_and_juliet", "room_with_a_view"];
 const MARKDOWN_FILENAMES: &[&str] = &["commonmark_spec"];
 const CODE_FILENAMES: &[&str] = &["hashbrown_set_rs"];
 
-static FILES: Lazy<AHashMap<&'static str, String>> = Lazy::new(|| {
+static FILES: LazyLock<AHashMap<&'static str, String>> = LazyLock::new(|| {
     let mut m = AHashMap::new();
     for &name in TEXT_FILENAMES {
         m.insert(
@@ -60,7 +59,7 @@ static FILES: Lazy<AHashMap<&'static str, String>> = Lazy::new(|| {
 });
 
 #[cfg(feature = "rust-tokenizers")]
-static BERT_TOKENIZER: Lazy<rust_tokenizers::tokenizer::BertTokenizer> = Lazy::new(|| {
+static BERT_TOKENIZER: LazyLock<rust_tokenizers::tokenizer::BertTokenizer> = LazyLock::new(|| {
     let vocab_path = download_file_to_cache(
         "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
     );

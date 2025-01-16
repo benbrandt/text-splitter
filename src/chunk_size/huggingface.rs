@@ -10,7 +10,7 @@ fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
         .get_ids()
         .iter()
         // Skip padding tokens at beginning and end so they don't count towards the chunk size
-        .skip_while(|&id| pad_id.map_or(false, |pad_id| id == &pad_id))
+        .skip_while(|&id| pad_id.is_some_and(|pad_id| id == &pad_id))
         .take_while(|&id| pad_id.map_or(true, |pad_id| id != &pad_id))
         .count();
 

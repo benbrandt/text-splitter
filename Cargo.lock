@@ -2333,7 +2333,6 @@ dependencies = [
  "insta",
  "itertools 0.14.0",
  "more-asserts",
- "once_cell",
  "pulldown-cmark",
  "rayon",
  "regex",

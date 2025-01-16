@@ -3,10 +3,9 @@
 Semantic splitting of text documents.
 */
 
-use std::ops::Range;
+use std::{ops::Range, sync::LazyLock};
 
 use itertools::Itertools;
-use once_cell::sync::Lazy;
 use regex::Regex;
 
 use crate::{
@@ -147,7 +146,8 @@ where
 pub struct LineBreaks(usize);
 
 // Lazy so that we don't have to compile them more than once
-static CAPTURE_LINEBREAKS: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
+static CAPTURE_LINEBREAKS: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 impl SemanticLevel for LineBreaks {}
 
@@ -221,7 +221,7 @@ mod tests {
 
     impl ChunkSizer for Str {
         fn size(&self, chunk: &str) -> usize {
-            chunk.as_bytes().len()
+            chunk.len()
         }
     }
 

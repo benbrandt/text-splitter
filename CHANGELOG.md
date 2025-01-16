@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### What's New
+
+#### Rust
+
+- MSRV is now 1.80 to remove dependency on once_cell.
+
 ## v0.20.1
 
 ### Fixes

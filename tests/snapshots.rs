@@ -2,7 +2,6 @@
 use std::{fs, ops::RangeInclusive, path::PathBuf};
 
 use cached_path::Cache;
-use once_cell::sync::Lazy;
 use rayon::prelude::*;
 #[cfg(feature = "rust-tokenizers")]
 use rust_tokenizers::tokenizer::BertTokenizer;
@@ -36,19 +35,21 @@ fn download_file_to_cache(src: &str) -> PathBuf {
 }
 
 #[cfg(feature = "rust-tokenizers")]
-static BERT_UNCASED_TOKENIZER: Lazy<BertTokenizer> = Lazy::new(|| {
-    let vocab_path = download_file_to_cache(
-        "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
-    );
-    BertTokenizer::from_file(vocab_path, false, false).unwrap()
-});
+static BERT_UNCASED_TOKENIZER: std::sync::LazyLock<BertTokenizer> =
+    std::sync::LazyLock::new(|| {
+        let vocab_path = download_file_to_cache(
+            "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
+        );
+        BertTokenizer::from_file(vocab_path, false, false).unwrap()
+    });
 
 #[cfg(feature = "tokenizers")]
-static HUGGINGFACE_TOKENIZER: Lazy<Tokenizer> =
-    Lazy::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
+static HUGGINGFACE_TOKENIZER: std::sync::LazyLock<Tokenizer> =
+    std::sync::LazyLock::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
 
 #[cfg(feature = "tiktoken-rs")]
-static TIKTOKEN_TOKENIZER: Lazy<CoreBPE> = Lazy::new(|| cl100k_base().unwrap());
+static TIKTOKEN_TOKENIZER: std::sync::LazyLock<CoreBPE> =
+    std::sync::LazyLock::new(|| cl100k_base().unwrap());
 
 #[derive(Copy, Clone, Display, EnumIter)]
 enum SizerOption {
