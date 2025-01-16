@@ -33,7 +33,7 @@ impl ChunkSizer for &Tokenizer {
     /// encounters text it can't tokenize.
     fn size(&self, chunk: &str) -> usize {
         let encoding = self
-            .encode(chunk, false)
+            .encode(chunk, true)
             .expect("Unable to tokenize the following string {chunk}");
 
         let pad_id = self.get_padding().map(|params| params.pad_id);
@@ -61,7 +61,8 @@ mod tests {
     fn returns_size() {
         let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
         let size = tokenizer.size(" An apple a");
-        assert_eq!(size, 3);
+        // Bert has a beginning and end token
+        assert_eq!(size, 5);
     }
 
     #[test]
@@ -77,7 +78,8 @@ mod tests {
     fn handles_padding() {
         let tokenizer = Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();
         let size = tokenizer.size("An apple a");
-        assert_eq!(size, 3);
+        // Has a beginning and end token
+        assert_eq!(size, 5);
     }
 
     #[test]
@@ -87,8 +89,9 @@ mod tests {
 
         // Need to ensure chunk is large enough to cause Encoding overflows.
         assert_eq!(
-            tokenizer.size("An apple a day keeps the doctor away.".repeat(100).as_str()),
-            900
+            tokenizer.size(" An apple a day keeps the doctor away".repeat(16).as_str()),
+            // Overflows at 128, with special tokens at beginning and end of each section of tokens
+            132
         );
     }
 }

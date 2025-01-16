@@ -95,7 +95,7 @@ fn huggingface_small_chunk_behavior() {
 #[test]
 fn huggingface_tokenizer_with_padding() {
     let tokenizer = tokenizers::Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();
-    let splitter = TextSplitter::new(ChunkConfig::new(5).with_sizer(tokenizer).with_trim(false));
+    let splitter = TextSplitter::new(ChunkConfig::new(7).with_sizer(tokenizer).with_trim(false));
     let text = "\nThis is an example text This is an example text\n";
 
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
