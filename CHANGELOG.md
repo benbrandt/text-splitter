@@ -1,8 +1,12 @@
 # Changelog
 
-## Unreleased
+## v0.20.2
 
 ### What's New
+
+#### Python
+
+- Minor release to include latest pyo3 and tree-sitter dependencies.
 
 #### Rust
 
