@@ -79,7 +79,7 @@ tree-sitter = { version = "0.24", optional = true }
 cached-path = { version = "0.6", default-features = false, features = [
     "rustls-tls",
 ] }
-dirs = "5.0.1"
+dirs = "6.0.0"
 divan = "0.1.17"
 fake = "3"
 insta = { version = "1.42", features = ["glob", "yaml"] }
