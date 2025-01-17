@@ -46,7 +46,7 @@ def test_chunks_trim() -> None:
 
 def test_hugging_face() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, 3, trim=False)
+    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, 1, trim=False)
     text = "123\n123"
     assert splitter.chunks(text) == ["123\n", "123"]
 
@@ -54,7 +54,7 @@ def test_hugging_face() -> None:
 def test_hugging_face_range() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
     splitter = TextSplitter.from_huggingface_tokenizer(
-        tokenizer, capacity=(3, 4), trim=False
+        tokenizer, capacity=(1, 2), trim=False
     )
     text = "123\n123"
     assert splitter.chunks(text=text) == ["123\n", "123"]
@@ -62,21 +62,21 @@ def test_hugging_face_range() -> None:
 
 def test_hugging_face_trim() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, 2)
+    splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, 1)
     text = "123\n123"
     assert splitter.chunks(text) == ["123", "123"]
 
 
 def test_hugging_face_from_str() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = TextSplitter.from_huggingface_tokenizer_str(tokenizer.to_str(), 2)
+    splitter = TextSplitter.from_huggingface_tokenizer_str(tokenizer.to_str(), 1)
     text = "123\n123"
     assert splitter.chunks(text) == ["123", "123"]
 
 
 def test_hugging_face_from_file() -> None:
     splitter = TextSplitter.from_huggingface_tokenizer_file(
-        "tests/bert-base-cased.json", 2
+        "tests/bert-base-cased.json", 1
     )
     text = "123\n123"
     assert splitter.chunks(text) == ["123", "123"]
@@ -139,7 +139,7 @@ def test_markdown_chunks_trim() -> None:
 
 def test_markdown_hugging_face() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, 3, trim=False)
+    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, 1, trim=False)
     text = "123\n\n123"
     assert splitter.chunks(text) == ["123\n", "\n123"]
 
@@ -147,7 +147,7 @@ def test_markdown_hugging_face() -> None:
 def test_markdown_hugging_face_range() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
     splitter = MarkdownSplitter.from_huggingface_tokenizer(
-        tokenizer, capacity=(3, 4), trim=False
+        tokenizer, capacity=(1, 2), trim=False
     )
     text = "123\n\n123"
     assert splitter.chunks(text=text) == ["123\n", "\n123"]
@@ -155,7 +155,7 @@ def test_markdown_hugging_face_range() -> None:
 
 def test_markdown_hugging_face_trim() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
-    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, capacity=2)
+    splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, capacity=1)
     text = "123\n\n123"
     assert splitter.chunks(text=text) == ["123", "123"]
 
@@ -163,7 +163,7 @@ def test_markdown_hugging_face_trim() -> None:
 def test_markdown_hugging_face_from_str() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
     splitter = MarkdownSplitter.from_huggingface_tokenizer_str(
-        tokenizer.to_str(), capacity=2
+        tokenizer.to_str(), capacity=1
     )
     text = "123\n\n123"
     assert splitter.chunks(text=text) == ["123", "123"]
@@ -171,7 +171,7 @@ def test_markdown_hugging_face_from_str() -> None:
 
 def test_markdown_hugging_face_from_file() -> None:
     splitter = MarkdownSplitter.from_huggingface_tokenizer_file(
-        "tests/bert-base-cased.json", capacity=2
+        "tests/bert-base-cased.json", capacity=1
     )
     text = "123\n\n123"
     assert splitter.chunks(text=text) == ["123", "123"]
