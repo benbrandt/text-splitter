@@ -1,12 +1,18 @@
 # Changelog
 
-## v0.20.2
+## v0.22.0
+
+### Breaking Changes
+
+- Revert change to special token behavior in v0.21. This had many unintended side effects, and does not seem to be recommended for chunking.
+
+## v0.21.0
+
+### Breaking Changes
+
+- Special tokens are now also encoded by both Huggingface and Tiktoken tokenizers. This is closer to the default behavior on the Python side, and should make sure if a model adds tokens at the beginning or end of a sequence, these are accounted for as well. This is especially important for embedding models that can add a special token to the beginning of the sequence, and the chunks generated didn't actually fit within the context window because of this.
 
 ### What's New
-
-#### Python
-
-- Minor release to include latest pyo3 and tree-sitter dependencies.
 
 #### Rust
 
