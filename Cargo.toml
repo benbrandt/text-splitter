@@ -73,7 +73,7 @@ strum = { version = "0.26", features = ["derive"] }
 thiserror = "2.0.11"
 tiktoken-rs = { version = "0.6", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
-tree-sitter = { version = "0.24", optional = true }
+tree-sitter = { version = "0.25", optional = true }
 
 [dev-dependencies]
 cached-path = { version = "0.6", default-features = false, features = [
