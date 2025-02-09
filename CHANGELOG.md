@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.23.0
+
+### What's New
+
+Update to tree-sitter v0.25
+
 ## v0.22.0
 
 ### Breaking Changes
