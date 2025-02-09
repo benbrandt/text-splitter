@@ -128,7 +128,7 @@ jobs:
           pytest
 
   macos:
-    runs-on: macos-13
+    runs-on: macos-latest
     strategy:
       matrix:
         target: [x86_64, aarch64]
