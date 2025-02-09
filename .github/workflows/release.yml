@@ -15,7 +15,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@c5a29ddb4d9d194e7c84ec8c3fba61b1c31fee8c
+        with:
+          toolchain: stable
       - name: Publish to crates.io
         env:
           CRATES_IO_TOKEN: ${{secrets.CRATES_IO_TOKEN}}
