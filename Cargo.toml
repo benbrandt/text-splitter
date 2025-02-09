@@ -69,7 +69,7 @@ itertools = "0.14"
 pulldown-cmark = { version = "0.12", default-features = false, optional = true }
 regex = "1.11.1"
 rust_tokenizers = { version = "8", optional = true }
-strum = { version = "0.26", features = ["derive"] }
+strum = { version = "0.27", features = ["derive"] }
 thiserror = "2.0.11"
 tiktoken-rs = { version = "0.6", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
