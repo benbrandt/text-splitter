@@ -67,7 +67,7 @@ icu_provider = { version = "1.5.0", features = ["sync"] }
 icu_segmenter = "1.5.0"
 itertools = "0.14"
 pulldown-cmark = { version = "0.12", default-features = false, optional = true }
-regex = "1.10.6"
+regex = "1.11.1"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.26", features = ["derive"] }
 thiserror = "2.0.11"
