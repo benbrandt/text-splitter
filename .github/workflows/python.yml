@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
+          pip --force-reinstall install dist/semantic_text_splitter*.whl
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
 
@@ -88,7 +88,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
+          pip --force-reinstall install dist/semantic_text_splitter*.whl
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
 
@@ -123,7 +123,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
+          pip --force-reinstall install dist/semantic_text_splitter*.whl
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
 
@@ -157,7 +157,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install --no-index --find-links dist --force-reinstall semantic-text-splitter
+          pip --force-reinstall install dist/semantic_text_splitter*.whl
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
 
