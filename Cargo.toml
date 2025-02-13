@@ -66,7 +66,7 @@ either = "1.6"
 icu_provider = { version = "1.5.0", features = ["sync"] }
 icu_segmenter = "1.5.0"
 itertools = "0.14"
-pulldown-cmark = { version = "0.12", default-features = false, optional = true }
+pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 regex = "1.11.1"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.27", features = ["derive"] }
