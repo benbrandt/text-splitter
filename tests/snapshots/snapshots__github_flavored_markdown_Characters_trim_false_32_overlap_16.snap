@@ -420,7 +420,7 @@ expression: chunks
 - "Footnote 1 link[^first].\n"
 - "\nFootnote 2 link[^second].\n"
 - "\nInline footnote^["
-- "[Text of inline footnote]"
+- "^[Text of inline footnote]"
 - "] definition.\n\n"
 - Duplicated footnote reference
 - "[^second].\n\n"

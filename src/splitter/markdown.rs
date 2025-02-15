@@ -129,6 +129,8 @@ where
                     | Tag::Strikethrough
                     | Tag::Link { .. }
                     | Tag::Image { .. }
+                    | Tag::Subscript
+                    | Tag::Superscript
                     | Tag::TableCell,
                 )
                 | Event::Text(_)
