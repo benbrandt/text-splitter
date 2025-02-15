@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.24.0
+
+### What's New
+
+Update to pulldown-cmark 0.13.0 to improve Markdown parsing.
+
 ## v0.23.0
 
 ### What's New
