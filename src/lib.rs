@@ -10,6 +10,6 @@ pub use chunk_size::{
 };
 #[cfg(feature = "markdown")]
 pub use splitter::MarkdownSplitter;
-pub use splitter::TextSplitter;
+pub use splitter::{ChunkCharIndex, TextSplitter};
 #[cfg(feature = "code")]
 pub use splitter::{CodeSplitter, CodeSplitterError};

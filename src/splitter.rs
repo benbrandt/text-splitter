@@ -57,6 +57,27 @@ where
         )
     }
 
+    /// Returns an iterator over chunks of the text and their byte and character offsets.
+    /// Each chunk will be up to the max size of the `ChunkConfig`.
+    ///
+    /// This will be more expensive than just byte offsets, and for most usage in Rust, just having byte offsets is sufficient.
+    /// But when interfacing with other languages or systems that require character offsets, this will track the character offsets
+    /// for you, accounting for any trimming that may have occurred.
+    fn chunk_char_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = ChunkCharIndex<'text>> + 'splitter
+    where
+        Sizer: 'splitter,
+    {
+        TextChunksWithCharIndices::<Sizer, Self::Level>::new(
+            self.chunk_config(),
+            text,
+            self.parse(text),
+            Self::TRIM,
+        )
+    }
+
     /// Generate a list of chunks from a given text.
     /// Each chunk will be up to the max size of the `ChunkConfig`.
     fn chunks<'splitter, 'text: 'splitter>(
@@ -593,6 +614,80 @@ where
                 }
             }
         }
+    }
+}
+
+/// Represents a chunk of text along with its byte and character offsets.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ChunkCharIndex<'text> {
+    /// The text of the generated chunk.
+    pub chunk: &'text str,
+    /// The byte offset of the chunk within the original text.
+    pub byte_offset: usize,
+    /// The character offset of the chunk within the original text.
+    pub char_offset: usize,
+}
+
+/// Returns chunks of text with their byte and character offsets as an iterator.
+#[derive(Debug)]
+struct TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
+where
+    Sizer: ChunkSizer,
+    Level: SemanticLevel,
+{
+    /// The text being chunked.
+    text: &'text str,
+    /// The main iterator over chunks of text.
+    text_chunks: TextChunks<'text, 'sizer, Sizer, Level>,
+    /// The byte offset of the previous chunk within the original text.
+    byte_offset: usize,
+    /// The character offset of the previous chunk within the original text.
+    char_offset: usize,
+}
+
+impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
+where
+    Sizer: ChunkSizer,
+    Level: SemanticLevel,
+{
+    /// Generate new [`TextChunksWithCharIndices`] iterator for a given text.
+    /// Starts with an offset of 0
+    fn new(
+        chunk_config: &'sizer ChunkConfig<Sizer>,
+        text: &'text str,
+        offsets: Vec<(Level, Range<usize>)>,
+        trim: Trim,
+    ) -> Self {
+        Self {
+            text,
+            text_chunks: TextChunks::new(chunk_config, text, offsets, trim),
+            byte_offset: 0,
+            char_offset: 0,
+        }
+    }
+}
+
+impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator
+    for TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
+where
+    Sizer: ChunkSizer,
+    Level: SemanticLevel,
+{
+    type Item = ChunkCharIndex<'text>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let (byte_offset, chunk) = self.text_chunks.next()?;
+        let preceding_text = self
+            .text
+            .get(self.byte_offset..byte_offset)
+            .expect("Invalid byte sequence");
+        self.byte_offset = byte_offset;
+        self.char_offset += preceding_text.chars().count();
+        Some(ChunkCharIndex {
+            chunk,
+            byte_offset,
+            char_offset: self.char_offset,
+        })
     }
 }
 

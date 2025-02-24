@@ -13,8 +13,8 @@ use pyo3::{
 };
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use text_splitter::{
-    Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
-    CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
+    Characters, ChunkCapacity, ChunkCapacityError, ChunkCharIndex, ChunkConfig, ChunkConfigError,
+    ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
 };
 use tiktoken_rs::get_bpe_from_model;
 use tokenizers::Tokenizer;
@@ -96,34 +96,6 @@ impl ChunkSizer for CustomCallback {
                 .extract::<usize>(py)
                 .unwrap()
         })
-    }
-}
-
-/// Keeps track of the corresponding byte to character offset in a text
-struct ByteToCharOffsetTracker<'text> {
-    byte_offset: usize,
-    char_offset: usize,
-    text: &'text str,
-}
-
-impl<'text> ByteToCharOffsetTracker<'text> {
-    fn new(text: &'text str) -> Self {
-        Self {
-            byte_offset: 0,
-            char_offset: 0,
-            text,
-        }
-    }
-
-    /// Updates the current offsets, but is able to cache previous results
-    fn map_byte_to_char(&mut self, (offset, chunk): (usize, &'text str)) -> (usize, &'text str) {
-        let prev_text = self
-            .text
-            .get(self.byte_offset..offset)
-            .expect("Invalid byte sequence");
-        self.byte_offset = offset;
-        self.char_offset += prev_text.chars().count();
-        (self.char_offset, chunk)
     }
 }
 
@@ -507,10 +479,13 @@ impl PyTextSplitter {
         &'splitter self,
         text: &'text str,
     ) -> Vec<(usize, &'text str)> {
-        let mut offsets = ByteToCharOffsetTracker::new(text);
         self.splitter
-            .chunk_indices(text)
-            .map(|c| offsets.map_byte_to_char(c))
+            .chunk_char_indices(text)
+            .map(
+                |ChunkCharIndex {
+                     chunk, char_offset, ..
+                 }| (char_offset, chunk),
+            )
             .collect()
     }
 
@@ -553,11 +528,13 @@ impl PyTextSplitter {
         texts
             .into_par_iter()
             .map(|text| {
-                let mut offsets = ByteToCharOffsetTracker::new(&text);
                 self.splitter
-                    .chunk_indices(&text)
-                    .map(|c| offsets.map_byte_to_char(c))
-                    .map(|(i, c)| (i, c.to_owned()))
+                    .chunk_char_indices(&text)
+                    .map(
+                        |ChunkCharIndex {
+                             chunk, char_offset, ..
+                         }| (char_offset, chunk.to_owned()),
+                    )
                     .collect()
             })
             .collect()
@@ -934,10 +911,13 @@ impl PyMarkdownSplitter {
         &'splitter self,
         text: &'text str,
     ) -> Vec<(usize, &'text str)> {
-        let mut offsets = ByteToCharOffsetTracker::new(text);
         self.splitter
-            .chunk_indices(text)
-            .map(|c| offsets.map_byte_to_char(c))
+            .chunk_char_indices(text)
+            .map(
+                |ChunkCharIndex {
+                     chunk, char_offset, ..
+                 }| (char_offset, chunk),
+            )
             .collect()
     }
 
@@ -980,11 +960,13 @@ impl PyMarkdownSplitter {
         texts
             .into_par_iter()
             .map(|text| {
-                let mut offsets = ByteToCharOffsetTracker::new(&text);
                 self.splitter
-                    .chunk_indices(&text)
-                    .map(|c| offsets.map_byte_to_char(c))
-                    .map(|(i, c)| (i, c.to_owned()))
+                    .chunk_char_indices(&text)
+                    .map(
+                        |ChunkCharIndex {
+                             chunk, char_offset, ..
+                         }| (char_offset, chunk.to_owned()),
+                    )
                     .collect()
             })
             .collect()
@@ -1418,10 +1400,13 @@ impl PyCodeSplitter {
         &'splitter self,
         text: &'text str,
     ) -> Vec<(usize, &'text str)> {
-        let mut offsets = ByteToCharOffsetTracker::new(text);
         self.splitter
-            .chunk_indices(text)
-            .map(|c| offsets.map_byte_to_char(c))
+            .chunk_char_indices(text)
+            .map(
+                |ChunkCharIndex {
+                     chunk, char_offset, ..
+                 }| (char_offset, chunk),
+            )
             .collect()
     }
 
@@ -1464,11 +1449,13 @@ impl PyCodeSplitter {
         texts
             .into_par_iter()
             .map(|text| {
-                let mut offsets = ByteToCharOffsetTracker::new(&text);
                 self.splitter
-                    .chunk_indices(&text)
-                    .map(|c| offsets.map_byte_to_char(c))
-                    .map(|(i, c)| (i, c.to_owned()))
+                    .chunk_char_indices(&text)
+                    .map(
+                        |ChunkCharIndex {
+                             chunk, char_offset, ..
+                         }| (char_offset, chunk.to_owned()),
+                    )
                     .collect()
             })
             .collect()

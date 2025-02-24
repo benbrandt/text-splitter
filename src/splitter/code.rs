@@ -9,6 +9,8 @@ use crate::{
     ChunkConfig, ChunkSizer,
 };
 
+use super::ChunkCharIndex;
+
 /// Indicates there was an error with creating a `CodeSplitter`.
 /// The `Display` implementation will provide a human-readable error message to
 /// help debug the issue that caused the error.
@@ -118,18 +120,45 @@ where
     /// See [`CodeSplitter::chunks`] for more information.
     ///
     /// ```
-    /// use text_splitter::CodeSplitter;
+    /// use text_splitter::{ChunkCharIndex, CodeSplitter};
     ///
     /// let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 10).expect("Invalid language");
     /// let text = "Some text\n\nfrom a\ndocument";
     /// let chunks = splitter.chunk_indices(text).collect::<Vec<_>>();
     ///
     /// assert_eq!(vec![(0, "Some text"), (11, "from a"), (18, "document")], chunks);
+    /// ```
     pub fn chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
         Splitter::<_>::chunk_indices(self, text)
+    }
+
+    /// Returns an iterator over chunks of the text with their byte and character offsets.
+    /// Each chunk will be up to the `chunk_capacity`.
+    ///
+    /// See [`CodeSplitter::chunks`] for more information.
+    ///
+    /// This will be more expensive than just byte offsets, and for most usage in Rust, just
+    /// having byte offsets is sufficient. But when interfacing with other languages or systems
+    /// that require character offsets, this will track the character offsets for you,
+    /// accounting for any trimming that may have occurred.
+    ///
+    /// ```
+    /// use text_splitter::{ChunkCharIndex, CodeSplitter};
+    ///
+    /// let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 10).expect("Invalid language");
+    /// let text = "Some text\n\nfrom a\ndocument";
+    /// let chunks = splitter.chunk_char_indices(text).collect::<Vec<_>>();
+    ///
+    /// assert_eq!(vec![ChunkCharIndex {chunk: "Some text", byte_offset: 0, char_offset: 0}, ChunkCharIndex {chunk: "from a", byte_offset: 11, char_offset: 11}, ChunkCharIndex {chunk: "document", byte_offset: 18, char_offset: 18}], chunks);
+    /// ```
+    pub fn chunk_char_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = ChunkCharIndex<'text>> + 'splitter {
+        Splitter::<_>::chunk_char_indices(self, text)
     }
 }
 
@@ -248,6 +277,34 @@ mod tests {
         assert_eq!(
             chunks,
             vec![(0, "fn main()"), (10, "{\n    let x = 5;"), (27, "}")]
+        );
+    }
+
+    #[test]
+    fn rust_splitter_char_indices() {
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 16).unwrap();
+        let text = "fn main() {\n    let x = 5;\n}";
+        let chunks = splitter.chunk_char_indices(text).collect::<Vec<_>>();
+
+        assert_eq!(
+            chunks,
+            vec![
+                ChunkCharIndex {
+                    chunk: "fn main()",
+                    byte_offset: 0,
+                    char_offset: 0
+                },
+                ChunkCharIndex {
+                    chunk: "{\n    let x = 5;",
+                    byte_offset: 10,
+                    char_offset: 10
+                },
+                ChunkCharIndex {
+                    chunk: "}",
+                    byte_offset: 27,
+                    char_offset: 27
+                }
+            ]
         );
     }
 
