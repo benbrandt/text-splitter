@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.24.1
+
+### What's New
+
+Added a new `chunk_char_indices` method to the Rust splitters.
+
+```rust
+use text_splitter::{Characters, ChunkCharIndex, TextSplitter};
+
+let text = "\r\na̐éö̲\r\n";
+let splitter = TextSplitter::new(3);
+let chunks = splitter.chunk_char_indices(text).collect::<Vec<_>>();
+
+assert_eq!(
+    vec![
+        ChunkCharIndex {
+            chunk: "a̐é",
+            byte_offset: 2,
+            char_offset: 2
+        },
+        ChunkCharIndex {
+            chunk: "ö̲",
+            byte_offset: 7,
+            char_offset: 5
+        }
+    ],
+    chunks
+);
+```
+
+The pulls logic from the Python bindings down into the core library. This will be more expensive than just byte offsets, and for most usage in Rust, just having byte offsets is sufficient.
+
+However, when interfacing with other languages or systems that require character offsets, this will track the character offsets for you, accounting for any trimming that may have occurred.
+
 ## v0.24.0
 
 ### What's New
