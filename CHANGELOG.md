@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### What's New
+
+- MSRV updated to 1.81.0
+
 ## v0.24.1
 
 ### What's New
