@@ -70,7 +70,7 @@ pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 regex = "1.11.1"
 rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.27", features = ["derive"] }
-thiserror = "2.0.11"
+thiserror = "2.0.12"
 tiktoken-rs = { version = "0.6", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
 tree-sitter = { version = "0.25", optional = true }
