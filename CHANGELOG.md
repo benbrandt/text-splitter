@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## v0.24.2
+
+### Fixes
+
+- Python packages target a newer version of libc to hopefully fix header file issues with tree-sitter.
 
 ### What's New
 
