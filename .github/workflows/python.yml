@@ -48,7 +48,7 @@ jobs:
         with:
           target: x86_64
           args: --release --out dist
-          manylinux: auto
+          manylinux: 2_28
           working-directory: bindings/python
       - name: pytest
         shell: bash
@@ -77,7 +77,7 @@ jobs:
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
-          manylinux: auto
+          manylinux: 2_28
           working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v4
