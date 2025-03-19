@@ -34,9 +34,6 @@ permissions:
 jobs:
   min_supported_version:
     runs-on: ubuntu-latest
-    env:
-      # Fix for old libc not including headers
-      CC: "cc -D_BSD_SOURCE"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -66,9 +63,6 @@ jobs:
     strategy:
       matrix:
         target: [x86_64, x86, aarch64, armv7, s390x, ppc64le]
-    env:
-      # Fix for old libc not including headers
-      CC: "cc -D_BSD_SOURCE"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
