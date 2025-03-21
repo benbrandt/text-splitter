@@ -33,7 +33,7 @@ impl ChunkSizer for &Tokenizer {
     /// encounters text it can't tokenize.
     fn size(&self, chunk: &str) -> usize {
         let encoding = self
-            .encode(chunk, false)
+            .encode_fast(chunk, false)
             .expect("Unable to tokenize the following string {chunk}");
 
         let pad_id = self.get_padding().map(|params| params.pad_id);

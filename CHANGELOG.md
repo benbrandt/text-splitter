@@ -8,6 +8,10 @@
 
 - Remove support for `rust-tokenizers` crate. This crate hasn't been updated in several years and brings in depednencies that have security warnings.
 
+### What's New
+
+- Use faster encoding method for `tokenizers` library, which improves performance with usage of huggingface tokenizers.
+
 ## v0.24.2
 
 ### Fixes
