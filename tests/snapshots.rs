@@ -1,10 +1,7 @@
 //! Snapshot tests for regressions in chunk output.
-use std::{fs, ops::RangeInclusive, path::PathBuf};
+use std::{fs, ops::RangeInclusive};
 
-use cached_path::Cache;
 use rayon::prelude::*;
-#[cfg(feature = "rust-tokenizers")]
-use rust_tokenizers::tokenizer::BertTokenizer;
 use strum::{Display, EnumIter, IntoEnumIterator};
 #[cfg(feature = "code")]
 use text_splitter::CodeSplitter;
@@ -19,30 +16,6 @@ use tokenizers::Tokenizer;
 const CHUNK_SIZES: [usize; 3] = [32, 512, 8192];
 const RANGE_CHUNK_SIZES: [RangeInclusive<usize>; 2] = [64..=512, 512..=4096];
 
-/// Downloads a remote file to the cache directory if it doensn't already exist,
-/// and returns the path to the cached file.
-fn download_file_to_cache(src: &str) -> PathBuf {
-    let mut cache_dir = dirs::home_dir().unwrap();
-    cache_dir.push(".cache");
-    cache_dir.push(".text-splitter");
-
-    Cache::builder()
-        .dir(cache_dir)
-        .build()
-        .unwrap()
-        .cached_path(src)
-        .unwrap()
-}
-
-#[cfg(feature = "rust-tokenizers")]
-static BERT_UNCASED_TOKENIZER: std::sync::LazyLock<BertTokenizer> =
-    std::sync::LazyLock::new(|| {
-        let vocab_path = download_file_to_cache(
-            "https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt",
-        );
-        BertTokenizer::from_file(vocab_path, false, false).unwrap()
-    });
-
 #[cfg(feature = "tokenizers")]
 static HUGGINGFACE_TOKENIZER: std::sync::LazyLock<Tokenizer> =
     std::sync::LazyLock::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
@@ -54,8 +27,6 @@ static TIKTOKEN_TOKENIZER: std::sync::LazyLock<CoreBPE> =
 #[derive(Copy, Clone, Display, EnumIter)]
 enum SizerOption {
     Characters,
-    #[cfg(feature = "rust-tokenizers")]
-    RustTokenizers,
     #[cfg(feature = "tokenizers")]
     Tokenizers,
     #[cfg(feature = "tiktoken-rs")]
@@ -66,8 +37,6 @@ impl ChunkSizer for SizerOption {
     fn size(&self, chunk: &str) -> usize {
         match self {
             Self::Characters => Characters.size(chunk),
-            #[cfg(feature = "rust-tokenizers")]
-            Self::RustTokenizers => BERT_UNCASED_TOKENIZER.size(chunk),
             #[cfg(feature = "tokenizers")]
             Self::Tokenizers => HUGGINGFACE_TOKENIZER.size(chunk),
             #[cfg(feature = "tiktoken-rs")]

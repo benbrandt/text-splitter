@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.25.0
+
+### Breaking Changes
+
+#### Rust
+
+- Remove support for `rust-tokenizers` crate. This crate hasn't been updated in several years and brings in depednencies that have security warnings.
+
 ## v0.24.2
 
 ### Fixes
