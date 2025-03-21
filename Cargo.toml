@@ -2,7 +2,7 @@
 members = ["bindings/*"]
 
 [workspace.package]
-version = "0.24.2"
+version = "0.25.0"
 authors = ["Ben Brandt <benjamin.j.brandt@gmail.com>"]
 edition = "2021"
 description = "Split text into semantic chunks, up to a desired chunk size. Supports calculating length by characters and tokens, and is callable from Rust and Python."
@@ -68,7 +68,6 @@ icu_segmenter = "1.5.0"
 itertools = "0.14"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 regex = "1.11.1"
-rust_tokenizers = { version = "8", optional = true }
 strum = { version = "0.27", features = ["derive"] }
 thiserror = "2.0.12"
 tiktoken-rs = { version = "0.6", optional = true }
@@ -76,9 +75,6 @@ tokenizers = { version = "0.21", default-features = false, optional = true }
 tree-sitter = { version = "0.25", optional = true }
 
 [dev-dependencies]
-cached-path = { version = "0.6", default-features = false, features = [
-    "rustls-tls",
-] }
 dirs = "6.0.0"
 divan = "0.1.17"
 fake = "4"
@@ -98,7 +94,6 @@ harness = false
 [features]
 code = ["dep:tree-sitter"]
 markdown = ["dep:pulldown-cmark"]
-rust-tokenizers = ["dep:rust_tokenizers"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 tokenizers = ["dep:tokenizers", "tokenizers/onig"]
 
