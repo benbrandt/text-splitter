@@ -190,6 +190,15 @@ pub trait ChunkSizer {
     fn size(&self, chunk: &str) -> usize;
 }
 
+impl<T> ChunkSizer for &T
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        (*self).size(chunk)
+    }
+}
+
 /// Indicates there was an error with the chunk configuration.
 /// The `Display` implementation will provide a human-readable error message to
 /// help debug the issue that caused the error.

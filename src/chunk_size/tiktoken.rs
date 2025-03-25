@@ -2,17 +2,10 @@ use tiktoken_rs::CoreBPE;
 
 use crate::ChunkSizer;
 
-impl ChunkSizer for &CoreBPE {
-    /// Returns the number of tokens in a given text after tokenization.
-    fn size(&self, chunk: &str) -> usize {
-        self.encode_ordinary(chunk).len()
-    }
-}
-
 impl ChunkSizer for CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
     fn size(&self, chunk: &str) -> usize {
-        (&self).size(chunk)
+        self.encode_ordinary(chunk).len()
     }
 }
 
