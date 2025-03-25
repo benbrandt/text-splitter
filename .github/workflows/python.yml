@@ -42,6 +42,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@c5a29ddb4d9d194e7c84ec8c3fba61b1c31fee8c
         with:
           toolchain: stable
+      - uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3
+        with:
+          key: "py39_linux"
       - name: Build wheels
         uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
         with:
@@ -70,6 +73,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@c5a29ddb4d9d194e7c84ec8c3fba61b1c31fee8c
         with:
           toolchain: stable
+      - uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3
+        with:
+          key: linux-${{ matrix.target }}
       - name: Build wheels
         uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
         with:
@@ -107,6 +113,8 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3
+        with:
+          key: windows-${{ matrix.target }}
       - name: Build wheels
         uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
         with:
@@ -142,6 +150,8 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3
+        with:
+          key: macox-${{ matrix.target }}
       - name: Build wheels
         uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
         with:
@@ -171,6 +181,8 @@ jobs:
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3
+        with:
+          key: sdist
       # There is an issue with sdist build where duplicate readmes are found for some reason.
       - run: rm ../../README.md
       - name: Build sdist
