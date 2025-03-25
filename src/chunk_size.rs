@@ -1,7 +1,11 @@
 use std::{
+    borrow::Cow,
+    cell::{Ref, RefMut},
     cmp::Ordering,
     fmt,
-    ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
+    ops::{Deref, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
+    rc::Rc,
+    sync::Arc,
 };
 
 use ahash::AHashMap;
@@ -196,6 +200,61 @@ where
 {
     fn size(&self, chunk: &str) -> usize {
         (*self).size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for Ref<'_, T>
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.deref().size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for RefMut<'_, T>
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.deref().size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for Box<T>
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.deref().size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for Cow<'_, T>
+where
+    T: ChunkSizer + ToOwned + ?Sized,
+    <T as ToOwned>::Owned: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.as_ref().size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for Rc<T>
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.deref().size(chunk)
+    }
+}
+
+impl<T> ChunkSizer for Arc<T>
+where
+    T: ChunkSizer,
+{
+    fn size(&self, chunk: &str) -> usize {
+        self.as_ref().size(chunk)
     }
 }
 
@@ -418,7 +477,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::sync::atomic::{self, AtomicUsize};
+    use std::{
+        cell::RefCell,
+        sync::atomic::{self, AtomicUsize},
+    };
 
     use crate::trim::Trim;
 
@@ -687,5 +749,44 @@ mod tests {
             err.to_string(),
             "The overlap is larger than or equal to the desired chunk capacity"
         );
+    }
+
+    #[test]
+    fn chunk_size_cow() {
+        let sizer: Cow<'_, Characters> = Cow::Owned(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer));
+
+        let sizer = Cow::Borrowed(&Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer));
+    }
+
+    #[test]
+    fn chunk_size_arc() {
+        let sizer = Arc::new(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer));
+    }
+
+    #[test]
+    fn chunk_size_ref() {
+        let sizer = RefCell::new(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer.borrow()));
+    }
+
+    #[test]
+    fn chunk_size_ref_mut() {
+        let sizer = RefCell::new(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer.borrow_mut()));
+    }
+
+    #[test]
+    fn chunk_size_box() {
+        let sizer = Box::new(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer));
+    }
+
+    #[test]
+    fn chunk_size_rc() {
+        let sizer = Rc::new(Characters);
+        drop(ChunkConfig::new(1).with_sizer(sizer));
     }
 }
