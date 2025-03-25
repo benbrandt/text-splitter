@@ -4,6 +4,7 @@
 
 ### What's New
 
+- Use `memchr` crate instead of `regex` for parsing phase in `TextSplitter`. This should improve performance in how quickly the text is parsed when scanning for newline characters.
 - Implement `ChunkSizer` trait automatically for many more wrappers and references to types that already implement `ChunkSizer`.
 
 ## v0.25.0

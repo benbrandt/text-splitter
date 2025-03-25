@@ -1,15 +1,15 @@
 
-running 97 tests
-iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 87/97
-iiiiiiiiii
-test result: ok. 0 passed; 0 failed; 97 ignored; 0 measured; 0 filtered out; finished in 0.00s
+running 103 tests
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii 87/103
+iiiiiiiiiiiiiiii
+test result: ok. 0 passed; 0 failed; 103 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 chunk_size                    fastest       │ slowest       │ median        │ mean          │ samples │ iters
 ├─ code                                     │               │               │               │         │
 │  ├─ characters                            │               │               │               │         │
 │  │  ├─ 64                                 │               │               │               │         │
-│  │  │  ╰─ hashbrown_set_rs  168.4 ms      │ 200.9 ms      │ 173.5 ms      │ 174.5 ms      │ 100     │ 100
-│  │  │                       522.4 KB/s    │ 438 KB/s      │ 507.2 KB/s    │ 504.3 KB/s    │         │
+│  │  │  ╰─ hashbrown_set_rs  168.3 ms      │ 178.1 ms      │ 169.1 ms      │ 169.9 ms      │ 100     │ 100
+│  │  │                       522.8 KB/s    │ 494 KB/s      │ 520.5 KB/s    │ 517.9 KB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         5           │ 5             │ 5             │ 5             │         │
 │  │  │                         1.235 MB    │ 1.235 MB      │ 1.235 MB      │ 1.235 MB      │         │
@@ -23,8 +23,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         24570       │ 24570         │ 24570         │ 24570         │         │
 │  │  │                         345.4 MB    │ 345.4 MB      │ 345.4 MB      │ 345.4 MB      │         │
 │  │  ├─ 1024                               │               │               │               │         │
-│  │  │  ╰─ hashbrown_set_rs  14.65 ms      │ 15.49 ms      │ 14.9 ms       │ 14.91 ms      │ 100     │ 100
-│  │  │                       6.005 MB/s    │ 5.679 MB/s    │ 5.905 MB/s    │ 5.901 MB/s    │         │
+│  │  │  ╰─ hashbrown_set_rs  14.58 ms      │ 15.31 ms      │ 14.7 ms       │ 14.71 ms      │ 100     │ 100
+│  │  │                       6.034 MB/s    │ 5.746 MB/s    │ 5.986 MB/s    │ 5.983 MB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         5           │ 5             │ 5             │ 5             │         │
 │  │  │                         1.235 MB    │ 1.235 MB      │ 1.235 MB      │ 1.235 MB      │         │
@@ -38,8 +38,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         1379        │ 1379          │ 1379          │ 1379          │         │
 │  │  │                         19.04 MB    │ 19.04 MB      │ 19.04 MB      │ 19.04 MB      │         │
 │  │  ╰─ 16384                              │               │               │               │         │
-│  │     ╰─ hashbrown_set_rs  6.513 ms      │ 6.828 ms      │ 6.635 ms      │ 6.633 ms      │ 100     │ 100
-│  │                          13.51 MB/s    │ 12.89 MB/s    │ 13.26 MB/s    │ 13.26 MB/s    │         │
+│  │     ╰─ hashbrown_set_rs  6.474 ms      │ 6.825 ms      │ 6.509 ms      │ 6.522 ms      │ 100     │ 100
+│  │                          13.59 MB/s    │ 12.89 MB/s    │ 13.52 MB/s    │ 13.49 MB/s    │         │
 │  │                          max alloc:    │               │               │               │         │
 │  │                            5           │ 5             │ 5             │ 5             │         │
 │  │                            1.234 MB    │ 1.234 MB      │ 1.234 MB      │ 1.234 MB      │         │
@@ -54,8 +54,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │                            2.252 MB    │ 2.252 MB      │ 2.252 MB      │ 2.252 MB      │         │
 │  ├─ tiktoken                              │               │               │               │         │
 │  │  ├─ 64                                 │               │               │               │         │
-│  │  │  ╰─ hashbrown_set_rs  234.7 ms      │ 243.6 ms      │ 238.6 ms      │ 238.8 ms      │ 100     │ 100
-│  │  │                       374.9 KB/s    │ 361.2 KB/s    │ 368.9 KB/s    │ 368.5 KB/s    │         │
+│  │  │  ╰─ hashbrown_set_rs  234.3 ms      │ 261.6 ms      │ 236.4 ms      │ 237.5 ms      │ 100     │ 100
+│  │  │                       375.6 KB/s    │ 336.4 KB/s    │ 372.2 KB/s    │ 370.5 KB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         207         │ 207           │ 207           │ 207           │         │
 │  │  │                         1.404 MB    │ 1.404 MB      │ 1.404 MB      │ 1.404 MB      │         │
@@ -69,8 +69,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         452129      │ 452129        │ 452129        │ 452129        │         │
 │  │  │                         129.7 MB    │ 129.7 MB      │ 129.7 MB      │ 129.7 MB      │         │
 │  │  ├─ 1024                               │               │               │               │         │
-│  │  │  ╰─ hashbrown_set_rs  82.02 ms      │ 85.95 ms      │ 82.95 ms      │ 83.19 ms      │ 100     │ 100
-│  │  │                       1.073 MB/s    │ 1.024 MB/s    │ 1.061 MB/s    │ 1.058 MB/s    │         │
+│  │  │  ╰─ hashbrown_set_rs  82.88 ms      │ 95.25 ms      │ 84.05 ms      │ 86.63 ms      │ 100     │ 100
+│  │  │                       1.061 MB/s    │ 924 KB/s      │ 1.047 MB/s    │ 1.016 MB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         207         │ 207           │ 207           │ 207           │         │
 │  │  │                         1.407 MB    │ 1.407 MB      │ 1.407 MB      │ 1.407 MB      │         │
@@ -84,8 +84,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         165344      │ 165344        │ 165344        │ 165344        │         │
 │  │  │                         25.52 MB    │ 25.52 MB      │ 25.52 MB      │ 25.52 MB      │         │
 │  │  ╰─ 16384                              │               │               │               │         │
-│  │     ╰─ hashbrown_set_rs  66.14 ms      │ 69.24 ms      │ 66.6 ms       │ 66.78 ms      │ 100     │ 100
-│  │                          1.33 MB/s     │ 1.271 MB/s    │ 1.321 MB/s    │ 1.318 MB/s    │         │
+│  │     ╰─ hashbrown_set_rs  66.36 ms      │ 69.32 ms      │ 67.23 ms      │ 67.35 ms      │ 100     │ 100
+│  │                          1.326 MB/s    │ 1.269 MB/s    │ 1.309 MB/s    │ 1.306 MB/s    │         │
 │  │                          max alloc:    │               │               │               │         │
 │  │                            206         │ 206           │ 206           │ 206           │         │
 │  │                            1.234 MB    │ 1.234 MB      │ 1.234 MB      │ 1.234 MB      │         │
@@ -100,8 +100,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │                            17.27 MB    │ 17.27 MB      │ 17.27 MB      │ 17.27 MB      │         │
 │  ╰─ tokenizers                            │               │               │               │         │
 │     ├─ 64                                 │               │               │               │         │
-│     │  ╰─ hashbrown_set_rs  429.8 ms      │ 456.4 ms      │ 433.8 ms      │ 435.2 ms      │ 100     │ 100
-│     │                       204.7 KB/s    │ 192.8 KB/s    │ 202.9 KB/s    │ 202.2 KB/s    │         │
+│     │  ╰─ hashbrown_set_rs  430.4 ms      │ 504.9 ms      │ 445.5 ms      │ 450 ms        │ 100     │ 100
+│     │                       204.4 KB/s    │ 174.3 KB/s    │ 197.5 KB/s    │ 195.5 KB/s    │         │
 │     │                       max alloc:    │               │               │               │         │
 │     │                         35244       │ 35244         │ 35244         │ 35244         │         │
 │     │                         3.703 MB    │ 3.703 MB      │ 3.703 MB      │ 3.703 MB      │         │
@@ -115,8 +115,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │     │                         408572      │ 408572        │ 408572        │ 408572        │         │
 │     │                         627 MB      │ 627 MB        │ 627 MB        │ 627 MB        │         │
 │     ├─ 1024                               │               │               │               │         │
-│     │  ╰─ hashbrown_set_rs  119.5 ms      │ 133.8 ms      │ 120.7 ms      │ 121.4 ms      │ 100     │ 100
-│     │                       736.5 KB/s    │ 657.7 KB/s    │ 729 KB/s      │ 725 KB/s      │         │
+│     │  ╰─ hashbrown_set_rs  118.3 ms      │ 130.6 ms      │ 119 ms        │ 119.8 ms      │ 100     │ 100
+│     │                       743.5 KB/s    │ 673.8 KB/s    │ 739.5 KB/s    │ 734.3 KB/s    │         │
 │     │                       max alloc:    │               │               │               │         │
 │     │                         36678       │ 36678         │ 36678         │ 36678         │         │
 │     │                         3.709 MB    │ 3.709 MB      │ 3.709 MB      │ 3.709 MB      │         │
@@ -130,8 +130,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │     │                         83791       │ 83791         │ 83791         │ 83791         │         │
 │     │                         165 MB      │ 165 MB        │ 165 MB        │ 165 MB        │         │
 │     ╰─ 16384                              │               │               │               │         │
-│        ╰─ hashbrown_set_rs  79.97 ms      │ 84.89 ms      │ 80.59 ms      │ 80.74 ms      │ 100     │ 100
-│                             1.1 MB/s      │ 1.036 MB/s    │ 1.092 MB/s    │ 1.09 MB/s     │         │
+│        ╰─ hashbrown_set_rs  79.49 ms      │ 81.67 ms      │ 80.1 ms       │ 80.14 ms      │ 100     │ 100
+│                             1.107 MB/s    │ 1.077 MB/s    │ 1.098 MB/s    │ 1.098 MB/s    │         │
 │                             max alloc:    │               │               │               │         │
 │                               82041       │ 82041         │ 82041         │ 82041         │         │
 │                               7.093 MB    │ 7.093 MB      │ 7.093 MB      │ 7.093 MB      │         │
@@ -147,8 +147,8 @@ chunk_size                    fastest       │ slowest       │ median        
 ├─ markdown                                 │               │               │               │         │
 │  ├─ characters                            │               │               │               │         │
 │  │  ├─ 64                                 │               │               │               │         │
-│  │  │  ╰─ commonmark_spec   105.6 ms      │ 109.1 ms      │ 106.1 ms      │ 106.4 ms      │ 100     │ 100
-│  │  │                       1.939 MB/s    │ 1.878 MB/s    │ 1.931 MB/s    │ 1.926 MB/s    │         │
+│  │  │  ╰─ commonmark_spec   105.9 ms      │ 107.8 ms      │ 106.1 ms      │ 106.1 ms      │ 100     │ 100
+│  │  │                       1.934 MB/s    │ 1.901 MB/s    │ 1.932 MB/s    │ 1.931 MB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         10          │ 10            │ 10            │ 10            │         │
 │  │  │                         1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -165,8 +165,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         13          │ 13            │ 13            │ 13            │         │
 │  │  │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  │  ├─ 1024                               │               │               │               │         │
-│  │  │  ╰─ commonmark_spec   7.218 ms      │ 7.835 ms      │ 7.296 ms      │ 7.351 ms      │ 100     │ 100
-│  │  │                       28.4 MB/s     │ 26.16 MB/s    │ 28.1 MB/s     │ 27.88 MB/s    │         │
+│  │  │  ╰─ commonmark_spec   7.234 ms      │ 7.526 ms      │ 7.268 ms      │ 7.28 ms       │ 100     │ 100
+│  │  │                       28.34 MB/s    │ 27.24 MB/s    │ 28.2 MB/s     │ 28.16 MB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         10          │ 10            │ 10            │ 10            │         │
 │  │  │                         1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -183,8 +183,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         13          │ 13            │ 13            │ 13            │         │
 │  │  │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  │  ╰─ 16384                              │               │               │               │         │
-│  │     ╰─ commonmark_spec   1.019 ms      │ 1.106 ms      │ 1.041 ms      │ 1.043 ms      │ 100     │ 100
-│  │                          201.1 MB/s    │ 185.3 MB/s    │ 196.8 MB/s    │ 196.4 MB/s    │         │
+│  │     ╰─ commonmark_spec   1.023 ms      │ 1.114 ms      │ 1.031 ms      │ 1.038 ms      │ 100     │ 100
+│  │                          200.4 MB/s    │ 183.9 MB/s    │ 198.7 MB/s    │ 197.3 MB/s    │         │
 │  │                          max alloc:    │               │               │               │         │
 │  │                            10          │ 10            │ 10            │ 10            │         │
 │  │                            1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -202,8 +202,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │                            94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  ├─ tiktoken                              │               │               │               │         │
 │  │  ├─ 64                                 │               │               │               │         │
-│  │  │  ╰─ commonmark_spec   808.6 ms      │ 823.4 ms      │ 814.9 ms      │ 815 ms        │ 100     │ 100
-│  │  │                       253.5 KB/s    │ 248.9 KB/s    │ 251.5 KB/s    │ 251.5 KB/s    │         │
+│  │  │  ╰─ commonmark_spec   807.1 ms      │ 843.6 ms      │ 811.8 ms      │ 812.4 ms      │ 100     │ 100
+│  │  │                       254 KB/s      │ 243 KB/s      │ 252.5 KB/s    │ 252.3 KB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         247         │ 247           │ 247           │ 247           │         │
 │  │  │                         1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -220,8 +220,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         13          │ 13            │ 13            │ 13            │         │
 │  │  │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  │  ├─ 1024                               │               │               │               │         │
-│  │  │  ╰─ commonmark_spec   248.4 ms      │ 254 ms        │ 250.9 ms      │ 250.7 ms      │ 100     │ 100
-│  │  │                       825 KB/s      │ 806.8 KB/s    │ 816.9 KB/s    │ 817.5 KB/s    │         │
+│  │  │  ╰─ commonmark_spec   248.3 ms      │ 253.3 ms      │ 250.4 ms      │ 250.5 ms      │ 100     │ 100
+│  │  │                       825.5 KB/s    │ 809.2 KB/s    │ 818.5 KB/s    │ 818.2 KB/s    │         │
 │  │  │                       max alloc:    │               │               │               │         │
 │  │  │                         247         │ 247           │ 247           │ 247           │         │
 │  │  │                         1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -238,8 +238,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │  │                         13          │ 13            │ 13            │ 13            │         │
 │  │  │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  │  ╰─ 16384                              │               │               │               │         │
-│  │     ╰─ commonmark_spec   93.63 ms      │ 97.33 ms      │ 94.44 ms      │ 94.55 ms      │ 100     │ 100
-│  │                          2.189 MB/s    │ 2.106 MB/s    │ 2.17 MB/s     │ 2.168 MB/s    │         │
+│  │     ╰─ commonmark_spec   93.79 ms      │ 95.67 ms      │ 94.47 ms      │ 94.53 ms      │ 100     │ 100
+│  │                          2.185 MB/s    │ 2.142 MB/s    │ 2.17 MB/s     │ 2.168 MB/s    │         │
 │  │                          max alloc:    │               │               │               │         │
 │  │                            247         │ 247           │ 247           │ 247           │         │
 │  │                            1.068 MB    │ 1.068 MB      │ 1.068 MB      │ 1.068 MB      │         │
@@ -257,8 +257,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │  │                            94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │  ╰─ tokenizers                            │               │               │               │         │
 │     ├─ 64                                 │               │               │               │         │
-│     │  ╰─ commonmark_spec   1.49 s        │ 1.709 s       │ 1.502 s       │ 1.53 s        │ 100     │ 100
-│     │                       137.5 KB/s    │ 119.9 KB/s    │ 136.4 KB/s    │ 133.9 KB/s    │         │
+│     │  ╰─ commonmark_spec   1.485 s       │ 1.621 s       │ 1.498 s       │ 1.515 s       │ 100     │ 100
+│     │                       137.9 KB/s    │ 126.4 KB/s    │ 136.7 KB/s    │ 135.2 KB/s    │         │
 │     │                       max alloc:    │               │               │               │         │
 │     │                         204396      │ 204396        │ 204396        │ 204396        │         │
 │     │                         16.65 MB    │ 16.65 MB      │ 16.65 MB      │ 16.65 MB      │         │
@@ -275,8 +275,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │     │                         13          │ 13            │ 13            │ 13            │         │
 │     │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │     ├─ 1024                               │               │               │               │         │
-│     │  ╰─ commonmark_spec   497.8 ms      │ 554 ms        │ 502.3 ms      │ 506.5 ms      │ 100     │ 100
-│     │                       411.8 KB/s    │ 370 KB/s      │ 408.1 KB/s    │ 404.7 KB/s    │         │
+│     │  ╰─ commonmark_spec   495.1 ms      │ 528.9 ms      │ 499.2 ms      │ 501.1 ms      │ 100     │ 100
+│     │                       414 KB/s      │ 387.5 KB/s    │ 410.6 KB/s    │ 409.1 KB/s    │         │
 │     │                       max alloc:    │               │               │               │         │
 │     │                         208003      │ 208003        │ 208003        │ 208003        │         │
 │     │                         16.93 MB    │ 16.93 MB      │ 16.93 MB      │ 16.93 MB      │         │
@@ -293,8 +293,8 @@ chunk_size                    fastest       │ slowest       │ median        
 │     │                         13          │ 13            │ 13            │ 13            │         │
 │     │                         94 B        │ 94 B          │ 94 B          │ 94 B          │         │
 │     ╰─ 16384                              │               │               │               │         │
-│        ╰─ commonmark_spec   213.4 ms      │ 226.3 ms      │ 217 ms        │ 218 ms        │ 100     │ 100
-│                             960.3 KB/s    │ 905.6 KB/s    │ 944.4 KB/s    │ 940.4 KB/s    │         │
+│        ╰─ commonmark_spec   212.1 ms      │ 231.4 ms      │ 214.1 ms      │ 215.7 ms      │ 100     │ 100
+│                             966.4 KB/s    │ 885.7 KB/s    │ 957.2 KB/s    │ 950.4 KB/s    │         │
 │                             max alloc:    │               │               │               │         │
 │                               225961      │ 225961        │ 225961        │ 225961        │         │
 │                               18.81 MB    │ 18.81 MB      │ 18.81 MB      │ 18.81 MB      │         │
@@ -313,25 +313,22 @@ chunk_size                    fastest       │ slowest       │ median        
 ╰─ text                                     │               │               │               │         │
    ├─ characters                            │               │               │               │         │
    │  ├─ 64                                 │               │               │               │         │
-   │  │  ├─ romeo_and_juliet  23.05 ms      │ 23.63 ms      │ 23.29 ms      │ 23.28 ms      │ 100     │ 100
-   │  │  │                    7.096 MB/s    │ 6.923 MB/s    │ 7.022 MB/s    │ 7.027 MB/s    │         │
+   │  │  ├─ romeo_and_juliet  22.87 ms      │ 25.96 ms      │ 23.11 ms      │ 23.14 ms      │ 100     │ 100
+   │  │  │                    7.153 MB/s    │ 6.3 MB/s      │ 7.079 MB/s    │ 7.069 MB/s    │         │
    │  │  │                    max alloc:    │               │               │               │         │
-   │  │  │                      5           │ 105           │ 5             │ 6             │         │
-   │  │  │                      298.7 KB    │ 312.6 KB      │ 298.7 KB      │ 298.8 KB      │         │
+   │  │  │                      5           │ 5             │ 5             │ 5             │         │
+   │  │  │                      298.7 KB    │ 298.7 KB      │ 298.7 KB      │ 298.7 KB      │         │
    │  │  │                    alloc:        │               │               │               │         │
-   │  │  │                      6804        │ 7136          │ 6804          │ 6807          │         │
-   │  │  │                      61.09 MB    │ 61.11 MB      │ 61.09 MB      │ 61.09 MB      │         │
+   │  │  │                      6804        │ 6804          │ 6804          │ 6804          │         │
+   │  │  │                      61.09 MB    │ 61.09 MB      │ 61.09 MB      │ 61.09 MB      │         │
    │  │  │                    dealloc:      │               │               │               │         │
-   │  │  │                      6805        │ 7077          │ 6805          │ 6807          │         │
+   │  │  │                      6805        │ 6805          │ 6805          │ 6805          │         │
    │  │  │                      149.8 MB    │ 149.8 MB      │ 149.8 MB      │ 149.8 MB      │         │
    │  │  │                    grow:         │               │               │               │         │
-   │  │  │                      33184       │ 33242         │ 33184         │ 33184         │         │
-   │  │  │                      88.58 MB    │ 88.6 MB       │ 88.58 MB      │ 88.58 MB      │         │
-   │  │  │                    shrink:       │               │               │               │         │
-   │  │  │                      0           │ 5             │ 0             │ 0.05          │         │
-   │  │  │                      0 B         │ 2.34 KB       │ 0 B           │ 23.4 B        │         │
-   │  │  ╰─ room_with_a_view  21.95 ms      │ 22.3 ms       │ 22.17 ms      │ 22.16 ms      │ 100     │ 100
-   │  │                       13.75 MB/s    │ 13.53 MB/s    │ 13.61 MB/s    │ 13.62 MB/s    │         │
+   │  │  │                      33184       │ 33184         │ 33184         │ 33184         │         │
+   │  │  │                      88.58 MB    │ 88.58 MB      │ 88.58 MB      │ 88.58 MB      │         │
+   │  │  ╰─ room_with_a_view  21.66 ms      │ 22.69 ms      │ 22.11 ms      │ 22.1 ms       │ 100     │ 100
+   │  │                       13.93 MB/s    │ 13.3 MB/s     │ 13.65 MB/s    │ 13.65 MB/s    │         │
    │  │                       max alloc:    │               │               │               │         │
    │  │                         5           │ 5             │ 5             │ 5             │         │
    │  │                         83.48 KB    │ 83.48 KB      │ 83.48 KB      │ 83.48 KB      │         │
@@ -345,8 +342,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │                         47956       │ 47956         │ 47956         │ 47956         │         │
    │  │                         64.97 MB    │ 64.97 MB      │ 64.97 MB      │ 64.97 MB      │         │
    │  ├─ 1024                               │               │               │               │         │
-   │  │  ├─ romeo_and_juliet  1.701 ms      │ 1.878 ms      │ 1.73 ms       │ 1.731 ms      │ 100     │ 100
-   │  │  │                    96.14 MB/s    │ 87.11 MB/s    │ 94.55 MB/s    │ 94.48 MB/s    │         │
+   │  │  ├─ romeo_and_juliet  1.585 ms      │ 2.224 ms      │ 1.687 ms      │ 1.777 ms      │ 100     │ 100
+   │  │  │                    103.2 MB/s    │ 73.54 MB/s    │ 96.98 MB/s    │ 92.05 MB/s    │         │
    │  │  │                    max alloc:    │               │               │               │         │
    │  │  │                      5           │ 5             │ 5             │ 5             │         │
    │  │  │                      298.1 KB    │ 298.1 KB      │ 298.1 KB      │ 298.1 KB      │         │
@@ -359,8 +356,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │  │                    grow:         │               │               │               │         │
    │  │  │                      1712        │ 1712          │ 1712          │ 1712          │         │
    │  │  │                      4.691 MB    │ 4.691 MB      │ 4.691 MB      │ 4.691 MB      │         │
-   │  │  ╰─ room_with_a_view  1.769 ms      │ 1.942 ms      │ 1.788 ms      │ 1.788 ms      │ 100     │ 100
-   │  │                       170.6 MB/s    │ 155.4 MB/s    │ 168.7 MB/s    │ 168.7 MB/s    │         │
+   │  │  ╰─ room_with_a_view  1.72 ms       │ 1.957 ms      │ 1.744 ms      │ 1.752 ms      │ 100     │ 100
+   │  │                       175.4 MB/s    │ 154.2 MB/s    │ 173 MB/s      │ 172.2 MB/s    │         │
    │  │                       max alloc:    │               │               │               │         │
    │  │                         5           │ 5             │ 5             │ 5             │         │
    │  │                         81.86 KB    │ 81.86 KB      │ 81.86 KB      │ 81.86 KB      │         │
@@ -374,8 +371,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │                         2941        │ 2941          │ 2941          │ 2941          │         │
    │  │                         3.993 MB    │ 3.993 MB      │ 3.993 MB      │ 3.993 MB      │         │
    │  ╰─ 16384                              │               │               │               │         │
-   │     ├─ romeo_and_juliet  456.4 µs      │ 511.4 µs      │ 460.7 µs      │ 462.5 µs      │ 100     │ 100
-   │     │                    358.4 MB/s    │ 319.9 MB/s    │ 355.1 MB/s    │ 353.7 MB/s    │         │
+   │     ├─ romeo_and_juliet  430.3 µs      │ 495.3 µs      │ 435.3 µs      │ 438.2 µs      │ 100     │ 100
+   │     │                    380.1 MB/s    │ 330.3 MB/s    │ 375.7 MB/s    │ 373.3 MB/s    │         │
    │     │                    max alloc:    │               │               │               │         │
    │     │                      5           │ 5             │ 5             │ 5             │         │
    │     │                      297.7 KB    │ 297.7 KB      │ 297.7 KB      │ 297.7 KB      │         │
@@ -388,8 +385,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │     │                    grow:         │               │               │               │         │
    │     │                      162         │ 162           │ 162           │ 162           │         │
    │     │                      642.8 KB    │ 642.8 KB      │ 642.8 KB      │ 642.8 KB      │         │
-   │     ╰─ room_with_a_view  436.9 µs      │ 493.5 µs      │ 439.9 µs      │ 442 µs        │ 100     │ 100
-   │                          690.9 MB/s    │ 611.6 MB/s    │ 686.2 MB/s    │ 682.9 MB/s    │         │
+   │     ╰─ room_with_a_view  352.2 µs      │ 487.4 µs      │ 381.1 µs      │ 378.9 µs      │ 100     │ 100
+   │                          857 MB/s      │ 619.3 MB/s    │ 792 MB/s      │ 796.7 MB/s    │         │
    │                          max alloc:    │               │               │               │         │
    │                            5           │ 5             │ 5             │ 5             │         │
    │                            86.91 KB    │ 86.91 KB      │ 86.91 KB      │ 86.91 KB      │         │
@@ -404,8 +401,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │                            454 KB      │ 454 KB        │ 454 KB        │ 454 KB        │         │
    ├─ tiktoken                              │               │               │               │         │
    │  ├─ 64                                 │               │               │               │         │
-   │  │  ├─ romeo_and_juliet  677.7 ms      │ 696 ms        │ 683.4 ms      │ 684.3 ms      │ 100     │ 100
-   │  │  │                    241.4 KB/s    │ 235 KB/s      │ 239.4 KB/s    │ 239.1 KB/s    │         │
+   │  │  ├─ romeo_and_juliet  675.5 ms      │ 696 ms        │ 680.6 ms      │ 681.8 ms      │ 100     │ 100
+   │  │  │                    242.1 KB/s    │ 235 KB/s      │ 240.4 KB/s    │ 239.9 KB/s    │         │
    │  │  │                    max alloc:    │               │               │               │         │
    │  │  │                      214         │ 214           │ 214           │ 214           │         │
    │  │  │                      697.2 KB    │ 697.2 KB      │ 697.2 KB      │ 697.2 KB      │         │
@@ -418,8 +415,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │  │                    grow:         │               │               │               │         │
    │  │  │                      1829196     │ 1829196       │ 1829196       │ 1829196       │         │
    │  │  │                      234.7 MB    │ 234.7 MB      │ 234.7 MB      │ 234.7 MB      │         │
-   │  │  ╰─ room_with_a_view  941.7 ms      │ 979.5 ms      │ 950.9 ms      │ 952 ms        │ 100     │ 100
-   │  │                       320.5 KB/s    │ 308.2 KB/s    │ 317.4 KB/s    │ 317.1 KB/s    │         │
+   │  │  ╰─ room_with_a_view  931.5 ms      │ 967.7 ms      │ 941.4 ms      │ 942.3 ms      │ 100     │ 100
+   │  │                       324 KB/s      │ 311.9 KB/s    │ 320.6 KB/s    │ 320.3 KB/s    │         │
    │  │                       max alloc:    │               │               │               │         │
    │  │                         215         │ 215           │ 215           │ 215           │         │
    │  │                         510.9 KB    │ 510.9 KB      │ 510.9 KB      │ 510.9 KB      │         │
@@ -433,8 +430,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │                         2949175     │ 2949175       │ 2949175       │ 2949175       │         │
    │  │                         367.7 MB    │ 367.7 MB      │ 367.7 MB      │ 367.7 MB      │         │
    │  ├─ 1024                               │               │               │               │         │
-   │  │  ├─ romeo_and_juliet  197.8 ms      │ 203.1 ms      │ 200.2 ms      │ 200.2 ms      │ 100     │ 100
-   │  │  │                    826.8 KB/s    │ 805.3 KB/s    │ 817 KB/s      │ 816.9 KB/s    │         │
+   │  │  ├─ romeo_and_juliet  196.8 ms      │ 202 ms        │ 197.9 ms      │ 198.1 ms      │ 100     │ 100
+   │  │  │                    831.3 KB/s    │ 809.6 KB/s    │ 826.4 KB/s    │ 825.8 KB/s    │         │
    │  │  │                    max alloc:    │               │               │               │         │
    │  │  │                      214         │ 214           │ 214           │ 214           │         │
    │  │  │                      696.7 KB    │ 696.7 KB      │ 696.7 KB      │ 696.7 KB      │         │
@@ -447,8 +444,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │  │                    grow:         │               │               │               │         │
    │  │  │                      527350      │ 527350        │ 527350        │ 527350        │         │
    │  │  │                      63.86 MB    │ 63.86 MB      │ 63.86 MB      │ 63.86 MB      │         │
-   │  │  ╰─ room_with_a_view  392 ms        │ 398 ms        │ 394.6 ms      │ 394.6 ms      │ 100     │ 100
-   │  │                       770 KB/s      │ 758.3 KB/s    │ 765 KB/s      │ 764.9 KB/s    │         │
+   │  │  ╰─ room_with_a_view  387.3 ms      │ 396.5 ms      │ 390.5 ms      │ 391.2 ms      │ 100     │ 100
+   │  │                       779.5 KB/s    │ 761.3 KB/s    │ 773 KB/s      │ 771.6 KB/s    │         │
    │  │                       max alloc:    │               │               │               │         │
    │  │                         215         │ 215           │ 215           │ 215           │         │
    │  │                         507.8 KB    │ 507.8 KB      │ 507.8 KB      │ 507.8 KB      │         │
@@ -462,8 +459,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │  │                         1212343     │ 1212343       │ 1212343       │ 1212343       │         │
    │  │                         147.4 MB    │ 147.4 MB      │ 147.4 MB      │ 147.4 MB      │         │
    │  ╰─ 16384                              │               │               │               │         │
-   │     ├─ romeo_and_juliet  99.34 ms      │ 101.8 ms      │ 100.1 ms      │ 100.1 ms      │ 100     │ 100
-   │     │                    1.647 MB/s    │ 1.606 MB/s    │ 1.633 MB/s    │ 1.633 MB/s    │         │
+   │     ├─ romeo_and_juliet  97.63 ms      │ 101.7 ms      │ 98.48 ms      │ 98.61 ms      │ 100     │ 100
+   │     │                    1.675 MB/s    │ 1.608 MB/s    │ 1.661 MB/s    │ 1.659 MB/s    │         │
    │     │                    max alloc:    │               │               │               │         │
    │     │                      214         │ 214           │ 214           │ 214           │         │
    │     │                      696.6 KB    │ 696.6 KB      │ 696.6 KB      │ 696.6 KB      │         │
@@ -476,8 +473,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │     │                    grow:         │               │               │               │         │
    │     │                      257476      │ 257476        │ 257476        │ 257476        │         │
    │     │                      31.1 MB     │ 31.1 MB       │ 31.1 MB       │ 31.1 MB       │         │
-   │     ╰─ room_with_a_view  139.1 ms      │ 142.3 ms      │ 140 ms        │ 140 ms        │ 100     │ 100
-   │                          2.169 MB/s    │ 2.121 MB/s    │ 2.155 MB/s    │ 2.155 MB/s    │         │
+   │     ╰─ room_with_a_view  136.7 ms      │ 146.5 ms      │ 138.3 ms      │ 138.4 ms      │ 100     │ 100
+   │                          2.207 MB/s    │ 2.06 MB/s     │ 2.182 MB/s    │ 2.179 MB/s    │         │
    │                          max alloc:    │               │               │               │         │
    │                            215         │ 215           │ 215           │ 215           │         │
    │                            505.3 KB    │ 505.3 KB      │ 505.3 KB      │ 505.3 KB      │         │
@@ -492,8 +489,8 @@ chunk_size                    fastest       │ slowest       │ median        
    │                            51.02 MB    │ 51.02 MB      │ 51.02 MB      │ 51.02 MB      │         │
    ╰─ tokenizers                            │               │               │               │         │
       ├─ 64                                 │               │               │               │         │
-      │  ├─ romeo_and_juliet  1.247 s       │ 1.378 s       │ 1.26 s        │ 1.266 s       │ 100     │ 100
-      │  │                    131.1 KB/s    │ 118.6 KB/s    │ 129.8 KB/s    │ 129.2 KB/s    │         │
+      │  ├─ romeo_and_juliet  1.241 s       │ 1.308 s       │ 1.251 s       │ 1.253 s       │ 100     │ 100
+      │  │                    131.7 KB/s    │ 125 KB/s      │ 130.7 KB/s    │ 130.5 KB/s    │         │
       │  │                    max alloc:    │               │               │               │         │
       │  │                      179738      │ 179738        │ 179738        │ 179738        │         │
       │  │                      14.63 MB    │ 14.63 MB      │ 14.63 MB      │ 14.63 MB      │         │
@@ -506,8 +503,8 @@ chunk_size                    fastest       │ slowest       │ median        
       │  │                    grow:         │               │               │               │         │
       │  │                      415678      │ 415678        │ 415678        │ 415678        │         │
       │  │                      1.645 GB    │ 1.645 GB      │ 1.645 GB      │ 1.645 GB      │         │
-      │  ╰─ room_with_a_view  1.812 s       │ 1.949 s       │ 1.826 s       │ 1.83 s        │ 100     │ 100
-      │                       166.5 KB/s    │ 154.8 KB/s    │ 165.2 KB/s    │ 164.8 KB/s    │         │
+      │  ╰─ room_with_a_view  1.802 s       │ 1.957 s       │ 1.809 s       │ 1.818 s       │ 100     │ 100
+      │                       167.4 KB/s    │ 154.2 KB/s    │ 166.8 KB/s    │ 165.9 KB/s    │         │
       │                       max alloc:    │               │               │               │         │
       │                         319370      │ 319370        │ 319370        │ 319370        │         │
       │                         26.93 MB    │ 26.93 MB      │ 26.93 MB      │ 26.93 MB      │         │
@@ -521,8 +518,8 @@ chunk_size                    fastest       │ slowest       │ median        
       │                         650190      │ 650190        │ 650190        │ 650190        │         │
       │                         2.359 GB    │ 2.359 GB      │ 2.359 GB      │ 2.359 GB      │         │
       ├─ 1024                               │               │               │               │         │
-      │  ├─ romeo_and_juliet  345.8 ms      │ 357.6 ms      │ 347.4 ms      │ 347.6 ms      │ 100     │ 100
-      │  │                    473.1 KB/s    │ 457.4 KB/s    │ 470.9 KB/s    │ 470.6 KB/s    │         │
+      │  ├─ romeo_and_juliet  342.8 ms      │ 381.1 ms      │ 344.4 ms      │ 348 ms        │ 100     │ 100
+      │  │                    477.3 KB/s    │ 429.2 KB/s    │ 475 KB/s      │ 470 KB/s      │         │
       │  │                    max alloc:    │               │               │               │         │
       │  │                      181752      │ 181752        │ 181752        │ 181752        │         │
       │  │                      14.79 MB    │ 14.79 MB      │ 14.79 MB      │ 14.79 MB      │         │
@@ -535,8 +532,8 @@ chunk_size                    fastest       │ slowest       │ median        
       │  │                    grow:         │               │               │               │         │
       │  │                      63025       │ 63025         │ 63025         │ 63025         │         │
       │  │                      451.5 MB    │ 451.5 MB      │ 451.5 MB      │ 451.5 MB      │         │
-      │  ╰─ room_with_a_view  723.6 ms      │ 771.3 ms      │ 727.4 ms      │ 729.1 ms      │ 100     │ 100
-      │                       417.1 KB/s    │ 391.3 KB/s    │ 415 KB/s      │ 414 KB/s      │         │
+      │  ╰─ room_with_a_view  716.4 ms      │ 789.2 ms      │ 719.8 ms      │ 724.2 ms      │ 100     │ 100
+      │                       421.4 KB/s    │ 382.5 KB/s    │ 419.3 KB/s    │ 416.8 KB/s    │         │
       │                       max alloc:    │               │               │               │         │
       │                         320002      │ 320002        │ 320002        │ 320002        │         │
       │                         26.99 MB    │ 26.99 MB      │ 26.99 MB      │ 26.99 MB      │         │
@@ -550,8 +547,8 @@ chunk_size                    fastest       │ slowest       │ median        
       │                         108315      │ 108315        │ 108315        │ 108315        │         │
       │                         945.7 MB    │ 945.7 MB      │ 945.7 MB      │ 945.7 MB      │         │
       ╰─ 16384                              │               │               │               │         │
-         ├─ romeo_and_juliet  172.5 ms      │ 175.3 ms      │ 173.7 ms      │ 173.7 ms      │ 100     │ 100
-         │                    948.4 KB/s    │ 933 KB/s      │ 941.8 KB/s    │ 941.6 KB/s    │         │
+         ├─ romeo_and_juliet  171.1 ms      │ 174.7 ms      │ 172.1 ms      │ 172.2 ms      │ 100     │ 100
+         │                    955.8 KB/s    │ 936.4 KB/s    │ 950.5 KB/s    │ 949.8 KB/s    │         │
          │                    max alloc:    │               │               │               │         │
          │                      181752      │ 181752        │ 181752        │ 181752        │         │
          │                      14.79 MB    │ 14.79 MB      │ 14.79 MB      │ 14.79 MB      │         │
@@ -564,8 +561,8 @@ chunk_size                    fastest       │ slowest       │ median        
          │                    grow:         │               │               │               │         │
          │                      13333       │ 13333         │ 13333         │ 13333         │         │
          │                      230.8 MB    │ 230.8 MB      │ 230.8 MB      │ 230.8 MB      │         │
-         ╰─ room_with_a_view  289.1 ms      │ 302.7 ms      │ 290.4 ms      │ 290.8 ms      │ 100     │ 100
-                              1.044 MB/s    │ 997.1 KB/s    │ 1.039 MB/s    │ 1.037 MB/s    │         │
+         ╰─ room_with_a_view  287.7 ms      │ 315.5 ms      │ 289.1 ms      │ 290.3 ms      │ 100     │ 100
+                              1.049 MB/s    │ 956.7 KB/s    │ 1.044 MB/s    │ 1.039 MB/s    │         │
                               max alloc:    │               │               │               │         │
                                 320002      │ 320002        │ 320002        │ 320002        │         │
                                 26.99 MB    │ 26.99 MB      │ 26.99 MB      │ 26.99 MB      │         │

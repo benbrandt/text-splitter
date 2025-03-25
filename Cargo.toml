@@ -66,8 +66,8 @@ either = "1.15"
 icu_provider = { version = "1.5.0", features = ["sync"] }
 icu_segmenter = "1.5.0"
 itertools = "0.14"
+memchr = "2.7.4"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
-regex = "1.11.1"
 strum = { version = "0.27", features = ["derive"] }
 thiserror = "2.0.12"
 tiktoken-rs = { version = "0.6", optional = true }

@@ -3,10 +3,10 @@
 Semantic splitting of text documents.
 */
 
-use std::{ops::Range, sync::LazyLock};
+use std::ops::Range;
 
 use itertools::Itertools;
-use regex::Regex;
+use memchr::memchr2_iter;
 
 use crate::{
     splitter::{SemanticLevel, Splitter},
@@ -143,10 +143,17 @@ where
     }
 
     fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
-        CAPTURE_LINEBREAKS
-            .find_iter(text)
-            .map(|m| {
-                let range = m.range();
+        #[allow(clippy::range_plus_one)]
+        memchr2_iter(b'\n', b'\r', text.as_bytes())
+            .map(|i| i..i + 1)
+            .coalesce(|a, b| {
+                if a.end == b.start {
+                    Ok(a.start..b.end)
+                } else {
+                    Err((a, b))
+                }
+            })
+            .map(|range| {
                 let level = GRAPHEME_SEGMENTER
                     .segment_str(text.get(range.start..range.end).unwrap())
                     .tuple_windows::<(usize, usize)>()
@@ -170,10 +177,6 @@ where
 /// Split by given number of linebreaks, either `\n`, `\r`, or `\r\n`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct LineBreaks(usize);
-
-// Lazy so that we don't have to compile them more than once
-static CAPTURE_LINEBREAKS: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"(\r\n)+|\r+|\n+").unwrap());
 
 impl SemanticLevel for LineBreaks {}
 
