@@ -52,22 +52,22 @@ where
     /// ## Method
     ///
     /// To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
-    //
-    // 1. Split the text by a increasing semantic levels.
-    // 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
-    // 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length.
-    //    Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
-    //
-    // The boundaries used to split the text if using the `chunks` method, in ascending order:
-    //
-    // 1. Characters
-    // 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
-    // 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
-    // 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
-    // 5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`)
-    //    Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
-    //
-    // Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
+    ///
+    /// 1. Split the text by a increasing semantic levels.
+    /// 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
+    /// 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length.
+    ///    Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
+    ///
+    /// The boundaries used to split the text if using the `chunks` method, in ascending order:
+    ///
+    /// 1. Characters
+    /// 2. [Unicode Grapheme Cluster Boundaries](https://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    /// 3. [Unicode Word Boundaries](https://www.unicode.org/reports/tr29/#Word_Boundaries)
+    /// 4. [Unicode Sentence Boundaries](https://www.unicode.org/reports/tr29/#Sentence_Boundaries)
+    /// 5. Ascending sequence length of newlines. (Newline is `\r\n`, `\n`, or `\r`)
+    ///    Each unique length of consecutive newline sequences is treated as its own semantic level. So a sequence of 2 newlines is a higher level than a sequence of 1 newline, and so on.
+    ///
+    /// Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
     ///
     /// ```
     /// use text_splitter::TextSplitter;
