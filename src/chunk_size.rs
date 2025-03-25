@@ -752,6 +752,12 @@ mod tests {
     }
 
     #[test]
+    fn chunk_size_reference() {
+        let config = ChunkConfig::new(1).with_sizer(&Characters);
+        config.sizer().size("chunk");
+    }
+
+    #[test]
     fn chunk_size_cow() {
         let sizer: Cow<'_, Characters> = Cow::Owned(Characters);
         let config = ChunkConfig::new(1).with_sizer(sizer);
