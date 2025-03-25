@@ -24,7 +24,7 @@ fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
     base + overflow
 }
 
-impl ChunkSizer for &Tokenizer {
+impl ChunkSizer for Tokenizer {
     /// Returns the number of tokens in a given text after tokenization.
     ///
     /// # Panics
@@ -38,18 +38,6 @@ impl ChunkSizer for &Tokenizer {
 
         let pad_id = self.get_padding().map(|params| params.pad_id);
         num_tokens_with_overflow(&encoding, pad_id)
-    }
-}
-
-impl ChunkSizer for Tokenizer {
-    /// Returns the number of tokens in a given text after tokenization.
-    ///
-    /// # Panics
-    ///
-    /// Will panic if you don't have a byte-level tokenizer and the splitter
-    /// encounters text it can't tokenize.
-    fn size(&self, chunk: &str) -> usize {
-        (&self).size(chunk)
     }
 }
 
