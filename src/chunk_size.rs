@@ -754,39 +754,46 @@ mod tests {
     #[test]
     fn chunk_size_cow() {
         let sizer: Cow<'_, Characters> = Cow::Owned(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer));
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        config.sizer().size("chunk");
 
         let sizer = Cow::Borrowed(&Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer));
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        config.sizer().size("chunk");
     }
 
     #[test]
     fn chunk_size_arc() {
         let sizer = Arc::new(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer));
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        config.sizer().size("chunk");
     }
 
     #[test]
     fn chunk_size_ref() {
         let sizer = RefCell::new(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer.borrow()));
+        let config = ChunkConfig::new(1).with_sizer(sizer.borrow());
+        config.sizer().size("chunk");
     }
 
     #[test]
     fn chunk_size_ref_mut() {
         let sizer = RefCell::new(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer.borrow_mut()));
+        let config = ChunkConfig::new(1).with_sizer(sizer.borrow_mut());
+        config.sizer().size("chunk");
     }
 
     #[test]
     fn chunk_size_box() {
         let sizer = Box::new(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer));
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        config.sizer().size("chunk");
     }
 
     #[test]
     fn chunk_size_rc() {
         let sizer = Rc::new(Characters);
-        drop(ChunkConfig::new(1).with_sizer(sizer));
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        config.sizer().size("chunk");
     }
 }
