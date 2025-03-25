@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.25.1
+
+### What's New
+
+- Implement `ChunkSizer` trait automatically for many more wrappers and references to types that already implement `ChunkSizer`.
+
 ## v0.25.0
 
 ### Breaking Changes
