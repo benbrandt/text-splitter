@@ -23,7 +23,6 @@ use super::ChunkCharIndex;
 /// attempt to merge neighboring chunks if they can fit within the
 /// given chunk size.
 #[derive(Debug)]
-#[allow(clippy::module_name_repetitions)]
 pub struct MarkdownSplitter<Sizer>
 where
     Sizer: ChunkSizer,

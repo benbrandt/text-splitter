@@ -1,8 +1,5 @@
 //! Python Bindings for text-splitter crate
 
-// pyo3 uses these
-#![allow(elided_lifetimes_in_paths, unsafe_op_in_unsafe_fn)]
-
 use std::str::FromStr;
 
 use pyo3::{

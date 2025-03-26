@@ -14,7 +14,6 @@ static SENTENCE_SEGMENTER: LazyLock<SentenceSegmenter> = LazyLock::new(SentenceS
 /// be small enough to fit into the chunk size. In order to make sure we can
 /// still move the cursor forward, we fallback to unicode segmentation.
 #[derive(Clone, Copy, Debug, EnumIter, Eq, PartialEq, Ord, PartialOrd)]
-#[allow(clippy::module_name_repetitions)]
 pub enum FallbackLevel {
     /// Split by individual chars. May be larger than a single byte,
     /// but we don't go lower so we always have valid UTF str's.

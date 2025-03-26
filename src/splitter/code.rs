@@ -16,7 +16,6 @@ use super::ChunkCharIndex;
 /// help debug the issue that caused the error.
 #[derive(Error, Debug)]
 #[error(transparent)]
-#[allow(clippy::module_name_repetitions)]
 pub struct CodeSplitterError(#[from] CodeSplitterErrorRepr);
 
 /// Private error and free to change across minor version of the crate.
@@ -33,7 +32,6 @@ enum CodeSplitterErrorRepr {
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 #[derive(Debug)]
-#[allow(clippy::module_name_repetitions)]
 pub struct CodeSplitter<Sizer>
 where
     Sizer: ChunkSizer,

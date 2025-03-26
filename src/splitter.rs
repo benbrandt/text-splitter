@@ -15,12 +15,9 @@ mod markdown;
 mod text;
 
 #[cfg(feature = "code")]
-#[allow(clippy::module_name_repetitions)]
 pub use code::{CodeSplitter, CodeSplitterError};
 #[cfg(feature = "markdown")]
-#[allow(clippy::module_name_repetitions)]
 pub use markdown::MarkdownSplitter;
-#[allow(clippy::module_name_repetitions)]
 pub use text::TextSplitter;
 
 /// Shared interface for splitters that can generate chunks of text based on the
@@ -454,7 +451,7 @@ where
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
-    #[allow(clippy::too_many_lines)]
+    #[expect(clippy::too_many_lines)]
     fn update_next_sections(&mut self) -> usize {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
