@@ -4,7 +4,6 @@ Different trimming behaviors for different splitter types.
 
 /// Out-of-the-box trim options.
 /// If you need a custom trim behavior, you can implement the `Trim` trait.
-#[allow(clippy::module_name_repetitions)]
 #[derive(Clone, Copy, Debug)]
 pub enum Trim {
     /// Will remove all leading and trailing whitespaces.

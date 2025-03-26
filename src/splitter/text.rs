@@ -19,7 +19,6 @@ use super::{fallback::GRAPHEME_SEGMENTER, ChunkCharIndex};
 /// semantic units that fit within the chunk size. Also will attempt to merge
 /// neighboring chunks if they can fit within the given chunk size.
 #[derive(Debug)]
-#[allow(clippy::module_name_repetitions)]
 pub struct TextSplitter<Sizer>
 where
     Sizer: ChunkSizer,
@@ -143,7 +142,7 @@ where
     }
 
     fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
-        #[allow(clippy::range_plus_one)]
+        #[expect(clippy::range_plus_one)]
         memchr2_iter(b'\n', b'\r', text.as_bytes())
             .map(|i| i..i + 1)
             .coalesce(|a, b| {
