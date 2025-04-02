@@ -85,7 +85,7 @@ tokenizers = { version = "0.21", default-features = false, features = [
     "onig",
     "http",
 ] }
-tree-sitter-rust = "0.23"
+tree-sitter-rust = "0.24"
 
 [[bench]]
 name = "chunk_size"
