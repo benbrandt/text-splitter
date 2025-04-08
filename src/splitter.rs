@@ -365,7 +365,7 @@ where
                         successful_chunk_size = Some(chunk_size);
                     }
                 }
-            };
+            }
 
             // Adjust search area
             if fits.is_lt() {
@@ -558,7 +558,6 @@ where
                     Ordering::Less => {
                         // We know we can go higher
                         low = new_num.saturating_sub(1);
-                        continue;
                     }
                     Ordering::Equal => {
                         // Don't update low because it could be a range
@@ -569,12 +568,11 @@ where
                             }
                         }
                         prev_equals = Some(chunk_size);
-                        continue;
                     }
                     Ordering::Greater => {
                         break;
                     }
-                };
+                }
             }
         }
 
@@ -599,7 +597,7 @@ where
             match self.next_chunk()? {
                 // Make sure we didn't get an empty chunk. Should only happen in
                 // cases where we trim.
-                (_, "") => continue,
+                (_, "") => {}
                 c => {
                     let item_end = c.0 + c.1.len();
                     // Skip because we've emitted a chunk whose content we've already emitted
