@@ -76,7 +76,7 @@ tree-sitter = { version = "0.25", optional = true }
 
 [dev-dependencies]
 dirs = "6.0.0"
-divan = "0.1.18"
+divan = "0.1.21"
 fake = "4"
 insta = { version = "1.42", features = ["glob", "yaml"] }
 more-asserts = "0.3"
