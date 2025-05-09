@@ -1,14 +1,20 @@
 use std::sync::LazyLock;
 
 use auto_enums::auto_enum;
-use icu_segmenter::{GraphemeClusterSegmenter, SentenceSegmenter, WordSegmenter};
+use icu_segmenter::{
+    options::{SentenceBreakInvariantOptions, WordBreakInvariantOptions},
+    GraphemeClusterSegmenter, GraphemeClusterSegmenterBorrowed, SentenceSegmenter,
+    SentenceSegmenterBorrowed, WordSegmenter, WordSegmenterBorrowed,
+};
 use itertools::Itertools;
 use strum::EnumIter;
 
-pub static GRAPHEME_SEGMENTER: LazyLock<GraphemeClusterSegmenter> =
-    LazyLock::new(GraphemeClusterSegmenter::new);
-static WORD_SEGMENTER: LazyLock<WordSegmenter> = LazyLock::new(WordSegmenter::new_dictionary);
-static SENTENCE_SEGMENTER: LazyLock<SentenceSegmenter> = LazyLock::new(SentenceSegmenter::new);
+pub const GRAPHEME_SEGMENTER: GraphemeClusterSegmenterBorrowed<'static> =
+    GraphemeClusterSegmenter::new();
+static WORD_SEGMENTER: LazyLock<WordSegmenterBorrowed<'static>> =
+    LazyLock::new(|| WordSegmenter::new_dictionary(WordBreakInvariantOptions::default()));
+static SENTENCE_SEGMENTER: LazyLock<SentenceSegmenterBorrowed<'static>> =
+    LazyLock::new(|| SentenceSegmenter::new(SentenceBreakInvariantOptions::default()));
 
 /// When using a custom semantic level, it is possible that none of them will
 /// be small enough to fit into the chunk size. In order to make sure we can
