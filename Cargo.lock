@@ -1604,7 +1604,7 @@ dependencies = [
  "divan",
  "either",
  "fake",
- "icu_provider 1.5.0",
+ "icu_provider 2.0.0",
  "icu_segmenter",
  "insta",
  "itertools 0.14.0",
