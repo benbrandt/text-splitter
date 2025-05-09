@@ -1,7 +1,6 @@
 ---
 source: tests/snapshots.rs
 expression: chunks
-snapshot_kind: text
 ---
 - "---"
 - "title: CommonMark Spec"
@@ -938,8 +937,8 @@ snapshot_kind: text
 - "<p>&amp;nbsp &amp;x; &amp;#; &"
 - "amp;x; &amp;#; &amp;#x;"
 - "&amp;#87654321;\n&amp;#abcdef0;"
-- "&amp;ThisIsNotDefined; &amp;hi?"
-- ;</p>
+- "&amp;ThisIsNotDefined; &amp;hi?;"
+- ; &amp;hi?;</p>
 - "````````````````````````````````"
 - Although HTML5 does accept some
 - does accept some entity
@@ -2827,13 +2826,13 @@ snapshot_kind: text
 - "document.getElementById(\"demo\")."
 - "(\"demo\").innerHTML = \"Hello"
 - "= \"Hello JavaScript!\";"
-- ";\n</script>\nokay\n."
+- "</script>\nokay\n."
 - "<script type=\"text/javascript\">"
 - // JavaScript example
 - "document.getElementById(\"demo\")."
 - "(\"demo\").innerHTML = \"Hello"
 - "= \"Hello JavaScript!\";"
-- ";\n</script>\n<p>okay</p>"
+- "</script>\n<p>okay</p>"
 - "````````````````````````````````"
 - "A textarea tag (type 1):"
 - "````````````````````````````````"
@@ -8616,8 +8615,8 @@ snapshot_kind: text
 - "```````````````` example"
 - "<MAILTO:FOO@BAR.BAZ>\n."
 - "<p><a href=\"MAILTO:FOO@BAR.BAZ\">"
-- "@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a>"
-- "@BAR.BAZ</a></p>"
+- ":FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ"
+- ":FOO@BAR.BAZ</a></p>"
 - "````````````````````````````````"
 - Note that many strings that
 - "strings that count as ["
@@ -8710,7 +8709,7 @@ snapshot_kind: text
 - "```````````````` example"
 - "<foo+special@Bar.baz-bar0.com>\n."
 - "<p><a href=\"mailto:foo+special@"
-- "+special@Bar.baz-bar0.com\">foo+"
+- ":foo+special@Bar.baz-bar0.com\">"
 - "-bar0.com\">foo+special@Bar.baz-"
 - special@Bar.baz-bar0.com</a></p>
 - "````````````````````````````````"

@@ -1,7 +1,6 @@
 ---
 source: tests/snapshots.rs
 expression: chunks
-snapshot_kind: text
 ---
 - "---"
 - "title: CommonMark Spec"
@@ -785,8 +784,8 @@ snapshot_kind: text
 - "<p>&amp;nbsp &amp;x; &amp;#; &"
 - "amp;#x;\n&amp;#87654321;"
 - "&amp;#abcdef0;"
-- "&amp;ThisIsNotDefined; &amp;hi?"
-- ;</p>
+- "&amp;ThisIsNotDefined; &amp;hi?;"
+- "</p>"
 - "````````````````````````````````"
 - Although HTML5 does accept some
 - entity references
