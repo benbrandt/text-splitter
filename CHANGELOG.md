@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.26.0
+
+### What's New
+
+- Updated to `icu` v2.0 for all unicode segmentation.
+- Minimum Rust version updated to 1.82.0
+
 ## v0.25.1
 
 ### What's New
