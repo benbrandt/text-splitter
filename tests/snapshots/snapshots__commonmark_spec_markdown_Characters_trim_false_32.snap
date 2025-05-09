@@ -1,7 +1,6 @@
 ---
 source: tests/snapshots.rs
 expression: chunks
-snapshot_kind: text
 ---
 - "---\n"
 - "title: CommonMark Spec\n"
@@ -830,8 +829,8 @@ snapshot_kind: text
 - "<p>&amp;nbsp &amp;x; &amp;#; &"
 - "amp;#x;\n&amp;#87654321;\n"
 - "&amp;#abcdef0;\n"
-- "&amp;ThisIsNotDefined; &amp;hi?"
-- ";</p>\n"
+- "&amp;ThisIsNotDefined; &amp;hi?;"
+- "</p>\n"
 - "````````````````````````````````"
 - "\n\n\n"
 - "Although HTML5 does accept some "
@@ -2588,13 +2587,13 @@ snapshot_kind: text
 - "<script type=\"text/javascript\">\n"
 - "// JavaScript example\n\n"
 - "document.getElementById(\"demo\")."
-- "innerHTML = \"Hello JavaScript!\""
-- ";\n</script>\nokay\n.\n"
+- "innerHTML = \"Hello JavaScript!\";"
+- "\n</script>\nokay\n.\n"
 - "<script type=\"text/javascript\">\n"
 - "// JavaScript example\n\n"
 - "document.getElementById(\"demo\")."
-- "innerHTML = \"Hello JavaScript!\""
-- ";\n</script>\n<p>okay</p>\n"
+- "innerHTML = \"Hello JavaScript!\";"
+- "\n</script>\n<p>okay</p>\n"
 - "````````````````````````````````"
 - "\n\n\nA textarea tag (type 1):\n"
 - "\n"
