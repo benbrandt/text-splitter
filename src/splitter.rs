@@ -506,7 +506,7 @@ where
         };
 
         let mut sections = sections
-            .take_while(move |(offset, _)| max_offset.map_or(true, |max| *offset <= max))
+            .take_while(move |(offset, _)| max_offset.is_none_or(|max| *offset <= max))
             .filter(|(_, str)| !str.is_empty());
 
         // Start filling up the next sections. Since calculating the size of the chunk gets more expensive
