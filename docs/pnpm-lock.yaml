@@ -13,10 +13,10 @@ importers:
         version: 0.9.4(typescript@5.8.3)
       '@astrojs/starlight':
         specifier: ^0.34.3
-        version: 0.34.3(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
+        version: 0.34.3(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
       astro:
-        specifier: ^5.7.13
-        version: 5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
+        specifier: ^5.7.14
+        version: 5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
       sharp:
         specifier: ^0.34.2
         version: 0.34.2
@@ -728,8 +728,8 @@ packages:
   '@types/node@17.0.45':
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
-  '@types/node@22.15.18':
-    resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
+  '@types/node@22.15.21':
+    resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
   '@types/sax@1.2.7':
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
@@ -827,8 +827,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0
 
-  astro@5.7.13:
-    resolution: {integrity: sha512-cRGq2llKOhV3XMcYwQpfBIUcssN6HEK5CRbcMxAfd9OcFhvWE7KUy50zLioAZVVl3AqgUTJoNTlmZfD2eG0G1w==}
+  astro@5.7.14:
+    resolution: {integrity: sha512-DfuDD49f7mbHB7ygLm8KXEC6QQtpLoNrmoylcMLKdl1ahXNdiw+mgW8ApEMyHTUyVrqEUnr4gZCKSlZ9POCHjQ==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -2209,8 +2209,8 @@ packages:
     resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
     engines: {node: '>=12.20'}
 
-  yocto-spinner@0.2.2:
-    resolution: {integrity: sha512-21rPcM3e4vCpOXThiFRByX8amU5By1R0wNS8Oex+DP3YgC8xdU0vEJ/K8cbPLiIJVosSSysgcFof6s6MSD5/Vw==}
+  yocto-spinner@0.2.3:
+    resolution: {integrity: sha512-sqBChb33loEnkoXte1bLg45bEBsOP9N1kzQh5JZNKj/0rik4zAPTNSAVPj3uQAdc6slYJ0Ksc403G2XgxsJQFQ==}
     engines: {node: '>=18.19'}
 
   yoctocolors@2.1.1:
@@ -2228,8 +2228,8 @@ packages:
       typescript: ^4.9.4 || ^5.0.2
       zod: ^3
 
-  zod@3.25.16:
-    resolution: {integrity: sha512-3lOav31WLa1MstEvkM0QlcsFjKmJ2TI9IFYlIVpLE3upguhaeiRfPOzqqtisS/Hetk4ri2fLLC3OtW15lS5jxQ==}
+  zod@3.25.20:
+    resolution: {integrity: sha512-z03fqpTMDF1G02VLKUMt6vyACE7rNWkh3gpXVHgPTw28NPtDFRGvcpTtPwn2kMKtQ0idtYJUTxchytmnqYswcw==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -2300,12 +2300,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.2.6(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))':
+  '@astrojs/mdx@4.2.6(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       acorn: 8.14.1
-      astro: 5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
+      astro: 5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -2327,19 +2327,19 @@ snapshots:
     dependencies:
       sitemap: 8.0.0
       stream-replace-string: 2.0.0
-      zod: 3.25.16
+      zod: 3.25.20
 
-  '@astrojs/starlight@0.34.3(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))':
+  '@astrojs/starlight@0.34.3(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
-      '@astrojs/mdx': 4.2.6(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
+      '@astrojs/mdx': 4.2.6(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
       '@astrojs/sitemap': 3.4.0
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
-      astro-expressive-code: 0.41.2(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
+      astro: 5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
+      astro-expressive-code: 0.41.2(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -2867,7 +2867,7 @@ snapshots:
 
   '@types/fontkit@2.0.8':
     dependencies:
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
 
   '@types/hast@3.0.4':
     dependencies:
@@ -2889,7 +2889,7 @@ snapshots:
 
   '@types/node@17.0.45': {}
 
-  '@types/node@22.15.18':
+  '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
 
@@ -2995,12 +2995,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.2(astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)):
+  astro-expressive-code@0.41.2(astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)):
     dependencies:
-      astro: 5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
+      astro: 5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0)
       rehype-expressive-code: 0.41.2
 
-  astro@5.7.13(@types/node@22.15.18)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0):
+  astro@5.7.14(@types/node@22.15.21)(jiti@2.4.2)(rollup@4.41.0)(typescript@5.8.3)(yaml@2.7.0):
     dependencies:
       '@astrojs/compiler': 2.12.0
       '@astrojs/internal-helpers': 0.6.1
@@ -3032,6 +3032,7 @@ snapshots:
       github-slugger: 2.0.0
       html-escaper: 3.0.3
       http-cache-semantics: 4.2.0
+      import-meta-resolve: 4.1.0
       js-yaml: 4.1.0
       kleur: 4.1.5
       magic-string: 0.30.17
@@ -3054,14 +3055,14 @@ snapshots:
       unist-util-visit: 5.0.0
       unstorage: 1.16.0
       vfile: 6.0.3
-      vite: 6.3.5(@types/node@22.15.18)(jiti@2.4.2)(yaml@2.7.0)
-      vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(yaml@2.7.0))
+      vite: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0)
+      vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
-      yocto-spinner: 0.2.2
-      zod: 3.25.16
-      zod-to-json-schema: 3.24.5(zod@3.25.16)
-      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.25.16)
+      yocto-spinner: 0.2.3
+      zod: 3.25.20
+      zod-to-json-schema: 3.24.5(zod@3.25.20)
+      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.25.20)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
@@ -4779,7 +4780,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(yaml@2.7.0):
+  vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
@@ -4788,14 +4789,14 @@ snapshots:
       rollup: 4.41.0
       tinyglobby: 0.2.13
     optionalDependencies:
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
       fsevents: 2.3.3
       jiti: 2.4.2
       yaml: 2.7.0
 
-  vitefu@1.0.6(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(yaml@2.7.0)):
+  vitefu@1.0.6(vite@6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0)):
     optionalDependencies:
-      vite: 6.3.5(@types/node@22.15.18)(jiti@2.4.2)(yaml@2.7.0)
+      vite: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(yaml@2.7.0)
 
   volar-service-css@0.0.62(@volar/language-service@2.4.14):
     dependencies:
@@ -4970,21 +4971,21 @@ snapshots:
 
   yocto-queue@1.2.1: {}
 
-  yocto-spinner@0.2.2:
+  yocto-spinner@0.2.3:
     dependencies:
       yoctocolors: 2.1.1
 
   yoctocolors@2.1.1: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.16):
+  zod-to-json-schema@3.24.5(zod@3.25.20):
     dependencies:
-      zod: 3.25.16
+      zod: 3.25.20
 
-  zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.25.16):
+  zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.25.20):
     dependencies:
       typescript: 5.8.3
-      zod: 3.25.16
+      zod: 3.25.20
 
-  zod@3.25.16: {}
+  zod@3.25.20: {}
 
   zwitch@2.0.4: {}
