@@ -1525,6 +1525,7 @@ dependencies = [
  "pulldown-cmark",
  "rayon",
  "strum",
+ "text-splitter",
  "thiserror 2.0.12",
  "tiktoken-rs",
  "tokenizers",
