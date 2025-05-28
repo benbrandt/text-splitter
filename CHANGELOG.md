@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.27.0
+
+### What's New
+
+- Updated `tiktoken-rs` to v0.7.0
+
 ## v0.26.0
 
 ### What's New
