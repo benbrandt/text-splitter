@@ -2105,11 +2105,11 @@ packages:
       '@volar/language-service':
         optional: true
 
-  vscode-css-languageservice@6.3.5:
-    resolution: {integrity: sha512-ehEIMXYPYEz/5Svi2raL9OKLpBt5dSAdoCFoLpo0TVFKrVpDemyuQwS3c3D552z/qQCg3pMp8oOLMObY6M3ajQ==}
+  vscode-css-languageservice@6.3.6:
+    resolution: {integrity: sha512-fU4h8mT3KlvfRcbF74v/M+Gzbligav6QMx4AD/7CbclWPYOpGb9kgIswfpZVJbIcOEJJACI9iYizkNwdiAqlHw==}
 
-  vscode-html-languageservice@5.4.0:
-    resolution: {integrity: sha512-9/cbc90BSYCghmHI7/VbWettHZdC7WYpz2g5gBK6UDUI1MkZbM773Q12uAYJx9jzAiNHPpyo6KzcwmcnugncAQ==}
+  vscode-html-languageservice@5.5.0:
+    resolution: {integrity: sha512-No6Er2P2L8IsXDnUFlp0bP4f2sdkJv+zJLZYFhtEQIp+2xNfxY8WYkhSxLJ/7bZhuV/aU55lmGSSHBVxSGer3Q==}
 
   vscode-json-languageservice@4.1.8:
     resolution: {integrity: sha512-0vSpg6Xd9hfV+eZAaYN63xVVMOTmJ4GgHxXnkLCh+9RsQBkWKIghzLhW2B9ebfG+LQQg8uLtsQ2aUKjTgE+QOg==}
@@ -2228,8 +2228,8 @@ packages:
       typescript: ^4.9.4 || ^5.0.2
       zod: ^3
 
-  zod@3.25.48:
-    resolution: {integrity: sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q==}
+  zod@3.25.49:
+    resolution: {integrity: sha512-JMMPMy9ZBk3XFEdbM3iL1brx4NUSejd6xr3ELrrGEfGb355gjhiAWtG3K5o+AViV/3ZfkIrCzXsZn6SbLwTR8Q==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -2269,7 +2269,7 @@ snapshots:
       volar-service-typescript: 0.0.62(@volar/language-service@2.4.14)
       volar-service-typescript-twoslash-queries: 0.0.62(@volar/language-service@2.4.14)
       volar-service-yaml: 0.0.62(@volar/language-service@2.4.14)
-      vscode-html-languageservice: 5.4.0
+      vscode-html-languageservice: 5.5.0
       vscode-uri: 3.1.0
     transitivePeerDependencies:
       - typescript
@@ -2327,7 +2327,7 @@ snapshots:
     dependencies:
       sitemap: 8.0.0
       stream-replace-string: 2.0.0
-      zod: 3.25.48
+      zod: 3.25.49
 
   '@astrojs/starlight@0.34.3(astro@5.8.1(@types/node@22.15.27)(jiti@2.4.2)(rollup@4.41.1)(typescript@5.8.3)(yaml@2.7.0))':
     dependencies:
@@ -3060,9 +3060,9 @@ snapshots:
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
       yocto-spinner: 0.2.3
-      zod: 3.25.48
-      zod-to-json-schema: 3.24.5(zod@3.25.48)
-      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.25.48)
+      zod: 3.25.49
+      zod-to-json-schema: 3.24.5(zod@3.25.49)
+      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.25.49)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
@@ -4800,7 +4800,7 @@ snapshots:
 
   volar-service-css@0.0.62(@volar/language-service@2.4.14):
     dependencies:
-      vscode-css-languageservice: 6.3.5
+      vscode-css-languageservice: 6.3.6
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
@@ -4817,7 +4817,7 @@ snapshots:
 
   volar-service-html@0.0.62(@volar/language-service@2.4.14):
     dependencies:
-      vscode-html-languageservice: 5.4.0
+      vscode-html-languageservice: 5.5.0
       vscode-languageserver-textdocument: 1.0.12
       vscode-uri: 3.1.0
     optionalDependencies:
@@ -4853,14 +4853,14 @@ snapshots:
     optionalDependencies:
       '@volar/language-service': 2.4.14
 
-  vscode-css-languageservice@6.3.5:
+  vscode-css-languageservice@6.3.6:
     dependencies:
       '@vscode/l10n': 0.0.18
       vscode-languageserver-textdocument: 1.0.12
       vscode-languageserver-types: 3.17.5
       vscode-uri: 3.1.0
 
-  vscode-html-languageservice@5.4.0:
+  vscode-html-languageservice@5.5.0:
     dependencies:
       '@vscode/l10n': 0.0.18
       vscode-languageserver-textdocument: 1.0.12
@@ -4977,15 +4977,15 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.48):
+  zod-to-json-schema@3.24.5(zod@3.25.49):
     dependencies:
-      zod: 3.25.48
+      zod: 3.25.49
 
-  zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.25.48):
+  zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.25.49):
     dependencies:
       typescript: 5.8.3
-      zod: 3.25.48
+      zod: 3.25.49
 
-  zod@3.25.48: {}
+  zod@3.25.49: {}
 
   zwitch@2.0.4: {}
