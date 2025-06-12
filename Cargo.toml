@@ -66,7 +66,7 @@ either = "1.15"
 icu_provider = { version = "2.0.0", features = ["sync"] }
 icu_segmenter = "2.0.0"
 itertools = "0.14"
-memchr = "2.6.1"
+memchr = "2.7.5"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 strum = { version = "0.27", features = ["derive"] }
 thiserror = "2.0.12"
