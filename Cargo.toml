@@ -60,7 +60,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ahash = "0.8.7"
+ahash = "0.8.12"
 auto_enums = "0.8"
 either = "1.15"
 icu_provider = { version = "2.0.0", features = ["sync"] }
