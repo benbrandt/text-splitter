@@ -72,6 +72,7 @@ strum = { version = "0.27", features = ["derive"] }
 thiserror = "2.0.12"
 tiktoken-rs = { version = "0.7", optional = true }
 tokenizers = { version = "0.21", default-features = false, optional = true }
+bpe-openai = { version = "0.3", optional = true }
 tree-sitter = { version = "0.25", optional = true }
 
 [dev-dependencies]
@@ -96,6 +97,7 @@ code = ["dep:tree-sitter"]
 markdown = ["dep:pulldown-cmark"]
 tiktoken-rs = ["dep:tiktoken-rs"]
 tokenizers = ["dep:tokenizers", "tokenizers/onig"]
+bpe = ["dep:bpe-openai"]
 
 [lints]
 workspace = true

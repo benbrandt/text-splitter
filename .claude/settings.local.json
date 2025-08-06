@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:crates.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(cargo build:*)",
+      "WebFetch(domain:docs.rs)",
+      "Bash(cargo test:*)",
+      "Bash(cargo run:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}

@@ -17,6 +17,8 @@ mod characters;
 mod huggingface;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
+#[cfg(feature = "bpe")]
+mod bpe;
 
 use crate::trim::Trim;
 pub use characters::Characters;
