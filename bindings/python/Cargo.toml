@@ -24,7 +24,9 @@ text-splitter = { path = "../..", features = [
     "tokenizers",
 ] }
 tiktoken-rs = "0.7"
-tokenizers = { version = "0.21", default-features = false, features = ["onig"] }
+tokenizers = { version = "0.21.1", default-features = false, features = [
+    "onig",
+] }
 tree-sitter = "0.25"
 
 [lints]
