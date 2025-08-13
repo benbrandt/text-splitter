@@ -80,7 +80,7 @@ divan = "0.1.21"
 fake = "4"
 insta = { version = "1.43", features = ["glob", "yaml"] }
 more-asserts = "0.3"
-rayon = "1.10"
+rayon = "1.11"
 tokenizers = { version = "0.21.1", default-features = false, features = [
     "onig",
     "http",
