@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.28.0
+
+### What's New
+
+- Updated `tokenizers` to v0.22
+
 ## v0.27.0
 
 ### What's New
