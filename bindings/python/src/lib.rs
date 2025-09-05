@@ -81,12 +81,12 @@ impl From<PyCodeSplitterError> for PyErr {
 }
 
 /// Newtype around a Python callback so we can `impl ChunkSizer`
-struct CustomCallback(PyObject);
+struct CustomCallback(Py<PyAny>);
 
 impl ChunkSizer for CustomCallback {
     /// Determine the size of a given chunk to use for validation
     fn size(&self, chunk: &str) -> usize {
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             self.0
                 .call(py, (chunk,), None)
                 .unwrap()
@@ -409,7 +409,7 @@ impl PyTextSplitter {
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
     fn from_callback(
-        callback: PyObject,
+        callback: Py<PyAny>,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
@@ -838,7 +838,7 @@ impl PyMarkdownSplitter {
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
     fn from_callback(
-        callback: PyObject,
+        callback: Py<PyAny>,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
@@ -1331,7 +1331,7 @@ impl PyCodeSplitter {
     #[pyo3(signature = (language, callback, capacity, overlap=0, trim=true))]
     fn from_callback(
         language: &Bound<'_, PyAny>,
-        callback: PyObject,
+        callback: Py<PyAny>,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,

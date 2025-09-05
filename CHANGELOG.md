@@ -6,6 +6,10 @@
 
 - Updated `tokenizers` to v0.22
 
+#### Python
+
+- Minimum Python version updated to 3.10
+
 ## v0.27.0
 
 ### What's New
