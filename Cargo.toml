@@ -81,7 +81,7 @@ fake = "4"
 insta = { version = "1.43", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.11"
-tokenizers = { version = "0.22.0", default-features = false, features = [
+tokenizers = { version = "0.22.1", default-features = false, features = [
     "onig",
     "http",
 ] }
