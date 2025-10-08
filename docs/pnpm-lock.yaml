@@ -1671,8 +1671,8 @@ packages:
   sax@1.4.1:
     resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
 
-  semver@7.7.2:
-    resolution: {integrity: sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==}
+  semver@7.7.3:
+    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -2904,7 +2904,7 @@ snapshots:
       picomatch: 4.0.3
       prompts: 2.4.2
       rehype: 13.0.2
-      semver: 7.7.2
+      semver: 7.7.3
       shiki: 3.13.0
       smol-toml: 1.4.2
       tinyexec: 0.3.2
@@ -4366,13 +4366,13 @@ snapshots:
 
   sax@1.4.1: {}
 
-  semver@7.7.2: {}
+  semver@7.7.3: {}
 
   sharp@0.34.4:
     dependencies:
       '@img/colour': 1.0.0
       detect-libc: 2.1.2
-      semver: 7.7.2
+      semver: 7.7.3
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.4
       '@img/sharp-darwin-x64': 0.34.4
@@ -4491,7 +4491,7 @@ snapshots:
 
   typescript-auto-import-cache@0.3.6:
     dependencies:
-      semver: 7.7.2
+      semver: 7.7.3
 
   typescript@5.9.3: {}
 
@@ -4661,7 +4661,7 @@ snapshots:
   volar-service-typescript@0.0.62(@volar/language-service@2.4.23):
     dependencies:
       path-browserify: 1.0.1
-      semver: 7.7.2
+      semver: 7.7.3
       typescript-auto-import-cache: 0.3.6
       vscode-languageserver-textdocument: 1.0.12
       vscode-nls: 5.2.0
