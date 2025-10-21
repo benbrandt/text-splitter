@@ -42,7 +42,7 @@ jobs:
         with:
           key: "py310_linux"
       - name: Build wheels
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         with:
           target: x86_64
           args: --release --out dist
@@ -73,7 +73,7 @@ jobs:
         with:
           key: linux-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -112,7 +112,7 @@ jobs:
         with:
           key: windows-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -149,7 +149,7 @@ jobs:
         with:
           key: macox-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -182,7 +182,7 @@ jobs:
       # There is an issue with sdist build where duplicate readmes are found for some reason.
       - run: rm ../../README.md
       - name: Build sdist
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         with:
           command: sdist
           args: --out dist
@@ -205,7 +205,7 @@ jobs:
           pattern: wheels-*
           merge-multiple: true
       - name: Publish to PyPI
-        uses: PyO3/maturin-action@5f8a1b3b0aad13193f46c9131f9b9e663def8ce5
+        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
         env:
           MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         with:
