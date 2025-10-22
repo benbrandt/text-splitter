@@ -142,7 +142,6 @@ where
     }
 
     fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {
-        #[expect(clippy::range_plus_one)]
         memchr2_iter(b'\n', b'\r', text.as_bytes())
             .map(|i| i..i + 1)
             .coalesce(|a, b| {
