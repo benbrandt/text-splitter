@@ -80,7 +80,7 @@ jobs:
           manylinux: 2_28
           working-directory: bindings/python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-linux-${{ matrix.target }}
           path: bindings/python/dist
@@ -118,7 +118,7 @@ jobs:
           args: --release --out dist
           working-directory: bindings/python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-windows-${{ matrix.target }}
           path: bindings/python/dist
@@ -155,7 +155,7 @@ jobs:
           args: --release --out dist
           working-directory: bindings/python
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-macos-${{ matrix.target }}
           path: bindings/python/dist
@@ -188,7 +188,7 @@ jobs:
           args: --out dist
           working-directory: bindings/python
       - name: Upload sdist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: wheels-sdist
           path: bindings/python/dist
