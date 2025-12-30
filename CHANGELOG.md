@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.29.1
+
+### Python
+
+- Fix missing pyproject.toml
+
 ## v0.29.0
 
 ### What's New
