@@ -204,10 +204,7 @@ jobs:
         with:
           pattern: wheels-*
           merge-multiple: true
-      - name: Publish to PyPI
-        uses: PyO3/maturin-action@86b9d133d34bc1b40018696f782949dac11bd380
+      - uses: astral-sh/setup-uv@681c641aba71e4a1c380be3ab5e12ad51f415867
+      - run: uv publish 'wheels-*/*'
         env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
-        with:
-          command: upload
-          args: --skip-existing *
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
