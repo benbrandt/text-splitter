@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.10"
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -66,7 +66,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -105,7 +105,7 @@ jobs:
         with:
           python-version: "3.13"
           architecture: ${{ matrix.target }}
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -142,7 +142,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -173,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
