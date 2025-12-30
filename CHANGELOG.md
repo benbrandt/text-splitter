@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.29.0
+
+### What's New
+
+- Updated `tiktoken-rs` to v0.9
+- Updated `tree-sitter` to v0.26
+
+### Rust
+
+- MSRV updated to 1.83.0
+
 ## v0.28.0
 
 ### What's New
