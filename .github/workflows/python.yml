@@ -200,7 +200,6 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     needs: [linux, windows, macos, sdist]
     steps:
-      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v6
         with:
           pattern: wheels-*
@@ -212,4 +211,3 @@ jobs:
         with:
           command: upload
           args: --skip-existing *
-          working-directory: bindings/python
