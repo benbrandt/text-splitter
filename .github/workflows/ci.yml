@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -38,7 +38,7 @@ jobs:
     name: Test Coverage
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
           components: llvm-tools-preview
@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
           components: rustfmt, clippy
@@ -107,7 +107,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Install ${{ matrix.msrv }}
-        uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+        uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: ${{ matrix.msrv }}
       - name: cargo +${{ matrix.msrv }} check
@@ -119,7 +119,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@6d653acede28d24f02e3cd41383119e8b1b35921
+      - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: nightly
       - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
