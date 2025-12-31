@@ -200,7 +200,7 @@ jobs:
     if: "startsWith(github.ref, 'refs/tags/v')"
     needs: [linux, windows, macos, sdist]
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           pattern: wheels-*
           merge-multiple: true
