@@ -28,7 +28,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
 
       - name: Run cargo test
         run: cargo test --workspace --all-features
@@ -42,7 +42,7 @@ jobs:
         with:
           toolchain: stable
           components: llvm-tools-preview
-      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
       - uses: taiki-e/install-action@e0db384ad69f5ba2c6dd0129d8934e0d0ba465c1
         with:
           tool: cargo-llvm-cov
@@ -62,7 +62,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
 
       - name: Run cargo test
         run: cargo test --benches --workspace --all-features
@@ -76,7 +76,7 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
 
       - run: cargo fmt -- --check
       - run: cargo clippy --workspace --all-features --all-targets
@@ -122,7 +122,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: nightly
-      - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1
+      - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
 
       - run: cargo generate-lockfile -Z direct-minimal-versions
       - run: cargo test --locked --workspace --all-features
