@@ -78,7 +78,7 @@ tree-sitter = { version = "0.26", optional = true }
 dirs = "6.0.0"
 divan = "0.1.21"
 fake = "4"
-insta = { version = "1.45", features = ["glob", "yaml"] }
+insta = { version = "1.46", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.11"
 tokenizers = { version = "0.22", default-features = false, features = [
