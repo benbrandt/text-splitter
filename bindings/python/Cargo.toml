@@ -15,7 +15,7 @@ name = "semantic_text_splitter"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.27", features = ["abi3-py310"] }
+pyo3 = { version = "0.28", features = ["abi3-py310"] }
 rayon = "1.11"
 text-splitter = { path = "../..", features = [
     "code",
