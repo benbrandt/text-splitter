@@ -1,10 +1,12 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(docsrs, feature(doc_auto_cfg, doc_cfg))]
 
+mod cancellation;
 mod chunk_size;
 mod splitter;
 mod trim;
 
+pub use cancellation::CancellationToken;
 pub use chunk_size::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkConfig, ChunkConfigError, ChunkSizer,
 };
