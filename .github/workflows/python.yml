@@ -42,7 +42,7 @@ jobs:
         with:
           key: "py310_linux"
       - name: Build wheels
-        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad
         with:
           target: x86_64
           args: --release --out dist
@@ -73,7 +73,7 @@ jobs:
         with:
           key: linux-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -112,7 +112,7 @@ jobs:
         with:
           key: windows-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -149,7 +149,7 @@ jobs:
         with:
           key: macox-${{ matrix.target }}
       - name: Build wheels
-        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad
         with:
           target: ${{ matrix.target }}
           args: --release --out dist
@@ -182,7 +182,7 @@ jobs:
       # There is an issue with sdist build where duplicate readmes are found for some reason.
       - run: rm ../../README.md
       - name: Build sdist
-        uses: PyO3/maturin-action@b1bd829e37fef14c63f19162034228a2f3dc1021
+        uses: PyO3/maturin-action@04ac600d27cdf7a9a280dadf7147097c42b757ad
         with:
           command: sdist
           args: --out dist
