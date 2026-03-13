@@ -204,7 +204,7 @@ jobs:
         with:
           pattern: wheels-*
           merge-multiple: true
-      - uses: astral-sh/setup-uv@6ee6290f1cbc4156c0bdd66691b2c144ef8df19a
+      - uses: astral-sh/setup-uv@e06108dd0aef18192324c70427afc47652e63a82
       - run: uv publish 'wheels-*/*'
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
