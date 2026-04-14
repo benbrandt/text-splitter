@@ -16,7 +16,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.28", features = ["abi3-py310"] }
-rayon = "1.11"
+rayon = "1.12"
 text-splitter = { path = "../..", features = [
     "code",
     "markdown",
