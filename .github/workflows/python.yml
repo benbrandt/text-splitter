@@ -205,11 +205,20 @@ jobs:
       run:
         working-directory: .
     steps:
+      # Flatten every wheel artifact and the sdist into dist/ so `uv publish`
+      # can pick them up with its default dist/* path. This matches the
+      # "download all artifacts to dist/* and run uv publish" workflow
+      # recommended by uv itself.
       - uses: actions/download-artifact@v8
         with:
           pattern: wheels-*
+          path: dist
           merge-multiple: true
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
-      - run: uv publish 'wheels-*/*'
+        with:
+          # No checkout happens here, so there are no dependency files to
+          # cache against. Disable the cache to avoid warnings.
+          enable-cache: "false"
+      - run: uv publish
         env:
           UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
