@@ -10,7 +10,20 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dynamic = ["version"]
+# Everything below is sourced from Cargo.toml (workspace.package) and the
+# README.md in this directory. Since maturin 1.9 (PyO3/maturin#2672), fields
+# are only merged from Cargo.toml when they are declared dynamic here, per
+# PEP 621. Without this list the wheel ships with no description, README,
+# author, keywords, license, or project URLs and the PyPI page renders blank.
+dynamic = [
+    "version",
+    "description",
+    "readme",
+    "authors",
+    "keywords",
+    "license",
+    "urls",
+]
 
 [project.optional-dependencies]
 test = ["pytest", "tokenizers", "tree-sitter-python"]
