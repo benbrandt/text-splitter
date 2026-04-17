@@ -13,7 +13,7 @@ use text_splitter::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkCharIndex, ChunkConfig, ChunkConfigError,
     ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
 };
-use tiktoken_rs::get_bpe_from_model;
+use tiktoken_rs::bpe_for_model;
 use tokenizers::Tokenizer;
 use tree_sitter::{ffi::TSLanguage, Language};
 
@@ -372,8 +372,7 @@ impl PyTextSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer =
-            get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
+        let tokenizer = bpe_for_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
             splitter: TextSplitter::new(
@@ -801,8 +800,7 @@ impl PyMarkdownSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer =
-            get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
+        let tokenizer = bpe_for_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
             splitter: MarkdownSplitter::new(
@@ -1289,8 +1287,7 @@ impl PyCodeSplitter {
         overlap: usize,
         trim: bool,
     ) -> PyResult<Self> {
-        let tokenizer =
-            get_bpe_from_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
+        let tokenizer = bpe_for_model(model).map_err(|e| PyException::new_err(format!("{e}")))?;
 
         Ok(Self {
             splitter: CodeSplitter::new(

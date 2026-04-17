@@ -1,6 +1,7 @@
 allowed-duplicate-crates = [
     "base64",
     "getrandom",
+    "hashbrown",
     "wasi",
     "webpki-roots",
     "windows-link",

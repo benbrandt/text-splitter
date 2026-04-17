@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.30.0
+
+### What's New
+
+- updated `tiktoken-rs` to v0.11
+
+#### Rust
+
+- MSRV updated to 1.86.0
+
 ## v0.29.1
 
 ### Python
