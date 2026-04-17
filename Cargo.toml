@@ -51,7 +51,7 @@ exclude = [
     "*.yml",
     "*.yaml",
 ]
-rust-version = "1.83.0"
+rust-version = "1.86.0"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -70,7 +70,7 @@ memchr = "2.8.0"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 strum = { version = "0.28", features = ["derive"] }
 thiserror = "2.0.18"
-tiktoken-rs = { version = "0.9", optional = true }
+tiktoken-rs = { version = "0.11", optional = true }
 tokenizers = { version = "0.22", default-features = false, optional = true }
 tree-sitter = { version = "0.26", optional = true }
 
