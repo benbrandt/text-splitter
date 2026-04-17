@@ -199,6 +199,11 @@ jobs:
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/v')"
     needs: [linux, windows, macos, sdist]
+    # This job doesn't check out the repo, so override the workflow-level
+    # default that sets the working directory to bindings/python.
+    defaults:
+      run:
+        working-directory: .
     steps:
       - uses: actions/download-artifact@v8
         with:
