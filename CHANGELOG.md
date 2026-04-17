@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.30.1
+
+#### Python
+
+- Fix missing Python release documentation
+
 ## v0.30.0
 
 ### What's New
