@@ -71,7 +71,7 @@ pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 strum = { version = "0.28", features = ["derive"] }
 thiserror = "2.0.18"
 tiktoken-rs = { version = "0.11", optional = true }
-tokenizers = { version = "0.22", default-features = false, optional = true }
+tokenizers = { version = "0.23", default-features = false, optional = true }
 tree-sitter = { version = "0.26", optional = true }
 
 [dev-dependencies]
@@ -81,7 +81,7 @@ fake = "5"
 insta = { version = "1.47", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.11"
-tokenizers = { version = "0.22", default-features = false, features = [
+tokenizers = { version = "0.23", default-features = false, features = [
     "onig",
     "http",
 ] }
