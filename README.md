@@ -201,8 +201,8 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 
 | Dependency Feature | Version Supported | Description                                                                                                                                                                    |
 | ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tiktoken-rs`      | `^0.11.0`         | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for `OpenAI` models.                                   |
-| `tokenizers`       | `^0.22.0`         | Enables `(Text/Markdown)Splitter::new` to take `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
+| `tiktoken-rs`      | `^0.12.0`         | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for `OpenAI` models.                                   |
+| `tokenizers`       | `^0.23.0`         | Enables `(Text/Markdown)Splitter::new` to take `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
 
 ## Inspiration
 
