@@ -156,6 +156,10 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+# If your tokenizer has truncation enabled, disable it before passing it to
+# the splitter. Otherwise chunk sizes can be capped by the tokenizer's
+# truncation limit.
+tokenizer.no_truncation()
 splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
 chunks = splitter.chunks("your document text")
@@ -222,7 +226,8 @@ impl PyTextSplitter {
 
     Args:
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
-            chunk.
+            chunk. If the tokenizer has truncation enabled, disable it before constructing a
+            splitter if chunk sizes should reflect the full input text.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
             single int, then chunks will be filled up as much as possible, without going over
             that number. If a tuple of two integers is provided, a chunk will be considered
@@ -581,6 +586,10 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+# If your tokenizer has truncation enabled, disable it before passing it to
+# the splitter. Otherwise chunk sizes can be capped by the tokenizer's
+# truncation limit.
+tokenizer.no_truncation()
 splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
 chunks = splitter.chunks("# Header\n\nyour document text")
@@ -650,7 +659,8 @@ impl PyMarkdownSplitter {
 
     Args:
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
-            chunk.
+            chunk. If the tokenizer has truncation enabled, disable it before constructing a
+            splitter if chunk sizes should reflect the full input text.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
             single int, then chunks will be filled up as much as possible, without going over
             that number. If a tuple of two integers is provided, a chunk will be considered
@@ -1018,6 +1028,10 @@ import tree_sitter_python
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+# If your tokenizer has truncation enabled, disable it before passing it to
+# the splitter. Otherwise chunk sizes can be capped by the tokenizer's
+# truncation limit.
+tokenizer.no_truncation()
 splitter = CodeSplitter.from_huggingface_tokenizer(tree_sitter_python.language(), tokenizer, max_tokens)
 
 chunks = splitter.chunks("# Header\n\nyour document text")
@@ -1121,7 +1135,8 @@ impl PyCodeSplitter {
         language (int): The [tree-sitter language](https://tree-sitter.github.io/tree-sitter/#parsers)
             to use for parsing the code.
         tokenizer (Tokenizer): A `tokenizers.Tokenizer` you want to use to count tokens for each
-            chunk.
+            chunk. If the tokenizer has truncation enabled, disable it before constructing a
+            splitter if chunk sizes should reflect the full input text.
         capacity (int | (int, int)): The capacity of tokens in each chunk. If a
             single int, then chunks will be filled up as much as possible, without going over
             that number. If a tuple of two integers is provided, a chunk will be considered

@@ -50,7 +50,12 @@ use text_splitter::{ChunkConfig, TextSplitter};
 // trait from the text_splitter crate.
 use tokenizers::Tokenizer;
 
-let tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+let mut tokenizer = Tokenizer::from_pretrained("bert-base-cased", None).unwrap();
+// If your tokenizer has truncation enabled, disable it before passing it to
+// the splitter. Otherwise chunk sizes can be capped by the tokenizer's
+// truncation limit.
+tokenizer.with_truncation(None).unwrap();
+
 let max_tokens = 1000;
 let splitter = TextSplitter::new(ChunkConfig::new(max_tokens).with_sizer(tokenizer));
 
