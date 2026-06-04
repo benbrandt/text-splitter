@@ -4,7 +4,8 @@ use crate::ChunkSizer;
 
 /// Compute the number of tokens that exist within an entire [`Encoding`] object.
 ///
-/// Take into account [`Encoding::get_overflowing`] for cases where the [`Tokenizer`] producing the [`Encoding`] has truncation parameters set.
+/// Take into account [`Encoding::get_overflowing`] for cases where the [`Tokenizer`] producing the
+/// [`Encoding`] has truncation parameters set.
 fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
     let base = encoding
         .get_ids()
@@ -26,6 +27,10 @@ fn num_tokens_with_overflow(encoding: &Encoding, pad_id: Option<u32>) -> usize {
 
 impl ChunkSizer for Tokenizer {
     /// Returns the number of tokens in a given text after tokenization.
+    ///
+    /// If the tokenizer has truncation enabled, the returned size may be truncated by the
+    /// tokenizer. Disable truncation on the tokenizer before constructing a splitter if you need
+    /// chunk sizes to reflect the full input text.
     ///
     /// # Panics
     ///
@@ -69,11 +74,25 @@ mod tests {
     }
 
     #[test]
-    fn handle_truncation() {
+    fn returns_truncated_size_when_tokenizer_has_truncation() {
         let tokenizer = Tokenizer::from_pretrained("sentence-transformers/all-MiniLM-L6-v2", None)
             .expect("Could not load tokenizer 'sentence-transformers/all-MiniLM-L6-v2'");
 
-        // Need to ensure chunk is large enough to cause Encoding overflows.
+        assert_eq!(
+            tokenizer.size("An apple a day keeps the doctor away.".repeat(100).as_str()),
+            128
+        );
+    }
+
+    #[test]
+    fn returns_full_size_when_truncation_disabled() {
+        let mut tokenizer =
+            Tokenizer::from_pretrained("sentence-transformers/all-MiniLM-L6-v2", None)
+                .expect("Could not load tokenizer 'sentence-transformers/all-MiniLM-L6-v2'");
+        tokenizer
+            .with_truncation(None)
+            .expect("Could not disable tokenizer truncation");
+
         assert_eq!(
             tokenizer.size("An apple a day keeps the doctor away.".repeat(100).as_str()),
             900

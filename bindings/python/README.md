@@ -50,6 +50,10 @@ from tokenizers import Tokenizer
 # Maximum number of tokens in a chunk
 max_tokens = 1000
 tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
+# If your tokenizer has truncation enabled, disable it before passing it to
+# the splitter. Otherwise chunk sizes can be capped by the tokenizer's
+# truncation limit.
+tokenizer.no_truncation()
 splitter = TextSplitter.from_huggingface_tokenizer(tokenizer, max_tokens)
 
 chunks = splitter.chunks("your document text")
