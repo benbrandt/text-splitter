@@ -86,6 +86,51 @@ mod text {
             ))
         });
     }
+
+    /// Variant of the input without blank lines except a single trailing one, emulating
+    /// text extracted from print-layout documents (PDF). The distant paragraph-level
+    /// separator used to make chunking super-linear with tokenizer-based sizers.
+    #[cfg(any(feature = "tiktoken-rs", feature = "tokenizers"))]
+    fn pathological(text: &str) -> String {
+        let mut text = text.replace("\r\n", "\n");
+        while text.contains("\n\n") {
+            text = text.replace("\n\n", "\n");
+        }
+        text.push_str("\n\nTHE END.");
+        text
+    }
+
+    #[cfg(any(feature = "tiktoken-rs", feature = "tokenizers"))]
+    fn bench_pathological<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
+    where
+        G: Fn() -> TextSplitter<S> + Sync,
+        S: ChunkSizer,
+    {
+        bencher
+            .with_inputs(|| (gen_splitter(), pathological(FILES.get(filename).unwrap())))
+            .input_counter(|(_, text)| BytesCount::of_str(text))
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text).for_each(black_box_drop);
+            });
+    }
+
+    #[cfg(feature = "tiktoken-rs")]
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn tiktoken_pathological<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench_pathological(bencher, filename, || {
+            TextSplitter::new(ChunkConfig::new(N).with_sizer(tiktoken_rs::cl100k_base().unwrap()))
+        });
+    }
+
+    #[cfg(feature = "tokenizers")]
+    #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
+    fn tokenizers_pathological<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench_pathological(bencher, filename, || {
+            TextSplitter::new(ChunkConfig::new(N).with_sizer(
+                tokenizers::Tokenizer::from_pretrained("bert-base-cased", None).unwrap(),
+            ))
+        });
+    }
 }
 
 #[cfg(feature = "markdown")]

@@ -108,6 +108,38 @@ fn trim() {
     });
 }
 
+/// Emulates text extracted from print-layout documents (PDF): hard line breaks but no
+/// blank lines, except a single paragraph-level separator far ahead at the very end.
+/// Sizing the text up to such a distant separator for every chunk used to make chunking
+/// super-linear in the distance to the next separator.
+#[cfg(feature = "tokenizers")]
+#[test]
+fn text_without_paragraph_breaks() {
+    let mut text = fs::read_to_string("tests/inputs/text/romeo_and_juliet.txt")
+        .unwrap()
+        .replace("\r\n", "\n");
+    while text.contains("\n\n") {
+        text = text.replace("\n\n", "\n");
+    }
+    text.push_str("\n\nTHE END.");
+
+    let config = ChunkConfig::new(64)
+        .with_sizer(&*HUGGINGFACE_TOKENIZER)
+        .with_trim(false);
+    let capacity = *config.capacity();
+    let splitter = TextSplitter::new(config);
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+    assert_eq!(chunks.join(""), text);
+    for chunk in &chunks {
+        assert!(capacity.fits(HUGGINGFACE_TOKENIZER.size(chunk)).is_le());
+    }
+    insta::assert_yaml_snapshot!(
+        "romeo_and_juliet_pathological_Tokenizers_trim_false_64",
+        chunks
+    );
+}
+
 #[test]
 fn range_trim_false() {
     insta::glob!("inputs/text/*.txt", |path| {
