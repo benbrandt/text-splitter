@@ -392,6 +392,11 @@ where
     }
 }
 
+/// Conservative upper bound of bytes per size unit, used to bound the prefix probe in
+/// [`MemoizedChunkSizer::fits_with_early_exit`]. Only chunks larger than twice
+/// `capacity.max * EARLY_EXIT_PROBE_FACTOR` bytes are checked via a prefix probe first.
+const EARLY_EXIT_PROBE_FACTOR: usize = 32;
+
 /// A memoized chunk sizer that caches the size of chunks.
 /// Very helpful when the same chunk is being validated multiple times, which
 /// happens often, and can be expensive to compute, such as with tokenizers.
@@ -428,6 +433,43 @@ where
             .or_insert_with(|| self.sizer.size(chunk))
     }
 
+    /// Determine how a given chunk fits within the capacity, sizing only a prefix of very
+    /// large chunks when that already proves the chunk is too big.
+    ///
+    /// The prefix always ends at an ASCII whitespace boundary, so for sizers where a
+    /// whitespace-delimited prefix never sizes larger than the whole chunk (such as
+    /// [`Characters`] and whitespace-pretokenizing tokenizers) the classification is
+    /// identical to sizing the entire chunk. If no whitespace cut point exists, or the
+    /// prefix alone doesn't already exceed the capacity, the entire chunk is sized as
+    /// usual.
+    ///
+    /// This keeps the cost of checking oversized semantic levels proportional to the
+    /// chunk capacity instead of to the length of the remaining document.
+    pub fn fits_with_early_exit(
+        &mut self,
+        offset: usize,
+        chunk: &str,
+        capacity: &ChunkCapacity,
+        trim: Trim,
+    ) -> Ordering {
+        let probe_len = capacity.max.saturating_mul(EARLY_EXIT_PROBE_FACTOR);
+        if chunk.len() > probe_len.saturating_mul(2) {
+            let mut window_end = probe_len;
+            while !chunk.is_char_boundary(window_end) {
+                window_end -= 1;
+            }
+            if let Some(cut) = chunk[..window_end].rfind([' ', '\n', '\t', '\r']) {
+                if cut > 0 {
+                    let prefix_size = self.chunk_size(offset, &chunk[..cut], trim);
+                    if capacity.fits(prefix_size).is_gt() {
+                        return Ordering::Greater;
+                    }
+                }
+            }
+        }
+        capacity.fits(self.chunk_size(offset, chunk, trim))
+    }
+
     /// Find the best level to start splitting the text
     pub fn find_correct_level<'text, L: fmt::Debug>(
         &mut self,
@@ -453,8 +495,7 @@ where
             // Skip tokenizing levels that we know are too small anyway.
             let len = str.len();
             if len > capacity.max {
-                let chunk_size = self.chunk_size(offset, str, trim);
-                let fits = capacity.fits(chunk_size);
+                let fits = self.fits_with_early_exit(offset, str, capacity, trim);
                 // If this no longer fits, we use the level we are at.
                 if fits.is_gt() {
                     max_offset = Some(offset + len);
@@ -666,6 +707,111 @@ mod tests {
             memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
             10
         );
+    }
+
+    #[derive(Default)]
+    struct RecordingSizer {
+        chunk_lens: RefCell<Vec<usize>>,
+    }
+
+    impl ChunkSizer for RecordingSizer {
+        // Character count, recording the length of every chunk it is asked to size
+        fn size(&self, chunk: &str) -> usize {
+            self.chunk_lens.borrow_mut().push(chunk.len());
+            Characters.size(chunk)
+        }
+    }
+
+    #[test]
+    fn early_exit_skips_sizing_full_oversized_chunk() {
+        let sizer = RecordingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = "word ".repeat(10_000);
+        let capacity = ChunkCapacity::new(10);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        assert_eq!(fits, Ordering::Greater);
+        let max_len = sizer.chunk_lens.borrow().iter().copied().max().unwrap();
+        assert!(max_len <= capacity.max() * EARLY_EXIT_PROBE_FACTOR);
+    }
+
+    #[test]
+    fn early_exit_inconclusive_probe_sizes_full_chunk() {
+        #[derive(Default)]
+        struct CountXs(RefCell<Vec<usize>>);
+
+        impl ChunkSizer for CountXs {
+            fn size(&self, chunk: &str) -> usize {
+                self.0.borrow_mut().push(chunk.len());
+                chunk.matches('X').count()
+            }
+        }
+
+        let sizer = CountXs::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = format!("{}{}", "a ".repeat(5_000), "X ".repeat(50));
+        let capacity = ChunkCapacity::new(10);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        // The prefix probe didn't already exceed the capacity, so the entire chunk must
+        // have been sized for an exact result.
+        assert_eq!(fits, Ordering::Greater);
+        assert!(sizer.0.borrow().contains(&chunk.len()));
+    }
+
+    #[test]
+    fn early_exit_disengaged_for_chunks_near_capacity() {
+        let sizer = RecordingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = "word ".repeat(10);
+        let capacity = ChunkCapacity::new(10);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(sizer.chunk_lens.borrow().as_slice(), &[chunk.len()]);
+    }
+
+    #[test]
+    fn early_exit_disengaged_for_unbounded_capacity() {
+        let sizer = RecordingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = "word ".repeat(10_000);
+        let capacity = ChunkCapacity::from(10..);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        assert_eq!(fits, Ordering::Equal);
+        assert_eq!(sizer.chunk_lens.borrow().as_slice(), &[chunk.len()]);
+    }
+
+    #[test]
+    fn early_exit_without_whitespace_sizes_full_chunk() {
+        let sizer = RecordingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = "x".repeat(50_000);
+        let capacity = ChunkCapacity::new(10);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(sizer.chunk_lens.borrow().as_slice(), &[chunk.len()]);
+    }
+
+    #[test]
+    fn early_exit_probe_respects_char_boundaries() {
+        let sizer = RecordingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        // Multi-byte chars so the probe window cannot end on the initial byte offset
+        let chunk = "日".repeat(20_000);
+        let capacity = ChunkCapacity::new(10);
+
+        let fits = memoized_sizer.fits_with_early_exit(0, &chunk, &capacity, Trim::None);
+
+        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(sizer.chunk_lens.borrow().as_slice(), &[chunk.len()]);
     }
 
     #[test]
