@@ -140,6 +140,43 @@ fn text_without_paragraph_breaks() {
     );
 }
 
+/// Variant of [`text_without_paragraph_breaks`] for PDF-extracted text whose intra-paragraph
+/// whitespace is non-breaking spaces (U+00A0) rather than ASCII spaces: the body has no ASCII
+/// whitespace and the only paragraph separator is far ahead at the end, so the paragraph
+/// level's first section spans the whole body. `find_correct_level` must size that multi-
+/// kilobyte section to reject the level; an ASCII-only early-exit cut finds no boundary in the
+/// NBSP body and falls back to sizing the whole span per chunk (super-linear). The Unicode
+/// whitespace cut bounds the probe to the window, and boundaries stay correct because the
+/// prefix ends at a whitespace the sizer pre-tokenizes on.
+#[cfg(feature = "tokenizers")]
+#[test]
+fn text_with_only_unicode_whitespace() {
+    let body: String = fs::read_to_string("tests/inputs/text/romeo_and_juliet.txt")
+        .unwrap()
+        .chars()
+        .map(|c| {
+            if c.is_ascii_whitespace() {
+                '\u{00A0}'
+            } else {
+                c
+            }
+        })
+        .collect();
+    let text = format!("{body}\n\nTHE END.");
+
+    let config = ChunkConfig::new(64)
+        .with_sizer(&*HUGGINGFACE_TOKENIZER)
+        .with_trim(false);
+    let capacity = *config.capacity();
+    let splitter = TextSplitter::new(config);
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+    assert_eq!(chunks.join(""), text);
+    for chunk in &chunks {
+        assert!(capacity.fits(HUGGINGFACE_TOKENIZER.size(chunk)).is_le());
+    }
+}
+
 #[test]
 fn range_trim_false() {
     insta::glob!("inputs/text/*.txt", |path| {

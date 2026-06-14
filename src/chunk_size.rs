@@ -436,7 +436,7 @@ where
     /// Determine how a given chunk fits within the capacity, sizing only a prefix of very
     /// large chunks when that already proves the chunk is too big.
     ///
-    /// The prefix always ends at an ASCII whitespace boundary, so for sizers where a
+    /// The prefix always ends at a Unicode whitespace boundary, so for sizers where a
     /// whitespace-delimited prefix never sizes larger than the whole chunk (such as
     /// [`Characters`] and whitespace-pretokenizing tokenizers) the classification is
     /// identical to sizing the entire chunk. If no whitespace cut point exists, or the
@@ -458,7 +458,7 @@ where
             while !chunk.is_char_boundary(window_end) {
                 window_end -= 1;
             }
-            if let Some(cut) = chunk[..window_end].rfind([' ', '\n', '\t', '\r']) {
+            if let Some(cut) = chunk[..window_end].rfind(|c: char| c.is_whitespace()) {
                 if cut > 0 {
                     let prefix_size = self.chunk_size(offset, &chunk[..cut], trim);
                     if capacity.fits(prefix_size).is_gt() {
