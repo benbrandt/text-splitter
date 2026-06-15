@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.32.0
+
+### What's New
+
+#### Python
+
+- Build `abi3t` wheels for free-threaded Python.
+- Release the GIL while loading Rust-backed tokenizers and running Rust-only chunking calls for `TextSplitter`, `MarkdownSplitter`, and `CodeSplitter`. Callback-backed splitters continue to hold the GIL while calling into Python.
+
 ## v0.31.0
 
 ### Breaking Changes
