@@ -1,11 +1,45 @@
 //! Test for `TextSplitter` behavior.
-use std::fs;
+use std::{
+    fs,
+    sync::atomic::{AtomicUsize, Ordering},
+};
 
 use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
-use text_splitter::{ChunkConfig, TextSplitter};
+use text_splitter::{ChunkConfig, ChunkSizer, TextSplitter};
+
+#[derive(Default)]
+struct RecordingWordSizer {
+    max_bytes: AtomicUsize,
+}
+
+impl RecordingWordSizer {
+    fn max_bytes(&self) -> usize {
+        self.max_bytes.load(Ordering::SeqCst)
+    }
+}
+
+impl ChunkSizer for RecordingWordSizer {
+    fn size(&self, chunk: &str) -> usize {
+        self.max_bytes.fetch_max(chunk.len(), Ordering::SeqCst);
+        chunk.split_whitespace().count()
+    }
+}
+
+fn text_with_distant_paragraph_separator(line_count: usize) -> String {
+    let line = "alpha beta gamma delta epsilon zeta eta theta";
+    let mut text = String::new();
+    for i in 0..line_count {
+        if i > 0 {
+            text.push('\n');
+        }
+        text.push_str(line);
+    }
+    text.push_str("\n\nTHE END.");
+    text
+}
 
 #[test]
 fn chunk_by_paragraphs() {
@@ -78,6 +112,40 @@ fn chunk_capacity_range() {
     assert_eq!(vec!["12345", "\n12345"], chunks);
 }
 
+#[test]
+fn distant_higher_newline_does_not_size_the_whole_section() {
+    let text = text_with_distant_paragraph_separator(1_000);
+    let sizer = RecordingWordSizer::default();
+    let splitter = TextSplitter::new(ChunkConfig::new(32).with_sizer(&sizer).with_trim(false));
+
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+    assert_eq!(chunks.join(""), text);
+    assert!(
+        sizer.max_bytes() < text.len() / 4,
+        "largest sizing call was {} bytes for {} bytes of input",
+        sizer.max_bytes(),
+        text.len()
+    );
+}
+
+#[test]
+fn distant_fallback_separator_does_not_size_the_whole_section() {
+    let text = (0..2000).map(|i| format!("word{i}")).join(" ") + ".";
+    let sizer = RecordingWordSizer::default();
+    let splitter = TextSplitter::new(ChunkConfig::new(32).with_sizer(&sizer).with_trim(false));
+
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+
+    assert_eq!(chunks.join(""), text);
+    assert!(
+        sizer.max_bytes() < text.len() / 4,
+        "largest sizing call was {} bytes for {} bytes of input",
+        sizer.max_bytes(),
+        text.len()
+    );
+}
+
 #[cfg(feature = "tokenizers")]
 #[test]
 fn huggingface_small_chunk_behavior() {
@@ -108,6 +176,30 @@ fn huggingface_tokenizer_with_padding() {
             "This is an example text\n"
         ]
     );
+}
+
+#[cfg(feature = "tiktoken-rs")]
+#[test]
+fn tiktoken_word_that_fits_is_not_rejected_by_larger_prefixes() {
+    let tokenizer = tiktoken_rs::cl100k_base().unwrap();
+    let splitter = TextSplitter::new(ChunkConfig::new(1).with_sizer(tokenizer).with_trim(false));
+    let text = "individual";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, [text]);
+}
+
+#[cfg(feature = "tiktoken-rs")]
+#[test]
+fn tiktoken_punctuation_that_fits_is_not_rejected_by_larger_prefixes() {
+    let tokenizer = tiktoken_rs::cl100k_base().unwrap();
+    let splitter = TextSplitter::new(ChunkConfig::new(1).with_sizer(tokenizer).with_trim(false));
+    let text = "!--";
+
+    let chunks = splitter.chunks(text).collect::<Vec<_>>();
+
+    assert_eq!(chunks, [text]);
 }
 
 #[test]

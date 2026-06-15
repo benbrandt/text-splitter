@@ -457,6 +457,7 @@ where
         self.next_sections.clear();
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
+        let mut lower_level = None;
 
         let (semantic_level, mut max_offset) = self.chunk_sizer.find_correct_level(
             self.cursor,
@@ -464,11 +465,32 @@ where
             self.semantic_split
                 .levels_in_remaining_text(self.cursor)
                 .filter_map(|level| {
-                    self.semantic_split
+                    let first_chunk = self
+                        .semantic_split
                         .semantic_chunks(self.cursor, remaining_text, level)
-                        .next()
-                        .map(|(_, str)| (level, str))
+                        .next();
+
+                    let result = first_chunk.map(|(_, str)| {
+                        let candidate_lower_level = lower_level;
+                        (level, str, candidate_lower_level)
+                    });
+
+                    lower_level = Some(level);
+                    result
                 }),
+            |lower_level, chunk_end| {
+                lower_level.map_or_else(
+                    || Either::Left(std::iter::empty()),
+                    |lower_level| {
+                        Either::Right(
+                            self.semantic_split
+                                .semantic_chunks(self.cursor, remaining_text, lower_level)
+                                .map(|(offset, text)| offset + text.len())
+                                .take_while(move |end| *end <= chunk_end),
+                        )
+                    },
+                )
+            },
             self.trim,
         );
 
@@ -486,8 +508,21 @@ where
                     level
                         .sections(remaining_text)
                         .next()
-                        .map(|(_, str)| (level, str))
+                        .map(|(_, str)| (level, str, level.boundary_level_for_probe()))
                 }),
+                |lower_level, chunk_end| {
+                    lower_level.map_or_else(
+                        || Either::Left(std::iter::empty()),
+                        |lower_level| {
+                            Either::Right(
+                                lower_level
+                                    .sections(remaining_text)
+                                    .map(|(offset, text)| self.cursor + offset + text.len())
+                                    .take_while(move |end| *end <= chunk_end),
+                            )
+                        },
+                    )
+                },
                 self.trim,
             );
 
