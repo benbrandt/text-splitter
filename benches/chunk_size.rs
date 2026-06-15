@@ -9,6 +9,7 @@ use divan::AllocProfiler;
 static ALLOC: AllocProfiler = AllocProfiler::system();
 
 const CHUNK_SIZES: [usize; 3] = [64, 1024, 16384];
+const DISTANT_BOUNDARY_CHUNK_SIZES: [usize; 2] = [32, 128];
 
 fn main() {
     // Run registered benchmarks.
@@ -47,7 +48,16 @@ mod text {
     use divan::{black_box_drop, counter::BytesCount, Bencher};
     use text_splitter::{ChunkConfig, ChunkSizer, TextSplitter};
 
-    use crate::{CHUNK_SIZES, FILES, TEXT_FILENAMES};
+    use crate::{CHUNK_SIZES, DISTANT_BOUNDARY_CHUNK_SIZES, FILES, TEXT_FILENAMES};
+
+    #[derive(Clone, Copy)]
+    struct WordCount;
+
+    impl ChunkSizer for WordCount {
+        fn size(&self, chunk: &str) -> usize {
+            chunk.split_whitespace().count()
+        }
+    }
 
     fn bench<S, G>(bencher: Bencher<'_, '_>, filename: &str, gen_splitter: G)
     where
@@ -62,9 +72,37 @@ mod text {
             });
     }
 
+    fn text_with_distant_paragraph_separator() -> String {
+        let line = "alpha beta gamma delta epsilon zeta eta theta";
+        let mut text = String::new();
+        for i in 0..2_000 {
+            if i > 0 {
+                text.push('\n');
+            }
+            text.push_str(line);
+        }
+        text.push_str("\n\nTHE END.");
+        text
+    }
+
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || TextSplitter::new(N));
+    }
+
+    #[divan::bench(consts = DISTANT_BOUNDARY_CHUNK_SIZES)]
+    fn word_count_distant_paragraph_separator<const N: usize>(bencher: Bencher<'_, '_>) {
+        bencher
+            .with_inputs(|| {
+                (
+                    TextSplitter::new(ChunkConfig::new(N).with_sizer(WordCount).with_trim(false)),
+                    text_with_distant_paragraph_separator(),
+                )
+            })
+            .input_counter(|(_, text)| BytesCount::of_str(text))
+            .bench_values(|(splitter, text)| {
+                splitter.chunks(&text).for_each(black_box_drop);
+            });
     }
 
     #[cfg(feature = "tiktoken-rs")]

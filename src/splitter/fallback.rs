@@ -33,6 +33,13 @@ pub enum FallbackLevel {
 }
 
 impl FallbackLevel {
+    pub fn boundary_level_for_probe(self) -> Option<Self> {
+        match self {
+            Self::Sentence => Some(Self::Word),
+            Self::Char | Self::GraphemeCluster | Self::Word => None,
+        }
+    }
+
     #[auto_enum(Iterator)]
     pub fn sections(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
         match self {
