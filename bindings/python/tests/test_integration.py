@@ -1,7 +1,51 @@
+import asyncio
+import time
+from contextlib import suppress
+
 import pytest
-from semantic_text_splitter import CodeSplitter, MarkdownSplitter, TextSplitter
-from tokenizers import Tokenizer  # type: ignore
 import tree_sitter_python
+from tokenizers import Tokenizer  # type: ignore
+
+from semantic_text_splitter import CodeSplitter, MarkdownSplitter, TextSplitter
+
+
+def make_markdown(target_bytes: int) -> str:
+    para = "lorem ipsum dolor sit amet consectetur adipiscing elit\n\n"
+    blocks: list[str] = []
+    total = 0
+    i = 0
+    while total < target_bytes:
+        block = f"## Section {i}\n\n" + para * 3
+        blocks.append(block)
+        total += len(block.encode())
+        i += 1
+    return "".join(blocks)
+
+
+async def record_gaps(gaps: list[float]) -> None:
+    last = time.perf_counter()
+    while True:
+        await asyncio.sleep(0.02)
+        now = time.perf_counter()
+        gaps.append(now - last)
+        last = now
+
+
+async def max_event_loop_gap_during_worker_call(call) -> tuple[float, float]:
+    gaps: list[float] = []
+    task = asyncio.create_task(record_gaps(gaps))
+    await asyncio.sleep(0.1)
+
+    started_at = time.perf_counter()
+    await asyncio.to_thread(call)
+    duration = time.perf_counter() - started_at
+
+    await asyncio.sleep(0.1)
+    _ = task.cancel()
+    with suppress(asyncio.CancelledError):
+        await task
+
+    return duration, max(gaps)
 
 
 def test_chunks() -> None:
@@ -207,6 +251,22 @@ def test_markdown_tiktoken_model_error() -> None:
         MarkdownSplitter.from_tiktoken_model("random-model-name", 1)
 
 
+def test_markdown_tiktoken_chunking_releases_gil_in_worker_thread() -> None:
+    splitter = MarkdownSplitter.from_tiktoken_model(
+        "gpt-3.5-turbo", capacity=512, overlap=64
+    )
+    text = make_markdown(2_000_000)
+
+    duration, max_gap = asyncio.run(
+        max_event_loop_gap_during_worker_call(lambda: splitter.chunk_indices(text))
+    )
+
+    if duration < 0.2:
+        pytest.skip("chunking completed too quickly for a reliable GIL timing check")
+
+    assert max_gap < duration * 0.5
+
+
 def test_markdown_custom() -> None:
     splitter = MarkdownSplitter.from_callback(lambda x: len(x), capacity=3)
     text = "123\n\n123"
@@ -255,7 +315,7 @@ def test_markdown_char_indices_with_multibyte_character() -> None:
 
 def test_invalid_chunk_range() -> None:
     with pytest.raises(ValueError):
-        TextSplitter((2, 1))
+        _ = TextSplitter((2, 1))
 
 
 def test_code_splitter() -> None:
@@ -276,7 +336,7 @@ def bar():
 
 def test_invalid_language_type() -> None:
     with pytest.raises(TypeError):
-        CodeSplitter(tree_sitter_python.language, 40)  # type: ignore
+        _ = CodeSplitter(tree_sitter_python.language, 40)  # type: ignore
 
 
 def test_code_char_indices() -> None:
@@ -340,3 +400,24 @@ def test_chunk_all_indices_code() -> None:
     texts = ["123\n123", "456\n456"]
     chunks = splitter.chunk_all_indices(texts)
     assert chunks == [[(0, "123"), (4, "123")], [(0, "456"), (4, "456")]]
+
+
+@pytest.mark.parametrize(
+    "splitter_factory",
+    [
+        lambda: TextSplitter.from_callback(lambda x: len(x), 4),
+        lambda: MarkdownSplitter.from_callback(lambda x: len(x), 4),
+        lambda: CodeSplitter.from_callback(
+            tree_sitter_python.language(), lambda x: len(x), 4
+        ),
+    ],
+)
+def test_chunk_all_with_callback(splitter_factory) -> None:
+    splitter = splitter_factory()
+    texts = ["123\n123", "456\n456"]
+
+    assert splitter.chunk_all(texts) == [["123", "123"], ["456", "456"]]
+    assert splitter.chunk_all_indices(texts) == [
+        [(0, "123"), (4, "123")],
+        [(0, "456"), (4, "456")],
+    ]
