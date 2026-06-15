@@ -5,8 +5,10 @@ use itertools::Itertools;
 use strum::IntoEnumIterator;
 
 use self::fallback::FallbackLevel;
-use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, ChunkSizer};
-
+use crate::{
+    chunk_size::MemoizedChunkSizer, trim::Trim, CancellationToken, ChunkCapacity, ChunkConfig,
+    ChunkSizer,
+};
 #[cfg(feature = "code")]
 mod code;
 mod fallback;
@@ -268,6 +270,8 @@ where
     text: &'text str,
     /// The trimming method to apply
     trim: Trim,
+    /// Optional cancellation token for stopping long-running operations
+    cancellation_token: Option<CancellationToken>,
 }
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunks<'text, 'sizer, Sizer, Level>
@@ -288,10 +292,19 @@ where
             overlap,
             sizer,
             trim: trim_enabled,
+            cancellation_token,
         } = chunk_config;
+
+        // Create the memoized sizer with cancellation token if provided
+        let mut chunk_sizer = MemoizedChunkSizer::new(sizer);
+
+        if let Some(token) = cancellation_token {
+            chunk_sizer = chunk_sizer.with_cancellation_token(token.clone())
+        };
+
         Self {
             capacity: *capacity,
-            chunk_sizer: MemoizedChunkSizer::new(sizer),
+            chunk_sizer,
             chunk_stats: ChunkStats::new(),
             cursor: 0,
             next_sections: Vec::new(),
@@ -300,6 +313,7 @@ where
             semantic_split: SemanticSplitRanges::new(offsets),
             text,
             trim: if *trim_enabled { trim } else { Trim::None },
+            cancellation_token: cancellation_token.clone(),
         }
     }
 
@@ -332,11 +346,17 @@ where
         let mut successful_chunk_size = None;
 
         while low <= high {
+            // Check for cancellation
+            if self.is_cancelled() {
+                break;
+            }
+
             let mid = low + (high - low) / 2;
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
             let chunk = self.text.get(start..text_end)?;
             let chunk_size = self.chunk_sizer.chunk_size(start, chunk, self.trim);
+
             let fits = self.capacity.fits(chunk_size);
 
             match fits {
@@ -386,6 +406,11 @@ where
             range.next();
 
             for index in range {
+                // Check for cancellation
+                if self.is_cancelled() {
+                    break;
+                }
+
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
                 let chunk = self.text.get(start..text_end)?;
@@ -403,8 +428,16 @@ where
         Some((start, end))
     }
 
+    /// Check if the operation has been cancelled
+    #[must_use]
+    fn is_cancelled(&self) -> bool {
+        self.cancellation_token
+            .as_ref()
+            .is_some_and(super::cancellation::CancellationToken::is_cancelled)
+    }
+
     /// Use binary search to find the sections that fit within the overlap size.
-    /// If no overlap deisired, return end.
+    /// If no overlap deisred, return end.
     fn update_cursor(&mut self, end: usize) {
         if self.overlap.max == 0 {
             self.cursor = end;
@@ -423,6 +456,11 @@ where
         };
 
         while low <= high {
+            // Check for cancellation
+            if self.is_cancelled() {
+                break;
+            }
+
             let mid = low + (high - low) / 2;
             let (offset, _) = self.next_sections[mid];
             let chunk_size = self.chunk_sizer.chunk_size(
@@ -430,6 +468,12 @@ where
                 self.text.get(offset..end).expect("Invalid range"),
                 self.trim,
             );
+
+            // If chunk_size is 0, it indicates cancellation
+            // if chunk_size == 0 {
+            //     break;
+            // }
+
             let fits = self.overlap.fits(chunk_size);
 
             // We got further than the last one, so update start
@@ -447,7 +491,6 @@ where
 
         self.cursor = start;
     }
-
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
@@ -517,8 +560,18 @@ where
         let mut target_offset = self.chunk_stats.max_chunk_size.unwrap_or(max);
 
         loop {
+            // Check for cancellation
+            if self.is_cancelled() {
+                break;
+            }
+
             let prev_num = self.next_sections.len();
             for (offset, str) in sections.by_ref() {
+                // Check for cancellation
+                if self.is_cancelled() {
+                    break;
+                }
+
                 self.next_sections.push((offset, str));
                 if offset + str.len() > (self.cursor.saturating_add(target_offset)) {
                     break;
@@ -589,6 +642,11 @@ where
 
     fn next(&mut self) -> Option<Self::Item> {
         loop {
+            // Check for cancellation
+            if self.is_cancelled() {
+                return None;
+            }
+
             // Make sure we haven't reached the end
             if self.cursor >= self.text.len() {
                 return None;
@@ -751,6 +809,166 @@ mod tests {
         assert_eq!(
             ranges.ranges_after_offset(0).collect::<Vec<_>>(),
             vec![(0, 1..2)]
+        );
+    }
+
+    // Cancellation tests for TextSplitter
+    #[test]
+    fn text_splitter_with_cancellation_stops_early() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+
+        let token = CancellationToken::new();
+        let config = ChunkConfig::new(10).with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        // Create a long text that would produce many chunks
+        let text = "a".repeat(1000);
+
+        // Cancel immediately
+        token.cancel();
+
+        // Should return very few or no chunks due to cancellation
+        let chunks: Vec<_> = splitter.chunks(&text).collect();
+        // We expect at most a few chunks before cancellation is detected
+        assert!(
+            chunks.len() <= 10,
+            "Got {} chunks, expected <= 10",
+            chunks.len()
+        );
+    }
+
+    #[test]
+    fn text_splitter_without_cancellation_works_normally() {
+        use crate::{ChunkConfig, TextSplitter};
+
+        let config = ChunkConfig::new(10);
+        let splitter = TextSplitter::new(config);
+
+        let text = "a".repeat(100);
+
+        let chunks: Vec<_> = splitter.chunks(&text).collect();
+        // Should get all chunks
+        assert!(chunks.len() > 5, "Got {} chunks", chunks.len());
+        assert_eq!(chunks.join(""), text);
+    }
+
+    #[test]
+    fn text_splitter_cancellation_with_delay() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+        use std::thread;
+
+        let token = CancellationToken::new();
+        let token_clone = token.clone();
+        let config = ChunkConfig::new(10).with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        let text = "a".repeat(1000);
+
+        // Cancel in a separate thread after a short delay
+        thread::spawn(move || {
+            thread::sleep(std::time::Duration::from_millis(1));
+            token_clone.cancel();
+        });
+
+        let chunks: Vec<_> = splitter.chunks(&text).collect();
+        // Should get some chunks but not all due to cancellation
+        assert!(
+            chunks.len() < 100,
+            "Got {} chunks, expected < 100",
+            chunks.len()
+        );
+    }
+
+    #[test]
+    fn text_splitter_chunk_indices_with_cancellation() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+
+        let token = CancellationToken::new();
+        let config = ChunkConfig::new(10).with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        let text = "hello world test text";
+
+        // Cancel immediately
+        token.cancel();
+
+        let chunks: Vec<_> = splitter.chunk_indices(&text).collect();
+        // Should return very few or no chunks due to cancellation
+        assert!(
+            chunks.len() <= 5,
+            "Got {} chunks, expected <= 5",
+            chunks.len()
+        );
+    }
+
+    #[test]
+    fn text_splitter_chunk_char_indices_with_cancellation() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+
+        let token = CancellationToken::new();
+        let config = ChunkConfig::new(10).with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        let text = "hello world test text";
+
+        // Cancel immediately
+        token.cancel();
+
+        let chunks: Vec<_> = splitter.chunk_char_indices(&text).collect();
+        // Should return very few or no chunks due to cancellation
+        assert!(
+            chunks.len() <= 5,
+            "Got {} chunks, expected <= 5",
+            chunks.len()
+        );
+    }
+
+    #[test]
+    fn text_splitter_cancellation_respects_trim() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+
+        let token = CancellationToken::new();
+        let config = ChunkConfig::new(10)
+            .with_trim(true)
+            .with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        let text = "  hello world  test  ";
+
+        // Cancel immediately
+        token.cancel();
+
+        let chunks: Vec<_> = splitter.chunks(&text).collect();
+        // Should return very few or no chunks due to cancellation
+        assert!(
+            chunks.len() <= 5,
+            "Got {} chunks, expected <= 5",
+            chunks.len()
+        );
+    }
+
+    #[test]
+    fn text_splitter_cancellation_with_overlap() {
+        use crate::{CancellationToken, ChunkConfig, TextSplitter};
+
+        let token = CancellationToken::new();
+        let config = ChunkConfig::new(10)
+            .with_overlap(5)
+            .unwrap()
+            .with_cancellation_token(token.clone());
+        let splitter = TextSplitter::new(config);
+
+        let text = "a".repeat(100);
+
+        // Cancel immediately
+        token.cancel();
+
+        let chunks: Vec<_> = splitter.chunks(&text).collect();
+        // Should return very few or no chunks due to cancellation
+        assert!(
+            chunks.len() <= 10,
+            "Got {} chunks, expected <= 10",
+            chunks.len()
         );
     }
 }

@@ -18,7 +18,7 @@ mod huggingface;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;
 
-use crate::trim::Trim;
+use crate::{cancellation::CancellationToken, trim::Trim};
 pub use characters::Characters;
 
 /// Indicates there was an error with the chunk capacity configuration.
@@ -286,6 +286,8 @@ where
     pub(crate) sizer: Sizer,
     /// Whether whitespace will be trimmed from the beginning and end of each chunk
     pub(crate) trim: bool,
+    /// Optional cancellation token for stopping long-running operations
+    pub(crate) cancellation_token: Option<CancellationToken>,
 }
 
 impl ChunkConfig<Characters> {
@@ -303,6 +305,7 @@ impl ChunkConfig<Characters> {
             overlap: 0,
             sizer: Characters,
             trim: true,
+            cancellation_token: None,
         }
     }
 }
@@ -356,6 +359,7 @@ where
             overlap: self.overlap,
             sizer,
             trim: self.trim,
+            cancellation_token: self.cancellation_token,
         }
     }
 
@@ -381,6 +385,34 @@ where
         self.trim = trim;
         self
     }
+
+    /// Set a cancellation token that can be used to stop long-running chunking operations.
+    ///
+    /// When the token is cancelled, the chunking operation will stop early and return
+    /// the chunks generated so far. This is useful for interactive applications where
+    /// the user might want to cancel a long-running operation.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use text_splitter::{ChunkConfig, CancellationToken, TextSplitter};
+    ///
+    /// let token = CancellationToken::new();
+    /// let config = ChunkConfig::new(512).with_cancellation_token(token.clone());
+    /// let splitter = TextSplitter::new(config);
+    ///
+    /// // In another thread or callback, you can cancel:
+    /// token.cancel();
+    ///
+    /// // The chunking will stop early:
+    /// let text = "a".repeat(10000);
+    /// let chunks: Vec<_> = splitter.chunks(&text).collect();
+    /// ```
+    #[must_use]
+    pub fn with_cancellation_token(mut self, token: CancellationToken) -> Self {
+        self.cancellation_token = Some(token);
+        self
+    }
 }
 
 impl<T> From<T> for ChunkConfig<Characters>
@@ -404,6 +436,8 @@ where
     size_cache: AHashMap<Range<usize>, usize>,
     /// The sizer used for caluclating chunk sizes
     sizer: &'sizer Sizer,
+    /// Optional cancellation token for stopping long-running operations
+    cancellation_token: Option<CancellationToken>,
 }
 
 impl<'sizer, Sizer> MemoizedChunkSizer<'sizer, Sizer>
@@ -415,12 +449,28 @@ where
         Self {
             size_cache: AHashMap::new(),
             sizer,
+            cancellation_token: None,
         }
+    }
+
+    /// Set a cancellation token that can be used to stop long-running operations.
+    ///
+    /// When the token is cancelled, size calculations will return 0 to indicate
+    /// cancellation, and operations like [`Self::find_correct_level`] will stop early.
+    #[must_use]
+    pub fn with_cancellation_token(mut self, token: CancellationToken) -> Self {
+        self.cancellation_token = Some(token);
+        self
     }
 
     /// Determine the size of a given chunk to use for validation,
     /// returning a cached value if it exists, and storing the result if not.
     pub fn chunk_size(&mut self, offset: usize, chunk: &str, trim: Trim) -> usize {
+        // Check for cancellation before computing
+        if self.is_cancelled() {
+            return 0; // Return 0 to indicate cancellation
+        }
+
         let (offset, chunk) = trim.trim(offset, chunk);
         *self
             .size_cache
@@ -450,6 +500,11 @@ where
             });
 
         for (level, str) in levels_with_first_chunk {
+            // Check for cancellation
+            if self.is_cancelled() {
+                break;
+            }
+
             // Skip tokenizing levels that we know are too small anyway.
             let len = str.len();
             if len > capacity.max {
@@ -466,6 +521,14 @@ where
         }
 
         (semantic_level, max_offset)
+    }
+
+    /// Check if the operation has been cancelled
+    #[must_use]
+    pub fn is_cancelled(&self) -> bool {
+        self.cancellation_token
+            .as_ref()
+            .is_some_and(super::cancellation::CancellationToken::is_cancelled)
     }
 
     /// Clear the cached values. Once we've moved the cursor,
@@ -801,5 +864,68 @@ mod tests {
         let sizer = Rc::new(Characters);
         let config = ChunkConfig::new(1).with_sizer(sizer);
         config.sizer().size("chunk");
+    }
+
+    // MemoizedChunkSizer tests with cancellation
+    #[test]
+    fn memoized_sizer_with_cancellation_returns_zero() {
+        let sizer = Characters;
+        let token = CancellationToken::new();
+        let mut memoized_sizer =
+            MemoizedChunkSizer::new(&sizer).with_cancellation_token(token.clone());
+
+        // Before cancellation, should return normal size
+        let size = memoized_sizer.chunk_size(0, "hello", Trim::All);
+        assert_eq!(size, 5);
+
+        // After cancellation, should return 0
+        token.cancel();
+        let size = memoized_sizer.chunk_size(0, "world", Trim::All);
+        assert_eq!(size, 0);
+    }
+
+    #[test]
+    fn memoized_sizer_without_cancellation_works_normally() {
+        let sizer = Characters;
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+
+        let size = memoized_sizer.chunk_size(0, "hello", Trim::All);
+        assert_eq!(size, 5);
+
+        let size = memoized_sizer.chunk_size(0, "world", Trim::All);
+        assert_eq!(size, 5);
+    }
+
+    #[test]
+    fn memoized_sizer_find_correct_level_respects_cancellation() {
+        let sizer = Characters;
+        let token = CancellationToken::new();
+        let mut memoized_sizer =
+            MemoizedChunkSizer::new(&sizer).with_cancellation_token(token.clone());
+
+        let capacity = ChunkCapacity::new(10);
+        let levels = vec![(1, "short"), (2, "medium text"), (3, "very long text here")];
+
+        // Before cancellation, should process all levels
+        let (level, _max_offset): (Option<i32>, Option<usize>) = memoized_sizer.find_correct_level(
+            0,
+            &capacity,
+            levels.iter().map(|(l, s)| (*l, *s)),
+            Trim::All,
+        );
+        assert!(level.is_some());
+
+        // After cancellation, should stop early and return None
+        token.cancel();
+        let (level, _max_offset): (Option<i32>, Option<usize>) = memoized_sizer.find_correct_level(
+            0,
+            &capacity,
+            vec![(1, "test"), (2, "test2")]
+                .iter()
+                .map(|(l, s)| (*l, *s)),
+            Trim::All,
+        );
+        // Should return None due to immediate cancellation
+        assert!(level.is_none());
     }
 }
