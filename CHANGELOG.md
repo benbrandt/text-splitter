@@ -4,6 +4,8 @@
 
 ### What's New
 
+- Improve performance for documents that have very distant semantic boundaries.
+
 #### Python
 
 - Build `abi3t` wheels for free-threaded Python.

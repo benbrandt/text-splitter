@@ -743,11 +743,7 @@ mod tests {
     fn boundary_probe_is_skipped_when_probe_start_is_chunk_end() {
         let sizer = CountingSizer::default();
         let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
-        let boundary_calls = AtomicUsize::new(0);
-        let mut lower_boundaries = std::iter::from_fn(|| {
-            boundary_calls.fetch_add(1, atomic::Ordering::SeqCst);
-            Some(usize::MAX)
-        });
+        let mut lower_boundaries = [usize::MAX].into_iter();
 
         let fits = memoized_sizer.chunk_fits_with_boundaries(
             0,
@@ -759,7 +755,27 @@ mod tests {
 
         assert_eq!(fits, Ordering::Greater);
         assert_eq!(sizer.calls.load(atomic::Ordering::SeqCst), 1);
-        assert_eq!(boundary_calls.load(atomic::Ordering::SeqCst), 0);
+        assert_eq!(lower_boundaries.next(), Some(usize::MAX));
+    }
+
+    #[test]
+    fn boundary_probe_stops_when_next_boundary_exceeds_chunk_end() {
+        let sizer = CountingSizer::default();
+        let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
+        let chunk = "1234567890".repeat(9);
+        let mut lower_boundaries = [usize::MAX].into_iter();
+
+        let fits = memoized_sizer.chunk_fits_with_boundaries(
+            0,
+            &chunk,
+            &ChunkCapacity::new(10),
+            &mut lower_boundaries,
+            Trim::All,
+        );
+
+        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(sizer.calls.load(atomic::Ordering::SeqCst), 1);
+        assert_eq!(lower_boundaries.next(), None);
     }
 
     #[test]
