@@ -65,7 +65,7 @@ auto_enums = "0.8"
 either = "1.16"
 icu_provider = { version = "2", features = ["sync"] }
 icu_segmenter = "2"
-itertools = "0.14"
+itertools = "0.15"
 memchr = "2.8.1"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
 strum = { version = "0.28", features = ["derive"] }
