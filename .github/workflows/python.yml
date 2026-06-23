@@ -89,13 +89,6 @@ jobs:
           pip install --force-reinstall --no-index --find-links dist semantic-text-splitter
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
-      - name: Build abi3t wheels
-        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist --no-default-features --features abi3t
-          manylinux: 2_28
-          working-directory: bindings/python
       - name: Build free-threaded wheels
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
         with:
@@ -141,12 +134,6 @@ jobs:
           pip install --force-reinstall --no-index --find-links dist semantic-text-splitter
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
-      - name: Build abi3t wheels
-        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist --no-default-features --features abi3t
-          working-directory: bindings/python
       - name: Set up free-threaded Python
         uses: actions/setup-python@v6
         with:
@@ -195,12 +182,6 @@ jobs:
           pip install --force-reinstall --no-index --find-links dist semantic-text-splitter
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
-      - name: Build abi3t wheels
-        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist --no-default-features --features abi3t
-          working-directory: bindings/python
       - name: Set up free-threaded Python
         uses: actions/setup-python@v6
         with:

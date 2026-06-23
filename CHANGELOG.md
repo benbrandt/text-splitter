@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+#### Python
+
+- No longer ship `abi3t` (free-threaded stable ABI) wheels for now, reverting the addition from v0.32.0. As of maturin 1.14.1, an `abi3t` wheel is only built when a CPython 3.15+ free-threaded interpreter is available at build time, which won't happen until Python 3.15 is released. Free-threaded `cp314t` wheels and stable-ABI `abi3` wheels (CPython 3.10+) are unaffected.
+
 ## v0.32.0
 
 ### What's New
