@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.10"
       - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
@@ -65,7 +65,7 @@ jobs:
         target: [x86_64, aarch64, armv7, s390x, ppc64le]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
       - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
@@ -110,7 +110,7 @@ jobs:
         target: [x64, x86]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
           architecture: ${{ matrix.target }}
@@ -135,7 +135,7 @@ jobs:
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
       - name: Set up free-threaded Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14t"
           architecture: ${{ matrix.target }}
@@ -159,7 +159,7 @@ jobs:
         target: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.14"
       - uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
@@ -183,7 +183,7 @@ jobs:
           pip install pytest tokenizers tree-sitter tree-sitter-python
           pytest
       - name: Set up free-threaded Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14t"
       - name: Build free-threaded wheels
