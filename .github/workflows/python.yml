@@ -244,7 +244,7 @@ jobs:
           pattern: wheels-*
           path: dist
           merge-multiple: true
-      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d
         with:
           # No checkout happens here, so there are no dependency files to
           # cache against. Disable the cache to avoid warnings.
