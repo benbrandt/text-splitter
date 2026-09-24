@@ -8615,8 +8615,8 @@ expression: chunks
 - "```````````````` example"
 - "<MAILTO:FOO@BAR.BAZ>\n."
 - "<p><a href=\"MAILTO:FOO@BAR.BAZ\">"
-- ":FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ"
-- ":FOO@BAR.BAZ</a></p>"
+- "@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a>"
+- "@BAR.BAZ</a></p>"
 - "````````````````````````````````"
 - Note that many strings that
 - "strings that count as ["
@@ -8709,7 +8709,7 @@ expression: chunks
 - "```````````````` example"
 - "<foo+special@Bar.baz-bar0.com>\n."
 - "<p><a href=\"mailto:foo+special@"
-- ":foo+special@Bar.baz-bar0.com\">"
+- "+special@Bar.baz-bar0.com\">foo+"
 - "-bar0.com\">foo+special@Bar.baz-"
 - special@Bar.baz-bar0.com</a></p>
 - "````````````````````````````````"

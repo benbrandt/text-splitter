@@ -51,7 +51,7 @@ exclude = [
     "*.yml",
     "*.yaml",
 ]
-rust-version = "1.86.0"
+rust-version = "1.90.0"
 
 [package.metadata.docs.rs]
 all-features = true
@@ -63,8 +63,8 @@ rustdoc-args = ["--cfg", "docsrs"]
 ahash = "0.8.12"
 auto_enums = "0.8"
 either = "1.16"
-icu_provider = { version = "2", features = ["sync"] }
-icu_segmenter = "2"
+icu_provider = { version = "2.3", features = ["sync"] }
+icu_segmenter = "2.3"
 itertools = "0.15"
 memchr = "2.8.1"
 pulldown-cmark = { version = "0.13", default-features = false, optional = true }
@@ -72,10 +72,9 @@ strum = { version = "0.28", features = ["derive"] }
 thiserror = "2.0.18"
 tiktoken-rs = { version = "0.12", optional = true }
 tokenizers = { version = "0.23", default-features = false, optional = true }
-tree-sitter = { version = "0.26", optional = true }
+tree-sitter = { version = "0.27", optional = true }
 
 [dev-dependencies]
-dirs = "6.0.0"
 divan = "0.1.21"
 fake = "5"
 insta = { version = "1.47", features = ["glob", "yaml"] }
