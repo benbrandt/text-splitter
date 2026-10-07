@@ -43,19 +43,16 @@ impl FallbackLevel {
     /// Returns the first section of `text` at this level, segmenting only the
     /// first `window` bytes unless that window contains a boundary.
     ///
-    /// The boolean is `true` when the window holds no boundary. The returned
-    /// str is then the whole window, and the real first section is longer.
+    /// The boolean is `true` when the returned section is only a lower bound:
+    /// the window has no boundary, or its first boundary is close to the cut.
     ///
     /// Without a window, a level with no boundary in the text (such as a
     /// sentence in a long list of URLs) is segmented to the end of the text.
     /// That happens again for every chunk, which makes splitting quadratic.
     ///
-    /// Truncating the text can only add boundaries near the cut, never remove
-    /// one earlier, because the Unicode rules only look ahead to prevent a
-    /// break. So a window with no boundary proves the first section is longer
-    /// than the window. When the window does show a boundary, it may be an
-    /// artifact of the cut, so the full text is segmented again. That scan
-    /// stops at the real first boundary, which is close by.
+    /// Truncating the text can add boundaries near the cut. A boundary in the
+    /// first half of the window is checked against the full text; a later
+    /// boundary remains a lower bound until the caller expands the window.
     pub fn first_section_within(self, text: &str, window: usize) -> Option<(&str, bool)> {
         if window >= text.len() {
             return self.sections(text).next().map(|(_, s)| (s, false));
@@ -67,6 +64,10 @@ impl FallbackLevel {
         }
 
         match self.sections(&text[..end]).next() {
+            // A boundary close to the cut may disappear with more context.
+            // Keep it as a lower bound; the caller expands the window if that
+            // prefix still fits, without scanning the entire remaining text.
+            Some((_, section)) if section.len() >= end / 2 => Some((section, true)),
             Some((_, section)) if section.len() < end => {
                 self.sections(text).next().map(|(_, s)| (s, false))
             }
@@ -154,5 +155,17 @@ mod tests {
                 .unwrap();
             assert!(text.is_char_boundary(section.len()));
         }
+    }
+
+    #[test]
+    fn first_section_within_does_not_confirm_a_cut_boundary_on_the_full_text() {
+        let text = "A.B.C.D.".repeat(2_000);
+        let (section, truncated) = FallbackLevel::Word
+            .first_section_within(&text, 2_400)
+            .unwrap();
+
+        assert!(truncated);
+        assert!(section.len() < 2_400);
+        assert!(section.len() >= 1_200);
     }
 }

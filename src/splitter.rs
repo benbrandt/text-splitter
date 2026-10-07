@@ -461,7 +461,7 @@ where
     /// the prefix is too big for the chunk. In the second case each truncated
     /// section contains that prefix, so it is too big as well. Every chunk must
     /// then end inside the window, so the exact section ends cannot change the
-    /// chunk, and the remaining text is never segmented to its end.
+    /// chunk.
     fn fallback_first_sections(
         &mut self,
         remaining_text: &'text str,
@@ -557,7 +557,21 @@ where
                 semantic_level,
             ))
         } else {
-            let first_sections = self.fallback_first_sections(remaining_text);
+            // A ranged capacity may select a chunk based on the number of
+            // candidate sections. Keep the original bounds for that case:
+            // token sizers are not necessarily monotone across prefixes.
+            let first_sections = if self.capacity.desired == self.capacity.max {
+                self.fallback_first_sections(remaining_text)
+            } else {
+                FallbackLevel::iter()
+                    .filter_map(|level| {
+                        level
+                            .sections(remaining_text)
+                            .next()
+                            .map(|(_, section)| (level, section))
+                    })
+                    .collect()
+            };
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
                 &self.capacity,
@@ -796,6 +810,28 @@ impl ChunkStats {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    struct CompressedBytes;
+
+    impl ChunkSizer for CompressedBytes {
+        fn size(&self, chunk: &str) -> usize {
+            chunk.len().div_ceil(64)
+        }
+    }
+
+    #[test]
+    fn fallback_window_doubles_until_its_prefix_exceeds_capacity() {
+        let text = "word ".repeat(4_000);
+        let config = ChunkConfig::new(20)
+            .with_sizer(CompressedBytes)
+            .with_trim(false);
+        let mut chunks = TextChunks::<_, usize>::new(&config, &text, vec![], Trim::None);
+
+        let first_sections = chunks.fallback_first_sections(&text);
+        let sentence = first_sections.last().unwrap().1;
+
+        assert_eq!(sentence.len(), 2_048);
+    }
 
     #[test]
     fn chunk_stats_empty() {

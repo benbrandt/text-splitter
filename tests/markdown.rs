@@ -138,6 +138,7 @@ fn trimming_does_trim_block_level_indentation_if_only_one_item() {
     );
 }
 
+#[cfg(feature = "markdown")]
 #[test]
 fn long_lowest_level_section_is_not_sized_whole_for_every_chunk() {
     use std::cell::Cell;

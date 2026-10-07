@@ -112,6 +112,24 @@ fn chunk_capacity_range() {
     assert_eq!(vec!["12345", "\n12345"], chunks);
 }
 
+#[cfg(feature = "tiktoken-rs")]
+#[test]
+fn ranged_bpe_capacity_preserves_first_boundary() {
+    // A token count can decrease when the next character is added. The
+    // sentence at the start is longer than the first fallback window.
+    let text = include_str!("fixtures/nonmonotone_bpe.txt");
+    let tokenizer = tiktoken_rs::cl100k_base().unwrap();
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(8..=308)
+            .with_sizer(tokenizer)
+            .with_trim(false),
+    );
+
+    let first = splitter.chunk_indices(text).next().unwrap();
+    assert_eq!(first.0, 0);
+    assert_eq!(first.1, "…".repeat(54));
+}
+
 #[test]
 fn distant_higher_newline_does_not_size_the_whole_section() {
     let text = text_with_distant_paragraph_separator(1_000);
