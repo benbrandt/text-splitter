@@ -528,13 +528,21 @@ where
             |lower_level, chunk_end| {
                 lower_level.map_or_else(
                     // The lowest semantic level has no smaller level to probe with.
-                    // Probe with words instead, so a long section is not sized whole.
+                    // Probe with words for fixed capacities, so a long section
+                    // is not sized whole. Keep the original behavior for ranges:
+                    // nonmonotone sizers can select a different chunk otherwise.
                     || {
+                        let cursor = self.cursor;
                         Either::Left(
-                            FallbackLevel::Word
-                                .sections(remaining_text)
-                                .map(|(offset, text)| self.cursor + offset + text.len())
-                                .take_while(move |end| *end <= chunk_end),
+                            (self.capacity.desired == self.capacity.max)
+                                .then(|| {
+                                    FallbackLevel::Word
+                                        .sections(remaining_text)
+                                        .map(move |(offset, text)| cursor + offset + text.len())
+                                        .take_while(move |end| *end <= chunk_end)
+                                })
+                                .into_iter()
+                                .flatten(),
                         )
                     },
                     |lower_level| {
