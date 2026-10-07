@@ -137,3 +137,43 @@ fn trimming_does_trim_block_level_indentation_if_only_one_item() {
         chunks
     );
 }
+
+#[cfg(feature = "markdown")]
+#[test]
+fn long_lowest_level_section_is_not_sized_whole_for_every_chunk() {
+    use std::cell::Cell;
+
+    use text_splitter::ChunkSizer;
+
+    struct CountingSizer(Cell<usize>);
+    impl ChunkSizer for &CountingSizer {
+        fn size(&self, chunk: &str) -> usize {
+            self.0.set(self.0.get() + chunk.len());
+            chunk.chars().count()
+        }
+    }
+
+    // One paragraph with no line or sentence break, like a flattened sitemap.
+    // Smart punctuation turns the late `--` into its own text event, so most of
+    // the paragraph is a single long section at the lowest markdown level.
+    let entry = "https://example.com/path/to/page 2026-01-01T00:00:00+02:00   ";
+    let text = format!(
+        "{}https://example.com/lynk--co {}",
+        entry.repeat(4_000),
+        entry.repeat(100)
+    );
+    let sizer = CountingSizer(Cell::new(0));
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(1_000).with_sizer(&sizer));
+
+    let chunks = splitter.chunks(&text).count();
+
+    assert!(chunks > 200);
+    // Sizing the whole remaining section for every chunk costs about
+    // chunks * text.len() / 2 bytes. A bounded probe stays linear.
+    assert!(
+        sizer.0.get() < text.len() * 50,
+        "sized {} bytes for {} bytes of text",
+        sizer.0.get(),
+        text.len()
+    );
+}

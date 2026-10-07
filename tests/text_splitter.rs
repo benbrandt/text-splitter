@@ -113,6 +113,50 @@ fn chunk_capacity_range() {
 }
 
 #[test]
+fn ranged_capacity_does_not_probe_semantic_sections_with_words() {
+    // The whole semantic section fits, while every shorter word prefix does
+    // not. Probing before sizing it would change the selected chunk.
+    struct NonMonotoneSizer;
+
+    impl ChunkSizer for NonMonotoneSizer {
+        fn size(&self, chunk: &str) -> usize {
+            if chunk.len() == 200 {
+                1
+            } else {
+                100
+            }
+        }
+    }
+
+    let text = format!("{}\n", "x ".repeat(100));
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(1..=10)
+            .with_sizer(NonMonotoneSizer)
+            .with_trim(false),
+    );
+
+    assert_eq!(splitter.chunks(&text).next(), Some(&text[..200]));
+}
+
+#[cfg(feature = "tiktoken-rs")]
+#[test]
+fn ranged_bpe_capacity_preserves_first_boundary() {
+    // A token count can decrease when the next character is added. The
+    // sentence at the start is longer than the first fallback window.
+    let text = include_str!("fixtures/nonmonotone_bpe.txt");
+    let tokenizer = tiktoken_rs::cl100k_base().unwrap();
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(8..=308)
+            .with_sizer(tokenizer)
+            .with_trim(false),
+    );
+
+    let first = splitter.chunk_indices(text).next().unwrap();
+    assert_eq!(first.0, 0);
+    assert_eq!(first.1, "…".repeat(54));
+}
+
+#[test]
 fn distant_higher_newline_does_not_size_the_whole_section() {
     let text = text_with_distant_paragraph_separator(1_000);
     let sizer = RecordingWordSizer::default();
