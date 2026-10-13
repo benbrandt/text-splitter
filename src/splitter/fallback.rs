@@ -40,6 +40,41 @@ impl FallbackLevel {
         }
     }
 
+    /// Returns the first section of `text` at this level, segmenting only the
+    /// first `window` bytes unless that window contains a boundary.
+    ///
+    /// The boolean is `true` when the returned section is only a lower bound:
+    /// the window has no boundary, or its first boundary is close to the cut.
+    ///
+    /// Without a window, a level with no boundary in the text (such as a
+    /// sentence in a long list of URLs) is segmented to the end of the text.
+    /// That happens again for every chunk, which makes splitting quadratic.
+    ///
+    /// Truncating the text can add boundaries near the cut. A boundary in the
+    /// first half of the window is checked against the full text; a later
+    /// boundary remains a lower bound until the caller expands the window.
+    pub fn first_section_within(self, text: &str, window: usize) -> Option<(&str, bool)> {
+        if window >= text.len() {
+            return self.sections(text).next().map(|(_, s)| (s, false));
+        }
+
+        let mut end = window.max(1);
+        while !text.is_char_boundary(end) {
+            end += 1;
+        }
+
+        match self.sections(&text[..end]).next() {
+            // A boundary close to the cut may disappear with more context.
+            // Keep it as a lower bound; the caller expands the window if that
+            // prefix still fits, without scanning the entire remaining text.
+            Some((_, section)) if section.len() >= end / 2 => Some((section, true)),
+            Some((_, section)) if section.len() < end => {
+                self.sections(text).next().map(|(_, s)| (s, false))
+            }
+            _ => Some((&text[..end], true)),
+        }
+    }
+
     #[auto_enum(Iterator)]
     pub fn sections(self, text: &str) -> impl Iterator<Item = (usize, &str)> {
         match self {
@@ -62,5 +97,75 @@ impl FallbackLevel {
                 .tuple_windows()
                 .map(|(i, j)| (i, &text[i..j])),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use strum::IntoEnumIterator;
+
+    use super::*;
+
+    #[test]
+    fn first_section_within_matches_unbounded_first_section() {
+        let text = "Short sentence one. Another sentence follows here. And a third.";
+
+        for level in FallbackLevel::iter() {
+            let expected = level.sections(text).next().map(|(_, s)| s);
+            for window in [1, 5, 18, 19, 20, 40, text.len(), text.len() + 10] {
+                let (section, truncated) = level.first_section_within(text, window).unwrap();
+                if truncated {
+                    assert!(
+                        expected.unwrap().len() >= section.len(),
+                        "{level:?} {window}"
+                    );
+                    assert!(text.starts_with(section));
+                } else {
+                    assert_eq!(Some(section), expected, "{level:?} {window}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn first_section_within_reports_truncation_without_scanning_past_window() {
+        // No sentence boundary anywhere: the first sentence is the whole text.
+        let text = "https://example.com/a 2026-01-01T00:00:00+02:00   ".repeat(2_000);
+
+        let (section, truncated) = FallbackLevel::Sentence
+            .first_section_within(&text, 1_000)
+            .unwrap();
+        assert!(truncated);
+        assert!(section.len() <= 1_000);
+        assert!(text.starts_with(section));
+
+        let (word, truncated) = FallbackLevel::Word
+            .first_section_within(&text, 1_000)
+            .unwrap();
+        assert!(!truncated);
+        assert_eq!(word, "https");
+    }
+
+    #[test]
+    fn first_section_within_respects_char_boundaries() {
+        let text = "é".repeat(1_000);
+        for window in 1..10 {
+            let (section, _) = FallbackLevel::Sentence
+                .first_section_within(&text, window)
+                .unwrap();
+            assert!(text.is_char_boundary(section.len()));
+        }
+    }
+
+    #[test]
+    fn first_section_within_does_not_confirm_a_cut_boundary_on_the_full_text() {
+        let text = "A.B.C.D.".repeat(2_000);
+        let (section, truncated) = FallbackLevel::Word
+            .first_section_within(&text, 2_400)
+            .unwrap();
+
+        assert!(truncated);
+        assert!(section.len() < 2_400);
+        assert!(section.len() >= 1_200);
     }
 }
