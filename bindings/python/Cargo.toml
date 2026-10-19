@@ -20,7 +20,7 @@ abi3 = ["pyo3/abi3-py310"]
 abi3t = ["pyo3/abi3t-py315"]
 
 [dependencies]
-pyo3 = "0.29"
+pyo3 = "0.30"
 rayon = "1.11"
 text-splitter = { path = "../..", features = [
     "code",
