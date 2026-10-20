@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### What's New
+
+- Improve splitting performance for flattened URL lists with fixed chunk capacities.
+
 ## v0.33.0
 
 ### Breaking Changes
