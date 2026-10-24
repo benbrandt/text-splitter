@@ -25,6 +25,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+      # Workspace tests link the Python bindings against libpython.
+      - uses: actions/setup-python@v7
+        id: python
+        with:
+          python-version: "3.12"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
@@ -32,12 +37,18 @@ jobs:
 
       - name: Run cargo test
         run: cargo test --workspace --all-features
+        env:
+          PYO3_PYTHON: ${{ steps.python.outputs.python-path }}
 
   coverage:
     runs-on: ubuntu-latest
     name: Test Coverage
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        id: python
+        with:
+          python-version: "3.12"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
@@ -47,6 +58,8 @@ jobs:
         with:
           tool: cargo-llvm-cov
       - run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
+        env:
+          PYO3_PYTHON: ${{ steps.python.outputs.python-path }}
       - name: Upload to codecov.io
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5
         with:
@@ -59,6 +72,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        id: python
+        with:
+          python-version: "3.12"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
@@ -66,6 +83,8 @@ jobs:
 
       - name: Run cargo test
         run: cargo test --benches --workspace --all-features
+        env:
+          PYO3_PYTHON: ${{ steps.python.outputs.python-path }}
 
   lints:
     name: Lints
@@ -119,6 +138,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        id: python
+        with:
+          python-version: "3.12"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: nightly
@@ -126,3 +149,5 @@ jobs:
 
       - run: cargo generate-lockfile -Z direct-minimal-versions
       - run: cargo test --locked --workspace --all-features
+        env:
+          PYO3_PYTHON: ${{ steps.python.outputs.python-path }}
