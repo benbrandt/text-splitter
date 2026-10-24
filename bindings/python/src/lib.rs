@@ -81,10 +81,30 @@ impl From<PyCodeSplitterError> for PyErr {
     }
 }
 
+/// Python callback wrapper with input metadata for generated type stubs.
+struct CustomCallback(Py<PyAny>);
+
+impl<'a, 'py> FromPyObject<'a, 'py> for CustomCallback {
+    type Error = std::convert::Infallible;
+
+    fn extract(obj: Borrowed<'a, 'py, PyAny>) -> Result<Self, Self::Error> {
+        Ok(Self(obj.to_owned().unbind()))
+    }
+
+    #[cfg(feature = "stubgen")]
+    const INPUT_TYPE: pyo3::inspect::PyStaticExpr = pyo3::type_hint_subscript!(
+        pyo3::type_hint_identifier!("collections.abc", "Callable"),
+        pyo3::inspect::PyStaticExpr::List {
+            elts: &[pyo3::type_hint_identifier!("builtins", "str")],
+        },
+        pyo3::type_hint_identifier!("typing", "SupportsIndex")
+    );
+}
+
 /// Allows for dynamically choosing between different chunk sizers
 enum Sizer {
     Rust(Box<dyn ChunkSizer + 'static + Send + Sync>),
-    Callback(Py<PyAny>),
+    Callback(CustomCallback),
 }
 
 impl Sizer {
@@ -100,7 +120,7 @@ impl TryChunkSizer for Sizer {
         match self {
             Self::Rust(sizer) => Ok(sizer.size(chunk)),
             Self::Callback(callback) => {
-                Python::attach(|py| callback.call(py, (chunk,), None)?.extract::<usize>(py))
+                Python::attach(|py| callback.0.call(py, (chunk,), None)?.extract::<usize>(py))
             }
         }
     }
@@ -495,7 +515,7 @@ impl PyTextSplitter {
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
     fn from_callback(
-        callback: Py<PyAny>,
+        callback: CustomCallback,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
@@ -540,7 +560,7 @@ impl PyTextSplitter {
         A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[str]")]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter.try_chunks(text.as_str())
@@ -564,7 +584,7 @@ impl PyTextSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[tuple[int, str]]")]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
@@ -589,7 +609,7 @@ impl PyTextSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[str]]")]
     fn chunk_all(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {
@@ -632,7 +652,7 @@ impl PyTextSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[tuple[int, str]]]")]
     fn chunk_all_indices(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {
@@ -969,7 +989,7 @@ impl PyMarkdownSplitter {
     #[staticmethod]
     #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
     fn from_callback(
-        callback: Py<PyAny>,
+        callback: CustomCallback,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
@@ -1017,7 +1037,7 @@ impl PyMarkdownSplitter {
         A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[str]")]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter.try_chunks(text.as_str())
@@ -1041,7 +1061,7 @@ impl PyMarkdownSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[tuple[int, str]]")]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
@@ -1066,7 +1086,7 @@ impl PyMarkdownSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[str]]")]
     fn chunk_all(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {
@@ -1109,7 +1129,7 @@ impl PyMarkdownSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[tuple[int, str]]]")]
     fn chunk_all_indices(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {
@@ -1492,7 +1512,7 @@ impl PyCodeSplitter {
     #[pyo3(signature = (language, callback, capacity, overlap=0, trim=true))]
     fn from_callback(
         language: &Bound<'_, PyAny>,
-        callback: Py<PyAny>,
+        callback: CustomCallback,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
@@ -1533,7 +1553,7 @@ impl PyCodeSplitter {
         A list of strings, one for each chunk. If `trim` was specified in the text
         splitter, then each chunk will already be trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[str]")]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter.try_chunks(text.as_str())
@@ -1557,7 +1577,7 @@ impl PyCodeSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (text))]
+    #[pyo3(signature = (text) -> "list[tuple[int, str]]")]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
         let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
@@ -1582,7 +1602,7 @@ impl PyCodeSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[str]]")]
     fn chunk_all(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {
@@ -1625,7 +1645,7 @@ impl PyCodeSplitter {
         If `trim` was specified in the text splitter, then each chunk will already be
         trimmed as well.
     */
-    #[pyo3(signature = (texts))]
+    #[pyo3(signature = (texts) -> "list[list[tuple[int, str]]]")]
     fn chunk_all_indices(&self, py: Python<'_>, texts: Vec<PyBackedStr>) -> PyResult<Py<PyList>> {
         let chunk_lists = if self.rust_only {
             py.detach(|| {

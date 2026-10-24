@@ -1,0 +1,5 @@
+# Pin the generator because its output is checked in.
+maturin==1.15.0
+pyo3-introspection==0.30.1
+mypy>=1.19,<2
+typing-extensions>=4.2

@@ -199,6 +199,33 @@ jobs:
           path: bindings/python/dist
           if-no-files-found: error
 
+  typing:
+    name: Type stubs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+        with:
+          key: typing
+      - run: python -m pip install -r requirements-typing.txt
+      - name: Check generated stubs
+        run: python scripts/generate_stubs.py --check
+      - name: Check typed API usage
+        run: mypy --strict --python-version 3.10 tests/typecheck.py
+      - name: Check runtime signatures
+        shell: bash
+        run: |
+          set -e
+          maturin build --locked --out dist
+          python -m pip install --no-index --find-links dist semantic-text-splitter
+          python -m mypy.stubtest semantic_text_splitter --allowlist tests/stubtest-allowlist.txt
+
   sdist:
     runs-on: ubuntu-latest
     steps:
@@ -228,7 +255,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/v')"
-    needs: [linux, windows, macos, sdist]
+    needs: [linux, windows, macos, sdist, typing]
     # This job doesn't check out the repo, so override the workflow-level
     # default that sets the working directory to bindings/python.
     defaults:
