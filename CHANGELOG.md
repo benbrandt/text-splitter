@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Rust
+
+- Add `TryChunkSizer` and fallible chunk, byte-index, and character-index iterators to all splitters. Existing `ChunkSizer` implementations and infallible methods remain supported. Fallible iterators yield the first sizing error and then stop.
+
+### Python
+
+- Propagate callback exceptions and invalid callback return values as Python exceptions instead of panicking, including in batch and index methods.
+
 ## v0.33.0
 
 ### Breaking Changes
