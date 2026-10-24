@@ -2,6 +2,7 @@ use std::{
     borrow::Cow,
     cell::{Ref, RefMut},
     cmp::Ordering,
+    convert::Infallible,
     fmt,
     ops::{Deref, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
     rc::Rc,
@@ -197,6 +198,55 @@ pub trait ChunkSizer {
     fn size(&self, chunk: &str) -> usize;
 }
 
+/// Determines the size of a chunk, returning an error if sizing fails.
+///
+/// All [`ChunkSizer`] implementations automatically implement this trait with
+/// [`Infallible`] as their error type. This adapter preserves their behavior,
+/// including any panics; it does not catch panics or convert them into errors.
+/// A type implementing [`ChunkSizer`] cannot also provide a separate
+/// implementation of this trait. Use a newtype for different fallible behavior.
+///
+/// ```
+/// use text_splitter::{ChunkConfig, TextSplitter, TryChunkSizer};
+///
+/// struct CheckedCharacters;
+///
+/// impl TryChunkSizer for CheckedCharacters {
+///     type Error = &'static str;
+///
+///     fn try_size(&self, chunk: &str) -> Result<usize, Self::Error> {
+///         if chunk.contains('\0') {
+///             Err("NUL is not supported")
+///         } else {
+///             Ok(chunk.chars().count())
+///         }
+///     }
+/// }
+///
+/// let splitter = TextSplitter::new(ChunkConfig::new(10).with_sizer(CheckedCharacters));
+/// let chunks = splitter.try_chunks("hello\0world").collect::<Result<Vec<_>, _>>();
+/// assert_eq!(chunks, Err("NUL is not supported"));
+/// ```
+pub trait TryChunkSizer {
+    /// The error returned when sizing fails.
+    type Error;
+
+    /// Determine the size of a chunk.
+    ///
+    /// # Errors
+    ///
+    /// Returns the sizer's error if the chunk cannot be sized.
+    fn try_size(&self, chunk: &str) -> Result<usize, Self::Error>;
+}
+
+impl<T: ChunkSizer + ?Sized> TryChunkSizer for T {
+    type Error = Infallible;
+
+    fn try_size(&self, chunk: &str) -> Result<usize, Self::Error> {
+        Ok(self.size(chunk))
+    }
+}
+
 impl<T> ChunkSizer for &T
 where
     T: ChunkSizer,
@@ -279,7 +329,7 @@ enum ChunkConfigErrorRepr {
 #[derive(Debug)]
 pub struct ChunkConfig<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// The chunk capacity to use for filling chunks
     pub(crate) capacity: ChunkCapacity,
@@ -312,7 +362,7 @@ impl ChunkConfig<Characters> {
 
 impl<Sizer> ChunkConfig<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// Retrieve a reference to the chunk capacity for this configuration.
     pub fn capacity(&self) -> &ChunkCapacity {
@@ -353,7 +403,7 @@ where
     /// let config = ChunkConfig::new(512).with_sizer(Characters);
     /// ```
     #[must_use]
-    pub fn with_sizer<S: ChunkSizer>(self, sizer: S) -> ChunkConfig<S> {
+    pub fn with_sizer<S: TryChunkSizer>(self, sizer: S) -> ChunkConfig<S> {
         ChunkConfig {
             capacity: self.capacity,
             overlap: self.overlap,
@@ -401,7 +451,7 @@ where
 #[derive(Debug)]
 pub struct MemoizedChunkSizer<'sizer, Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// Cache of chunk sizes per byte offset range for base capacity
     size_cache: AHashMap<Range<usize>, usize>,
@@ -411,7 +461,7 @@ where
 
 impl<'sizer, Sizer> MemoizedChunkSizer<'sizer, Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// Wrap any chunk sizer for memoization
     pub fn new(sizer: &'sizer Sizer) -> Self {
@@ -423,12 +473,21 @@ where
 
     /// Determine the size of a given chunk to use for validation,
     /// returning a cached value if it exists, and storing the result if not.
-    pub fn chunk_size(&mut self, offset: usize, chunk: &str, trim: Trim) -> usize {
+    pub fn chunk_size(
+        &mut self,
+        offset: usize,
+        chunk: &str,
+        trim: Trim,
+    ) -> Result<usize, Sizer::Error> {
         let (offset, chunk) = trim.trim(offset, chunk);
-        *self
-            .size_cache
-            .entry(offset..(offset + chunk.len()))
-            .or_insert_with(|| self.sizer.size(chunk))
+        match self.size_cache.entry(offset..(offset + chunk.len())) {
+            std::collections::hash_map::Entry::Occupied(entry) => Ok(*entry.get()),
+            std::collections::hash_map::Entry::Vacant(entry) => {
+                let size = self.sizer.try_size(chunk)?;
+                entry.insert(size);
+                Ok(size)
+            }
+        }
     }
 
     /// Find the best level to start splitting the text
@@ -439,7 +498,7 @@ where
         levels_with_first_chunk: impl Iterator<Item = (L, &'text str, Option<L>)>,
         mut lower_boundaries_for: impl FnMut(Option<L>, usize) -> Boundaries,
         trim: Trim,
-    ) -> (Option<L>, Option<usize>)
+    ) -> Result<(Option<L>, Option<usize>), Sizer::Error>
     where
         L: Copy + fmt::Debug,
         Boundaries: Iterator<Item = usize>,
@@ -472,7 +531,7 @@ where
                     capacity,
                     &mut lower_boundaries,
                     trim,
-                );
+                )?;
                 // If this no longer fits, we use the level we are at.
                 if fits.is_gt() {
                     // Keep the old search window while avoiding the full-size call
@@ -485,7 +544,7 @@ where
             semantic_level = Some(level);
         }
 
-        (semantic_level, max_offset)
+        Ok((semantic_level, max_offset))
     }
 
     fn chunk_fits_with_boundaries(
@@ -495,15 +554,15 @@ where
         capacity: &ChunkCapacity,
         lower_boundaries: &mut impl Iterator<Item = usize>,
         trim: Trim,
-    ) -> Ordering {
+    ) -> Result<Ordering, Sizer::Error> {
         let chunk_end = offset + chunk.len();
         let probe_max = probe_max_size(capacity);
         let probe_start = offset
             .saturating_add(capacity.max.saturating_mul(PROBE_START_BYTE_FACTOR).max(1))
             .min(chunk_end);
         if probe_start == chunk_end {
-            let chunk_size = self.chunk_size(offset, chunk, trim);
-            return capacity.fits(chunk_size);
+            let chunk_size = self.chunk_size(offset, chunk, trim)?;
+            return Ok(capacity.fits(chunk_size));
         }
 
         let mut step: usize = 1;
@@ -518,10 +577,10 @@ where
             let prefix = chunk
                 .get(..(boundary - offset))
                 .expect("valid character boundary");
-            let chunk_size = self.chunk_size(offset, prefix, trim);
+            let chunk_size = self.chunk_size(offset, prefix, trim)?;
             let fits = capacity.fits(chunk_size);
             if chunk_size > probe_max || boundary == chunk_end {
-                return fits;
+                return Ok(fits);
             }
 
             let skip = step.saturating_sub(1);
@@ -529,8 +588,8 @@ where
             next_boundary = lower_boundaries.nth(skip);
         }
 
-        let chunk_size = self.chunk_size(offset, chunk, trim);
-        capacity.fits(chunk_size)
+        let chunk_size = self.chunk_size(offset, chunk, trim)?;
+        Ok(capacity.fits(chunk_size))
     }
 
     /// Clear the cached values. Once we've moved the cursor,
@@ -702,7 +761,7 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
         let text = "1234567890";
         for _ in 0..10 {
-            memoized_sizer.chunk_size(0, text, Trim::All);
+            memoized_sizer.chunk_size(0, text, Trim::All).unwrap();
         }
 
         assert_eq!(memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst), 1);
@@ -714,7 +773,9 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
         let text = "1234567890";
         for i in 0..10 {
-            memoized_sizer.chunk_size(0, text.get(0..i).unwrap(), Trim::All);
+            memoized_sizer
+                .chunk_size(0, text.get(0..i).unwrap(), Trim::All)
+                .unwrap();
         }
 
         assert_eq!(
@@ -729,7 +790,7 @@ mod tests {
         let mut memoized_sizer = MemoizedChunkSizer::new(&sizer);
         let text = "1234567890";
         for _ in 0..10 {
-            memoized_sizer.chunk_size(0, text, Trim::All);
+            memoized_sizer.chunk_size(0, text, Trim::All).unwrap();
             memoized_sizer.clear_cache();
         }
 
@@ -737,6 +798,34 @@ mod tests {
             memoized_sizer.sizer.calls.load(atomic::Ordering::SeqCst),
             10
         );
+    }
+
+    #[test]
+    fn memoized_sizer_caches_successes_but_not_errors() {
+        struct RetrySizer(AtomicUsize);
+
+        impl TryChunkSizer for RetrySizer {
+            type Error = &'static str;
+
+            fn try_size(&self, chunk: &str) -> Result<usize, Self::Error> {
+                if self.0.fetch_add(1, atomic::Ordering::SeqCst) == 0 {
+                    Err("first call failed")
+                } else {
+                    Ok(Characters.size(chunk))
+                }
+            }
+        }
+
+        let sizer = RetrySizer(AtomicUsize::new(0));
+        let mut memoized = MemoizedChunkSizer::new(&sizer);
+        assert_eq!(
+            memoized.chunk_size(0, "abc", Trim::All),
+            Err("first call failed")
+        );
+        assert!(memoized.size_cache.is_empty());
+        assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
+        assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
+        assert_eq!(sizer.0.load(atomic::Ordering::SeqCst), 2);
     }
 
     #[test]
@@ -753,7 +842,7 @@ mod tests {
             Trim::All,
         );
 
-        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(fits, Ok(Ordering::Greater));
         assert_eq!(sizer.calls.load(atomic::Ordering::SeqCst), 1);
         assert_eq!(lower_boundaries.next(), Some(usize::MAX));
     }
@@ -773,7 +862,7 @@ mod tests {
             Trim::All,
         );
 
-        assert_eq!(fits, Ordering::Greater);
+        assert_eq!(fits, Ok(Ordering::Greater));
         assert_eq!(sizer.calls.load(atomic::Ordering::SeqCst), 1);
         assert_eq!(lower_boundaries.next(), None);
     }

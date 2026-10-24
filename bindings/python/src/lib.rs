@@ -12,7 +12,7 @@ use pyo3::{
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use text_splitter::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkCharIndex, ChunkConfig, ChunkConfigError,
-    ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
+    ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter, TryChunkSizer,
 };
 use tiktoken_rs::{bpe_for_model, CoreBPE};
 use tokenizers::Tokenizer;
@@ -81,34 +81,28 @@ impl From<PyCodeSplitterError> for PyErr {
     }
 }
 
-/// Newtype around a Python callback so we can `impl ChunkSizer`
-struct CustomCallback(Py<PyAny>);
-
-impl ChunkSizer for CustomCallback {
-    /// Determine the size of a given chunk to use for validation
-    fn size(&self, chunk: &str) -> usize {
-        Python::attach(|py| {
-            self.0
-                .call(py, (chunk,), None)
-                .unwrap()
-                .extract::<usize>(py)
-                .unwrap()
-        })
-    }
-}
-
 /// Allows for dynamically choosing between different chunk sizers
-struct Sizer(Box<dyn ChunkSizer + 'static + Send + Sync>);
+enum Sizer {
+    Rust(Box<dyn ChunkSizer + 'static + Send + Sync>),
+    Callback(Py<PyAny>),
+}
 
 impl Sizer {
     fn new(sizer: impl ChunkSizer + 'static + Send + Sync) -> Self {
-        Self(Box::new(sizer))
+        Self::Rust(Box::new(sizer))
     }
 }
 
-impl ChunkSizer for Sizer {
-    fn size(&self, chunk: &str) -> usize {
-        self.0.size(chunk)
+impl TryChunkSizer for Sizer {
+    type Error = PyErr;
+
+    fn try_size(&self, chunk: &str) -> PyResult<usize> {
+        match self {
+            Self::Rust(sizer) => Ok(sizer.size(chunk)),
+            Self::Callback(callback) => {
+                Python::attach(|py| callback.call(py, (chunk,), None)?.extract::<usize>(py))
+            }
+        }
     }
 }
 
@@ -116,19 +110,16 @@ fn py_exception(err: impl std::fmt::Display) -> PyErr {
     PyException::new_err(err.to_string())
 }
 
-fn chunk_config<S>(
+fn chunk_config(
     capacity: PyChunkCapacity,
     overlap: usize,
     trim: bool,
-    sizer: S,
-) -> PyResult<ChunkConfig<Sizer>>
-where
-    S: ChunkSizer + 'static + Send + Sync,
-{
+    sizer: Sizer,
+) -> PyResult<ChunkConfig<Sizer>> {
     Ok(ChunkConfig::new(ChunkCapacity::try_from(capacity)?)
         .with_overlap(overlap)
         .map_err(PyChunkConfigError)?
-        .with_sizer(Sizer::new(sizer))
+        .with_sizer(sizer)
         .with_trim(trim))
 }
 
@@ -156,15 +147,16 @@ fn tiktoken_model(py: Python<'_>, model: PyBackedStr) -> PyResult<&'static CoreB
     tokenizer
 }
 
-fn maybe_detach<T, F>(py: Python<'_>, should_detach: bool, f: F) -> T
+fn collect_chunks<T, I, F>(py: Python<'_>, rust_only: bool, chunks: F) -> PyResult<Vec<T>>
 where
-    F: pyo3::marker::Ungil + FnOnce() -> T,
-    T: pyo3::marker::Ungil,
+    F: FnOnce() -> I + Send,
+    I: Iterator<Item = PyResult<T>>,
+    PyResult<Vec<T>>: pyo3::marker::Ungil,
 {
-    if should_detach {
-        py.detach(f)
+    if rust_only {
+        py.detach(|| chunks().collect())
     } else {
-        f()
+        chunks().collect()
     }
 }
 
@@ -172,8 +164,8 @@ fn py_chunks(py: Python<'_>, chunks: Vec<&str>) -> PyResult<Py<PyList>> {
     Ok(PyList::new(py, chunks)?.unbind())
 }
 
-fn py_chunk_index(chunk: ChunkCharIndex<'_>) -> (usize, &str) {
-    (chunk.char_offset, chunk.chunk)
+fn py_chunk_index(chunk: PyResult<ChunkCharIndex<'_>>) -> PyResult<(usize, &str)> {
+    chunk.map(|chunk| (chunk.char_offset, chunk.chunk))
 }
 
 fn py_chunk_indices(py: Python<'_>, chunks: Vec<(usize, &str)>) -> PyResult<Py<PyList>> {
@@ -300,7 +292,12 @@ impl PyTextSplitter {
     #[pyo3(signature = (capacity, overlap=0, trim=true))]
     fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
         Ok(Self {
-            splitter: TextSplitter::new(chunk_config(capacity, overlap, trim, Characters)?),
+            splitter: TextSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(Characters),
+            )?),
             rust_only: true,
         })
     }
@@ -340,7 +337,12 @@ impl PyTextSplitter {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
         Ok(Self {
-            splitter: TextSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: TextSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -377,7 +379,12 @@ impl PyTextSplitter {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
         Ok(Self {
-            splitter: TextSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: TextSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -414,7 +421,12 @@ impl PyTextSplitter {
         let tokenizer = huggingface_tokenizer_from_file(py, path)?;
 
         Ok(Self {
-            splitter: TextSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: TextSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -450,7 +462,12 @@ impl PyTextSplitter {
         let tokenizer = tiktoken_model(py, model)?;
 
         Ok(Self {
-            splitter: TextSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: TextSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -488,7 +505,7 @@ impl PyTextSplitter {
                 capacity,
                 overlap,
                 trim,
-                CustomCallback(callback),
+                Sizer::Callback(callback),
             )?),
             rust_only: false,
         })
@@ -525,9 +542,9 @@ impl PyTextSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
-            self.splitter.chunks(text.as_str()).collect()
-        });
+        let chunks = collect_chunks(py, self.rust_only, || {
+            self.splitter.try_chunks(text.as_str())
+        })?;
         let chunks = py_chunks(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -549,12 +566,11 @@ impl PyTextSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
+        let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
-                .chunk_char_indices(text.as_str())
+                .try_chunk_char_indices(text.as_str())
                 .map(py_chunk_index)
-                .collect()
-        });
+        })?;
         let chunks = py_chunk_indices(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -579,14 +595,22 @@ impl PyTextSplitter {
             py.detach(|| {
                 texts
                     .par_iter()
-                    .map(|text| self.splitter.chunks(text.as_str()).collect())
-                    .collect()
-            })
+                    .map(|text| {
+                        self.splitter
+                            .try_chunks(text.as_str())
+                            .collect::<PyResult<Vec<_>>>()
+                    })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
-                .map(|text| self.splitter.chunks(text.as_str()).collect())
-                .collect()
+                .map(|text| {
+                    self.splitter
+                        .try_chunks(text.as_str())
+                        .collect::<PyResult<Vec<_>>>()
+                })
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_lists(py, chunk_lists)?;
         drop(texts);
@@ -616,22 +640,22 @@ impl PyTextSplitter {
                     .par_iter()
                     .map(|text| {
                         self.splitter
-                            .chunk_char_indices(text.as_str())
+                            .try_chunk_char_indices(text.as_str())
                             .map(py_chunk_index)
-                            .collect()
+                            .collect::<PyResult<Vec<_>>>()
                     })
-                    .collect()
-            })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
                 .map(|text| {
                     self.splitter
-                        .chunk_char_indices(text.as_str())
+                        .try_chunk_char_indices(text.as_str())
                         .map(py_chunk_index)
-                        .collect()
+                        .collect::<PyResult<Vec<_>>>()
                 })
-                .collect()
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_index_lists(py, chunk_lists)?;
         drop(texts);
@@ -742,7 +766,12 @@ impl PyMarkdownSplitter {
     #[pyo3(signature = (capacity, overlap=0, trim=true))]
     fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
         Ok(Self {
-            splitter: MarkdownSplitter::new(chunk_config(capacity, overlap, trim, Characters)?),
+            splitter: MarkdownSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(Characters),
+            )?),
             rust_only: true,
         })
     }
@@ -782,7 +811,12 @@ impl PyMarkdownSplitter {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
         Ok(Self {
-            splitter: MarkdownSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: MarkdownSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -819,7 +853,12 @@ impl PyMarkdownSplitter {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
         Ok(Self {
-            splitter: MarkdownSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: MarkdownSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -856,7 +895,12 @@ impl PyMarkdownSplitter {
         let tokenizer = huggingface_tokenizer_from_file(py, path)?;
 
         Ok(Self {
-            splitter: MarkdownSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: MarkdownSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -892,7 +936,12 @@ impl PyMarkdownSplitter {
         let tokenizer = tiktoken_model(py, model)?;
 
         Ok(Self {
-            splitter: MarkdownSplitter::new(chunk_config(capacity, overlap, trim, tokenizer)?),
+            splitter: MarkdownSplitter::new(chunk_config(
+                capacity,
+                overlap,
+                trim,
+                Sizer::new(tokenizer),
+            )?),
             rust_only: true,
         })
     }
@@ -930,7 +979,7 @@ impl PyMarkdownSplitter {
                 capacity,
                 overlap,
                 trim,
-                CustomCallback(callback),
+                Sizer::Callback(callback),
             )?),
             rust_only: false,
         })
@@ -970,9 +1019,9 @@ impl PyMarkdownSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
-            self.splitter.chunks(text.as_str()).collect()
-        });
+        let chunks = collect_chunks(py, self.rust_only, || {
+            self.splitter.try_chunks(text.as_str())
+        })?;
         let chunks = py_chunks(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -994,12 +1043,11 @@ impl PyMarkdownSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
+        let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
-                .chunk_char_indices(text.as_str())
+                .try_chunk_char_indices(text.as_str())
                 .map(py_chunk_index)
-                .collect()
-        });
+        })?;
         let chunks = py_chunk_indices(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -1024,14 +1072,22 @@ impl PyMarkdownSplitter {
             py.detach(|| {
                 texts
                     .par_iter()
-                    .map(|text| self.splitter.chunks(text.as_str()).collect())
-                    .collect()
-            })
+                    .map(|text| {
+                        self.splitter
+                            .try_chunks(text.as_str())
+                            .collect::<PyResult<Vec<_>>>()
+                    })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
-                .map(|text| self.splitter.chunks(text.as_str()).collect())
-                .collect()
+                .map(|text| {
+                    self.splitter
+                        .try_chunks(text.as_str())
+                        .collect::<PyResult<Vec<_>>>()
+                })
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_lists(py, chunk_lists)?;
         drop(texts);
@@ -1061,22 +1117,22 @@ impl PyMarkdownSplitter {
                     .par_iter()
                     .map(|text| {
                         self.splitter
-                            .chunk_char_indices(text.as_str())
+                            .try_chunk_char_indices(text.as_str())
                             .map(py_chunk_index)
-                            .collect()
+                            .collect::<PyResult<Vec<_>>>()
                     })
-                    .collect()
-            })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
                 .map(|text| {
                     self.splitter
-                        .chunk_char_indices(text.as_str())
+                        .try_chunk_char_indices(text.as_str())
                         .map(py_chunk_index)
-                        .collect()
+                        .collect::<PyResult<Vec<_>>>()
                 })
-                .collect()
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_index_lists(py, chunk_lists)?;
         drop(texts);
@@ -1225,7 +1281,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, Characters)?,
+                chunk_config(capacity, overlap, trim, Sizer::new(Characters))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: true,
@@ -1272,7 +1328,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, tokenizer)?,
+                chunk_config(capacity, overlap, trim, Sizer::new(tokenizer))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: true,
@@ -1316,7 +1372,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, tokenizer)?,
+                chunk_config(capacity, overlap, trim, Sizer::new(tokenizer))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: true,
@@ -1360,7 +1416,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, tokenizer)?,
+                chunk_config(capacity, overlap, trim, Sizer::new(tokenizer))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: true,
@@ -1403,7 +1459,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, tokenizer)?,
+                chunk_config(capacity, overlap, trim, Sizer::new(tokenizer))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: true,
@@ -1444,7 +1500,7 @@ impl PyCodeSplitter {
         Ok(Self {
             splitter: CodeSplitter::new(
                 Self::load_language(language)?,
-                chunk_config(capacity, overlap, trim, CustomCallback(callback))?,
+                chunk_config(capacity, overlap, trim, Sizer::Callback(callback))?,
             )
             .map_err(PyCodeSplitterError)?,
             rust_only: false,
@@ -1479,9 +1535,9 @@ impl PyCodeSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunks(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
-            self.splitter.chunks(text.as_str()).collect()
-        });
+        let chunks = collect_chunks(py, self.rust_only, || {
+            self.splitter.try_chunks(text.as_str())
+        })?;
         let chunks = py_chunks(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -1503,12 +1559,11 @@ impl PyCodeSplitter {
     */
     #[pyo3(signature = (text))]
     fn chunk_indices(&self, py: Python<'_>, text: PyBackedStr) -> PyResult<Py<PyList>> {
-        let chunks = maybe_detach(py, self.rust_only, || {
+        let chunks = collect_chunks(py, self.rust_only, || {
             self.splitter
-                .chunk_char_indices(text.as_str())
+                .try_chunk_char_indices(text.as_str())
                 .map(py_chunk_index)
-                .collect()
-        });
+        })?;
         let chunks = py_chunk_indices(py, chunks)?;
         drop(text);
         Ok(chunks)
@@ -1533,14 +1588,22 @@ impl PyCodeSplitter {
             py.detach(|| {
                 texts
                     .par_iter()
-                    .map(|text| self.splitter.chunks(text.as_str()).collect())
-                    .collect()
-            })
+                    .map(|text| {
+                        self.splitter
+                            .try_chunks(text.as_str())
+                            .collect::<PyResult<Vec<_>>>()
+                    })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
-                .map(|text| self.splitter.chunks(text.as_str()).collect())
-                .collect()
+                .map(|text| {
+                    self.splitter
+                        .try_chunks(text.as_str())
+                        .collect::<PyResult<Vec<_>>>()
+                })
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_lists(py, chunk_lists)?;
         drop(texts);
@@ -1570,22 +1633,22 @@ impl PyCodeSplitter {
                     .par_iter()
                     .map(|text| {
                         self.splitter
-                            .chunk_char_indices(text.as_str())
+                            .try_chunk_char_indices(text.as_str())
                             .map(py_chunk_index)
-                            .collect()
+                            .collect::<PyResult<Vec<_>>>()
                     })
-                    .collect()
-            })
+                    .collect::<PyResult<Vec<_>>>()
+            })?
         } else {
             texts
                 .iter()
                 .map(|text| {
                     self.splitter
-                        .chunk_char_indices(text.as_str())
+                        .try_chunk_char_indices(text.as_str())
                         .map(py_chunk_index)
-                        .collect()
+                        .collect::<PyResult<Vec<_>>>()
                 })
-                .collect()
+                .collect::<PyResult<_>>()?
         };
         let chunk_lists = py_chunk_index_lists(py, chunk_lists)?;
         drop(texts);

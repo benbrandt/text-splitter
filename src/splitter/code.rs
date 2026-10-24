@@ -6,7 +6,7 @@ use tree_sitter::{Language, LanguageError, Parser, TreeCursor, MIN_COMPATIBLE_LA
 use crate::{
     splitter::{SemanticLevel, Splitter},
     trim::Trim,
-    ChunkConfig, ChunkSizer,
+    ChunkConfig, ChunkSizer, TryChunkSizer,
 };
 
 use super::ChunkCharIndex;
@@ -34,7 +34,7 @@ enum CodeSplitterErrorRepr {
 #[derive(Debug)]
 pub struct CodeSplitter<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// Method of determining chunk sizes.
     chunk_config: ChunkConfig<Sizer>,
@@ -44,7 +44,7 @@ where
 
 impl<Sizer> CodeSplitter<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     /// Creates a new [`CodeSplitter`].
     ///
@@ -74,7 +74,9 @@ where
             language,
         })
     }
+}
 
+impl<Sizer: ChunkSizer> CodeSplitter<Sizer> {
     /// Generate a list of chunks from a given text. Each chunk will be up to the `chunk_capacity`.
     ///
     /// ## Method
@@ -109,7 +111,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = &'text str> + 'splitter {
-        Splitter::<_>::chunks(self, text)
+        Splitter::<_>::try_chunks(self, text).map(super::unwrap_infallible)
     }
 
     /// Returns an iterator over chunks of the text and their byte offsets.
@@ -130,7 +132,7 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
-        Splitter::<_>::chunk_indices(self, text)
+        Splitter::<_>::try_chunk_indices(self, text).map(super::unwrap_infallible)
     }
 
     /// Returns an iterator over chunks of the text with their byte and character offsets.
@@ -156,13 +158,48 @@ where
         &'splitter self,
         text: &'text str,
     ) -> impl Iterator<Item = ChunkCharIndex<'text>> + 'splitter {
-        Splitter::<_>::chunk_char_indices(self, text)
+        Splitter::<_>::try_chunk_char_indices(self, text).map(super::unwrap_infallible)
+    }
+}
+
+impl<Sizer: TryChunkSizer> CodeSplitter<Sizer> {
+    /// Fallible version of [`Self::chunks`] for a [`TryChunkSizer`].
+    ///
+    /// Yields the first sizing error, then ends without calling the sizer again.
+    /// Collect into `Result<Vec<_>, _>` to stop at that error and discard partial
+    /// output. See [`TryChunkSizer`] for an example.
+    pub fn try_chunks<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = Result<&'text str, Sizer::Error>> + 'splitter {
+        Splitter::<_>::try_chunks(self, text)
+    }
+
+    /// Fallible version of [`Self::chunk_indices`], including byte offsets.
+    ///
+    /// Yields the first sizing error, then ends without calling the sizer again.
+    pub fn try_chunk_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = Result<(usize, &'text str), Sizer::Error>> + 'splitter {
+        Splitter::<_>::try_chunk_indices(self, text)
+    }
+
+    /// Fallible version of [`Self::chunk_char_indices`], including byte and
+    /// character offsets.
+    ///
+    /// Yields the first sizing error, then ends without calling the sizer again.
+    pub fn try_chunk_char_indices<'splitter, 'text: 'splitter>(
+        &'splitter self,
+        text: &'text str,
+    ) -> impl Iterator<Item = Result<ChunkCharIndex<'text>, Sizer::Error>> + 'splitter {
+        Splitter::<_>::try_chunk_char_indices(self, text)
     }
 }
 
 impl<Sizer> Splitter<Sizer> for CodeSplitter<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     type Level = Depth;
 

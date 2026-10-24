@@ -1,11 +1,13 @@
-use std::{cmp::Ordering, fmt, iter::once, ops::Range};
+use std::{cmp::Ordering, convert::Infallible, fmt, iter::once, ops::Range};
 
 use either::Either;
 use itertools::Itertools;
 use strum::IntoEnumIterator;
 
 use self::fallback::FallbackLevel;
-use crate::{chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, ChunkSizer};
+use crate::{
+    chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, TryChunkSizer,
+};
 
 #[cfg(feature = "code")]
 mod code;
@@ -20,11 +22,18 @@ pub use code::{CodeSplitter, CodeSplitterError};
 pub use markdown::MarkdownSplitter;
 pub use text::TextSplitter;
 
+fn unwrap_infallible<T>(result: Result<T, Infallible>) -> T {
+    match result {
+        Ok(value) => value,
+        Err(never) => match never {},
+    }
+}
+
 /// Shared interface for splitters that can generate chunks of text based on the
 /// associated semantic level.
 trait Splitter<Sizer>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
 {
     type Level: SemanticLevel;
 
@@ -39,10 +48,10 @@ where
 
     /// Returns an iterator over chunks of the text and their byte offsets.
     /// Each chunk will be up to the max size of the `ChunkConfig`.
-    fn chunk_indices<'splitter, 'text: 'splitter>(
+    fn try_chunk_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-    ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter
+    ) -> impl Iterator<Item = Result<(usize, &'text str), Sizer::Error>> + 'splitter
     where
         Sizer: 'splitter,
     {
@@ -60,10 +69,10 @@ where
     /// This will be more expensive than just byte offsets, and for most usage in Rust, just having byte offsets is sufficient.
     /// But when interfacing with other languages or systems that require character offsets, this will track the character offsets
     /// for you, accounting for any trimming that may have occurred.
-    fn chunk_char_indices<'splitter, 'text: 'splitter>(
+    fn try_chunk_char_indices<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-    ) -> impl Iterator<Item = ChunkCharIndex<'text>> + 'splitter
+    ) -> impl Iterator<Item = Result<ChunkCharIndex<'text>, Sizer::Error>> + 'splitter
     where
         Sizer: 'splitter,
     {
@@ -77,14 +86,15 @@ where
 
     /// Generate a list of chunks from a given text.
     /// Each chunk will be up to the max size of the `ChunkConfig`.
-    fn chunks<'splitter, 'text: 'splitter>(
+    fn try_chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
         text: &'text str,
-    ) -> impl Iterator<Item = &'text str> + 'splitter
+    ) -> impl Iterator<Item = Result<&'text str, Sizer::Error>> + 'splitter
     where
         Sizer: 'splitter,
     {
-        self.chunk_indices(text).map(|(_, t)| t)
+        self.try_chunk_indices(text)
+            .map(|chunk| chunk.map(|(_, t)| t))
     }
 }
 
@@ -245,7 +255,7 @@ where
 #[derive(Debug)]
 struct TextChunks<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
     /// Overal capacity of the chunk
@@ -268,11 +278,13 @@ where
     text: &'text str,
     /// The trimming method to apply
     trim: Trim,
+    /// Whether iteration has ended, including after a sizing error.
+    finished: bool,
 }
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunks<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
     /// Generate new [`TextChunks`] iterator for a given text.
@@ -300,30 +312,38 @@ where
             semantic_split: SemanticSplitRanges::new(offsets),
             text,
             trim: if *trim_enabled { trim } else { Trim::None },
+            finished: false,
         }
     }
 
     /// Generate the next chunk, applying trimming settings.
     /// Returns final byte offset and str.
     /// Will return `None` if given an invalid range.
-    fn next_chunk(&mut self) -> Option<(usize, &'text str)> {
+    fn next_chunk(&mut self) -> Result<Option<(usize, &'text str)>, Sizer::Error> {
         self.semantic_split.update_cursor(self.cursor);
-        let low = self.update_next_sections();
-        let (start, end) = self.binary_search_next_chunk(low)?;
-        let chunk = self.text.get(start..end)?;
+        let low = self.update_next_sections()?;
+        let Some((start, end)) = self.binary_search_next_chunk(low)? else {
+            return Ok(None);
+        };
+        let Some(chunk) = self.text.get(start..end) else {
+            return Ok(None);
+        };
         self.chunk_stats.update_max_chunk_size(end - start);
 
         // Reset caches so we can reuse the memory allocation
         self.chunk_sizer.clear_cache();
         // Optionally move cursor back if overlap is desired
-        self.update_cursor(end);
+        self.update_cursor(end)?;
 
         // Trim whitespace if user requested it
-        Some(self.trim.trim(start, chunk))
+        Ok(Some(self.trim.trim(start, chunk)))
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
-    fn binary_search_next_chunk(&mut self, mut low: usize) -> Option<(usize, usize)> {
+    fn binary_search_next_chunk(
+        &mut self,
+        mut low: usize,
+    ) -> Result<Option<(usize, usize)>, Sizer::Error> {
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
@@ -335,8 +355,10 @@ where
             let mid = low + (high - low) / 2;
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
-            let chunk = self.text.get(start..text_end)?;
-            let chunk_size = self.chunk_sizer.chunk_size(start, chunk, self.trim);
+            let Some(chunk) = self.text.get(start..text_end) else {
+                return Ok(None);
+            };
+            let chunk_size = self.chunk_sizer.chunk_size(start, chunk, self.trim)?;
             let fits = self.capacity.fits(chunk_size);
 
             match fits {
@@ -388,8 +410,10 @@ where
             for index in range {
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
-                let chunk = self.text.get(start..text_end)?;
-                let size = self.chunk_sizer.chunk_size(start, chunk, self.trim);
+                let Some(chunk) = self.text.get(start..text_end) else {
+                    return Ok(None);
+                };
+                let size = self.chunk_sizer.chunk_size(start, chunk, self.trim)?;
                 if size <= chunk_size {
                     if text_end > end {
                         end = text_end;
@@ -400,15 +424,15 @@ where
             }
         }
 
-        Some((start, end))
+        Ok(Some((start, end)))
     }
 
     /// Use binary search to find the sections that fit within the overlap size.
     /// If no overlap deisired, return end.
-    fn update_cursor(&mut self, end: usize) {
+    fn update_cursor(&mut self, end: usize) -> Result<(), Sizer::Error> {
         if self.overlap.max == 0 {
             self.cursor = end;
-            return;
+            return Ok(());
         }
 
         // Binary search for overlap
@@ -429,7 +453,7 @@ where
                 offset,
                 self.text.get(offset..end).expect("Invalid range"),
                 self.trim,
-            );
+            )?;
             let fits = self.overlap.fits(chunk_size);
 
             // We got further than the last one, so update start
@@ -446,13 +470,14 @@ where
         }
 
         self.cursor = start;
+        Ok(())
     }
 
     /// Find the ideal next sections, breaking it up until we find the largest chunk.
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
     #[expect(clippy::too_many_lines)]
-    fn update_next_sections(&mut self) -> usize {
+    fn update_next_sections(&mut self) -> Result<usize, Sizer::Error> {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
 
@@ -492,7 +517,7 @@ where
                 )
             },
             self.trim,
-        );
+        )?;
 
         let sections = if let Some(semantic_level) = semantic_level {
             Either::Left(self.semantic_split.semantic_chunks(
@@ -524,7 +549,7 @@ where
                     )
                 },
                 self.trim,
-            );
+            )?;
 
             max_offset = match (fallback_max_offset, max_offset) {
                 (Some(fallback), Some(max)) => Some(fallback.min(max)),
@@ -575,7 +600,7 @@ where
                     offset,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                     self.trim,
-                );
+                )?;
                 let fits = self.capacity.fits(chunk_size);
 
                 if fits.is_le() {
@@ -611,36 +636,48 @@ where
             }
         }
 
-        low
+        Ok(low)
     }
 }
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator for TextChunks<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
-    type Item = (usize, &'text str);
+    type Item = Result<(usize, &'text str), Sizer::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
+        if self.finished {
+            return None;
+        }
         loop {
             // Make sure we haven't reached the end
             if self.cursor >= self.text.len() {
+                self.finished = true;
                 return None;
             }
 
-            match self.next_chunk()? {
+            match self.next_chunk() {
+                Err(error) => {
+                    self.finished = true;
+                    return Some(Err(error));
+                }
+                Ok(None) => {
+                    self.finished = true;
+                    return None;
+                }
                 // Make sure we didn't get an empty chunk. Should only happen in
                 // cases where we trim.
-                (_, "") => {}
-                c => {
+                Ok(Some((_, ""))) => {}
+                Ok(Some(c)) => {
                     let item_end = c.0 + c.1.len();
                     // Skip because we've emitted a chunk whose content we've already emitted
                     if item_end <= self.prev_item_end {
                         continue;
                     }
                     self.prev_item_end = item_end;
-                    return Some(c);
+                    return Some(Ok(c));
                 }
             }
         }
@@ -662,7 +699,7 @@ pub struct ChunkCharIndex<'text> {
 #[derive(Debug)]
 struct TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
     /// The text being chunked.
@@ -677,7 +714,7 @@ where
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
     /// Generate new [`TextChunksWithCharIndices`] iterator for a given text.
@@ -700,23 +737,25 @@ where
 impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator
     for TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
 where
-    Sizer: ChunkSizer,
+    Sizer: TryChunkSizer,
     Level: SemanticLevel,
 {
-    type Item = ChunkCharIndex<'text>;
+    type Item = Result<ChunkCharIndex<'text>, Sizer::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let (byte_offset, chunk) = self.text_chunks.next()?;
-        let preceding_text = self
-            .text
-            .get(self.byte_offset..byte_offset)
-            .expect("Invalid byte sequence");
-        self.byte_offset = byte_offset;
-        self.char_offset += preceding_text.chars().count();
-        Some(ChunkCharIndex {
-            chunk,
-            byte_offset,
-            char_offset: self.char_offset,
+        self.text_chunks.next().map(|result| {
+            let (byte_offset, chunk) = result?;
+            let preceding_text = self
+                .text
+                .get(self.byte_offset..byte_offset)
+                .expect("Invalid byte sequence");
+            self.byte_offset = byte_offset;
+            self.char_offset += preceding_text.chars().count();
+            Ok(ChunkCharIndex {
+                chunk,
+                byte_offset,
+                char_offset: self.char_offset,
+            })
         })
     }
 }
