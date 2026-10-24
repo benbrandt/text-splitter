@@ -3,7 +3,7 @@
 #
 #    maturin generate-ci -m Cargo.toml -o ../../.github/workflows/python.yml --pytest github
 #
-# Keep the additional PyO3 0.29 free-threaded/abi3t wheel builds below.
+# Keep the additional free-threaded/abi3t builds, runtime tests, and stub checks below.
 
 name: Python
 
@@ -96,6 +96,13 @@ jobs:
           args: --release --out dist -i python3.14t
           manylinux: 2_28
           working-directory: bindings/python
+      - name: Build stable free-threaded wheels
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
+        with:
+          target: ${{ matrix.target }}
+          args: --release --locked --out dist --no-default-features --features abi3t -i python3.15t
+          manylinux: 2_28
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v7
         with:
@@ -145,6 +152,17 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist -i python3.14t
           working-directory: bindings/python
+      - name: Set up stable free-threaded Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.15t"
+          architecture: ${{ matrix.target }}
+      - name: Build stable free-threaded wheels
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
+        with:
+          target: ${{ matrix.target }}
+          args: --release --locked --out dist --no-default-features --features abi3t -i python3.15t
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v7
         with:
@@ -192,12 +210,87 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist -i python3.14t
           working-directory: bindings/python
+      - name: Set up stable free-threaded Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.15t"
+      - name: Build stable free-threaded wheels
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
+        with:
+          target: ${{ matrix.target }}
+          args: --release --locked --out dist --no-default-features --features abi3t -i python3.15t
+          working-directory: bindings/python
       - name: Upload wheels
         uses: actions/upload-artifact@v7
         with:
           name: wheels-macos-${{ matrix.target }}
           path: bindings/python/dist
           if-no-files-found: error
+
+  runtime:
+    name: Runtime (${{ matrix.platform.os }}, ${{ matrix.runtime.python }}, ${{ matrix.runtime.tag }})
+    needs: [linux, windows, macos]
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - os: ubuntu-latest
+            artifact: wheels-linux-x86_64
+          - os: windows-latest
+            artifact: wheels-windows-x64
+          - os: macos-latest
+            artifact: wheels-macos-aarch64
+        runtime:
+          - python: "3.15"
+            tag: cp310-abi3
+            wheel: "*-cp310-abi3-*.whl"
+          - python: "3.14t"
+            tag: cp314-cp314t
+            wheel: "*-cp314-cp314t-*.whl"
+          - python: "3.15t"
+            tag: cp315-abi3t
+            wheel: "*-cp315-abi3.abi3t-*.whl"
+          # abi3t wheels are dual-ABI: users on ordinary 3.15 can select them too.
+          - python: "3.15"
+            tag: cp315-abi3
+            wheel: "*-cp315-abi3.abi3t-*.whl"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.runtime.python }}
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.platform.artifact }}
+          path: bindings/python/dist
+      - name: Install and verify wheel
+        shell: bash
+        run: |
+          set -e
+          python -m pip install --no-index dist/${{ matrix.runtime.wheel }}
+          python scripts/check_wheel.py ${{ matrix.runtime.tag }}
+      - name: pytest with Python integrations
+        if: ${{ matrix.runtime.python == '3.15' }}
+        shell: bash
+        run: |
+          set -e
+          python -m pip install pytest tokenizers tree-sitter tree-sitter-python
+          python -m pytest
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        if: ${{ endsWith(matrix.runtime.python, 't') }}
+        with:
+          toolchain: stable
+      - name: Build native test grammar
+        if: ${{ endsWith(matrix.runtime.python, 't') }}
+        run: cargo build --locked --manifest-path tests/grammar/Cargo.toml --target-dir ../../target/test-grammar
+      - name: pytest without the GIL
+        if: ${{ endsWith(matrix.runtime.python, 't') }}
+        shell: bash
+        run: |
+          set -e
+          python -m pip install pytest
+          python -m pytest tests/test_threading.py
 
   typing:
     name: Type stubs
@@ -255,7 +348,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: "startsWith(github.ref, 'refs/tags/v')"
-    needs: [linux, windows, macos, sdist, typing]
+    needs: [linux, windows, macos, sdist, runtime, typing]
     # This job doesn't check out the repo, so override the workflow-level
     # default that sets the working directory to bindings/python.
     defaults:
