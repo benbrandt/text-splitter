@@ -318,16 +318,13 @@ where
 
     /// Generate the next chunk, applying trimming settings.
     /// Returns final byte offset and str.
-    /// Will return `None` if given an invalid range.
-    fn next_chunk(&mut self) -> Result<Option<(usize, &'text str)>, Sizer::Error> {
+    fn next_chunk(&mut self) -> Result<(usize, &'text str), Sizer::Error> {
         self.semantic_split.update_cursor(self.cursor);
         let low = self.update_next_sections()?;
-        let Some((start, end)) = self.binary_search_next_chunk(low)? else {
-            return Ok(None);
-        };
-        let Some(chunk) = self.text.get(start..end) else {
-            return Ok(None);
-        };
+        let (start, end) = self.binary_search_next_chunk(low)?;
+        // Chunk selection uses offsets from slices of this same text, so both
+        // endpoints are valid UTF-8 boundaries.
+        let chunk = &self.text[start..end];
         self.chunk_stats.update_max_chunk_size(end - start);
 
         // Reset caches so we can reuse the memory allocation
@@ -336,14 +333,11 @@ where
         self.update_cursor(end)?;
 
         // Trim whitespace if user requested it
-        Ok(Some(self.trim.trim(start, chunk)))
+        Ok(self.trim.trim(start, chunk))
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
-    fn binary_search_next_chunk(
-        &mut self,
-        mut low: usize,
-    ) -> Result<Option<(usize, usize)>, Sizer::Error> {
+    fn binary_search_next_chunk(&mut self, mut low: usize) -> Result<(usize, usize), Sizer::Error> {
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
@@ -355,9 +349,7 @@ where
             let mid = low + (high - low) / 2;
             let (offset, str) = self.next_sections[mid];
             let text_end = offset + str.len();
-            let Some(chunk) = self.text.get(start..text_end) else {
-                return Ok(None);
-            };
+            let chunk = &self.text[start..text_end];
             let chunk_size = self.chunk_sizer.chunk_size(start, chunk, self.trim)?;
             let fits = self.capacity.fits(chunk_size);
 
@@ -410,9 +402,7 @@ where
             for index in range {
                 let (offset, str) = self.next_sections[index];
                 let text_end = offset + str.len();
-                let Some(chunk) = self.text.get(start..text_end) else {
-                    return Ok(None);
-                };
+                let chunk = &self.text[start..text_end];
                 let size = self.chunk_sizer.chunk_size(start, chunk, self.trim)?;
                 if size <= chunk_size {
                     if text_end > end {
@@ -424,7 +414,7 @@ where
             }
         }
 
-        Ok(Some((start, end)))
+        Ok((start, end))
     }
 
     /// Use binary search to find the sections that fit within the overlap size.
@@ -663,14 +653,10 @@ where
                     self.finished = true;
                     return Some(Err(error));
                 }
-                Ok(None) => {
-                    self.finished = true;
-                    return None;
-                }
                 // Make sure we didn't get an empty chunk. Should only happen in
                 // cases where we trim.
-                Ok(Some((_, ""))) => {}
-                Ok(Some(c)) => {
+                Ok((_, "")) => {}
+                Ok(c) => {
                     let item_end = c.0 + c.1.len();
                     // Skip because we've emitted a chunk whose content we've already emitted
                     if item_end <= self.prev_item_end {

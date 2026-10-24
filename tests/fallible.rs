@@ -67,6 +67,8 @@ macro_rules! splitter_tests {
                 for text in [
                     "",
                     " \n\n ",
+                    "é🦀a",
+                    "e\u{301}\r\n\u{2003}\r\na",
                     "fn café() {\n    let x = \"日本語\";\n}\n\n// next\nfn second() {}\n",
                     "# Title\n\nFirst paragraph. Second sentence.\n\n- One\n- Two\n",
                 ] {
