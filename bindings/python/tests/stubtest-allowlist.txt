@@ -1,0 +1,2 @@
+# Maturin's implementation submodule is an internal packaging detail, not public API.
+semantic_text_splitter.semantic_text_splitter
