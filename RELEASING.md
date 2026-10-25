@@ -20,7 +20,7 @@ is still active: the same release tag would start a second publisher.
 
 ## One-time GitHub App setup
 
-The workflow stays skipped until `RELEASE_PLZ_APP_CLIENT_ID` is configured.
+Preparation is skipped with a notice until both App secrets are configured.
 No repository settings or credentials are provisioned by the code.
 
 1. Create a GitHub App with Webhooks disabled and these repository permissions:
@@ -29,8 +29,8 @@ No repository settings or credentials are provisioned by the code.
 2. Install the App on `benbrandt/text-splitter` only.
 3. Generate its private key and add it directly as the repository Actions secret
    `RELEASE_PLZ_APP_PRIVATE_KEY`. Never commit the key or paste it into a PR.
-4. Set the repository Actions variable `RELEASE_PLZ_APP_CLIENT_ID` to the App's
-   **client ID** (not its numeric App ID). Set this last to enable the workflow.
+4. Set the repository Actions secret `RELEASE_PLZ_APP_CLIENT_ID` to the App's
+   **client ID** (not its numeric App ID).
 5. After this workflow has landed on `main`, run:
 
    ```sh
@@ -38,8 +38,8 @@ No repository settings or credentials are provisioned by the code.
    ```
 
 After setup, every push to `main` runs release preparation. Manual dispatches
-against other branches and runs in forks are skipped. Removing the client-ID
-variable disables preparation without affecting the existing publishers.
+against other branches and runs in forks are skipped. Removing either App
+secret disables preparation without affecting the existing publishers.
 
 The App token is restricted to this repository and the two permissions above.
 Unlike the default `GITHUB_TOKEN`, it allows commits to the generated release
