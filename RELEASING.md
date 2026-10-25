@@ -114,8 +114,8 @@ Python API breaks.
 
 ### Preview locally without creating a PR
 
-Install the latest stable release-plz and cargo-semver-checks, then run this in
-a clean, disposable clone or branch:
+Install release-plz and cargo-semver-checks, then run this in a clean,
+disposable clone or branch:
 
 ```sh
 release-plz update --config release-plz.toml
