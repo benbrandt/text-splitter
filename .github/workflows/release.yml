@@ -47,7 +47,8 @@ jobs:
         uses: release-plz/action@b2baf303c463c223526d52a8a91b0777f052cf3f
         with:
           command: release
-          version: "0.4.1"
+          # Override the action's fixed default with the latest stable release.
+          version: "*"
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}

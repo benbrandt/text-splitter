@@ -63,6 +63,7 @@ jobs:
         with:
           # Omitting command would also run `release` and publish packages.
           command: release-pr
-          version: "0.4.1"
+          # Override the action's fixed default with the latest stable release.
+          version: "*"
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

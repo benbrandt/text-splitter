@@ -366,7 +366,6 @@ jobs:
           merge-multiple: true
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
         with:
-          version: "0.13.5"
           enable-cache: "false"
       - name: Publish with PyPI trusted publishing
         run: uv publish --trusted-publishing always --check-url https://pypi.org/simple/ dist/*.whl dist/*.tar.gz
