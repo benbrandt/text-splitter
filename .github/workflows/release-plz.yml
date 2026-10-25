@@ -1,0 +1,52 @@
+name: Release preparation
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-pr:
+    name: Prepare release PR
+    # Stay inactive until the App is configured; never run against a fork or
+    # prepare releases from a manually selected feature branch.
+    if: >-
+      github.repository == 'benbrandt/text-splitter' &&
+      github.ref == 'refs/heads/main' &&
+      vars.RELEASE_PLZ_APP_CLIENT_ID != ''
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-plz-pr-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
+      - name: Create release App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.RELEASE_PLZ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: text-splitter
+          permission-contents: write
+          permission-pull-requests: write
+      - name: Open or update release PR
+        uses: release-plz/action@b2baf303c463c223526d52a8a91b0777f052cf3f
+        with:
+          # Omitting command would also run `release` and publish packages.
+          command: release-pr
+          version: "0.4.1"
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

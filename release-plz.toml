@@ -1,0 +1,39 @@
+# Stage one prepares release PRs only. Publishing remains in the existing
+# tag-triggered workflows; do not add a `release` command until those are migrated.
+[workspace]
+repo_url = "https://github.com/benbrandt/text-splitter"
+release_always = false
+features_always_increment_minor = true
+git_tag_name = "v{{ version }}"
+git_release_name = "v{{ version }}"
+changelog_path = "CHANGELOG.md"
+dependencies_update = false
+
+[[package]]
+name = "text-splitter"
+version_group = "distribution"
+changelog_include = ["semantic-text-splitter"]
+
+[[package]]
+name = "semantic-text-splitter"
+version_group = "distribution"
+# The Python distribution is published to PyPI, never to a Cargo registry.
+# Track its changes against the shared v* tags, including Python-only fixes.
+git_only = true
+git_tag_enable = false
+git_release_enable = false
+changelog_update = false
+semver_check = false
+
+[changelog]
+protect_breaking_commits = true
+commit_parsers = [
+    { message = "^chore", skip = true },
+    { message = "^ci\\(python\\)", group = "Python" },
+    { message = "^(ci|test|style|build)(\\([^)]*\\))?:", skip = true },
+    { message = "^feat", group = "Added" },
+    { message = "^fix", group = "Fixed" },
+    { message = "^refactor", group = "Changed" },
+    { message = "^docs", group = "Documentation" },
+    { message = "^.*", group = "Other" },
+]
