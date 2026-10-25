@@ -3,7 +3,6 @@
 [workspace]
 repo_url = "https://github.com/benbrandt/text-splitter"
 release_always = false
-features_always_increment_minor = true
 git_tag_name = "v{{ version }}"
 git_release_name = "v{{ version }}"
 changelog_path = "CHANGELOG.md"

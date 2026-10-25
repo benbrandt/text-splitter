@@ -60,10 +60,11 @@ and one `vX.Y.Z` tag for the Rust crate and Python distribution.
   changelog includes Python changes, so Python-only fixes also prepare a release.
 - Python does not get a second tag, GitHub release, or generated changelog.
   Maturin continues to derive its version from the Cargo workspace.
-- In the existing 0.x release convention, additive `feat` commits increment the
-  minor version; ordinary fixes increment the patch version. Breaking changes
-  can be marked with `!` or a `BREAKING CHANGE` footer. Rust API checking is an
-  additional guard, not a substitute for reviewing Python compatibility.
+- Follow Cargo's pre-1.0 compatibility rules using release-plz's defaults:
+  compatible features and fixes increment the patch version; breaking changes
+  increment the minor version. Mark breaking changes with `!` or a
+  `BREAKING CHANGE` footer. Rust API checking is an additional guard, not a
+  substitute for reviewing Python compatibility.
 - Routine `chore`, CI, test, formatting, and build commits are omitted from the
   generated notes. `ci(python)` changes are retained because wheel/runtime
   changes are user-facing. Explicitly marked breaking commits are protected
