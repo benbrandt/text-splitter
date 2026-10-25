@@ -114,8 +114,8 @@ Python API breaks.
 
 ### Preview locally without creating a PR
 
-Install release-plz **0.4.1** and cargo-semver-checks, then run this in a clean,
-disposable clone or branch:
+Install the latest stable release-plz and cargo-semver-checks, then run this in
+a clean, disposable clone or branch:
 
 ```sh
 release-plz update --config release-plz.toml
@@ -144,8 +144,8 @@ gh run rerun <run-id> --repo benbrandt/text-splitter --failed
   packages. Publishing an already-public release is safe to repeat.
 - If Rust uploaded successfully but tag/draft creation failed, finish the
   missing tag or draft manually from the **original published commit**, then
-  resume the Python workflow. Release-plz 0.4.1 skips an already-uploaded crate
-  or existing tag, so rerunning it alone may not repair that case.
+  resume the Python workflow. Release-plz can skip an already-uploaded crate or
+  existing tag, so rerunning it alone may not repair that case.
 - If the draft is missing, recreate it for the existing tag using the changelog
   notes, then rerun finalization.
 
