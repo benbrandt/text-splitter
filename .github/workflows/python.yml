@@ -20,7 +20,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Never interrupt a tag's publication with a retry or manual dispatch.
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/v') }}
 
 defaults:
   run:
@@ -347,18 +348,17 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: "startsWith(github.ref, 'refs/tags/v')"
-    needs: [linux, windows, macos, sdist, runtime, typing]
-    # This job doesn't check out the repo, so override the workflow-level
-    # default that sets the working directory to bindings/python.
+    if: >-
+      github.repository == 'benbrandt/text-splitter' &&
+      startsWith(github.ref, 'refs/tags/v')
+    needs: [min_supported_version, linux, windows, macos, sdist, runtime, typing]
+    permissions:
+      contents: read
+      id-token: write
     defaults:
       run:
         working-directory: .
     steps:
-      # Flatten every wheel artifact and the sdist into dist/ so `uv publish`
-      # can pick them up with its default dist/* path. This matches the
-      # "download all artifacts to dist/* and run uv publish" workflow
-      # recommended by uv itself.
       - uses: actions/download-artifact@v8
         with:
           pattern: wheels-*
@@ -366,9 +366,37 @@ jobs:
           merge-multiple: true
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
         with:
-          # No checkout happens here, so there are no dependency files to
-          # cache against. Disable the cache to avoid warnings.
+          version: "0.13.5"
           enable-cache: "false"
-      - run: uv publish
+      - name: Publish with PyPI trusted publishing
+        run: uv publish --trusted-publishing always --check-url https://pypi.org/simple/ dist/*.whl dist/*.tar.gz
+
+  finalize:
+    name: Finalize GitHub release
+    needs: release
+    if: >-
+      github.repository == 'benbrandt/text-splitter' &&
+      startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Create finalization App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ secrets.RELEASE_PLZ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLZ_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: text-splitter
+          permission-contents: write
+      - name: Publish the GitHub draft
+        run: |
+          release_id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.id')
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$release_id" \
+            -F draft=false -f make_latest=legacy
         env:
-          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}

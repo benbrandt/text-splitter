@@ -1,10 +1,12 @@
-# Stage one prepares release PRs only. Publishing remains in the existing
-# tag-triggered workflows; do not add a `release` command until those are migrated.
+# Release-plz owns Rust publication and tags. The Python workflow publishes the
+# GitHub draft after its build, test, and PyPI publishing jobs succeed.
 [workspace]
 repo_url = "https://github.com/benbrandt/text-splitter"
 release_always = false
 git_tag_name = "v{{ version }}"
 git_release_name = "v{{ version }}"
+git_release_draft = true
+git_release_latest = false
 changelog_path = "CHANGELOG.md"
 dependencies_update = false
 

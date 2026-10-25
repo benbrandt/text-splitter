@@ -1,27 +1,29 @@
 # Releasing text-splitter
 
-## Current rollout: release preparation only
+## Release flow
 
-Release-plz prepares a reviewable release PR with the next shared version,
-`Cargo.lock`, and root `CHANGELOG.md`. **It does not publish, push release tags,
-or create GitHub releases in this rollout.** The workflow explicitly runs only
-`release-pr`, not `release`.
+1. Release-plz opens or updates a release PR with the shared version,
+   `Cargo.lock`, and root `CHANGELOG.md`.
+2. Review its version and notes, wait for required CI checks, and merge it.
+   **Merging the release PR authorizes publication; do not bypass the checks.**
+3. `.github/workflows/release.yml` runs `release-plz release` on `main`.
+   `release_always = false` limits publication to release-PR merges. It publishes
+   the Rust crate, creates the shared `vX.Y.Z` tag, and creates a draft GitHub
+   release. The App-created tag triggers the Python workflow.
+4. `.github/workflows/python.yml` builds and tests wheels and the sdist, then uv
+   publishes them to PyPI using trusted publishing.
+5. After PyPI publication succeeds, the Python workflow publishes the GitHub
+   draft. GitHub selects the latest release automatically.
 
-Merging a release PR therefore does not publish anything. The existing manual
-release/tag process remains in place:
-
-- `.github/workflows/release.yml` publishes the Rust crate on a `v*` tag.
-- `.github/workflows/python.yml` builds and tests wheels and the sdist for that
-  tag, then publishes them to PyPI with uv.
-- GitHub release creation remains manual.
-
-Do not add a release-plz `release` job while the existing crates.io publisher
-is still active: the same release tag would start a second publisher.
+Release-plz is the only automatic Rust publisher and tag creator. There is no
+second tag-triggered `cargo publish` job. Existing build/runtime/typing checks
+and the publishers' built-in checks are used rather than a separate verification
+framework.
 
 ## One-time GitHub App setup
 
 Preparation is skipped with a notice until both App secrets are configured.
-No repository settings or credentials are provisioned by the code.
+Publishing and finalization require the same App credentials.
 
 1. Create a GitHub App with Webhooks disabled and these repository permissions:
    - **Contents: read and write** (release branch commits).
@@ -39,12 +41,26 @@ No repository settings or credentials are provisioned by the code.
 
 After setup, every push to `main` runs release preparation. Manual dispatches
 against other branches and runs in forks are skipped. Removing either App
-secret disables preparation without affecting the existing publishers.
+secret disables preparation and prevents automatic publishing/finalization.
 
 The App token is restricted to this repository and the two permissions above.
-Unlike the default `GITHUB_TOKEN`, it allows commits to the generated release
-branch to trigger the normal PR checks. No crates.io or PyPI credentials are
-passed to the preparation workflow.
+Unlike the default `GITHUB_TOKEN`, it allows release PRs and tags to trigger the
+normal CI and Python workflows. Finalization requests only Contents write
+permission.
+
+## Registry authentication
+
+- **crates.io:** `CRATES_IO_TOKEN` is passed to release-plz as
+  `CARGO_REGISTRY_TOKEN`. Crates.io trusted publishing is a separate migration.
+- **PyPI:** register a trusted publisher for `benbrandt/text-splitter`, workflow
+  filename **`python.yml`**, with **no environment**. The publishing job has
+  `id-token: write` and runs `uv publish --trusted-publishing always`.
+  Build jobs do not receive this permission. No `PYPI_API_TOKEN` or
+  `UV_PUBLISH_TOKEN` is passed to publishing.
+
+If the PyPI publisher was registered with an environment name, it must match a
+job environment before releasing. After the first successful OIDC publication,
+the unused PyPI token secret can be removed separately.
 
 ## Version and changelog policy
 
@@ -87,12 +103,14 @@ root changelog so the release has an explicit user-facing change.
 2. Verify Rust and Python versions remain equal and no historical changelog
    entries or existing tags are rewritten.
 3. Wait for the existing Rust, Python, runtime, and typing checks to pass.
-   Check results explicitly; this change does not configure branch protection.
-4. Merge the release PR when ready, then perform the existing manual release
-   process from that exact commit. Do not include additional unreviewed changes.
+   `main` requires the existing Rust, build, runtime, typing, and security checks.
+   Keep those required check names in sync when CI jobs are renamed.
+4. Merge the release PR when ready. Publication starts automatically; watch the
+   Release workflow, then the tag's Python workflow.
 
 The PR can be edited before merging to improve release notes or correct a
-version. During this rollout, publication is still a separate manual decision.
+version. Review Python compatibility explicitly; Rust API checking cannot catch
+Python API breaks.
 
 ### Preview locally without creating a PR
 
@@ -109,13 +127,28 @@ versions with `cargo metadata --no-deps --format-version 1`. Preview Python-only
 changes as well as core changes when updating release-plz or its configuration.
 Do not use `release-plz release` to preview preparation.
 
-## Later: publication cutover
+## Retrying partial releases
 
-Enabling automatic publication is a separate change:
+Crates.io and PyPI publication cannot be atomic. Start by rerunning failed jobs:
 
-1. Retire the old crates.io publishing job before enabling `release-plz release`.
-2. Supply crates.io authentication (or configure trusted publishing).
-3. Retain `release_always = false` so only release-PR merges initiate releases.
-4. Verify an App-created `v*` tag starts the full Python build/test/publish path.
-5. Document retries for partial releases: crates.io and PyPI publication cannot
-   be atomic. Do not recreate or move an already published tag.
+```sh
+gh run rerun <run-id> --repo benbrandt/text-splitter --failed
+```
+
+- Rerun the original run, not a newer `main` commit. Release-plz may have
+  published the release PR's last commit instead of its merge commit.
+- For a partial PyPI upload, rerun the publishing job with its original build
+  artifacts. `uv publish --check-url https://pypi.org/simple/` skips files already
+  present. Do not rebuild/re-upload a published filename with different contents.
+- If only GitHub finalization failed, rerun that job; it does not publish
+  packages. Publishing an already-public release is safe to repeat.
+- If Rust uploaded successfully but tag/draft creation failed, finish the
+  missing tag or draft manually from the **original published commit**, then
+  resume the Python workflow. Release-plz 0.4.1 skips an already-uploaded crate
+  or existing tag, so rerunning it alone may not repair that case.
+- If the draft is missing, recreate it for the existing tag using the changelog
+  notes, then rerun finalization.
+
+Never move an existing release tag, republish a version with different code, or
+bump the version just to retry a failed upload. Leave the GitHub release in
+draft until Python publication succeeds.
