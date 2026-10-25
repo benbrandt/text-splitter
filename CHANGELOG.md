@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+## [0.33.1](https://github.com/benbrandt/text-splitter/compare/v0.33.0...v0.33.1) - 2026-10-25
+
+### Added
+
+- add fallible sizing and propagate Python callback errors
+- *(python)* generate type stubs from Rust bindings
+
+### Changed
+
+- remove impossible chunk range states
+
+### Fixed
+
+- *(release)* reserve pre-1.0 minor bumps for breaking changes
+
+### Python
+
+- *(python)* test Python 3.15 and free-threaded wheels
+
 ### Rust
 
 - Add `TryChunkSizer` and fallible chunk, byte-index, and character-index iterators to all splitters. Existing `ChunkSizer` implementations and infallible methods remain supported. Fallible iterators yield the first sizing error and then stop.
