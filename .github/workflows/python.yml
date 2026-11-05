@@ -3,7 +3,7 @@
 #
 #    maturin generate-ci -m Cargo.toml -o ../../.github/workflows/python.yml --pytest github
 #
-# Keep the additional free-threaded/abi3t builds, runtime tests, and stub checks below.
+# Keep the additional free-threaded/abi3t builds, runtime tests, stub checks, and sdist build check below.
 
 name: Python
 
@@ -379,20 +379,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
           toolchain: stable
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
         with:
           key: sdist
-      # There is an issue with sdist build where duplicate readmes are found for some reason.
-      - run: rm ../../README.md
       - name: Build sdist
         uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b
         with:
           command: sdist
           args: --out dist
           working-directory: bindings/python
+      - name: Check wheel builds from sdist
+        run: >-
+          python -m pip wheel --no-deps --config-settings=build-args=--locked
+          --wheel-dir "${RUNNER_TEMP}/sdist-wheels" dist/*.tar.gz
       - name: Upload sdist
         uses: actions/upload-artifact@v7
         with:
