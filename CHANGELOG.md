@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Count Hugging Face tokenizer content by attention mask instead of skipping tokens whose id matches the pad id, so a document containing a literal `[PAD]` is sized correctly with either padding direction.
+
 ## [0.33.1](https://github.com/benbrandt/text-splitter/compare/v0.33.0...v0.33.1) - 2026-10-25
 
 ### Added
