@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## [0.33.2](https://github.com/benbrandt/text-splitter/compare/v0.33.1...v0.33.2) - 2026-11-10
+
+### Fixed
+
+- count content tokens sharing the padding ID ([#1352](https://github.com/benbrandt/text-splitter/pull/1352))
+
+### Python
+
+- *(python)* publish musllinux wheels
+
 ### Python
 
 - Publish musllinux 1.2+ wheels for x86_64, aarch64, and armv7, including
