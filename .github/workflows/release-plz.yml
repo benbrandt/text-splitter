@@ -59,7 +59,7 @@ jobs:
           permission-pull-requests: write
       - name: Open or update release PR
         if: steps.app-config.outputs.ready == 'true'
-        uses: release-plz/action@f67a7e724bdad4a0f6875f186060a0ca2770d76c
+        uses: release-plz/action@66b324fd6c72d05d2a08568492ecdd62bfb8a62b
         with:
           # Omitting command would also run `release` and publish packages.
           command: release-pr
