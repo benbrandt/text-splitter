@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Python
+
+- Publish musllinux 1.2+ wheels for x86_64, aarch64, and armv7, including
+  free-threaded builds, so supported musl-based systems such as Alpine Linux can
+  install without a Rust toolchain.
+
 ## [0.33.1](https://github.com/benbrandt/text-splitter/compare/v0.33.0...v0.33.1) - 2026-10-25
 
 ### Added
