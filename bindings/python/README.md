@@ -41,6 +41,20 @@ splitter = TextSplitter((200,1000))
 chunks = splitter.chunks("your document text")
 ```
 
+### Chunk Overlap
+You can also specify an overlap between chunks. When a new chunk is emitted, the splitter will look back at the semantic sections of the current level and pull in as many as possible that fit within the overlap window. This means that none can be taken, which is often the case when close to a higher semantic level boundary.
+The overlap must be less than the desired chunk capacity.
+```python
+from semantic_text_splitter import TextSplitter
+# Maximum number of characters in a chunk
+max_characters = 256
+# Maximum number of characters to overlap between chunks
+overlap = 64
+splitter = TextSplitter(max_characters, overlap=overlap)
+chunks = splitter.chunks("your document text")
+```
+Overlap makes most sense for small chunk-sizes. For bigger chunk sizes, the automatic detection of semantic boundaries will typically be sufficient; see the [discussion in issue #105](https://github.com/benbrandt/text-splitter/issues/105).
+
 ### Using a Hugging Face Tokenizer
 
 ```python
