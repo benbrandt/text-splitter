@@ -19,7 +19,7 @@ jobs:
           toolchain: stable
       - uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39
         with:
-          tool: cargo-audit@0.23.0
+          tool: cargo-audit
       # Let the job report the result without a separate Checks API request.
       - name: Audit dependencies
         run: cargo audit --file Cargo.lock
