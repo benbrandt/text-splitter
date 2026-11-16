@@ -424,11 +424,13 @@ jobs:
           pattern: wheels-*
           path: dist
           merge-multiple: true
-      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+      - name: Publish to PyPI with attestations
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
         with:
-          enable-cache: "false"
-      - name: Publish with PyPI trusted publishing
-        run: uv publish --trusted-publishing always --check-url https://pypi.org/simple/ dist/*.whl dist/*.tar.gz
+          attestations: true
+          # Fail on duplicates rather than silently accepting different files
+          # or files uploaded without attestations.
+          skip-existing: false
 
   finalize:
     name: Finalize GitHub release
@@ -453,8 +455,10 @@ jobs:
           repositories: text-splitter
           permission-contents: write
       - name: Publish the GitHub draft
+        # The REST releases/tags endpoint only finds published releases.
+        # The CLI also resolves drafts by their pending tag name.
         run: |
-          release_id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$GITHUB_REF_NAME" --jq '.id')
+          release_id=$(gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --json databaseId --jq '.databaseId')
           gh api --method PATCH "repos/$GITHUB_REPOSITORY/releases/$release_id" \
             -F draft=false -f make_latest=legacy
         env:
