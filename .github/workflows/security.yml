@@ -6,14 +6,20 @@ on:
       - "**/Cargo.lock"
       - .github/workflows/security.yml
 
+permissions:
+  contents: read
+
 jobs:
   security_audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: rustsec/audit-check@69366f33c96575abad1ee0dba8212993eecbe998
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      issues: write
-      checks: write
+          toolchain: stable
+      - uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39
+        with:
+          tool: cargo-audit@0.23.0
+      # Let the job report the result without a separate Checks API request.
+      - name: Audit dependencies
+        run: cargo audit --file Cargo.lock
