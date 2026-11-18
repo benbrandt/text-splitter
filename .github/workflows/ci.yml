@@ -54,7 +54,7 @@ jobs:
           toolchain: stable
           components: llvm-tools-preview
       - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
-      - uses: taiki-e/install-action@4a76afe23f9e08d2d9550fb56e556444e8611d21
+      - uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519
         with:
           tool: cargo-llvm-cov
       - run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov.info
@@ -100,7 +100,7 @@ jobs:
       - run: cargo fmt -- --check
       - run: cargo clippy --workspace --all-features --all-targets
 
-      - uses: taiki-e/install-action@4a76afe23f9e08d2d9550fb56e556444e8611d21
+      - uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519
         with:
           tool: cargo-hack
       - name: cargo hack
