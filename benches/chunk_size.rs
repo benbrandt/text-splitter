@@ -180,6 +180,16 @@ mod markdown {
         bench(bencher, filename, || MarkdownSplitter::new(N));
     }
 
+    #[divan::bench(args = [true, false])]
+    fn single_line_distant_emphasis(bencher: Bencher<'_, '_>, trim: bool) {
+        let mut text = "alpha beta gamma delta ".repeat(8_000);
+        text.push_str("**end**");
+        let splitter = MarkdownSplitter::new(ChunkConfig::new(64).with_trim(trim));
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
