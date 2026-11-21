@@ -225,6 +225,38 @@ fn tiktoken_punctuation_that_fits_is_not_rejected_by_larger_prefixes() {
     assert_eq!(chunks, [text]);
 }
 
+#[cfg(feature = "tiktoken-rs")]
+#[test]
+fn cut_inside_a_word_does_not_make_the_whole_word_fit() {
+    let tokenizer = tiktoken_rs::cl100k_base().unwrap();
+    let text = format!("{}a{}", "_".repeat(1022), ".y".repeat(2_000));
+    let splitter = TextSplitter::new(ChunkConfig::new(20).with_sizer(&tokenizer).with_trim(false));
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+    assert_eq!(chunks[0], &text[..1023]);
+    assert!(chunks.iter().all(|chunk| tokenizer.size(chunk) <= 20));
+}
+
+#[test]
+fn compressed_word_is_still_split_to_capacity() {
+    struct CompressedBytes;
+
+    impl ChunkSizer for CompressedBytes {
+        fn size(&self, chunk: &str) -> usize {
+            chunk.len().div_ceil(1023)
+        }
+    }
+
+    let text = "A.B.C.D.".repeat(2_000);
+    let splitter = TextSplitter::new(
+        ChunkConfig::new(1)
+            .with_sizer(CompressedBytes)
+            .with_trim(false),
+    );
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+    assert_eq!(chunks[0], &text[..1023]);
+    assert!(chunks.iter().all(|chunk| CompressedBytes.size(chunk) <= 1));
+}
+
 #[test]
 fn chunk_overlap_characters() {
     let splitter = TextSplitter::new(ChunkConfig::new(4).with_overlap(2).unwrap());

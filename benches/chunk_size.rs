@@ -163,6 +163,19 @@ mod markdown {
     }
 
     #[cfg(feature = "tiktoken-rs")]
+    #[divan::bench(args = [2_000, 4_000, 8_000])]
+    fn flattened_sitemap(bencher: Bencher<'_, '_>, entries: usize) {
+        let entry = "https://example.com/path/to/page 2026-01-01T00:00:00+02:00   ";
+        let text = format!("{}[more](https://example.com/)", entry.repeat(entries));
+        let splitter = MarkdownSplitter::new(
+            ChunkConfig::new(300).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
+        );
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
+    #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {

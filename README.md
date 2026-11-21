@@ -151,6 +151,8 @@ To preserve as much semantic meaning within a chunk as possible, each chunk is c
 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length. Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
 
+With a fixed capacity, once a section has to be split, the splitter can keep using finer boundaries inside it instead of sizing its entire remainder for every chunk. It checks the size of the chunk it will emit and reconsiders the surrounding structure when the search reaches the next parsed item. If a sizer assigns a smaller size to a longer string, this can produce a shorter valid chunk even when the entire remainder would fit.
+
 The boundaries used to split the text if using the `chunks` method, in ascending order:
 
 ### `TextSplitter` Semantic Levels
