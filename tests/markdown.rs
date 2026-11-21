@@ -5,7 +5,7 @@ use fake::{Fake, Faker};
 use itertools::Itertools;
 use more_asserts::assert_le;
 #[cfg(feature = "markdown")]
-use text_splitter::{ChunkConfig, MarkdownSplitter};
+use text_splitter::{ChunkConfig, ChunkSizer, MarkdownSplitter};
 
 #[cfg(feature = "markdown")]
 #[test]
@@ -136,4 +136,85 @@ fn trimming_does_trim_block_level_indentation_if_only_one_item() {
         .to_vec(),
         chunks
     );
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn distant_inline_boundary_does_not_remeasure_the_whole_gap() {
+    struct BytesSized(std::cell::Cell<usize>);
+
+    impl ChunkSizer for BytesSized {
+        fn size(&self, chunk: &str) -> usize {
+            self.0.set(self.0.get() + chunk.len());
+            chunk.chars().count()
+        }
+    }
+
+    let entry = "https://example.com/path/to/page 2026-01-01T00:00:00+02:00   ";
+    // Both smart punctuation and an actual link produce a distant parsed range.
+    for (marker, overlap, trim) in [
+        ("https://example.com/lynk--co ", 0, true),
+        ("[次](https://example.com/) ", 100, false),
+    ] {
+        let text = format!("{}{marker}{}", entry.repeat(4_000), entry.repeat(100));
+        let bytes = BytesSized(std::cell::Cell::new(0));
+        let config = ChunkConfig::new(1_000)
+            .with_sizer(&bytes)
+            .with_overlap(overlap)
+            .unwrap()
+            .with_trim(trim);
+        let splitter = MarkdownSplitter::new(config);
+        let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+        assert!(chunks.len() > 200);
+        assert!(chunks.iter().all(|c| c.chars().count() <= 1_000));
+        assert!(
+            bytes.0.get() < 50 * text.len(),
+            "{} bytes sized for {} input bytes",
+            bytes.0.get(),
+            text.len()
+        );
+    }
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn tail_of_a_split_section_can_merge_with_following_markup() {
+    let text = format!("{}**x**", "aa ".repeat(19));
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(10).with_trim(false));
+    let chunks = splitter.chunk_indices(&text).collect::<Vec<_>>();
+    assert_eq!(chunks.last(), Some(&(54, "aa **x**")));
+}
+
+#[cfg(feature = "markdown")]
+#[test]
+fn rechecks_a_fitting_tail_for_ranges_or_an_oversized_fallback_chunk() {
+    struct TailSizer<'a>(&'a str);
+
+    impl ChunkSizer for TailSizer<'_> {
+        fn size(&self, chunk: &str) -> usize {
+            if chunk == self.0 {
+                1
+            } else if chunk.starts_with('z') {
+                chunk.len().max(11)
+            } else {
+                chunk.len()
+            }
+        }
+    }
+
+    let tail = "zabc ".repeat(24);
+    let text = format!("abcd abcd {tail}--end");
+    // At max 10 no fallback chunk starting at 'z' fits. At max 11 a short one
+    // does fit, but a ranged capacity should still prefer the entire semantic tail.
+    for capacity in [10..=10, 10..=11] {
+        let splitter = MarkdownSplitter::new(
+            ChunkConfig::new(capacity)
+                .with_sizer(TailSizer(&tail))
+                .with_trim(false),
+        );
+        assert_eq!(
+            splitter.chunks(&text).collect::<Vec<_>>(),
+            ["abcd abcd ", tail.as_str(), "--end"]
+        );
+    }
 }

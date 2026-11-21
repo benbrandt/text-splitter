@@ -227,6 +227,11 @@ where
         self.next_range_by_level.keys().copied()
     }
 
+    /// Byte offset of the first parsed item still ahead of the range cursor.
+    fn next_range_start(&self) -> Option<usize> {
+        self.ranges.get(self.cursor).map(|(_, range)| range.start)
+    }
+
     /// Split the suffix beginning at the byte offset last passed to `update_cursor`.
     fn semantic_chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
@@ -283,6 +288,8 @@ where
     cursor: usize,
     /// Reusable container for next sections to avoid extra allocations
     next_sections: Vec<(usize, &'text str)>,
+    /// End of the semantic section we had to split using the fallback levels.
+    oversized_section_end: Option<usize>,
     /// Overlap capacity
     overlap: ChunkCapacity,
     /// Previous item's end byte offset
@@ -324,6 +331,7 @@ where
             chunk_stats: ChunkStats::new(),
             cursor: 0,
             next_sections: Vec::new(),
+            oversized_section_end: None,
             overlap: (*overlap).into(),
             prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(offsets),
@@ -337,9 +345,9 @@ where
     /// Generate the next chunk, applying trimming settings.
     /// Returns final byte offset and str.
     fn next_chunk(&mut self) -> Result<(usize, &'text str), Sizer::Error> {
-        self.semantic_split.update_cursor(self.cursor);
-        let low = self.update_next_sections()?;
-        let (start, end) = self.binary_search_next_chunk(low)?;
+        let start = self.cursor;
+        self.semantic_split.update_cursor(start);
+        let end = self.next_chunk_end()?;
         // Chunk selection uses offsets from slices of this same text, so both
         // endpoints are valid UTF-8 boundaries.
         let chunk = &self.text[start..end];
@@ -355,7 +363,7 @@ where
     }
 
     /// Use binary search to find the next chunk that fits within the chunk size
-    fn binary_search_next_chunk(&mut self, mut low: usize) -> Result<(usize, usize), Sizer::Error> {
+    fn binary_search_next_chunk(&mut self, mut low: usize) -> Result<usize, Sizer::Error> {
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
@@ -432,7 +440,7 @@ where
             }
         }
 
-        Ok((start, end))
+        Ok(end)
     }
 
     /// Use binary search to find the sections that fit within the overlap size.
@@ -481,18 +489,48 @@ where
         Ok(())
     }
 
-    /// Find the ideal next sections, breaking it up until we find the largest chunk.
-    /// Increasing length of chunk until we find biggest size to minimize validation time
-    /// on huge chunks
-    #[expect(clippy::too_many_lines)]
-    fn update_next_sections(&mut self) -> Result<usize, Sizer::Error> {
-        // First thing, clear out the list, but reuse the allocated memory
-        self.next_sections.clear();
-
+    /// Select a chunk, retaining its section boundaries for overlap.
+    fn next_chunk_end(&mut self) -> Result<usize, Sizer::Error> {
         let remaining_text = self.text.get(self.cursor..).unwrap();
-        let mut lower_level = None;
 
-        let (semantic_level, mut max_offset) = self.chunk_sizer.find_correct_level(
+        if let Some(end) = self.oversized_section_end.filter(|&end| {
+            end > self.cursor.saturating_add(self.capacity.max)
+                && self.semantic_split.next_range_start() == Some(end)
+        }) {
+            // No parsed range starts between here and the boundary we fell back from.
+            // Keep splitting the interior if the fallback search stays strictly inside it.
+            let window = self.fill_next_sections(remaining_text, None, Some(end))?;
+            if window.overflow_end.is_some_and(|offset| offset < end) {
+                let candidate_end = self.binary_search_next_chunk(window.low)?;
+                // Binary search can pick an oversized first section to force progress.
+                // Don't commit that choice here: a nonmonotone sizer may fit the entire tail.
+                let chunk = &self.text[self.cursor..candidate_end];
+                if self.chunk_sizer.chunk_size(self.cursor, chunk, self.trim)? <= self.capacity.max
+                {
+                    return Ok(candidate_end);
+                }
+            }
+        }
+
+        // At new structure or within reach of the old boundary, the tail can again
+        // be grouped with what follows. Ranged capacities always take this path.
+        let (level, limit) = self.next_semantic_level(remaining_text)?;
+        self.oversized_section_end =
+            if level.is_none() && self.capacity.desired == self.capacity.max {
+                limit
+            } else {
+                None
+            };
+        let window = self.fill_next_sections(remaining_text, level, limit)?;
+        self.binary_search_next_chunk(window.low)
+    }
+
+    fn next_semantic_level(
+        &mut self,
+        remaining_text: &'text str,
+    ) -> Result<(Option<Level>, Option<usize>), Sizer::Error> {
+        let mut lower_level = None;
+        self.chunk_sizer.find_correct_level(
             self.cursor,
             &self.capacity,
             self.semantic_split
@@ -525,8 +563,19 @@ where
                 )
             },
             self.trim,
-        )?;
+        )
+    }
 
+    /// Fill the reusable binary-search window until a candidate exceeds capacity
+    /// or the available sections are exhausted.
+    #[expect(clippy::too_many_lines)]
+    fn fill_next_sections(
+        &mut self,
+        remaining_text: &'text str,
+        semantic_level: Option<Level>,
+        mut max_offset: Option<usize>,
+    ) -> Result<SectionWindow, Sizer::Error> {
+        self.next_sections.clear();
         let sections = if let Some(semantic_level) = semantic_level {
             Either::Left(self.semantic_split.semantic_chunks(
                 self.cursor,
@@ -641,14 +690,28 @@ where
                         prev_equals = Some(chunk_size);
                     }
                     Ordering::Greater => {
-                        break;
+                        return Ok(SectionWindow {
+                            low,
+                            overflow_end: Some(text_end),
+                        });
                     }
                 }
             }
         }
 
-        Ok(low)
+        Ok(SectionWindow {
+            low,
+            overflow_end: None,
+        })
     }
+}
+
+#[derive(Debug)]
+struct SectionWindow {
+    /// First candidate still worth testing in `next_sections`.
+    low: usize,
+    /// Byte end of a measured oversized candidate, if that's why the search stopped.
+    overflow_end: Option<usize>,
 }
 
 impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator for TextChunks<'text, 'sizer, Sizer, Level>
