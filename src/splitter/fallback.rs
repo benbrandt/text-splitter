@@ -1,6 +1,7 @@
-use std::sync::LazyLock;
+use std::{ops::Range, sync::LazyLock};
 
 use auto_enums::auto_enum;
+use icu_properties::{props::SentenceBreak, CodePointMapData};
 use icu_segmenter::{
     options::{SentenceBreakInvariantOptions, WordBreakInvariantOptions},
     GraphemeClusterSegmenter, GraphemeClusterSegmenterBorrowed, SentenceSegmenter,
@@ -15,6 +16,56 @@ static WORD_SEGMENTER: LazyLock<WordSegmenterBorrowed<'static>> =
     LazyLock::new(|| WordSegmenter::new_dictionary(WordBreakInvariantOptions::default()));
 static SENTENCE_SEGMENTER: LazyLock<SentenceSegmenterBorrowed<'static>> =
     LazyLock::new(|| SentenceSegmenter::new(SentenceBreakInvariantOptions::default()));
+
+/// The first sentence of the last suffix probed, in absolute byte offsets.
+#[derive(Debug, Default)]
+pub(super) struct SentenceProbe {
+    range: Range<usize>,
+}
+
+impl SentenceProbe {
+    pub(super) fn first<'text>(&mut self, text: &'text str, offset: usize) -> Option<&'text str> {
+        let suffix = &text[offset..];
+        if self.range.contains(&offset)
+            && can_drop_sentence_prefix(&text[self.range.start..offset], suffix.chars().next()?)
+        {
+            // Only the newly discarded prefix needs checking on the next probe.
+            self.range.start = offset;
+            return Some(&text[self.range.clone()]);
+        }
+        let (_, sentence) = FallbackLevel::Sentence.sections(suffix).next()?;
+        self.range = offset..offset + sentence.len();
+        Some(sentence)
+    }
+}
+
+fn can_drop_sentence_prefix(prefix: &str, next: char) -> bool {
+    let properties = CodePointMapData::<SentenceBreak>::new();
+    let letter_or_number = |class| {
+        matches!(
+            class,
+            SentenceBreak::Upper
+                | SentenceBreak::Lower
+                | SentenceBreak::OLetter
+                | SentenceBreak::Numeric
+        )
+    };
+    // In the UAX #29 sentence rules, no context before a letter or number can
+    // affect a break *after* it. A leading space is different: it can carry a
+    // pending terminator from the discarded prefix (e.g. "Hello.  World.").
+    // Only reuse at a space if the prefix was ordinary text with no such context.
+    match properties.get(next) {
+        SentenceBreak::Sp => prefix.chars().all(|c| {
+            let class = properties.get(c);
+            letter_or_number(class)
+                || matches!(
+                    class,
+                    SentenceBreak::Sp | SentenceBreak::Extend | SentenceBreak::Format
+                )
+        }),
+        class => letter_or_number(class),
+    }
+}
 
 /// When using a custom semantic level, it is possible that none of them will
 /// be small enough to fit into the chunk size. In order to make sure we can
@@ -61,6 +112,52 @@ impl FallbackLevel {
                 .segment_str(text)
                 .tuple_windows()
                 .map(|(i, j)| (i, &text[i..j])),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn restarting_can_remove_or_introduce_a_sentence_boundary() {
+        let mut probe = SentenceProbe::default();
+        let text = "Hello.  World.";
+        assert_eq!(probe.first(text, 0), Some("Hello.  "));
+        assert_eq!(probe.first(text, 6), Some("  World."));
+
+        let mut probe = SentenceProbe::default();
+        let text = "A.B. Next.";
+        assert_eq!(probe.first(text, 0), Some("A.B. "));
+        assert_eq!(probe.first(text, 1), Some("."));
+    }
+
+    #[test]
+    fn sentence_probes_match_fresh_icu_at_each_restart() {
+        for text in [
+            "",
+            "U.S.A.  Price: 3.14!  \"Really?\"  Next.",
+            "A\u{301}.\u{200d}B. e\u{301}lan.  אָב。東京！",
+            "٢.٣ ¿Qué tal?\r\n\u{2029}🦀!  Καλημέρα。",
+        ] {
+            let offsets = text
+                .char_indices()
+                .map(|(i, _)| i)
+                .chain([text.len()])
+                .collect::<Vec<_>>();
+            for (i, &from) in offsets.iter().enumerate() {
+                for &at in &offsets[i..] {
+                    let mut probe = SentenceProbe::default();
+                    let _ = probe.first(text, from);
+                    let suffix = &text[at..];
+                    let expected = SENTENCE_SEGMENTER
+                        .segment_str(suffix)
+                        .nth(1)
+                        .map(|end| &suffix[..end]);
+                    assert_eq!(probe.first(text, at), expected, "{text:?}: {from} → {at}");
+                }
+            }
         }
     }
 }

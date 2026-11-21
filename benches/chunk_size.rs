@@ -90,6 +90,16 @@ mod text {
         bench(bencher, filename, || TextSplitter::new(N));
     }
 
+    #[divan::bench(args = [2_000, 4_000, 8_000, 16_000], consts = [0, 24])]
+    fn distant_sentence_boundary<const OVERLAP: usize>(bencher: Bencher<'_, '_>, words: usize) {
+        let text = "alpha beta gamma delta ".repeat(words / 4);
+        let config = ChunkConfig::new(64).with_overlap(OVERLAP).unwrap();
+        let splitter = TextSplitter::new(config.with_trim(false));
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
     #[divan::bench(consts = DISTANT_BOUNDARY_CHUNK_SIZES)]
     fn word_count_distant_paragraph_separator<const N: usize>(bencher: Bencher<'_, '_>) {
         bencher

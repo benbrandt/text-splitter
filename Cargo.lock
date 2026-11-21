@@ -1626,6 +1626,7 @@ dependencies = [
  "divan",
  "either",
  "fake",
+ "icu_properties",
  "icu_provider",
  "icu_segmenter",
  "insta",
