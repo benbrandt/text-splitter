@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, convert::Infallible, fmt, iter::once, ops::Range};
+use std::{cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once, ops::Range};
 
 use either::Either;
 use itertools::Itertools;
@@ -158,6 +158,8 @@ where
     cursor: usize,
     /// Range of each semantic item and its precalculated semantic level
     ranges: Vec<(Level, Range<usize>)>,
+    /// Last index in `ranges` for each level. Once the cursor passes it, that level is exhausted.
+    last_range_by_level: BTreeMap<Level, usize>,
 }
 
 impl<Level> SemanticSplitRanges<Level>
@@ -169,7 +171,15 @@ where
         ranges.sort_unstable_by(|(_, a), (_, b)| {
             a.start.cmp(&b.start).then_with(|| b.end.cmp(&a.end))
         });
-        Self { cursor: 0, ranges }
+        let mut last_range_by_level = BTreeMap::new();
+        for (index, (level, _)) in ranges.iter().enumerate() {
+            last_range_by_level.insert(*level, index);
+        }
+        Self {
+            cursor: 0,
+            ranges,
+            last_range_by_level,
+        }
     }
 
     /// Retrieve ranges for all sections of a given level after an offset
@@ -218,13 +228,11 @@ where
             })
     }
 
-    /// Return a unique, sorted list of all line break levels present before the next max level, added
-    /// to all of the base semantic levels, in order from smallest to largest
-    fn levels_in_remaining_text(&self, offset: usize) -> impl Iterator<Item = Level> + '_ {
-        self.ranges_after_offset(offset)
-            .map(|(l, _)| l)
-            .sorted()
-            .dedup()
+    /// Return the distinct levels with a range at or after the cursor, in ascending order.
+    fn levels_in_remaining_text(&self) -> impl Iterator<Item = Level> + '_ {
+        self.last_range_by_level
+            .iter()
+            .filter_map(|(&level, &last)| (last >= self.cursor).then_some(level))
     }
 
     /// Split a given text into iterator over each semantic chunk
@@ -478,7 +486,7 @@ where
             self.cursor,
             &self.capacity,
             self.semantic_split
-                .levels_in_remaining_text(self.cursor)
+                .levels_in_remaining_text()
                 .filter_map(|level| {
                     let first_chunk = self
                         .semantic_split
@@ -812,5 +820,20 @@ mod tests {
             ranges.ranges_after_offset(0).collect::<Vec<_>>(),
             vec![(0, 1..2)]
         );
+    }
+
+    #[test]
+    fn remaining_levels_follow_the_range_cursor() {
+        let mut ranges =
+            SemanticSplitRanges::new(vec![(1, 30..31), (1, 10..11), (0, 20..21), (2, 10..50)]);
+
+        for (offset, expected) in [(10, &[0, 1, 2][..]), (11, &[0, 1]), (30, &[1]), (31, &[])] {
+            ranges.update_cursor(offset);
+            assert_eq!(
+                ranges.levels_in_remaining_text().collect::<Vec<_>>(),
+                expected,
+                "offset {offset}"
+            );
+        }
     }
 }

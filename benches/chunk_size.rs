@@ -201,6 +201,17 @@ mod code {
         });
     }
 
+    #[divan::bench(args = [1_000, 2_000, 4_000, 8_000])]
+    fn repeated_functions(bencher: Bencher<'_, '_>, count: usize) {
+        let function = "fn f(x: i32) -> i32 { if x > 0 { x + 1 } else { -x } }\n";
+        let source = function.repeat(count);
+        let config = ChunkConfig::new(function.len()); // One chunk per function.
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, config).unwrap();
+        bencher
+            .counter(BytesCount::of_str(&source))
+            .bench(|| splitter.chunks(&source).for_each(black_box_drop));
+    }
+
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
