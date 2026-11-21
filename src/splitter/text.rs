@@ -418,6 +418,44 @@ mod tests {
     }
 
     #[test]
+    fn sentence_probing_does_not_consume_dictionary_words_from_the_output() {
+        let splitter = TextSplitter::new(ChunkConfig::new(8).with_trim(false));
+        assert_eq!(
+            splitter
+                .chunk_indices("ภาษาไทยเป็นภาษาที่สวยงามมาก")
+                .collect::<Vec<_>>(),
+            [
+                (0, "ภาษาไทย"),
+                (21, "เป็นภาษา"),
+                (45, "ที่"),
+                (54, "สวยงาม"),
+                (72, "มาก")
+            ]
+        );
+    }
+
+    #[test]
+    fn dictionary_word_chunks_restart_at_the_overlap_cursor() {
+        let splitter = TextSplitter::new(
+            ChunkConfig::new(7)
+                .with_overlap(4)
+                .unwrap()
+                .with_trim(false),
+        );
+        assert_eq!(
+            splitter
+                .chunk_indices("日本語の長い文章に句読点がない")
+                .collect::<Vec<_>>(),
+            [
+                (0, "日本語の長い"),
+                (9, "の長い文章に"),
+                (18, "文章に句読点が"),
+                (27, "句読点がない")
+            ]
+        );
+    }
+
+    #[test]
     fn words_fallback_to_graphemes() {
         let text = "Thé quick\r\n";
         let chunks = TextSplitter::new(ChunkConfig::new(2).with_trim(false))

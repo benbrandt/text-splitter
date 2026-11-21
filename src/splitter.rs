@@ -1,4 +1,7 @@
-use std::{cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once, ops::Range};
+use std::{
+    cell::Cell, cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once,
+    ops::Range,
+};
 
 use either::Either;
 use itertools::Itertools;
@@ -534,6 +537,16 @@ where
                 semantic_level,
             ))
         } else {
+            // Finding the first dictionary word can segment the whole run. Hand the
+            // peeked iterator to the next word consumer at this cursor, still at its start.
+            let peeked_words = Cell::new(None);
+            let sections_for = |level: FallbackLevel| {
+                let fresh = || level.sections(remaining_text).peekable();
+                match level {
+                    FallbackLevel::Word => peeked_words.take().unwrap_or_else(fresh),
+                    _ => fresh(),
+                }
+            };
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
                 &self.capacity,
@@ -542,22 +555,23 @@ where
                         FallbackLevel::Sentence => {
                             self.sentence_probe.first(self.text, self.cursor)
                         }
+                        FallbackLevel::Word => {
+                            let mut words = level.sections(remaining_text).peekable();
+                            let first = words.peek().map(|&(_, s)| s);
+                            peeked_words.set(Some(words));
+                            first
+                        }
                         _ => level.sections(remaining_text).next().map(|(_, s)| s),
                     };
                     first.map(|s| (level, s, level.boundary_level_for_probe()))
                 }),
                 |lower_level, chunk_end| {
-                    lower_level.map_or_else(
-                        || Either::Left(std::iter::empty()),
-                        |lower_level| {
-                            Either::Right(
-                                lower_level
-                                    .sections(remaining_text)
-                                    .map(|(offset, text)| self.cursor + offset + text.len())
-                                    .take_while(move |end| *end <= chunk_end),
-                            )
-                        },
-                    )
+                    // If sizing never asks for a boundary, leave the words for output.
+                    lower_level
+                        .into_iter()
+                        .flat_map(&sections_for)
+                        .map(|(offset, text)| self.cursor + offset + text.len())
+                        .take_while(move |end| *end <= chunk_end)
                 },
                 self.trim,
             )?;
@@ -570,9 +584,7 @@ where
             let fallback_level = semantic_level.unwrap_or(FallbackLevel::Char);
 
             Either::Right(
-                fallback_level
-                    .sections(remaining_text)
-                    .map(|(offset, text)| (self.cursor + offset, text)),
+                sections_for(fallback_level).map(|(offset, text)| (self.cursor + offset, text)),
             )
         };
 
