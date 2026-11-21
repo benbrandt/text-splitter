@@ -34,7 +34,7 @@ impl Trim {
             #[cfg(any(feature = "markdown", feature = "code"))]
             Self::PreserveIndentation => {
                 // Preserve indentation if we have newlines inside the element
-                if chunk.trim().contains(NEWLINES) {
+                if memchr::memchr2(b'\n', b'\r', chunk.trim().as_bytes()).is_some() {
                     let diff = chunk.len() - chunk.trim_start_matches(NEWLINES).len();
                     (offset + diff, chunk.trim_start_matches(NEWLINES).trim_end())
                 } else {
@@ -74,5 +74,17 @@ mod tests {
         let (offset, chunk) = Trim::PreserveIndentation.trim(0, chunk);
         assert_eq!(offset, 1);
         assert_eq!(chunk, "  hello\n  world");
+    }
+
+    #[cfg(any(feature = "markdown", feature = "code"))]
+    #[test]
+    fn only_interior_cr_or_lf_preserves_indentation() {
+        for (chunk, expected) in [
+            ("\r\n  猫\r犬  \n", (12, "  猫\r犬")),
+            ("\r\n  猫  \r\n", (14, "猫")),
+            ("  猫\u{2028}犬", (12, "猫\u{2028}犬")),
+        ] {
+            assert_eq!(Trim::PreserveIndentation.trim(10, chunk), expected);
+        }
     }
 }
