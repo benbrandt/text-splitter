@@ -602,7 +602,7 @@ where
                     break;
                 }
                 let chunk_size = self.chunk_sizer.chunk_size(
-                    offset,
+                    self.cursor,
                     self.text.get(self.cursor..text_end).expect("Invalid range"),
                     self.trim,
                 )?;

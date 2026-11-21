@@ -1,5 +1,6 @@
 //! Test for `TextSplitter` behavior.
 use std::{
+    cell::Cell,
     fs,
     sync::atomic::{AtomicUsize, Ordering},
 };
@@ -110,6 +111,28 @@ fn chunk_capacity_range() {
 
     // \n goes in the second chunk because capacity is reached after first paragraph.
     assert_eq!(vec!["12345", "\n12345"], chunks);
+}
+
+#[test]
+fn reuses_the_size_of_a_probed_chunk() {
+    struct ProbeCalls(Cell<usize>);
+
+    impl ChunkSizer for ProbeCalls {
+        fn size(&self, chunk: &str) -> usize {
+            if chunk == "b\nc" {
+                self.0.set(self.0.get() + 1);
+            }
+            chunk.len()
+        }
+    }
+
+    let calls = ProbeCalls(Cell::new(0));
+    let splitter = TextSplitter::new(ChunkConfig::new(2).with_sizer(&calls).with_trim(false));
+    let chunks = splitter.chunks("a\nb\nc").collect::<Vec<_>>();
+
+    assert_eq!(chunks, ["a\n", "b\n", "c"]);
+    // The probe and the chunk selection both check the same three bytes at offset 2.
+    assert_eq!(calls.0.get(), 1);
 }
 
 #[test]
