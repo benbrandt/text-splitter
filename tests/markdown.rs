@@ -137,3 +137,18 @@ fn trimming_does_trim_block_level_indentation_if_only_one_item() {
         chunks
     );
 }
+
+#[cfg(all(feature = "markdown", feature = "tiktoken-rs"))]
+#[test]
+fn a_longer_section_can_still_fit_the_token_budget() {
+    // With cl100k_base, extending a run of colons can merge tokens.
+    let text = format!("the{} ::::::::`q`", " a".repeat(598));
+    let splitter = MarkdownSplitter::new(
+        ChunkConfig::new(300).with_sizer(tiktoken_rs::cl100k_base().unwrap()),
+    );
+    let ranges = splitter
+        .chunk_indices(&text)
+        .map(|(start, chunk)| start..start + chunk.len())
+        .collect::<Vec<_>>();
+    assert_eq!(ranges, [0..601, 602..1208, 1208..1211]);
+}

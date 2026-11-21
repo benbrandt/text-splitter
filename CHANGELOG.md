@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Rust
+
+- Custom sizers can implement `size_with_limit` or `try_size_with_limit` to report that a whole section is too large without calculating its exact size. Existing sizers need no changes. Character-based splitting uses this check in Rust and Python without changing chunk selection.
+
 ### Performance highlights
 
 These improvements apply to both the Rust crate and the Python bindings. The figures below are from local Rust release builds on the named inputs.

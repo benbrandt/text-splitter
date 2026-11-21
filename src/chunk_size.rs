@@ -2,9 +2,10 @@ use std::{
     borrow::Cow,
     cell::{Ref, RefMut},
     cmp::Ordering,
+    collections::hash_map::Entry,
     convert::Infallible,
     fmt,
-    ops::{Deref, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
+    ops::{Range, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
     rc::Rc,
     sync::Arc,
 };
@@ -192,10 +193,37 @@ impl From<RangeToInclusive<usize>> for ChunkCapacity {
     }
 }
 
+/// The result of measuring a whole chunk against an inclusive limit.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ChunkSize {
+    /// The exact size, even if it exceeds the limit. The splitter can cache it.
+    Exact(usize),
+    /// The size is strictly greater than the limit; the exact size was not computed.
+    ExceedsLimit,
+}
+
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
     /// Determine the size of a given chunk to use for validation
     fn size(&self, chunk: &str) -> usize;
+
+    /// Measure `chunk`, optionally stopping once its size is known to exceed `limit`.
+    ///
+    /// By default, returns [`ChunkSize::Exact`] with the result of [`Self::size`],
+    /// including when that result is over the limit. An override may
+    /// return [`ChunkSize::ExceedsLimit`] only if `size(chunk) > limit`. A
+    /// prefix being over budget is not sufficient if extending it can reduce
+    /// the size (for example, when tokens merge).
+    ///
+    /// ```
+    /// use text_splitter::{Characters, ChunkSize, ChunkSizer};
+    ///
+    /// assert_eq!(Characters.size_with_limit("🍎🍐", 2), ChunkSize::Exact(2));
+    /// assert_eq!(Characters.size_with_limit("🍎🍐", 1), ChunkSize::ExceedsLimit);
+    /// ```
+    fn size_with_limit(&self, chunk: &str, _limit: usize) -> ChunkSize {
+        ChunkSize::Exact(self.size(chunk))
+    }
 }
 
 /// Determines the size of a chunk, returning an error if sizing fails.
@@ -237,6 +265,17 @@ pub trait TryChunkSizer {
     ///
     /// Returns the sizer's error if the chunk cannot be sized.
     fn try_size(&self, chunk: &str) -> Result<usize, Self::Error>;
+
+    /// Fallible version of [`ChunkSizer::size_with_limit`]. By default, measures
+    /// the whole chunk with [`Self::try_size`]. A chunk exactly at `limit` fits.
+    ///
+    /// # Errors
+    ///
+    /// Preserve errors from [`Self::try_size`]; do not report an invalid chunk
+    /// as merely over the limit.
+    fn try_size_with_limit(&self, chunk: &str, _limit: usize) -> Result<ChunkSize, Self::Error> {
+        self.try_size(chunk).map(ChunkSize::Exact)
+    }
 }
 
 impl<T: ChunkSizer + ?Sized> TryChunkSizer for T {
@@ -245,42 +284,39 @@ impl<T: ChunkSizer + ?Sized> TryChunkSizer for T {
     fn try_size(&self, chunk: &str) -> Result<usize, Self::Error> {
         Ok(self.size(chunk))
     }
-}
 
-impl<T> ChunkSizer for &T
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        (*self).size(chunk)
+    fn try_size_with_limit(&self, chunk: &str, limit: usize) -> Result<ChunkSize, Self::Error> {
+        Ok(self.size_with_limit(chunk, limit))
     }
 }
 
-impl<T> ChunkSizer for Ref<'_, T>
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        self.deref().size(chunk)
-    }
+// Wrapping a sizer must preserve its budget check as well as its exact measurement.
+macro_rules! delegate_sizing {
+    () => {
+        fn size(&self, chunk: &str) -> usize {
+            (**self).size(chunk)
+        }
+
+        fn size_with_limit(&self, chunk: &str, limit: usize) -> ChunkSize {
+            (**self).size_with_limit(chunk, limit)
+        }
+    };
 }
 
-impl<T> ChunkSizer for RefMut<'_, T>
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        self.deref().size(chunk)
-    }
+impl<T: ChunkSizer> ChunkSizer for &T {
+    delegate_sizing!();
 }
 
-impl<T> ChunkSizer for Box<T>
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        self.deref().size(chunk)
-    }
+impl<T: ChunkSizer> ChunkSizer for Ref<'_, T> {
+    delegate_sizing!();
+}
+
+impl<T: ChunkSizer> ChunkSizer for RefMut<'_, T> {
+    delegate_sizing!();
+}
+
+impl<T: ChunkSizer> ChunkSizer for Box<T> {
+    delegate_sizing!();
 }
 
 impl<T> ChunkSizer for Cow<'_, T>
@@ -288,27 +324,15 @@ where
     T: ChunkSizer + ToOwned + ?Sized,
     <T as ToOwned>::Owned: ChunkSizer,
 {
-    fn size(&self, chunk: &str) -> usize {
-        self.as_ref().size(chunk)
-    }
+    delegate_sizing!();
 }
 
-impl<T> ChunkSizer for Rc<T>
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        self.deref().size(chunk)
-    }
+impl<T: ChunkSizer> ChunkSizer for Rc<T> {
+    delegate_sizing!();
 }
 
-impl<T> ChunkSizer for Arc<T>
-where
-    T: ChunkSizer,
-{
-    fn size(&self, chunk: &str) -> usize {
-        self.as_ref().size(chunk)
-    }
+impl<T: ChunkSizer> ChunkSizer for Arc<T> {
+    delegate_sizing!();
 }
 
 /// Indicates there was an error with the chunk configuration.
@@ -479,15 +503,35 @@ where
         chunk: &str,
         trim: Trim,
     ) -> Result<usize, Sizer::Error> {
-        let (offset, chunk) = trim.trim(offset, chunk);
-        match self.size_cache.entry(offset..(offset + chunk.len())) {
-            std::collections::hash_map::Entry::Occupied(entry) => Ok(*entry.get()),
-            std::collections::hash_map::Entry::Vacant(entry) => {
+        let (range, chunk) = trimmed_range(offset, chunk, trim);
+        match self.size_cache.entry(range) {
+            Entry::Occupied(entry) => Ok(*entry.get()),
+            Entry::Vacant(entry) => {
                 let size = self.sizer.try_size(chunk)?;
                 entry.insert(size);
                 Ok(size)
             }
         }
+    }
+
+    /// Classify the same trimmed slice as `chunk_size`, without requiring its
+    /// exact size when the sizer can prove the whole slice is too large.
+    fn chunk_fits(
+        &mut self,
+        offset: usize,
+        chunk: &str,
+        capacity: &ChunkCapacity,
+        trim: Trim,
+    ) -> Result<Ordering, Sizer::Error> {
+        let (range, chunk) = trimmed_range(offset, chunk, trim);
+        let size = match self.size_cache.entry(range) {
+            Entry::Occupied(entry) => *entry.get(),
+            Entry::Vacant(entry) => match self.sizer.try_size_with_limit(chunk, capacity.max)? {
+                ChunkSize::Exact(size) => *entry.insert(size),
+                ChunkSize::ExceedsLimit => return Ok(Ordering::Greater),
+            },
+        };
+        Ok(capacity.fits(size))
     }
 
     /// Find the best level to start splitting the text
@@ -561,8 +605,7 @@ where
             .saturating_add(capacity.max.saturating_mul(PROBE_START_BYTE_FACTOR).max(1))
             .min(chunk_end);
         if probe_start == chunk_end {
-            let chunk_size = self.chunk_size(offset, chunk, trim)?;
-            return Ok(capacity.fits(chunk_size));
+            return self.chunk_fits(offset, chunk, capacity, trim);
         }
 
         let mut step: usize = 1;
@@ -570,7 +613,7 @@ where
             lower_boundaries.find(|&boundary| boundary > offset && boundary >= probe_start);
 
         while let Some(boundary) = next_boundary {
-            if boundary > chunk_end {
+            if boundary >= chunk_end {
                 break;
             }
 
@@ -578,9 +621,8 @@ where
                 .get(..(boundary - offset))
                 .expect("valid character boundary");
             let chunk_size = self.chunk_size(offset, prefix, trim)?;
-            let fits = capacity.fits(chunk_size);
-            if chunk_size > probe_max || boundary == chunk_end {
-                return Ok(fits);
+            if chunk_size > probe_max {
+                return Ok(Ordering::Greater);
             }
 
             let skip = step.saturating_sub(1);
@@ -588,8 +630,7 @@ where
             next_boundary = lower_boundaries.nth(skip);
         }
 
-        let chunk_size = self.chunk_size(offset, chunk, trim)?;
-        Ok(capacity.fits(chunk_size))
+        self.chunk_fits(offset, chunk, capacity, trim)
     }
 
     /// Clear the cached values. Once we've moved the cursor,
@@ -597,6 +638,11 @@ where
     pub fn clear_cache(&mut self) {
         self.size_cache.clear();
     }
+}
+
+fn trimmed_range(offset: usize, chunk: &str, trim: Trim) -> (Range<usize>, &str) {
+    let (start, chunk) = trim.trim(offset, chunk);
+    (start..start + chunk.len(), chunk)
 }
 
 fn probe_max_size(capacity: &ChunkCapacity) -> usize {
@@ -816,16 +862,62 @@ mod tests {
             }
         }
 
-        let sizer = RetrySizer(AtomicUsize::new(0));
-        let mut memoized = MemoizedChunkSizer::new(&sizer);
+        for limited in [false, true] {
+            let sizer = RetrySizer(AtomicUsize::new(0));
+            let mut memoized = MemoizedChunkSizer::new(&sizer);
+            let result = if limited {
+                memoized
+                    .chunk_fits(0, "abc", &1.into(), Trim::All)
+                    .map(|_| ())
+            } else {
+                memoized.chunk_size(0, "abc", Trim::All).map(|_| ())
+            };
+            assert_eq!(result, Err("first call failed"));
+            assert!(memoized.size_cache.is_empty());
+            assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
+            assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
+            assert_eq!(sizer.0.load(atomic::Ordering::SeqCst), 2);
+        }
+    }
+
+    #[test]
+    fn budget_check_shares_exact_sizes_even_when_over_budget() {
+        let sizer = CountingSizer::default();
+        let mut memo = MemoizedChunkSizer::new(&sizer);
+        // The default hook computes the exact count even when it's over budget.
         assert_eq!(
-            memoized.chunk_size(0, "abc", Trim::All),
-            Err("first call failed")
+            memo.chunk_fits(5, "  aé🦀  ", &2.into(), Trim::All),
+            Ok(Ordering::Greater)
         );
-        assert!(memoized.size_cache.is_empty());
-        assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
-        assert_eq!(memoized.chunk_size(0, "abc", Trim::All), Ok(3));
-        assert_eq!(sizer.0.load(atomic::Ordering::SeqCst), 2);
+        // Same trimmed byte range with a different limit, then an exact query.
+        assert_eq!(
+            memo.chunk_fits(7, "aé🦀", &(3..=5).into(), Trim::None),
+            Ok(Ordering::Equal)
+        );
+        assert_eq!(memo.chunk_size(7, "aé🦀", Trim::None), Ok(3));
+        assert_eq!(sizer.calls.load(atomic::Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn whole_section_over_limit_proof_is_not_cached_as_a_size() {
+        let mut memo = MemoizedChunkSizer::new(&Characters);
+        let text = "one long section";
+        assert_eq!(
+            memo.chunk_fits_with_boundaries(
+                0,
+                text,
+                &1.into(),
+                &mut [text.len()].into_iter(),
+                Trim::None,
+            ),
+            Ok(Ordering::Greater)
+        );
+        assert!(memo.size_cache.is_empty());
+        assert_eq!(memo.chunk_size(0, text, Trim::None), Ok(text.len()));
+        assert_eq!(
+            memo.chunk_fits(0, text, &text.len().into(), Trim::None),
+            Ok(Ordering::Equal)
+        );
     }
 
     #[test]
@@ -950,55 +1042,57 @@ mod tests {
         );
     }
 
+    fn assert_delegates_sizing<S: ChunkSizer>(sizer: S) {
+        let config = ChunkConfig::new(1).with_sizer(sizer);
+        assert_eq!(config.sizer().size("chunk"), 5);
+        // The default implementation would return Exact(5); Characters can stop early.
+        assert_eq!(
+            config.sizer().try_size_with_limit("chunk", 1),
+            Ok(ChunkSize::ExceedsLimit)
+        );
+    }
+
     #[test]
     fn chunk_size_reference() {
-        let config = ChunkConfig::new(1).with_sizer(&Characters);
-        config.sizer().size("chunk");
+        assert_delegates_sizing::<&Characters>(&Characters);
     }
 
     #[test]
     fn chunk_size_cow() {
         let sizer: Cow<'_, Characters> = Cow::Owned(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer);
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer);
 
         let sizer = Cow::Borrowed(&Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer);
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer);
     }
 
     #[test]
     fn chunk_size_arc() {
         let sizer = Arc::new(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer);
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer);
     }
 
     #[test]
     fn chunk_size_ref() {
         let sizer = RefCell::new(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer.borrow());
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer.borrow());
     }
 
     #[test]
     fn chunk_size_ref_mut() {
         let sizer = RefCell::new(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer.borrow_mut());
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer.borrow_mut());
     }
 
     #[test]
     fn chunk_size_box() {
         let sizer = Box::new(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer);
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer);
     }
 
     #[test]
     fn chunk_size_rc() {
         let sizer = Rc::new(Characters);
-        let config = ChunkConfig::new(1).with_sizer(sizer);
-        config.sizer().size("chunk");
+        assert_delegates_sizing(sizer);
     }
 }

@@ -162,6 +162,18 @@ mod markdown {
         bench(bencher, filename, || MarkdownSplitter::new(N));
     }
 
+    #[divan::bench(args = [2_000, 4_000, 8_000])]
+    fn characters_distant_inline_boundary(bencher: Bencher<'_, '_>, repetitions: usize) {
+        let text = format!(
+            "{}[more](https://example.com)",
+            "alpha beta gamma delta ".repeat(repetitions)
+        );
+        let splitter = MarkdownSplitter::new(ChunkConfig::new(64).with_trim(false));
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {

@@ -181,6 +181,18 @@ def test_markdown_chunks_trim() -> None:
     assert splitter.chunks(text=text) == ["123", "123"]
 
 
+def test_markdown_budget_uses_the_exact_callback_result() -> None:
+    tail = "abcd " * 148
+
+    def size(chunk: str) -> int:
+        return 1 if chunk == tail else len(chunk)
+
+    splitter = MarkdownSplitter.from_callback(size, 10, trim=False)
+    assert splitter.chunks("abcd abcd " + tail + "--end") == [
+        "abcd abcd ", tail, "--end"
+    ]
+
+
 def test_markdown_hugging_face() -> None:
     tokenizer = Tokenizer.from_pretrained("bert-base-uncased")
     splitter = MarkdownSplitter.from_huggingface_tokenizer(tokenizer, 1, trim=False)

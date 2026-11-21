@@ -12,7 +12,8 @@ use pyo3::{
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use text_splitter::{
     Characters, ChunkCapacity, ChunkCapacityError, ChunkCharIndex, ChunkConfig, ChunkConfigError,
-    ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter, TryChunkSizer,
+    ChunkSize, ChunkSizer, CodeSplitter, CodeSplitterError, MarkdownSplitter, TextSplitter,
+    TryChunkSizer,
 };
 use tiktoken_rs::{bpe_for_model, CoreBPE};
 use tokenizers::Tokenizer;
@@ -122,6 +123,13 @@ impl TryChunkSizer for Sizer {
             Self::Callback(callback) => {
                 Python::attach(|py| callback.0.call(py, (chunk,), None)?.extract::<usize>(py))
             }
+        }
+    }
+
+    fn try_size_with_limit(&self, chunk: &str, limit: usize) -> PyResult<ChunkSize> {
+        match self {
+            Self::Rust(sizer) => Ok(sizer.size_with_limit(chunk, limit)),
+            Self::Callback(_) => self.try_size(chunk).map(ChunkSize::Exact),
         }
     }
 }
