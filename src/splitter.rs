@@ -203,13 +203,16 @@ where
     /// that would hide the first item of the requested level.
     fn level_ranges(&self, level: Level) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
         let first = self.first_level_range(level);
-        // A higher-level boundary can precede the first range of this exact level.
-        let start = self
-            .next_range_by_level
-            .range(level..)
-            .map(|(_, &index)| index)
-            .min()
-            .unwrap_or(self.ranges.len());
+        // Only search the index if the first remaining range is below the requested level.
+        let start = match self.ranges.get(self.cursor) {
+            Some((current, _)) if *current < level => self
+                .next_range_by_level
+                .range(level..)
+                .map(|(_, &index)| index)
+                .min()
+                .unwrap_or(self.ranges.len()),
+            _ => self.cursor,
+        };
         self.ranges[start..]
             .iter()
             .filter(move |(l, _)| *l >= level)
@@ -837,13 +840,19 @@ mod tests {
         let mut ranges =
             SemanticSplitRanges::new(vec![(0, 0..1), (3, 2..3), (2, 5..10), (1, 5..6)]);
 
-        assert_eq!(
-            ranges.level_ranges(1).collect::<Vec<_>>(),
-            [(3, 2..3), (2, 5..10), (1, 5..6)]
-        );
+        // The same boundary is found whether it is ahead of the cursor or right at it.
+        for offset in [0, 2] {
+            ranges.update_cursor(offset);
+            assert_eq!(
+                ranges.level_ranges(1).collect::<Vec<_>>(),
+                [(3, 2..3), (2, 5..10), (1, 5..6)]
+            );
+        }
         // Once the earlier boundary is gone, skip the parent that wraps the first match.
         ranges.update_cursor(4);
         assert_eq!(ranges.level_ranges(1).collect::<Vec<_>>(), [(1, 5..6)]);
+        ranges.update_cursor(10);
+        assert_eq!(ranges.level_ranges(1).next(), None);
     }
 
     #[test]
