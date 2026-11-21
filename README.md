@@ -104,6 +104,23 @@ let splitter = TextSplitter::new(max_characters);
 let chunks = splitter.chunks("your document text");
 ```
 
+### Chunk Overlap
+You can also specify an overlap between chunks. When a new chunk is emitted, the splitter will look back at the semantic sections of the current level and pull in as many as possible that fit within the overlap window. This means that none can be taken, which is often the case when close to a higher semantic level boundary.
+The overlap must be less than the desired chunk capacity.
+```rust
+use text_splitter::{ChunkConfig, TextSplitter};
+// Maximum number of characters in a chunk
+let max_characters = 256;
+// Maximum number of characters to overlap between chunks
+let overlap = 64;
+let chunk_config = ChunkConfig::new(max_characters)
+    .with_overlap(overlap)
+    .expect("Overlap must be less than desired chunk capacity");
+let splitter = TextSplitter::new(chunk_config);
+let chunks = splitter.chunks("your document text");
+```
+Overlap makes most sense for small chunk-sizes. For bigger chunk sizes, the automatic detection of semantic boundaries will typically be sufficient; see the [discussion in issue #105](https://github.com/benbrandt/text-splitter/issues/105).
+
 ### Markdown
 
 All of the above examples also can also work with Markdown text. If you enable the `markdown` feature, you can use the `MarkdownSplitter` in the same ways as the `TextSplitter`.
