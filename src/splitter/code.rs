@@ -1,7 +1,7 @@
 use std::{cmp::Ordering, ops::Range};
 
 use thiserror::Error;
-use tree_sitter::{Language, LanguageError, Parser, TreeCursor, MIN_COMPATIBLE_LANGUAGE_VERSION};
+use tree_sitter::{Language, LanguageError, Parser, Tree, MIN_COMPATIBLE_LANGUAGE_VERSION};
 
 use crate::{
     splitter::{SemanticLevel, Splitter},
@@ -221,7 +221,7 @@ where
         // - So it should be safe to unwrap here
         let tree = parser.parse(text, None).expect("Error parsing source code");
 
-        CursorOffsets::new(tree.walk()).collect()
+        tree_ranges(&tree)
     }
 }
 
@@ -243,46 +243,24 @@ impl Ord for Depth {
     }
 }
 
-/// New type around a tree-sitter cursor to allow for implementing an iterator.
-/// Each call to `next()` will return the next node in the tree in a depth-first
-/// order.
-struct CursorOffsets<'cursor> {
-    cursor: TreeCursor<'cursor>,
-}
-
-impl<'cursor> CursorOffsets<'cursor> {
-    fn new(cursor: TreeCursor<'cursor>) -> Self {
-        Self { cursor }
-    }
-}
-
-impl Iterator for CursorOffsets<'_> {
-    type Item = (Depth, Range<usize>);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        // There are children (can call this initially because we don't want the root node)
-        if self.cursor.goto_first_child() {
-            return Some((
-                Depth(self.cursor.depth() as usize),
-                self.cursor.node().byte_range(),
-            ));
-        }
-
-        loop {
-            // There are sibling elements to grab
-            if self.cursor.goto_next_sibling() {
-                return Some((
-                    Depth(self.cursor.depth() as usize),
-                    self.cursor.node().byte_range(),
-                ));
-            // Start going back up the tree and check for next sibling on next iteration.
-            } else if self.cursor.goto_parent() {
-                continue;
+/// Collect the depth and byte range of each visible descendant in preorder.
+fn tree_ranges(tree: &Tree) -> Vec<(Depth, Range<usize>)> {
+    // Tree-sitter's count includes the root, which is not a splitting level.
+    let mut ranges = Vec::with_capacity(tree.root_node().descendant_count() - 1);
+    let mut cursor = tree.walk();
+    let mut depth = 0;
+    loop {
+        if cursor.goto_first_child() {
+            depth += 1;
+        } else {
+            while !cursor.goto_next_sibling() {
+                if !cursor.goto_parent() {
+                    return ranges;
+                }
+                depth -= 1;
             }
-
-            // We have no more siblings or parents, so we're done.
-            return None;
         }
+        ranges.push((Depth(depth), cursor.node().byte_range()));
     }
 }
 
@@ -290,7 +268,7 @@ impl SemanticLevel for Depth {}
 
 #[cfg(test)]
 mod tests {
-    use tree_sitter::{Node, Tree};
+    use tree_sitter::Node;
 
     use super::*;
 
@@ -373,16 +351,16 @@ mod tests {
         parser
             .set_language(&tree_sitter_rust::LANGUAGE.into())
             .expect("Error loading Rust grammar");
-        let source_code = "fn test() {
-    let x = 1;
-}";
-        let tree = parser
-            .parse(source_code, None)
-            .expect("Error parsing source code");
-
-        let offsets = CursorOffsets::new(tree.walk()).collect::<Vec<_>>();
-
-        assert_eq!(offsets, naive_offsets(&tree));
+        for source_code in [
+            "",
+            "fn test() { let x = f(a(b()), c()).method(); }",
+            "fn broken() { /* comment */ let 値 = x + ; }",
+        ] {
+            let tree = parser.parse(source_code, None).unwrap();
+            let ranges = tree_ranges(&tree);
+            assert_eq!(ranges, naive_offsets(&tree), "{source_code}");
+            assert_eq!(ranges.len() + 1, tree.root_node().descendant_count());
+        }
     }
 
     #[test]
@@ -400,9 +378,7 @@ fn fn4() {}";
             .parse(source_code, None)
             .expect("Error parsing source code");
 
-        let offsets = CursorOffsets::new(tree.walk()).collect::<Vec<_>>();
-
-        assert_eq!(offsets, naive_offsets(&tree));
+        assert_eq!(tree_ranges(&tree), naive_offsets(&tree));
     }
 
     fn naive_offsets(tree: &Tree) -> Vec<(Depth, Range<usize>)> {
