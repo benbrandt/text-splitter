@@ -324,6 +324,9 @@ where
             sizer,
             trim: trim_enabled,
         } = chunk_config;
+        let trim = if *trim_enabled { trim } else { Trim::None };
+        #[cfg(any(feature = "markdown", feature = "code"))]
+        let trim = trim.for_text(text);
         Self {
             capacity: *capacity,
             chunk_sizer: MemoizedChunkSizer::new(sizer),
@@ -335,7 +338,7 @@ where
             semantic_split: SemanticSplitRanges::new(offsets),
             sentence_probe: SentenceProbe::default(),
             text,
-            trim: if *trim_enabled { trim } else { Trim::None },
+            trim,
             finished: false,
         }
     }
