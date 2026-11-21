@@ -212,6 +212,17 @@ mod code {
             .bench(|| splitter.chunks(&source).for_each(black_box_drop));
     }
 
+    #[divan::bench(args = [2_000, 4_000, 8_000])]
+    fn distant_nested_call(bencher: Bencher<'_, '_>, count: usize) {
+        let mut source = "fn f() { a(); }\n".repeat(count);
+        // The deepest levels occur only at the end, after many chunks of shallow code.
+        source.push_str("fn g() { f(a(b(c(d(e(x)))))); }\n");
+        let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, 64).unwrap();
+        bencher
+            .counter(BytesCount::of_str(&source))
+            .bench(|| splitter.chunks(&source).for_each(black_box_drop));
+    }
+
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {

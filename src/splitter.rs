@@ -158,8 +158,8 @@ where
     cursor: usize,
     /// Range of each semantic item and its precalculated semantic level
     ranges: Vec<(Level, Range<usize>)>,
-    /// Last index in `ranges` for each level. Once the cursor passes it, that level is exhausted.
-    last_range_by_level: BTreeMap<Level, usize>,
+    /// First index at or after `cursor` for each level that still has ranges.
+    next_range_by_level: BTreeMap<Level, usize>,
 }
 
 impl<Level> SemanticSplitRanges<Level>
@@ -171,71 +171,63 @@ where
         ranges.sort_unstable_by(|(_, a), (_, b)| {
             a.start.cmp(&b.start).then_with(|| b.end.cmp(&a.end))
         });
-        let mut last_range_by_level = BTreeMap::new();
+        let mut next_range_by_level = BTreeMap::new();
         for (index, (level, _)) in ranges.iter().enumerate() {
-            last_range_by_level.insert(*level, index);
+            next_range_by_level.entry(*level).or_insert(index);
         }
         Self {
             cursor: 0,
             ranges,
-            last_range_by_level,
+            next_range_by_level,
         }
     }
 
-    /// Retrieve ranges for all sections of a given level after an offset
-    fn ranges_after_offset(
-        &self,
-        offset: usize,
-    ) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
-        self.ranges[self.cursor..]
-            .iter()
-            .filter(move |(_, sep)| sep.start >= offset)
-            .map(|(l, r)| (*l, r.start..r.end))
+    /// Find the first range of this exact level. At the cursor, prefer the shortest
+    /// of consecutive ranges with the same level and start.
+    fn first_level_range(&self, level: Level) -> Option<&Range<usize>> {
+        let &index = self.next_range_by_level.get(&level)?;
+        let first = &self.ranges[index].1;
+        if index != self.cursor {
+            return Some(first);
+        }
+        Some(
+            self.ranges[index + 1..]
+                .iter()
+                .take_while(|(l, r)| *l == level && r.start == first.start)
+                .last()
+                .map_or(first, |(_, r)| r),
+        )
     }
-    /// Retrieve ranges for all sections of a given level after an offset
-    fn level_ranges_after_offset(
-        &self,
-        offset: usize,
-        level: Level,
-    ) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
-        // Find the first item of this level. Allows us to skip larger items of a higher level that surround this one.
-        // Otherwise all lower levels would only return the first item of the higher level that wraps it.
-        let first_item = self
-            .ranges_after_offset(offset)
-            .position(|(l, _)| l == level)
-            .and_then(|i| {
-                self.ranges_after_offset(offset)
-                    .skip(i)
-                    .coalesce(|(a_level, a_range), (b_level, b_range)| {
-                        // If we are at the first item, if two neighboring elements have the same level and start, take the shorter one
-                        if a_level == b_level && a_range.start == b_range.start && i == 0 {
-                            Ok((b_level, b_range))
-                        } else {
-                            Err(((a_level, a_range), (b_level, b_range)))
-                        }
-                    })
-                    // Just take the first of these items
-                    .next()
-            });
-        // let first_item = self.ranges_after_offset(offset).find(|(l, _)| l == &level);
-        self.ranges_after_offset(offset)
-            .filter(move |(l, _)| l >= &level)
+
+    /// Retrieve remaining ranges at this level or higher, skipping initial ranges
+    /// that would hide the first item of the requested level.
+    fn level_ranges(&self, level: Level) -> impl Iterator<Item = (Level, Range<usize>)> + '_ {
+        let first = self.first_level_range(level);
+        // A higher-level boundary can precede the first range of this exact level.
+        let start = self
+            .next_range_by_level
+            .range(level..)
+            .map(|(_, &index)| index)
+            .min()
+            .unwrap_or(self.ranges.len());
+        self.ranges[start..]
+            .iter()
+            .filter(move |(l, _)| *l >= level)
             .skip_while(move |(l, r)| {
-                first_item.as_ref().is_some_and(|(_, fir)| {
-                    (l > &level && r.contains(&fir.start))
-                        || (l == &level && r.start == fir.start && r.end > fir.end)
+                first.is_some_and(|first| {
+                    (*l > level && r.contains(&first.start))
+                        || (*l == level && r.start == first.start && r.end > first.end)
                 })
             })
+            .cloned()
     }
 
     /// Return the distinct levels with a range at or after the cursor, in ascending order.
     fn levels_in_remaining_text(&self) -> impl Iterator<Item = Level> + '_ {
-        self.last_range_by_level
-            .iter()
-            .filter_map(|(&level, &last)| (last >= self.cursor).then_some(level))
+        self.next_range_by_level.keys().copied()
     }
 
-    /// Split a given text into iterator over each semantic chunk
+    /// Split the suffix beginning at the byte offset last passed to `update_cursor`.
     fn semantic_chunks<'splitter, 'text: 'splitter>(
         &'splitter self,
         offset: usize,
@@ -244,18 +236,33 @@ where
     ) -> impl Iterator<Item = (usize, &'text str)> + 'splitter {
         Level::sections(
             text,
-            self.level_ranges_after_offset(offset, semantic_level)
+            self.level_ranges(semantic_level)
                 .map(move |(l, sep)| (l, sep.start - offset..sep.end - offset)),
         )
         .map(move |(i, str)| (offset + i, str))
     }
 
-    /// Clear out ranges we have moved past so future iterations are faster
-    fn update_cursor(&mut self, cursor: usize) {
-        self.cursor += self.ranges[self.cursor..]
+    /// Advance to the first range starting at or after the byte offset.
+    fn update_cursor(&mut self, offset: usize) {
+        let skipped = self.ranges[self.cursor..]
             .iter()
-            .position(|(_, range)| range.start >= cursor)
-            .unwrap_or_else(|| self.ranges.len() - self.cursor);
+            .take_while(|(_, range)| range.start < offset)
+            .count();
+        if skipped == 0 {
+            return;
+        }
+        self.cursor += skipped;
+        let remaining = &self.ranges[self.cursor..];
+        self.next_range_by_level.retain(|level, index| {
+            // Only search again once the cursor passes the cached range.
+            if *index < self.cursor {
+                let Some(next) = remaining.iter().position(|(l, _)| l == level) else {
+                    return false;
+                };
+                *index = self.cursor + next;
+            }
+            true
+        });
     }
 }
 
@@ -816,10 +823,30 @@ mod tests {
 
         ranges.update_cursor(1);
 
+        assert_eq!(ranges.level_ranges(0).collect::<Vec<_>>(), [(0, 1..2)]);
+    }
+
+    #[test]
+    fn level_ranges_keep_earlier_higher_boundaries() {
+        let mut ranges =
+            SemanticSplitRanges::new(vec![(0, 0..1), (3, 2..3), (2, 5..10), (1, 5..6)]);
+
         assert_eq!(
-            ranges.ranges_after_offset(0).collect::<Vec<_>>(),
-            vec![(0, 1..2)]
+            ranges.level_ranges(1).collect::<Vec<_>>(),
+            [(3, 2..3), (2, 5..10), (1, 5..6)]
         );
+        // Once the earlier boundary is gone, skip the parent that wraps the first match.
+        ranges.update_cursor(4);
+        assert_eq!(ranges.level_ranges(1).collect::<Vec<_>>(), [(1, 5..6)]);
+    }
+
+    #[test]
+    fn level_ranges_prefer_the_shortest_shared_start_only_at_the_cursor() {
+        let mut ranges = SemanticSplitRanges::new(vec![(0, 0..1), (1, 2..8), (1, 2..4), (1, 2..3)]);
+
+        assert_eq!(ranges.level_ranges(1).next(), Some((1, 2..8)));
+        ranges.update_cursor(2);
+        assert_eq!(ranges.level_ranges(1).next(), Some((1, 2..3)));
     }
 
     #[test]

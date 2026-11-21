@@ -617,7 +617,7 @@ mod tests {
 
         assert_eq!(
             vec![(Element::Block, 0..41), (Element::Inline, 0..41)],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -637,7 +637,7 @@ mod tests {
                 (Element::Inline, 24..27),
                 (Element::Inline, 28..42),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -652,7 +652,7 @@ mod tests {
                 (Element::Inline, 0..8),
                 (Element::Inline, 8..12),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -663,7 +663,7 @@ mod tests {
 
         assert_eq!(
             vec![(Element::Block, 0..6), (Element::Inline, 0..6)],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -678,7 +678,7 @@ mod tests {
                 (Element::Inline, 0..10),
                 (Element::Inline, 1..9),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -693,7 +693,7 @@ mod tests {
                 (Element::Inline, 0..12),
                 (Element::Inline, 2..10),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -708,7 +708,7 @@ mod tests {
                 (Element::Inline, 0..12),
                 (Element::Inline, 2..10),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -723,7 +723,7 @@ mod tests {
                 (Element::Inline, 0..11),
                 (Element::Inline, 1..5),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -738,7 +738,7 @@ mod tests {
                 (Element::Inline, 0..12),
                 (Element::Inline, 2..6),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -754,7 +754,7 @@ mod tests {
                 (Element::Inline, 6..15),
                 (Element::Inline, 15..22),
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -765,7 +765,7 @@ mod tests {
 
         assert_eq!(
             vec![(Element::Block, 0..20), (Element::Block, 0..20)],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -789,7 +789,7 @@ mod tests {
                 (Element::Inline, 48..56),
                 (Element::Inline, 49..55)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -805,7 +805,7 @@ mod tests {
                 (Element::SoftBreak, 9..10),
                 (Element::Inline, 10..26)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -821,7 +821,7 @@ mod tests {
                 (Element::Inline, 9..11),
                 (Element::Inline, 11..27)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -836,7 +836,7 @@ mod tests {
                 (Element::Block, 10..18),
                 (Element::Inline, 10..18)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -847,7 +847,7 @@ mod tests {
 
         assert_eq!(
             vec![(Element::Block, 0..12), (Element::Inline, 4..9)],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -862,7 +862,7 @@ mod tests {
                 (Element::Block, 2..7),
                 (Element::Inline, 2..7)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -879,7 +879,7 @@ mod tests {
                 (Element::Block, 16..27),
                 (Element::Inline, 16..27)
             ],
-            markdown.ranges_after_offset(0).collect::<Vec<_>>()
+            markdown.ranges
         );
     }
 
@@ -904,22 +904,20 @@ mod tests {
                     (Element::Heading(level), 0..9 + index),
                     (Element::Inline, 2 + index..9 + index)
                 ],
-                markdown.ranges_after_offset(0).collect::<Vec<_>>()
+                markdown.ranges
             );
         }
     }
 
     #[test]
-    fn test_ranges_after_offset_block() {
+    fn test_block_ranges() {
         let splitter = MarkdownSplitter::new(10);
         let markdown =
             SemanticSplitRanges::new(splitter.parse("- [ ] incomplete task\n- [x] completed task"));
 
         assert_eq!(
             vec![(Element::Block, 0..22), (Element::Block, 22..42),],
-            markdown
-                .level_ranges_after_offset(0, Element::Block)
-                .collect::<Vec<_>>()
+            markdown.level_ranges(Element::Block).collect::<Vec<_>>()
         );
     }
 }
