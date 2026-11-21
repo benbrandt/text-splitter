@@ -85,6 +85,15 @@ mod text {
         text
     }
 
+    #[divan::bench]
+    fn mixed_line_breaks(bencher: Bencher<'_, '_>) {
+        let text = "first line\nsecond line\r\nthird line\r\r\n\n".repeat(10_000);
+        let splitter = TextSplitter::new(512);
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || TextSplitter::new(N));
