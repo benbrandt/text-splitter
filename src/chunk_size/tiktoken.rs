@@ -5,7 +5,7 @@ use crate::ChunkSizer;
 impl ChunkSizer for CoreBPE {
     /// Returns the number of tokens in a given text after tokenization.
     fn size(&self, chunk: &str) -> usize {
-        self.encode_ordinary(chunk).len()
+        self.count_ordinary(chunk)
     }
 }
 
