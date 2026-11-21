@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+## [0.33.4](https://github.com/benbrandt/text-splitter/compare/v0.33.3...v0.33.4) - 2026-11-21
+
+### Changed
+
+- use tiktoken's ordinary count API
+
+### Fixed
+
+- cache probed chunks at their starting offset
+
+### Performance
+
+- reuse distant sentence boundaries at safe restart points
+- use a byte search for interior newlines when trimming
+- collect code ranges in a preallocated tree walk
+- track the next range at each semantic level
+- avoid sorting remaining semantic levels per chunk
+
 ### Performance highlights
 
 These improvements apply to both the Rust crate and the Python bindings. The figures below are from local Rust release builds on the named inputs.
