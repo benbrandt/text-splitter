@@ -124,6 +124,15 @@ mod text {
             });
     }
 
+    #[divan::bench(args = ["日本語の長い文章に句読点がない", "ภาษาไทยไม่มีเว้นวรรคระหว่างคำ"])]
+    fn dictionary_word_fallback(bencher: Bencher<'_, '_>, phrase: &str) {
+        let text = phrase.repeat(500);
+        let splitter = TextSplitter::new(64);
+        bencher
+            .counter(BytesCount::of_str(&text))
+            .bench(|| splitter.chunks(&text).for_each(black_box_drop));
+    }
+
     #[cfg(feature = "tiktoken-rs")]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn tiktoken<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
