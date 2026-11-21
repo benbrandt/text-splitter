@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Performance highlights
+
+These improvements apply to both the Rust crate and the Python bindings. The figures below are from local Rust release builds on the named inputs.
+
+- **Large code files:** `CodeSplitter` no longer sorts the remaining syntax levels for every chunk. Splitting 8,000 generated Rust functions at a 200-character limit went from **3.71 s to 80 ms**. On the same input, cumulative Rust allocations fell from **45.1 GB to 25.2 MB**, then to **8.45 MB** after preallocating the syntax-tree walk. These are totals across the split, not peak memory. ([#1389](https://github.com/benbrandt/text-splitter/pull/1389), [#1392](https://github.com/benbrandt/text-splitter/pull/1392))
+- **Markdown and nested code:** the splitter remembers where each semantic level next occurs instead of scanning for it again. At a 64-character limit, the CommonMark spec went from **23.0 ms to 3.6 ms** and the `hashbrown` Rust fixture from **51.6 ms to 8.2 ms**. Finding newlines when preserving indentation is also faster, with no change to the trimming rules. ([#1391](https://github.com/benbrandt/text-splitter/pull/1391), [#1393](https://github.com/benbrandt/text-splitter/pull/1393))
+- **Long text without sentence punctuation:** the splitter reuses a known sentence end instead of rescanning the rest of the line, unless the new chunk’s start could change the boundary. For 16,000 words at a 64-character limit, splitting went from **173 ms to 5.5 ms** without overlap, and **274 ms to 8.5 ms** with 24 characters of overlap. ([#1394](https://github.com/benbrandt/text-splitter/pull/1394))
+- **Token-based splitting:** checking the size of a candidate chunk and then selecting it no longer tokenizes the same slice twice. Splitting *A Room with a View* at 512 `cl100k_base` tokens took **834 sizing calls instead of 958**, with the same 169 chunks. ([#1390](https://github.com/benbrandt/text-splitter/pull/1390))
+
 ## [0.33.2](https://github.com/benbrandt/text-splitter/compare/v0.33.1...v0.33.2) - 2026-11-10
 
 ### Fixed
