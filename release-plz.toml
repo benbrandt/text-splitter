@@ -34,6 +34,7 @@ commit_parsers = [
     { message = "^(ci|test|style|build)(\\([^)]*\\))?:", skip = true },
     { message = "^feat", group = "Added" },
     { message = "^fix", group = "Fixed" },
+    { message = "^perf", group = "Performance" },
     { message = "^refactor", group = "Changed" },
     { message = "^docs", group = "Documentation" },
     { message = "^.*", group = "Other" },
