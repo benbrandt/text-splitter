@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## [0.33.5](https://github.com/benbrandt/text-splitter/compare/v0.33.4...v0.33.5) - 2026-11-21
+
+### Performance
+
+- skip redundant indentation checks on single-line documents
+- reuse the word iterator probed for fallback splitting
+- count line breaks while scanning newline runs
+- skip the semantic index when the cursor already qualifies
+
 ## [0.33.4](https://github.com/benbrandt/text-splitter/compare/v0.33.3...v0.33.4) - 2026-11-21
 
 ### Changed
