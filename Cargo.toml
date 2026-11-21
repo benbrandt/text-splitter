@@ -63,6 +63,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 ahash = "0.8.12"
 auto_enums = "0.8"
 either = "1.16"
+icu_properties = "2.3"
 icu_provider = { version = "2.3", features = ["sync"] }
 icu_segmenter = "2.3"
 itertools = "0.15"

@@ -4,7 +4,7 @@ use either::Either;
 use itertools::Itertools;
 use strum::IntoEnumIterator;
 
-use self::fallback::FallbackLevel;
+use self::fallback::{FallbackLevel, SentenceProbe};
 use crate::{
     chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, TryChunkSizer,
 };
@@ -289,6 +289,8 @@ where
     prev_item_end: usize,
     /// Splitter used for determining semantic levels.
     semantic_split: SemanticSplitRanges<Level>,
+    /// Avoid searching for the same distant fallback sentence boundary on every chunk.
+    sentence_probe: SentenceProbe,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// The trimming method to apply
@@ -325,6 +327,7 @@ where
             overlap: (*overlap).into(),
             prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(offsets),
+            sentence_probe: SentenceProbe::default(),
             text,
             trim: if *trim_enabled { trim } else { Trim::None },
             finished: false,
@@ -535,10 +538,13 @@ where
                 self.cursor,
                 &self.capacity,
                 FallbackLevel::iter().filter_map(|level| {
-                    level
-                        .sections(remaining_text)
-                        .next()
-                        .map(|(_, str)| (level, str, level.boundary_level_for_probe()))
+                    let first = match level {
+                        FallbackLevel::Sentence => {
+                            self.sentence_probe.first(self.text, self.cursor)
+                        }
+                        _ => level.sections(remaining_text).next().map(|(_, s)| s),
+                    };
+                    first.map(|s| (level, s, level.boundary_level_for_probe()))
                 }),
                 |lower_level, chunk_end| {
                     lower_level.map_or_else(
