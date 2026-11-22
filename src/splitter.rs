@@ -1,4 +1,7 @@
-use std::{cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once, ops::Range};
+use std::{
+    cell::Cell, cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once,
+    ops::Range,
+};
 
 use either::Either;
 use itertools::Itertools;
@@ -552,15 +555,15 @@ where
                 semantic_level,
             ))
         } else {
-            // Finding the first word can segment a whole run without word breaks, so
-            // it comes from the probe. Later words are only segmented when asked for.
-            let first_word = self.word_probe.first(self.text, self.cursor);
-            let sections_for = |level: FallbackLevel| match (level, first_word) {
-                (FallbackLevel::Word, Some(first)) => Either::Left(
-                    once((0, first))
-                        .chain(once(()).flat_map(move |()| level.sections(remaining_text).skip(1))),
-                ),
-                _ => Either::Right(level.sections(remaining_text)),
+            // The next word consumer at this cursor can use the iterator from level selection.
+            let probed_words = Cell::new(None);
+            let sections_for = |level: FallbackLevel| {
+                if level == FallbackLevel::Word {
+                    if let Some(words) = probed_words.take() {
+                        return Either::Left(words);
+                    }
+                }
+                Either::Right(level.sections(remaining_text))
             };
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
@@ -570,7 +573,15 @@ where
                         FallbackLevel::Sentence => {
                             self.sentence_probe.first(self.text, self.cursor)
                         }
-                        FallbackLevel::Word => first_word,
+                        FallbackLevel::Word => {
+                            let mut words = level.sections(remaining_text).peekable();
+                            let first =
+                                self.word_probe.first(self.text, self.cursor, &mut words)?;
+                            // On a miss, skip the buffered first word. On a cache hit,
+                            // ICU won't be asked for any boundaries unless we need a second word.
+                            probed_words.set(Some(once((0, first)).chain(words.skip(1))));
+                            Some(first)
+                        }
                         _ => level.sections(remaining_text).next().map(|(_, s)| s),
                     };
                     first.map(|s| (level, s, level.boundary_level_for_probe()))

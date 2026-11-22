@@ -1,4 +1,4 @@
-use std::{ops::Range, sync::LazyLock};
+use std::{iter::Peekable, ops::Range, sync::LazyLock};
 
 use auto_enums::auto_enum;
 use icu_properties::{props::SentenceBreak, CodePointMapData};
@@ -48,9 +48,17 @@ pub(super) struct WordProbe {
 impl WordProbe {
     /// First word of `text[offset..]`. Segmenting a long run without word
     /// breaks takes time proportional to the run, so a later offset inside the
-    /// same run reuses the previous result instead of segmenting again.
-    pub(super) fn first<'text>(&mut self, text: &'text str, offset: usize) -> Option<&'text str> {
+    /// same run reuses the previous result. On a miss, peek into the caller's
+    /// iterator so it can continue with the same ICU segmentation pass.
+    pub(super) fn first<'text>(
+        &mut self,
+        text: &'text str,
+        offset: usize,
+        words: &mut Peekable<impl Iterator<Item = (usize, &'text str)>>,
+    ) -> Option<&'text str> {
         let suffix = &text[offset..];
+        // Dropping ASCII letters/digits before another one cannot change the word's end.
+        // For other restarts, including on or across a non-ASCII scalar, ask ICU again.
         if self.range.contains(&offset)
             && suffix.starts_with(|c: char| c.is_ascii_alphanumeric())
             && text[self.range.start..offset]
@@ -61,7 +69,7 @@ impl WordProbe {
             self.range.start = offset;
             return Some(&text[self.range.clone()]);
         }
-        let (_, word) = FallbackLevel::Word.sections(suffix).next()?;
+        let &(_, word) = words.peek()?;
         self.range = offset..offset + word.len();
         Some(word)
     }
@@ -149,10 +157,29 @@ mod tests {
     use super::*;
 
     #[test]
+    fn only_the_first_ascii_word_probe_advances_icu() {
+        let text = "abC123def456 next";
+        let mut probe = WordProbe::default();
+        let mut scanned = 0;
+        for offset in 0..12 {
+            let mut words = FallbackLevel::Word
+                .sections(&text[offset..])
+                .inspect(|_| scanned += 1)
+                .peekable();
+            assert_eq!(
+                probe.first(text, offset, &mut words),
+                Some(&text[offset..12])
+            );
+        }
+        assert_eq!(scanned, 1);
+    }
+
+    #[test]
     fn word_probes_match_fresh_icu_at_each_restart() {
         for text in [
             "",
             "abc123def  hello.world 3.14 can't a_b",
+            "aBébc7 猫123abc",
             "abc\u{301}def\u{200d}ghi ٢٣abc 日本語abc",
             "ab-cd\r\nxyz.  Q9",
         ] {
@@ -164,13 +191,19 @@ mod tests {
             for (i, &from) in offsets.iter().enumerate() {
                 for &at in &offsets[i..] {
                     let mut probe = WordProbe::default();
-                    let _ = probe.first(text, from);
+                    let words_at =
+                        |offset| FallbackLevel::Word.sections(&text[offset..]).peekable();
+                    let _ = probe.first(text, from, &mut words_at(from));
                     let suffix = &text[at..];
                     let expected = WORD_SEGMENTER
                         .segment_str(suffix)
                         .nth(1)
                         .map(|end| &suffix[..end]);
-                    assert_eq!(probe.first(text, at), expected, "{text:?}: {from} -> {at}");
+                    assert_eq!(
+                        probe.first(text, at, &mut words_at(at)),
+                        expected,
+                        "{text:?}: {from} -> {at}"
+                    );
                 }
             }
         }
