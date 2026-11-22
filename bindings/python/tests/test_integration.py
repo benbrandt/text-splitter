@@ -160,6 +160,24 @@ def test_custom() -> None:
     assert splitter.chunks(text) == ["123", "123"]
 
 
+def test_callback_capacity_in_utf16_bytes() -> None:
+    def utf16_bytes(text: str) -> int:
+        return len(text.encode("utf-16-le"))
+
+    splitter = TextSplitter.from_callback(utf16_bytes, 8)
+    assert splitter.chunks("Hello.") == ["Hell", "o."]
+
+
+def test_callback_error_while_retrying_a_finer_level() -> None:
+    def size(text: str) -> int:
+        if text == "H":
+            raise ValueError("cannot size H")
+        return len(text.encode("utf-16-le"))
+
+    with pytest.raises(ValueError, match="cannot size H"):
+        TextSplitter.from_callback(size, 8).chunks("Hello.")
+
+
 def test_markdown_chunks() -> None:
     splitter = MarkdownSplitter(4, trim=False)
     text = "123\n\n123"

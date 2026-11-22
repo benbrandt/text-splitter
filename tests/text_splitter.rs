@@ -114,6 +114,65 @@ fn chunk_capacity_range() {
 }
 
 #[test]
+fn custom_sizer_can_exceed_utf8_byte_length() {
+    struct Utf16Bytes;
+    impl ChunkSizer for Utf16Bytes {
+        fn size(&self, chunk: &str) -> usize {
+            chunk.encode_utf16().count() * 2
+        }
+    }
+
+    // Exercise both an oversized parsed section and the Unicode fallback.
+    let text = "Hello.\nHi all.\n🦀🌍!";
+    for overlap in [0, 2] {
+        let config = ChunkConfig::new(8)
+            .with_sizer(Utf16Bytes)
+            .with_trim(false)
+            .with_overlap(overlap)
+            .unwrap();
+        let splitter = TextSplitter::new(config);
+        let chunks = splitter.chunks(text).collect::<Vec<_>>();
+        assert!(
+            chunks.iter().all(|chunk| Utf16Bytes.size(chunk) <= 8),
+            "{chunks:?}"
+        );
+        if overlap == 0 {
+            assert_eq!(chunks.concat(), text);
+        }
+    }
+}
+
+#[test]
+fn indivisible_oversized_chars_are_not_merged() {
+    struct MinimumCharge;
+    impl ChunkSizer for MinimumCharge {
+        fn size(&self, chunk: &str) -> usize {
+            chunk.len().max(5)
+        }
+    }
+
+    let splitter = TextSplitter::new(ChunkConfig::new(4).with_sizer(MinimumCharge));
+    assert_eq!(splitter.chunks("abc").collect::<Vec<_>>(), ["a", "b", "c"]);
+}
+
+#[test]
+fn a_longer_prefix_can_fit_after_an_oversized_first_char() {
+    struct PackedPair;
+    impl ChunkSizer for PackedPair {
+        fn size(&self, chunk: &str) -> usize {
+            if chunk == "ab" {
+                1
+            } else {
+                5 + chunk.len()
+            }
+        }
+    }
+
+    let splitter = TextSplitter::new(ChunkConfig::new(5).with_sizer(PackedPair));
+    assert_eq!(splitter.chunks("abcdef").next(), Some("ab"));
+}
+
+#[test]
 fn reuses_the_size_of_a_probed_chunk() {
     struct ProbeCalls(Cell<usize>);
 
