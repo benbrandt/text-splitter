@@ -137,3 +137,24 @@ fn trimming_does_trim_block_level_indentation_if_only_one_item() {
         chunks
     );
 }
+
+#[cfg(feature = "markdown")]
+#[test]
+fn long_run_without_boundaries_is_not_quadratic() {
+    let text = (0..400_000usize)
+        .map(|i| char::from(b'a' + u8::try_from((i * 7 + i / 13) % 26).unwrap()))
+        .collect::<String>();
+    let splitter = MarkdownSplitter::new(ChunkConfig::new(1000));
+
+    let start = std::time::Instant::now();
+    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
+    let elapsed = start.elapsed();
+
+    assert_eq!(chunks.join(""), text);
+    assert_eq!(chunks.len(), 400);
+    assert!(chunks.iter().all(|c| c.len() <= 1000));
+    assert!(
+        elapsed < std::time::Duration::from_secs(3),
+        "splitting 400 KB without boundaries took {elapsed:?}"
+    );
+}
