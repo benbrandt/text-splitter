@@ -208,6 +208,10 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 | ------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `tiktoken-rs`      | `^0.12.0`         | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for `OpenAI` models.                                   |
 | `tokenizers`       | `^0.23.0`         | Enables `(Text/Markdown)Splitter::new` to take `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
+| `tokenizers-onig`  | `^0.23.0`         | Same as `tokenizers`, using the Oniguruma regex backend (`tokenizers/onig`). `tokenizers` is an alias for this feature, so existing setups are unchanged.                       |
+| `tokenizers-fancy-regex` | `^0.23.0`   | Same as `tokenizers`, using the pure-Rust `fancy-regex` backend (`tokenizers/fancy-regex`) so no C code is compiled.                                                           |
+
+The `tokenizers` crate needs exactly one regex backend and prefers Oniguruma when both are enabled. `tokenizers-fancy-regex` therefore only takes effect when `tokenizers` and `tokenizers-onig` are not enabled anywhere in your dependency graph. Because the crate has no default features, the integration is only available once you enable one of these three features.
 
 ## Inspiration
 

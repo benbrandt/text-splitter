@@ -10,13 +10,13 @@ use text_splitter::MarkdownSplitter;
 use text_splitter::{Characters, ChunkConfig, ChunkSizer, TextSplitter};
 #[cfg(feature = "tiktoken-rs")]
 use tiktoken_rs::{cl100k_base, CoreBPE};
-#[cfg(feature = "tokenizers")]
+#[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
 use tokenizers::Tokenizer;
 
 const CHUNK_SIZES: [usize; 3] = [32, 512, 8192];
 const RANGE_CHUNK_SIZES: [RangeInclusive<usize>; 2] = [64..=512, 512..=4096];
 
-#[cfg(feature = "tokenizers")]
+#[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
 static HUGGINGFACE_TOKENIZER: std::sync::LazyLock<Tokenizer> =
     std::sync::LazyLock::new(|| Tokenizer::from_pretrained("bert-base-cased", None).unwrap());
 
@@ -27,7 +27,7 @@ static TIKTOKEN_TOKENIZER: std::sync::LazyLock<CoreBPE> =
 #[derive(Copy, Clone, Display, EnumIter)]
 enum SizerOption {
     Characters,
-    #[cfg(feature = "tokenizers")]
+    #[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
     Tokenizers,
     #[cfg(feature = "tiktoken-rs")]
     TikToken,
@@ -37,7 +37,7 @@ impl ChunkSizer for SizerOption {
     fn size(&self, chunk: &str) -> usize {
         match self {
             Self::Characters => Characters.size(chunk),
-            #[cfg(feature = "tokenizers")]
+            #[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
             Self::Tokenizers => HUGGINGFACE_TOKENIZER.size(chunk),
             #[cfg(feature = "tiktoken-rs")]
             Self::TikToken => TIKTOKEN_TOKENIZER.size(chunk),

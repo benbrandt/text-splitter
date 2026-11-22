@@ -40,6 +40,25 @@ jobs:
         env:
           PYO3_PYTHON: ${{ steps.python.outputs.python-path }}
 
+  tokenizers-fancy-regex:
+    runs-on: ubuntu-latest
+    name: Test tokenizers with fancy-regex
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0
+
+      - name: Check onig is not built
+        run: |
+          if cargo tree -p text-splitter --no-default-features --features tokenizers-fancy-regex -e normal | grep -q onig; then
+            echo "onig is enabled with tokenizers-fancy-regex"
+            exit 1
+          fi
+      - name: Run cargo test
+        run: cargo test -p text-splitter --no-default-features --features markdown,tokenizers-fancy-regex --lib --tests
+
   coverage:
     runs-on: ubuntu-latest
     name: Test Coverage
