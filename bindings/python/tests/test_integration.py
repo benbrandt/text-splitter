@@ -54,6 +54,25 @@ def test_chunks() -> None:
     assert splitter.chunks(text) == ["123\n", "123"]
 
 
+@pytest.mark.parametrize("cls", [TextSplitter, MarkdownSplitter])
+def test_balanced_chunks(cls) -> None:
+    text = "Sentence 1. Sentence 2. Sentence 3. Sentence 4."
+    expected = ["Sentence 1. Sentence 2.", "Sentence 3. Sentence 4."]
+    assert cls(36).chunks(text) == ["Sentence 1. Sentence 2. Sentence 3.", "Sentence 4."]
+    path = "tests/bert-base-cased.json"
+    tokenizer = Tokenizer.from_file(path)
+    for splitter in [
+        cls(36, balanced=True),
+        cls.from_callback(len, 36, balanced=True),
+        cls.from_huggingface_tokenizer(tokenizer, 9, balanced=True),
+        cls.from_huggingface_tokenizer_str(tokenizer.to_str(), 9, balanced=True),
+        cls.from_huggingface_tokenizer_file(path, 9, balanced=True),
+        cls.from_tiktoken_model("gpt-3.5-turbo", 12, balanced=True),
+    ]:
+        assert splitter.chunks(text) == expected
+        assert splitter.chunk_all_indices([text]) == [[(0, expected[0]), (24, expected[1])]]
+
+
 def test_chunks_range() -> None:
     splitter = TextSplitter(capacity=(3, 4), trim=False)
     text = "123\n123"

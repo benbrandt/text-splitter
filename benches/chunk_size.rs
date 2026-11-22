@@ -99,6 +99,13 @@ mod text {
         bench(bencher, filename, || TextSplitter::new(N));
     }
 
+    #[divan::bench(args = TEXT_FILENAMES, consts = [32, 512])]
+    fn balanced_characters<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
+        bench(bencher, filename, || {
+            TextSplitter::new(N).with_balanced(true)
+        });
+    }
+
     #[divan::bench(args = [2_000, 4_000, 8_000, 16_000], consts = [0, 24])]
     fn distant_sentence_boundary<const OVERLAP: usize>(bencher: Bencher<'_, '_>, words: usize) {
         let text = "alpha beta gamma delta ".repeat(words / 4);
