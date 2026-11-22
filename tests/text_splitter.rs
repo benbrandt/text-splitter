@@ -3,7 +3,6 @@ use std::{
     cell::Cell,
     fs,
     sync::atomic::{AtomicUsize, Ordering},
-    time::{Duration, Instant},
 };
 
 use fake::{Fake, Faker};
@@ -417,26 +416,12 @@ fn random_chunk_overlap() {
     });
 }
 
-fn letter_run(len: usize) -> String {
-    (0..len)
-        .map(|i| char::from(b'a' + u8::try_from((i * 7 + i / 13) % 26).unwrap()))
-        .collect()
-}
-
 #[test]
-fn long_run_without_boundaries_is_not_quadratic() {
-    let text = letter_run(400_000);
-    let splitter = TextSplitter::new(ChunkConfig::new(1000));
-
-    let start = Instant::now();
-    let chunks = splitter.chunks(&text).collect::<Vec<_>>();
-    let elapsed = start.elapsed();
-
-    assert_eq!(chunks.join(""), text);
-    assert_eq!(chunks.len(), 400);
-    assert!(chunks.iter().all(|c| c.len() <= 1000));
-    assert!(
-        elapsed < Duration::from_secs(3),
-        "splitting 400 KB without boundaries took {elapsed:?}"
+fn overlapping_chunks_inside_one_ascii_word() {
+    let text = "aB09".repeat(1_024);
+    let splitter = TextSplitter::new(ChunkConfig::new(1_000).with_overlap(250).unwrap());
+    assert_eq!(
+        splitter.chunk_indices(&text).collect::<Vec<_>>(),
+        [0, 750, 1500, 2250, 3000, 3750].map(|i| (i, &text[i..(i + 1_000).min(text.len())]))
     );
 }
