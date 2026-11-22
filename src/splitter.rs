@@ -291,6 +291,8 @@ where
     next_sections: Vec<(usize, &'text str)>,
     /// Overlap capacity
     overlap: ChunkCapacity,
+    /// Byte offset just past the last alphanumeric character of the text, or 0 if it has none.
+    content_end: usize,
     /// Previous item's end byte offset
     prev_item_end: usize,
     /// Splitter used for determining semantic levels.
@@ -331,6 +333,11 @@ where
             capacity: *capacity,
             chunk_sizer: MemoizedChunkSizer::new(sizer),
             chunk_stats: ChunkStats::new(),
+            content_end: text
+                .char_indices()
+                .rev()
+                .find(|(_, c)| c.is_alphanumeric())
+                .map_or(0, |(i, c)| i + c.len_utf8()),
             cursor: 0,
             next_sections: Vec::new(),
             overlap: (*overlap).into(),
@@ -348,15 +355,22 @@ where
     fn next_chunk(&mut self) -> Result<(usize, &'text str), Sizer::Error> {
         self.semantic_split.update_cursor(self.cursor);
         let start = self.cursor;
-        let end = if let Some(end) = self.find_chunk_end()? {
-            end
-        } else {
-            // The sizer disproved the byte-length estimate. Keep cached sizes
-            // and retry at the same cursor, measuring levels from now on.
-            self.chunk_sizer.require_measured_levels();
-            self.find_chunk_end()?
-                .expect("a measured first section fits or is one character")
-        };
+        let mut end = self.chunk_end(Retry::First)?;
+        for retry in [Retry::SkipMarkLevels, Retry::SkipSemantic] {
+            // With no content left anywhere, a finer boundary cannot avoid marks.
+            if end >= self.text.len()
+                || start >= self.content_end
+                || !is_mark_only(&self.text[start..end])
+            {
+                break;
+            }
+            end = self.chunk_end(retry)?;
+        }
+        if end >= self.content_end && !self.text[end..].trim_start().is_empty() {
+            if let Some(earlier) = self.end_before_mark_tail(start, end)? {
+                end = earlier;
+            }
+        }
         // Chunk selection uses offsets from slices of this same text, so both
         // endpoints are valid UTF-8 boundaries.
         let chunk = &self.text[start..end];
@@ -371,10 +385,54 @@ where
         Ok(self.trim.trim(start, chunk))
     }
 
+    /// Find the end of the chunk starting at the cursor.
+    fn chunk_end(&mut self, retry: Retry) -> Result<usize, Sizer::Error> {
+        if let Some(end) = self.find_chunk_end(retry)? {
+            return Ok(end);
+        }
+        // The sizer disproved the byte-length estimate. Keep cached sizes
+        // and retry at the same cursor, measuring levels from now on.
+        self.chunk_sizer.require_measured_levels();
+        Ok(self
+            .find_chunk_end(retry)?
+            .expect("a measured first section fits or is one character"))
+    }
+
+    /// An earlier end for the chunk `start..end` when everything after `end` is only marks.
+    ///
+    /// A closing quote or bracket that spills just past a full chunk would otherwise become a
+    /// chunk of its own. Ending this chunk one section sooner lets the final chunk carry that
+    /// section along with the marks, provided the final chunk fits the capacity.
+    fn end_before_mark_tail(
+        &mut self,
+        start: usize,
+        end: usize,
+    ) -> Result<Option<usize>, Sizer::Error> {
+        let text = self.text;
+        let floor = start.max(self.prev_item_end);
+        let earlier = self
+            .next_sections
+            .iter()
+            .rev()
+            .map(|&(offset, section)| offset + section.len())
+            .filter(|&section_end| section_end < end && section_end > floor)
+            .find(|&section_end| has_content(&text[section_end..end]));
+        let Some(earlier) = earlier else {
+            return Ok(None);
+        };
+        if !has_content(&text[start..earlier]) {
+            return Ok(None);
+        }
+        let tail_size = self
+            .chunk_sizer
+            .chunk_size(earlier, &text[earlier..], self.trim)?;
+        Ok(self.capacity.fits(tail_size).is_le().then_some(earlier))
+    }
+
     /// Select a level and search for a fitting chunk end. `None` means the first
     /// section needs to be subdivided instead of emitted over capacity.
-    fn find_chunk_end(&mut self) -> Result<Option<usize>, Sizer::Error> {
-        let mut low = self.update_next_sections()?;
+    fn find_chunk_end(&mut self, retry: Retry) -> Result<Option<usize>, Sizer::Error> {
+        let mut low = self.update_next_sections(retry)?;
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
@@ -503,47 +561,52 @@ where
     /// Increasing length of chunk until we find biggest size to minimize validation time
     /// on huge chunks
     #[expect(clippy::too_many_lines)]
-    fn update_next_sections(&mut self) -> Result<usize, Sizer::Error> {
+    fn update_next_sections(&mut self, retry: Retry) -> Result<usize, Sizer::Error> {
         // First thing, clear out the list, but reuse the allocated memory
         self.next_sections.clear();
 
         let remaining_text = self.text.get(self.cursor..).unwrap();
         let mut lower_level = None;
 
-        let (semantic_level, mut max_offset) = self.chunk_sizer.find_correct_level(
-            self.cursor,
-            &self.capacity,
-            self.semantic_split
-                .levels_in_remaining_text()
-                .filter_map(|level| {
-                    let first_chunk = self
-                        .semantic_split
-                        .semantic_chunks(self.cursor, remaining_text, level)
-                        .next();
+        let (semantic_level, mut max_offset) = if retry == Retry::SkipSemantic {
+            (None, None)
+        } else {
+            self.chunk_sizer.find_correct_level(
+                self.cursor,
+                &self.capacity,
+                self.semantic_split
+                    .levels_in_remaining_text()
+                    .filter_map(|level| {
+                        let first_chunk = self
+                            .semantic_split
+                            .semantic_chunks(self.cursor, remaining_text, level)
+                            .next();
 
-                    let result = first_chunk.map(|(_, str)| {
-                        let candidate_lower_level = lower_level;
-                        (level, str, candidate_lower_level)
-                    });
+                        let result = first_chunk.map(|(_, str)| {
+                            let candidate_lower_level = lower_level;
+                            (level, str, candidate_lower_level)
+                        });
 
-                    lower_level = Some(level);
-                    result
-                }),
-            |lower_level, chunk_end| {
-                lower_level.map_or_else(
-                    || Either::Left(std::iter::empty()),
-                    |lower_level| {
-                        Either::Right(
-                            self.semantic_split
-                                .semantic_chunks(self.cursor, remaining_text, lower_level)
-                                .map(|(offset, text)| offset + text.len())
-                                .take_while(move |end| *end <= chunk_end),
-                        )
-                    },
-                )
-            },
-            self.trim,
-        )?;
+                        lower_level = Some(level);
+                        result
+                    })
+                    .filter(|&(_, str, _)| retry == Retry::First || !is_mark_only(str)),
+                |lower_level, chunk_end| {
+                    lower_level.map_or_else(
+                        || Either::Left(std::iter::empty()),
+                        |lower_level| {
+                            Either::Right(
+                                self.semantic_split
+                                    .semantic_chunks(self.cursor, remaining_text, lower_level)
+                                    .map(|(offset, text)| offset + text.len())
+                                    .take_while(move |end| *end <= chunk_end),
+                            )
+                        },
+                    )
+                },
+                self.trim,
+            )?
+        };
 
         let sections = if let Some(semantic_level) = semantic_level {
             Either::Left(self.semantic_split.semantic_chunks(
@@ -565,21 +628,27 @@ where
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
                 &self.capacity,
-                FallbackLevel::iter().filter_map(|level| {
-                    let first = match level {
-                        FallbackLevel::Sentence => {
-                            self.sentence_probe.first(self.text, self.cursor)
-                        }
-                        FallbackLevel::Word => {
-                            let mut words = level.sections(remaining_text).peekable();
-                            let first = words.peek().map(|&(_, s)| s);
-                            peeked_words.set(Some(words));
-                            first
-                        }
-                        _ => level.sections(remaining_text).next().map(|(_, s)| s),
-                    };
-                    first.map(|s| (level, s, level.boundary_level_for_probe()))
-                }),
+                FallbackLevel::iter()
+                    .filter_map(|level| {
+                        let first = match level {
+                            FallbackLevel::Sentence => {
+                                self.sentence_probe.first(self.text, self.cursor)
+                            }
+                            FallbackLevel::Word => {
+                                let mut words = level.sections(remaining_text).peekable();
+                                let first = words.peek().map(|&(_, s)| s);
+                                peeked_words.set(Some(words));
+                                first
+                            }
+                            _ => level.sections(remaining_text).next().map(|(_, s)| s),
+                        };
+                        first.map(|s| (level, s, level.boundary_level_for_probe()))
+                    })
+                    .filter(|&(level, str, _)| {
+                        retry == Retry::First
+                            || level != FallbackLevel::Sentence
+                            || !is_mark_only(str)
+                    }),
                 |lower_level, chunk_end| {
                     // If sizing never asks for a boundary, leave the words for output.
                     lower_level
@@ -716,6 +785,32 @@ where
             }
         }
     }
+}
+
+/// How a chunk is rebuilt after the previous attempt produced only marks.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Retry {
+    /// The first attempt, anchored to the deepest level whose first section fits.
+    First,
+    /// Skip levels that open on a mark, so it is filled from finer units.
+    SkipMarkLevels,
+    /// Ignore the semantic levels, for marks hidden behind a leading line break or space that
+    /// make every level look like it opens on content.
+    SkipSemantic,
+}
+
+/// Whether `text` holds only punctuation, markup marks and whitespace, with at least one
+/// non-whitespace character.
+///
+/// A mark is any character that is neither alphanumeric nor whitespace, so typographic quotes
+/// and bullets count along with ASCII punctuation, code fences and thematic breaks.
+fn is_mark_only(text: &str) -> bool {
+    !text.trim().is_empty() && !has_content(text)
+}
+
+/// Whether `text` has at least one alphanumeric character.
+fn has_content(text: &str) -> bool {
+    text.chars().any(char::is_alphanumeric)
 }
 
 /// Represents a chunk of text along with its byte and character offsets.

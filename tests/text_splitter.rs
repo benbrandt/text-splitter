@@ -85,9 +85,8 @@ fn double_newline_fallsback_to_single_and_sentences() {
     assert_eq!(
         vec![
             "Mr. Fox jumped.\n",
-            "[...]\r\n\r\n",
-            "The dog was too ",
-            "lazy. ",
+            "[...]\r\n\r\nThe dog ",
+            "was too lazy. ",
             "It just sat there."
         ],
         chunks

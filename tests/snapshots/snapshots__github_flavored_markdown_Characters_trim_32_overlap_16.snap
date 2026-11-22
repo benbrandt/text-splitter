@@ -3,8 +3,8 @@ source: tests/snapshots.rs
 expression: chunks
 ---
 - "# Headers"
-- "```"
-- "# h1 Heading 8-)\n## h2 Heading"
+- "```\n# h1 Heading 8-)\n## h2"
+- " 8-)\n## h2 Heading"
 - "## h2 Heading\n### h3 Heading"
 - "### h3 Heading\n#### h4 Heading"
 - "#### h4 Heading\n##### h5 Heading"
@@ -25,8 +25,7 @@ expression: chunks
 - "Alt-H1\n======"
 - "Alt-H2\n------\n\n------"
 - "# Emphasis"
-- "```"
-- "Emphasis, aka italics, with *"
+- "```\nEmphasis, aka italics, with"
 - "italics, with *asterisks* or"
 - "*asterisks* or _underscores_."
 - "Strong emphasis, aka bold, with"
@@ -58,9 +57,8 @@ expression: chunks
 - _This is italic text_
 - "~~Strikethrough~~\n\n------"
 - "# Lists"
-- "```"
-- "1. First ordered list item\n2."
-- 2. Another item
+- "```\n1. First ordered list item\n2"
+- " list item\n2. Another item"
 - "⋅⋅* Unordered sub-list.\n1."
 - "Actual numbers don't matter,"
 - "don't matter, just that it's a"
@@ -83,12 +81,11 @@ expression: chunks
 - "a paragraph, you will need to"
 - you will need to use two
 - need to use two trailing spaces.
-- ⋅⋅
-- ⋅⋅⋅Note that this line is
+- "⋅⋅\n⋅⋅⋅Note that this line is"
 - "this line is separate, but"
 - "is separate, but within the same"
 - within the same paragraph.⋅⋅
-- ⋅⋅⋅(This is contrary to the
+- "⋅⋅\n⋅⋅⋅(This is contrary to the"
 - contrary to the typical GFM line
 - typical GFM line break behaviour
 - "break behaviour, where trailing"
@@ -137,15 +134,14 @@ expression: chunks
 - "line above, and the leading"
 - and the leading spaces (at least
 - "spaces (at least one, but we'"
-- ll use three here to also align
+- "'ll use three here to also align"
 - to also align the raw Markdown).
 - ⋅⋅⋅To have a line break without
 - "break without a paragraph, you"
 - "a paragraph, you will need to"
 - you will need to use two
 - need to use two trailing spaces.
-- ⋅⋅
-- ⋅⋅⋅Note that this line is
+- "⋅⋅\n⋅⋅⋅Note that this line is"
 - "this line is separate, but"
 - "is separate, but within the same"
 - within the same paragraph.⋅⋅
@@ -155,8 +151,8 @@ expression: chunks
 - "break behaviour, where trailing"
 - ", where trailing spaces are not"
 - spaces are not required.)
-- "*"
-- Unordered list can use asterisks
+- "* Unordered list can use"
+- list can use asterisks
 - "- Or minuses\n+ Or pluses"
 - 1. Make my changes
 - 1. Fix bug
@@ -165,30 +161,24 @@ expression: chunks
 - 2. Push my commits to GitHub
 - 3. Open a pull request
 - "* Describe my changes"
-- "*"
-- Mention all the members of my
+- "* Mention all the members of my"
 - members of my team
 - "* Ask for feedback"
-- +
-- Create a list by starting a line
-- "starting a line with `+`, `-`"
+- + Create a list by starting a
+- "by starting a line with `+`, `-`"
 - "`+`, `-`, or `*`"
-- +
-- Sub-lists are made by indenting
-- "by indenting 2 spaces:"
-- "-"
-- Marker character change forces
+- + Sub-lists are made by
+- "are made by indenting 2 spaces:"
+- "- Marker character change forces"
 - "change forces new list start:"
-- "*"
-- Ac tristique libero volutpat at
-- +
-- Facilisis in pretium nisl
+- "* Ac tristique libero volutpat"
+- libero volutpat at
+- + Facilisis in pretium nisl
 - in pretium nisl aliquet
 - "- Nulla volutpat aliquam velit"
 - "+ Very easy!\n\n------"
 - "# Task lists"
-- "```"
-- "- [x] Finish my changes"
+- "```\n- [x] Finish my changes\n- ["
 - "- [ ] Push my commits to GitHub"
 - "- [ ] Open a pull request"
 - "- [x] @mentions, #refs, [links]("
@@ -214,23 +204,21 @@ expression: chunks
 - or ordered list supported)
 - "- [ ] this is a complete item"
 - "- [ ] this is an incomplete item"
-- "------"
-- "# Ignoring Markdown formatting"
+- "------\n\n# Ignoring Markdown"
+- Markdown formatting
 - You can tell GitHub to ignore (
 - to ignore (or escape) Markdown
 - escape) Markdown formatting by
 - "formatting by using \\ before the"
 - "\\ before the Markdown character."
-- "```"
-- "Let's rename \\*our-new-project\\*"
-- "-new-project\\* to \\*our-old-"
+- "```\nLet's rename \\*our-new-"
+- "\\*our-new-project\\* to \\*our-old"
 - "\\* to \\*our-old-project\\*.\n```"
 - "Let's rename \\*our-new-project\\"
 - "\\* to \\*our-old-project\\*."
-- "------"
-- "# Links"
-- "```"
-- "[I'm an inline-style link](https"
+- "------\n\n# Links\n\n```\n[I'm an"
+- "```\n[I'm an inline-style link]("
+- "-style link](https://"
 - "link](https://www.google.com)"
 - "[I'm an inline-style link with"
 - "-style link with title](https://"
@@ -270,8 +258,8 @@ expression: chunks
 - "[1]: http://slashdot.org"
 - "[link text itself]: http://"
 - "itself]: http://www.reddit.com"
-- "```"
-- "[I'm an inline-style link](https"
+- "```\n\n[I'm an inline-style link]("
+- "-style link](https://"
 - "link](https://www.google.com)"
 - "[I'm an inline-style link with"
 - "-style link with title](https://"
@@ -311,13 +299,12 @@ expression: chunks
 - "[1]: http://slashdot.org"
 - "[link text itself]: http://"
 - "itself]: http://www.reddit.com"
-- "------"
-- "# Images"
-- "```"
-- "Here's our logo (hover to see"
-- "(hover to see the title text):"
+- "------\n\n# Images\n\n```\nHere's our"
+- "```\nHere's our logo (hover to"
+- logo (hover to see the title
+- "to see the title text):"
 - "Inline-style:\n!["
-- "alt text](https://github.com/"
+- "![alt text](https://github.com/"
 - "://github.com/adam-p/markdown-"
 - adam-p/markdown-here/raw/master/
 - here/raw/master/src/common/
@@ -332,10 +319,10 @@ expression: chunks
 - "/common/images/icon48.png \"Logo"
 - "icon48.png \"Logo Title Text 2\""
 - "!["
-- "Minion](https://"
+- "![Minion](https://"
 - "](https://octodex.github.com/"
 - "/images/minion.png)\n!["
-- "Stormtroopocat](https://"
+- "![Stormtroopocat](https://"
 - "](https://octodex.github.com/"
 - "/images/stormtroopocat.jpg \"The"
 - "\"The Stormtroopocat\")"
@@ -350,14 +337,13 @@ expression: chunks
 - "/images/dojocat.jpg  \"The"
 - "  \"The Dojocat\"\n```"
 - "Here'"
-- s our logo (hover to see the
+- "'s our logo (hover to see the"
 - "hover to see the title text):"
 - "Inline-style:"
-- "!["
-- alt text
-- "](https://github.com/adam-p/"
-- /adam-p/markdown-here/raw/master
-- "-here/raw/master/src/common/"
+- "![alt text](https://github.com/"
+- "://github.com/adam-p/markdown-"
+- adam-p/markdown-here/raw/master/
+- here/raw/master/src/common/
 - "/src/common/images/icon48.png \""
 - "/icon48.png \"Logo Title Text 1\")"
 - "Reference-style:"
@@ -368,12 +354,10 @@ expression: chunks
 - /raw/master/src/common/images/
 - "/common/images/icon48.png \"Logo"
 - "icon48.png \"Logo Title Text 2\""
-- "!["
-- Minion
+- "![Minion](https://"
 - "](https://octodex.github.com/"
 - /images/minion.png)
-- "!["
-- Stormtroopocat
+- "![Stormtroopocat](https://"
 - "](https://octodex.github.com/"
 - "/images/stormtroopocat.jpg \"The"
 - "\"The Stormtroopocat\")"
@@ -387,13 +371,11 @@ expression: chunks
 - "[id]: https://octodex.github.com"
 - "/images/dojocat.jpg  \"The"
 - "  \"The Dojocat\"\n\n------"
-- "#"
-- "[Footnotes](https://github.com/"
+- "# [Footnotes](https://github.com"
 - "://github.com/markdown-it/"
 - /markdown-it/markdown-it-
 - "-it/markdown-it-footnote)"
-- "```"
-- "Footnote 1 link[^first]."
+- "```\nFootnote 1 link[^first]."
 - "Footnote 2 link[^second]."
 - "Inline footnote^[Text of inline"
 - "^[Text of inline footnote]"
@@ -415,11 +397,11 @@ expression: chunks
 - Footnote **can have markup**
 - and multiple paragraphs.
 - "[^second]: Footnote text."
-- "------"
-- "# Code and Syntax Highlighting"
-- "```"
-- "Inline `code` has `back-ticks"
-- " has `back-ticks around` it.\n```"
+- "------\n\n# Code and Syntax"
+- Code and Syntax Highlighting
+- "```\nInline `code` has `back-"
+- "code` has `back-ticks around` it"
+- "ticks around` it.\n```"
 - "Inline `code` has"
 - "`code` has `back-ticks around`"
 - it.
@@ -430,16 +412,14 @@ expression: chunks
 - "namespace MyApplication\n{"
 - "{\n    [Obsolete(\"...\")]"
 - "class Program : IInterface"
-- "{"
-- public static List<int> JustDoIt
-- "<int> JustDoIt(int count)"
-- "{"
-- "Console.WriteLine($\"Hello {Name}"
+- "    {\n        public static List"
+- static List<int> JustDoIt(int
+- "> JustDoIt(int count)\n        {"
+- "{\n            Console.WriteLine("
 - "($\"Hello {Name}!\");"
 - "return new List<int>(new int[] {"
 - "int>(new int[] { 1, 2, 3 })"
-- "        }\n    }\n}\n```"
-- "```css"
+- "        }\n    }\n}\n```\n\n```css"
 - "@font-face {"
 - "font-family: Chunkfive; src: url"
 - "; src: url('Chunkfive.otf');\n}"
@@ -451,8 +431,7 @@ expression: chunks
 - "@media print {"
 - "a[href^=http]::after {"
 - "    content: attr(href)\n  }\n}"
-- "  }\n}\n```"
-- "```javascript"
+- "  }\n}\n```\n\n```javascript"
 - "function $initHighlight(block,"
 - "(block, cls) {\n  try {"
 - "if (cls.search(/\\bno\\-highlight\\"
@@ -462,22 +441,21 @@ expression: chunks
 - "` class=\"${cls}\"`;"
 - "} catch (e) {"
 - "    /* handle exception */\n  }"
-- for (var i = 0 / 2; i <
+- "  }\n  for (var i = 0 / 2; i <"
 - i = 0 / 2; i < classes.length; i
 - "; i++) {"
 - "if (checkCondition(classes[i]) ="
 - "(classes[i]) === undefined)"
 - "console.log('undefined');"
 - "  }\n}\n\nexport  $initHighlight;"
-- "```"
-- "```php"
+- "```\n\n```php"
 - "require_once 'Zend/Uri/Http.php'"
 - "/Uri/Http.php';"
 - "namespace Location\\Web;"
 - "interface Factory\n{"
-- static function _factory();
-- "}"
-- abstract class URI extends
+- "{\n    static function _factory()"
+- " _factory();\n}"
+- "}\n\nabstract class URI extends"
 - URI extends BaseURI implements
 - " implements Factory\n{"
 - "{\n    abstract function test();"
@@ -489,6 +467,7 @@ expression: chunks
 - "     * Returns a URI\n     *"
 - "     *\n     * @return URI"
 - "     * @return URI\n     */"
+- "     */\n    static public"
 - static public function _factory(
 - "_factory($stats = array(), $uri"
 - " = array(), $uri = 'http')\n    {"
@@ -502,6 +481,7 @@ expression: chunks
 - "if (!ctype_alnum($scheme)) {"
 - "throw new Zend_Uri_Exception('"
 - "('Illegal scheme');\n        }"
+- "        }\n\n        $this->var ="
 - "$this->var = 0 - self::$st;"
 - "$this->list = list(Array(\"1\"=> 2"
 - "(Array(\"1\"=> 2, 2=>self::ME, 3 ="
@@ -510,22 +490,21 @@ expression: chunks
 - "return ["
 - "'uri'   => $uri,"
 - "'value' => null,"
-- "        ];\n    }\n}"
-- "    }\n}\n\necho URI::ME ."
-- "echo URI::ME . URI::$st1;"
+- "        ];\n    }\n}\n\necho URI::ME"
+- "}\n\necho URI::ME . URI::$st1;"
 - __halt_compiler () ; datahere
 - "datahere\ndatahere */\ndatahere"
 - "datahere\n```\n\n------"
 - "# Tables"
-- "```"
-- Colons can be used to align
+- "```\nColons can be used to align"
 - be used to align columns.
 - "| Tables        | Are"
 - "| Are           | Cool  |"
 - "| ------------- |:-------------:"
-- "|:-------------:| -----:|"
-- "| col 3 is      | right-aligned"
-- "| right-aligned | $1600 |"
+- " |:-------------:| -----:|\n| col"
+- ":| -----:|\n| col 3 is      |"
+- col 3 is      | right-aligned |
+- right-aligned | $1600 |
 - "| col 2 is      | centered"
 - "| centered      |   $12 |"
 - "| zebra stripes | are neat"
@@ -540,27 +519,28 @@ expression: chunks
 - You can also use inline Markdown
 - inline Markdown.
 - Markdown | Less | Pretty
-- "--- | --- | ---"
-- "*Still* | `renders` | **nicely**"
+- "--- | --- | ---\n*Still* | `"
+- " ---\n*Still* | `renders` | **"
+- "| `renders` | **nicely**"
 - 1 | 2 | 3
 - "| First Header  | Second Header"
 - "| Second Header |"
 - "| ------------- | -------------"
-- "| ------------- |"
-- "| Content Cell  | Content Cell"
-- "| Content Cell  |"
+- " | ------------- |\n| Content"
+- "---- |\n| Content Cell  | Content"
+- Cell  | Content Cell  |
 - "| Content Cell  | Content Cell"
 - "| Content Cell  |"
 - "| Command | Description |"
-- "| --- | --- |"
-- "| git status | List all new or"
+- "| --- | --- |\n| git status |"
+- "|\n| git status | List all new or"
 - List all new or modified files |
 - "| git diff | Show file"
 - diff | Show file differences
 - "file differences that haven't"
 - "that haven't been staged |"
 - "| Command | Description |"
-- "| --- | --- |"
+- "| --- | --- |\n| `git status` |"
 - "| `git status` | List all *new"
 - "| List all *new or modified*"
 - new or modified* files |
@@ -572,26 +552,27 @@ expression: chunks
 - "| Right-aligned |"
 - "| :---         |     :---:"
 - "|     :---:      |          ---:"
-- "|          ---: |"
-- "| git status   | git status"
-- "| git status     | git status"
-- "| git status    |"
+- "      |          ---: |\n| git"
+- "---: |\n| git status   | git"
+- status   | git status     | git
+- status     | git status    |
 - "| git diff     | git diff"
 - "| git diff       | git diff"
 - "| git diff      |"
 - "| Name     | Character |"
-- "| ---      | ---       |"
-- "| Backtick | `         |"
+- "| ---      | ---       |\n|"
+- "| ---       |\n| Backtick | `"
+- "|\n| Backtick | `         |"
 - "| Pipe     | \\|        |\n```"
 - Colons can be used to align
 - be used to align columns.
 - "| Tables        | Are"
 - "| Are           | Cool"
-- "|"
-- "| ------------- |:-------------:"
-- "|:-------------:| -----:|"
-- "| col 3 is      | right-aligned"
-- "| right-aligned | $1600 |"
+- "|\n| ------------- |:------------"
+- "- |:-------------:| -----:|\n|"
+- "----:| -----:|\n| col 3 is      |"
+- col 3 is      | right-aligned |
+- right-aligned | $1600 |
 - "| col 2 is      | centered"
 - "| centered      |   $12 |"
 - "| zebra stripes | are neat"
@@ -606,55 +587,52 @@ expression: chunks
 - You can also use inline Markdown
 - inline Markdown.
 - Markdown | Less | Pretty
-- "--- | --- | ---"
-- "*Still* | `renders` | **nicely**"
+- "--- | --- | ---\n*Still* | `"
+- " ---\n*Still* | `renders` | **"
+- "| `renders` | **nicely**"
 - 1 | 2 | 3
 - "| First Header  | Second Header"
-- "|"
-- "| ------------- | -------------"
-- "| ------------- |"
-- "| Content Cell  | Content Cell"
-- "| Content Cell  |"
+- "|\n| ------------- | ------------"
+- "- | ------------- |\n| Content"
+- "---- |\n| Content Cell  | Content"
+- Cell  | Content Cell  |
 - "| Content Cell  | Content Cell"
 - "| Content Cell  |"
 - "| Command | Description |"
-- "| --- | --- |"
-- "| git status |"
-- "| List all new or modified files"
-- "|"
+- "| --- | --- |\n| git status |"
+- "|\n| git status | List all new or"
+- List all new or modified files |
 - "| git diff |"
-- Show file differences that
+- "| Show file differences that"
 - "differences that haven'"
 - "'t been staged |"
 - "| Command | Description |"
-- "| --- | --- |"
-- "| `git status` |"
-- List all *new or modified* files
-- "|"
+- "| --- | --- |\n| `git status` |"
+- "| List all *new or modified*"
+- new or modified* files |
 - "| `git diff` |"
-- Show file differences that **
+- "| Show file differences that **"
 - "that **haven't been** staged |"
 - "| Left-aligned | Center-aligned"
 - "| Center-aligned | Right-aligned"
-- "|"
-- "| :---         |     :---:"
+- "|\n| :---         |     :---:"
 - "|     :---:      |          ---:"
-- "|          ---: |"
-- "| git status   | git status"
-- "| git status     | git status"
-- "| git status    |"
+- "      |          ---: |\n| git"
+- "---: |\n| git status   | git"
+- status   | git status     |
+- git status     | git status    |
 - "| git diff     | git diff"
 - "| git diff       | git diff"
 - "| git diff      |"
 - "| Name     | Character |"
-- "| ---      | ---       |"
-- "| Backtick | `         |"
+- "| ---      | ---       |\n|"
+- "| ---       |\n| Backtick | `"
+- "|\n| Backtick | `         |"
 - "| Pipe     | \\|        |\n\n------"
 - "# Blockquotes"
-- "```"
-- "> Blockquotes are very handy in"
-- very handy in email to emulate
-- email to emulate reply text.
+- "```\n> Blockquotes are very handy"
+- are very handy in email to
+- in email to emulate reply text.
 - "> This line is part of the same"
 - part of the same quote.
 - Quote break.
@@ -678,37 +656,33 @@ expression: chunks
 - right next to each other...
 - "> > > ...or with spaces between"
 - " spaces between arrows.\n```"
-- ">"
-- Blockquotes are very handy in
+- "> Blockquotes are very handy in"
 - very handy in email to emulate
 - " email to emulate reply text.\n>"
 - This line is part of the same
 - part of the same quote.
 - Quote break.
-- ">"
-- This is a very long line that
+- "> This is a very long line that"
 - long line that will still be
 - will still be quoted properly
 - quoted properly when it wraps.
 - "Oh boy let'"
-- s keep writing to make sure this
-- make sure this is long enough to
-- long enough to actually wrap for
-- "wrap for everyone. Oh, you can"
-- "*put* **Markdown**"
+- "'s keep writing to make sure"
+- to make sure this is long enough
+- is long enough to actually wrap
+- to actually wrap for everyone.
+- "Oh, you can *put* **Markdown**"
 - "**Markdown** into a blockquote."
 - "> Blockquotes can also be nested"
-- "...\n>"
-- "> ..."
-- by using additional greater-than
+- "...\n>> ...by using additional"
+- using additional greater-than
 - greater-than signs right next to
 - " right next to each other...\n> >"
-- "> ..."
-- or with spaces between arrows.
-- "------"
+- "> ...or with spaces between"
+- " spaces between arrows.\n\n------"
 - "# Inline HTML"
-- "```"
-- "<dl>\n  <dt>Definition list</dt>"
+- "```\n<dl>\n  <dt>Definition list</"
+- list</dt>
 - "<dd>Is something people use"
 - people use sometimes.</dd>
 - "<dt>Markdown in HTML</dt>"
@@ -725,17 +699,16 @@ expression: chunks
 - Use HTML <em>tags</em>.</dd>
 - "</dl>\n\n------"
 - "# Horizontal Rules"
-- "```"
-- "Three or more...\n\n---\n\nHyphens"
-- "---\n\nHyphens\n\n***\n\nAsterisks"
-- "***\n\nAsterisks\n\n___\n\nUnderscores"
-- "___\n\nUnderscores\n```"
+- "```\nThree or more...\n\n---"
+- " or more...\n\n---\n\nHyphens\n\n***"
+- "Hyphens\n\n***\n\nAsterisks\n\n___"
+- "Asterisks\n\n___\n\nUnderscores\n```"
 - "Three or more...\n\n---\n\nHyphens"
 - "---\n\nHyphens\n\n***\n\nAsterisks"
 - "***\n\nAsterisks\n\n___\n\nUnderscores"
 - "___\n\nUnderscores\n\n------"
 - "# YouTube Videos"
-- "```"
+- "```\n<a href=\"http://"
 - "<a href=\"http://www.youtube.com/"
 - www.youtube.com/watch?
 - feature=player_embedded&v=
@@ -761,16 +734,15 @@ expression: chunks
 - "ALT TEXT HERE\" width=\"240\""
 - "\" width=\"240\" height=\"180\""
 - "\" height=\"180\" border=\"10\">\n</a>"
-- "```"
-- "[!["
-- "IMAGE ALT TEXT HERE](http://"
+- "```\n[!["
+- "```\n[![IMAGE ALT TEXT HERE](http"
+- "TEXT HERE](http://"
 - "HERE](http://img.youtube.com/vi/"
 - /vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)
 - "/0.jpg)](http://www.youtube.com/"
 - www.youtube.com/watch?
 - "v=YOUTUBE_VIDEO_ID_HERE)\n```"
-- "[!["
-- IMAGE ALT TEXT HERE
+- "[![IMAGE ALT TEXT HERE](https://"
 - "](https://upload.wikimedia.org/"
 - /wikipedia/commons/thumb/e/ef/
 - /thumb/e/ef/YouTube_logo_2015.

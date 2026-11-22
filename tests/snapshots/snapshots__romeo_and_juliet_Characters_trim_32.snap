@@ -34,8 +34,8 @@ expression: chunks
 - Project Gutenberg volunteers.
 - "*** START OF THE PROJECT"
 - GUTENBERG EBOOK ROMEO AND JULIET
-- "***"
-- THE TRAGEDY OF ROMEO AND JULIET
+- "***\n\n\n\n\nTHE TRAGEDY OF ROMEO AND"
+- JULIET
 - by William Shakespeare
 - "Contents\n\nTHE PROLOGUE."
 - "ACT I\nScene I. A public place."
@@ -88,8 +88,8 @@ expression: chunks
 - "to the Prince.\nPage to Paris."
 - "MONTAGUE, head of a Veronese"
 - family at feud with the Capulets
-- "."
-- "LADY MONTAGUE, wife to Montague."
+- ".\nLADY MONTAGUE, wife to"
+- Montague.
 - "ROMEO, son to Montague."
 - "BENVOLIO, nephew to Montague,"
 - and friend to Romeo.
@@ -187,11 +187,9 @@ expression: chunks
 - GREGORY.
 - "That shows thee a weak slave,"
 - for the weakest goes to the wall
-- "."
-- SAMPSON.
-- "True, and therefore women, being"
-- "the weaker vessels, are ever"
-- thrust to
+- ".\n\nSAMPSON.\nTrue, and therefore"
+- "women, being the weaker vessels,"
+- are ever thrust to
 - "the wall: therefore I will push"
 - "Montague’s men from the wall,"
 - and
@@ -558,9 +556,8 @@ expression: chunks
 - At thy good heart’s oppression.
 - ROMEO.
 - Why such is love’s transgression
-- "."
-- Griefs of mine own lie heavy in
-- "my breast,"
+- ".\nGriefs of mine own lie heavy"
+- "in my breast,"
 - Which thou wilt propagate to
 - have it prest
 - With more of thine.
@@ -682,10 +679,8 @@ expression: chunks
 - "die in debt.\n\n [_Exeunt._]"
 - SCENE II. A Street.
 - "Enter Capulet, Paris and Servant"
-- "."
-- CAPULET.
-- But Montague is bound as well as
-- "I,"
+- ".\n\nCAPULET.\nBut Montague is"
+- "bound as well as I,"
 - In penalty alike; and ’tis not
 - "hard, I think,"
 - For men so old as we to keep the
@@ -760,8 +755,7 @@ expression: chunks
 - persons out
 - "Whose names are written there, ["
 - "_gives a paper_] and to them say"
-- ","
-- My house and welcome on their
+- ",\nMy house and welcome on their"
 - pleasure stay.
 - "[_Exeunt Capulet and Paris._]"
 - SERVANT.
@@ -839,9 +833,8 @@ expression: chunks
 - "Mine uncle Capulet, his wife,"
 - and daughters;
 - My fair niece Rosaline and Livia
-- ;
-- Signior Valentio and his cousin
-- Tybalt;
+- ";\nSignior Valentio and his"
+- cousin Tybalt;
 - Lucio and the lively Helena. _
 - A fair assembly.
 - "[_Gives back the paper_] Whither"
@@ -855,8 +848,7 @@ expression: chunks
 - that before.
 - SERVANT.
 - Now I’ll tell you without asking
-- "."
-- My master is the great rich
+- ". My master is the great rich"
 - "Capulet,"
 - and if you be not of the house
 - "of Montagues, I pray come and"
@@ -1063,9 +1055,8 @@ expression: chunks
 - "Well, think of marriage now:"
 - "younger than you,"
 - "Here in Verona, ladies of esteem"
-- ","
-- Are made already mothers.
-- By my count
+- ",\nAre made already mothers. By"
+- my count
 - I was your mother much upon
 - these years
 - That you are now a maid.
@@ -1296,8 +1287,7 @@ expression: chunks
 - Prick’d from the lazy finger of
 - "a maid:"
 - Her chariot is an empty hazelnut
-- ","
-- Made by the joiner squirrel or
+- ",\nMade by the joiner squirrel or"
 - "old grub,"
 - Time out o’ mind the fairies’
 - coachmakers.
@@ -1702,17 +1692,15 @@ expression: chunks
 - "His name is Romeo, and a"
 - "Montague,"
 - The only son of your great enemy
-- "."
-- JULIET.
-- My only love sprung from my only
-- hate!
+- ".\n\nJULIET.\nMy only love sprung"
+- from my only hate!
 - "Too early seen unknown, and"
 - known too late!
 - Prodigious birth of love it is
 - "to me,"
 - That I must love a loathed enemy
-- "."
-- "NURSE.\nWhat’s this? What’s this?"
+- ".\n\nNURSE.\nWhat’s this? What’s"
+- this?
 - JULIET.
 - A rhyme I learn’d even now
 - Of one I danc’d withal.
@@ -1745,8 +1733,7 @@ expression: chunks
 - "And she as much in love, her"
 - means much less
 - To meet her new beloved anywhere
-- "."
-- "But passion lends them power,"
+- ".\nBut passion lends them power,"
 - "time means, to meet,"
 - Tempering extremities with
 - "extreme sweet.\n\n [_Exit._]"
@@ -1853,8 +1840,7 @@ expression: chunks
 - He jests at scars that never
 - felt a wound.
 - Juliet appears above at a window
-- "."
-- "But soft, what light through"
+- ".\n\nBut soft, what light through"
 - yonder window breaks?
 - "It is the east, and Juliet is"
 - the sun!
@@ -1954,10 +1940,8 @@ expression: chunks
 - "Call me but love, and I’ll be"
 - new baptis’d;
 - Henceforth I never will be Romeo
-- "."
-- JULIET.
-- "What man art thou that, thus"
-- bescreen’d in night
+- ".\n\nJULIET.\nWhat man art thou"
+- "that, thus bescreen’d in night"
 - So stumblest on my counsel?
 - "ROMEO.\nBy a name"
 - I know not how to tell thee who
@@ -2249,8 +2233,8 @@ expression: chunks
 - And with a silk thread plucks it
 - "back again,"
 - So loving-jealous of his liberty
-- "."
-- "ROMEO.\nI would I were thy bird."
+- ".\n\nROMEO.\nI would I were thy"
+- bird.
 - "JULIET.\nSweet, so would I:"
 - Yet I should kill thee with much
 - cherishing.
@@ -2751,11 +2735,9 @@ expression: chunks
 - "Farewell, ancient lady; farewell"
 - ", lady, lady, lady."
 - "[_Exeunt Mercutio and Benvolio."
-- "_]"
-- NURSE.
-- "I pray you, sir, what saucy"
-- merchant was this that was so
-- "full of his\nropery?"
+- "_]\n\nNURSE.\nI pray you, sir, what"
+- saucy merchant was this that was
+- "so full of his\nropery?"
 - ROMEO.
 - "A gentleman, Nurse, that loves"
 - "to hear himself talk, and will"
@@ -3333,8 +3315,7 @@ expression: chunks
 - submission!
 - "[_Draws."
 - "_] Alla stoccata carries it away"
-- "."
-- "Tybalt, you rat-catcher, will"
+- ".\nTybalt, you rat-catcher, will"
 - you walk?
 - TYBALT.
 - What wouldst thou have with me?
@@ -3411,14 +3392,11 @@ expression: chunks
 - Or I shall faint.
 - A plague o’ both your houses.
 - They have made worms’ meat of me
-- "."
-- "I have it, and soundly too."
+- ".\nI have it, and soundly too."
 - Your houses!
 - "[_Exeunt Mercutio and Benvolio."
-- "_]"
-- ROMEO.
-- "This gentleman, the Prince’s"
-- "near ally,"
+- "_]\n\nROMEO.\nThis gentleman, the"
+- "Prince’s near ally,"
 - "My very friend, hath got his"
 - mortal hurt
 - In my behalf; my reputation
@@ -3451,9 +3429,8 @@ expression: chunks
 - "Again in triumph, and Mercutio"
 - slain?
 - Away to heaven respective lenity
-- ","
-- And fire-ey’d fury be my conduct
-- now!
+- ",\nAnd fire-ey’d fury be my"
+- conduct now!
 - "Now, Tybalt, take the ‘villain’"
 - back again
 - "That late thou gav’st me, for"
@@ -3583,8 +3560,7 @@ expression: chunks
 - not live.
 - PRINCE.
 - "Romeo slew him, he slew Mercutio"
-- "."
-- Who now the price of his dear
+- ".\nWho now the price of his dear"
 - blood doth owe?
 - MONTAGUE.
 - "Not Romeo, Prince, he was"
@@ -3721,8 +3697,7 @@ expression: chunks
 - Than the death-darting eye of
 - cockatrice.
 - I am not I if there be such an I
-- ;
-- Or those eyes shut that make
+- ";\nOr those eyes shut that make"
 - thee answer Ay.
 - "If he be slain, say Ay; or if"
 - "not, No."
@@ -4179,8 +4154,8 @@ expression: chunks
 - "Thy tears are womanish, thy wild"
 - acts denote
 - The unreasonable fury of a beast
-- "."
-- "Unseemly woman in a seeming man,"
+- ".\nUnseemly woman in a seeming"
+- "man,"
 - And ill-beseeming beast in
 - seeming both!
 - Thou hast amaz’d me.
@@ -4861,9 +4836,8 @@ expression: chunks
 - "Alack, alack, that heaven should"
 - practise stratagems
 - Upon so soft a subject as myself
-- "."
-- What say’st thou?
-- Hast thou not a word of joy?
+- ".\nWhat say’st thou? Hast thou"
+- not a word of joy?
 - "Some comfort, Nurse."
 - "NURSE.\nFaith, here it is."
 - Romeo is banished; and all the
@@ -4969,10 +4943,8 @@ expression: chunks
 - "toward my cell.\n\n Enter Juliet."
 - PARIS.
 - "Happily met, my lady and my wife"
-- "!"
-- JULIET.
-- "That may be, sir, when I may be"
-- a wife.
+- "!\n\nJULIET.\nThat may be, sir,"
+- when I may be a wife.
 - PARIS.
 - "That may be, must be, love, on"
 - Thursday next.
@@ -5231,8 +5203,7 @@ expression: chunks
 - SECOND SERVANT.
 - "Marry, sir, ’tis an ill cook"
 - that cannot lick his own fingers
-- ;
-- therefore he that cannot lick
+- ";\ntherefore he that cannot lick"
 - his fingers goes not with me.
 - "CAPULET.\nGo, begone."
 - "[_Exit second Servant._]"
@@ -5354,11 +5325,8 @@ expression: chunks
 - "Get thee to bed and rest, for"
 - thou hast need.
 - "[_Exeunt Lady Capulet and Nurse."
-- "_]"
-- JULIET.
-- Farewell.
-- God knows when we shall meet
-- again.
+- "_]\n\nJULIET.\nFarewell. God knows"
+- when we shall meet again.
 - I have a faint cold fear thrills
 - through my veins
 - That almost freezes up the heat
@@ -5477,9 +5445,8 @@ expression: chunks
 - But I will watch you from such
 - watching now.
 - "[_Exeunt Lady Capulet and Nurse."
-- "_]"
-- CAPULET.
-- "A jealous-hood, a jealous-hood!"
+- "_]\n\nCAPULET.\nA jealous-hood, a"
+- jealous-hood!
 - "Enter Servants, with spits, logs"
 - and baskets.
 - "Now, fellow, what’s there?"
@@ -5600,8 +5567,7 @@ expression: chunks
 - to church?
 - CAPULET.
 - "Ready to go, but never to return"
-- "."
-- "O son, the night before thy"
+- ".\nO son, the night before thy"
 - wedding day
 - Hath death lain with thy bride.
 - "There she lies,"
@@ -5756,10 +5722,8 @@ expression: chunks
 - itself plays ‘My heart is full’.
 - O play
 - me some merry dump to comfort me
-- "."
-- FIRST MUSICIAN.
-- "Not a dump we, ’tis no time to"
-- play now.
+- ".\n\nFIRST MUSICIAN.\nNot a dump we"
+- ", ’tis no time to play now."
 - "PETER.\nYou will not then?"
 - "FIRST MUSICIAN.\nNo."
 - PETER.
@@ -5797,10 +5761,9 @@ expression: chunks
 - And doleful dumps the mind
 - "oppress,"
 - Then music with her silver sound
-- ’—
-- Why ‘silver sound’?
-- Why ‘music with her silver sound
-- "’? What say you,\nSimon Catling?"
+- "’—\nWhy ‘silver sound’? Why ‘"
+- music with her silver sound’?
+- "What say you,\nSimon Catling?"
 - FIRST MUSICIAN.
 - "Marry, sir, because silver hath"
 - a sweet sound.
@@ -6051,10 +6014,8 @@ expression: chunks
 - was stay’d.
 - FRIAR LAWRENCE.
 - Who bare my letter then to Romeo
-- "?"
-- FRIAR JOHN.
-- "I could not send it,—here it is"
-- "again,—"
+- "?\n\nFRIAR JOHN.\nI could not send"
+- "it,—here it is again,—"
 - Nor get a messenger to bring it
 - "thee,"
 - So fearful were they of
@@ -6075,16 +6036,14 @@ expression: chunks
 - "thee.\n\n [_Exit._]"
 - FRIAR LAWRENCE.
 - Now must I to the monument alone
-- "."
-- Within this three hours will
+- ".\nWithin this three hours will"
 - fair Juliet wake.
 - She will beshrew me much that
 - Romeo
 - Hath had no notice of these
 - accidents;
 - But I will write again to Mantua
-- ","
-- And keep her at my cell till
+- ",\nAnd keep her at my cell till"
 - Romeo come.
 - "Poor living corse, clos’d in a"
 - "dead man’s tomb.\n\n [_Exit._]"
@@ -6291,8 +6250,7 @@ expression: chunks
 - "Death, lie thou there, by a dead"
 - man interr’d.
 - "[_Laying Paris in the monument."
-- "_]"
-- How oft when men are at the
+- "_]\n\nHow oft when men are at the"
 - point of death
 - Have they been merry!
 - Which their keepers call
@@ -6484,15 +6442,13 @@ expression: chunks
 - "herself_] There rest, and let me"
 - die.
 - "[_Falls on Romeo’s body and dies"
-- "._]"
-- Enter Watch with the Page of
-- Paris.
+- "._]\n\n Enter Watch with the Page"
+- of Paris.
 - PAGE.
 - This is the place.
 - "There, where the torch doth burn"
-- "."
-- FIRST WATCH.
-- The ground is bloody.
+- ".\n\nFIRST WATCH.\nThe ground is"
+- bloody.
 - Search about the churchyard.
 - "Go, some of you, whoe’er you"
 - find attach.
@@ -6537,8 +6493,7 @@ expression: chunks
 - Enter the Prince and Attendants.
 - PRINCE.
 - What misadventure is so early up
-- ","
-- That calls our person from our
+- ",\nThat calls our person from our"
 - morning’s rest?
 - "Enter Capulet, Lady Capulet and"
 - others.
@@ -6575,8 +6530,7 @@ expression: chunks
 - "This dagger hath mista’en, for"
 - "lo, his house"
 - Is empty on the back of Montague
-- ","
-- And it mis-sheathed in my
+- ",\nAnd it mis-sheathed in my"
 - daughter’s bosom.
 - LADY CAPULET.
 - O me!
@@ -7264,10 +7218,9 @@ expression: chunks
 - "other medium, a computer virus,"
 - or computer codes that damage or
 - cannot be read by your equipment
-- "."
-- 1.F.2.
-- "LIMITED WARRANTY, DISCLAIMER OF"
-- "DAMAGES - Except for the \"Right"
+- ".\n\n1.F.2. LIMITED WARRANTY,"
+- DISCLAIMER OF DAMAGES - Except
+- "for the \"Right"
 - "of Replacement or Refund\""
 - described in paragraph 1.
 - "F.3, the Project"
@@ -7413,9 +7366,9 @@ expression: chunks
 - hundreds of volunteers and
 - donations
 - from people in all walks of life
-- "."
-- Volunteers and financial support
-- to provide volunteers with the
+- ".\n\nVolunteers and financial"
+- support to provide volunteers
+- with the
 - assistance they need are
 - critical to reaching Project
 - "Gutenberg-tm's"
