@@ -43,6 +43,8 @@ jobs:
   tokenizers-fancy-regex:
     runs-on: ubuntu-latest
     name: Test tokenizers with fancy-regex
+    env:
+      TEST_FEATURES: markdown,tokenizers-fancy-regex
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8
@@ -52,12 +54,15 @@ jobs:
 
       - name: Check onig is not built
         run: |
-          if cargo tree -p text-splitter --no-default-features --features tokenizers-fancy-regex -e normal | grep -q onig; then
+          # Include dev-dependencies: their features are unified for the test build.
+          cargo tree -p text-splitter --no-default-features --features "$TEST_FEATURES" \
+            --color never --prefix none > "$RUNNER_TEMP/tokenizer-deps.txt"
+          if grep -E '^onig(_sys)? v' "$RUNNER_TEMP/tokenizer-deps.txt"; then
             echo "onig is enabled with tokenizers-fancy-regex"
             exit 1
           fi
       - name: Run cargo test
-        run: cargo test -p text-splitter --no-default-features --features markdown,tokenizers-fancy-regex --lib --tests
+        run: cargo test -p text-splitter --no-default-features --features "$TEST_FEATURES" --lib --tests
 
   coverage:
     runs-on: ubuntu-latest
