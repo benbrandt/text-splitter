@@ -2975,11 +2975,9 @@ expression: chunks
 - "lady; farewell, lady, lady, lady"
 - "lady, lady, lady."
 - "[_Exeunt Mercutio and Benvolio."
-- "_]"
-- NURSE.
-- "I pray you, sir, what saucy"
-- "sir, what saucy merchant was"
-- merchant was this that was so
+- "_]\n\nNURSE.\nI pray you, sir, what"
+- "you, sir, what saucy merchant"
+- saucy merchant was this that was
 - this that was so full of his
 - ropery?
 - ROMEO.
@@ -3705,10 +3703,9 @@ expression: chunks
 - "I have it, and soundly too."
 - Your houses!
 - "[_Exeunt Mercutio and Benvolio."
-- "_]"
-- ROMEO.
-- "This gentleman, the Prince’s"
-- ", the Prince’s near ally,"
+- "_]\n\nROMEO.\nThis gentleman, the"
+- "gentleman, the Prince’s near"
+- "Prince’s near ally,"
 - "My very friend, hath got his"
 - ", hath got his mortal hurt"
 - In my behalf; my reputation
@@ -5745,10 +5742,8 @@ expression: chunks
 - "Get thee to bed and rest, for"
 - "and rest, for thou hast need."
 - "[_Exeunt Lady Capulet and Nurse."
-- "_]"
-- JULIET.
-- Farewell.
-- God knows when we shall meet
+- "_]\n\nJULIET.\nFarewell. God knows"
+- ". God knows when we shall meet"
 - we shall meet again.
 - I have a faint cold fear thrills
 - fear thrills through my veins
@@ -5877,9 +5872,8 @@ expression: chunks
 - But I will watch you from such
 - you from such watching now.
 - "[_Exeunt Lady Capulet and Nurse."
-- "_]"
-- CAPULET.
-- "A jealous-hood, a jealous-hood!"
+- "_]\n\nCAPULET.\nA jealous-hood, a"
+- "jealous-hood, a jealous-hood!"
 - "Enter Servants, with spits, logs"
 - "with spits, logs and baskets."
 - "Now, fellow, what’s there?"
@@ -6138,9 +6132,8 @@ expression: chunks
 - their high will.
 - "[_Exeunt Capulet, Lady Capulet,"
 - ", Lady Capulet, Paris and Friar."
-- "_]"
-- FIRST MUSICIAN.
-- "Faith, we may put up our pipes"
+- "_]\n\nFIRST MUSICIAN.\nFaith, we"
+- ".\nFaith, we may put up our pipes"
 - put up our pipes and be gone.
 - NURSE.
 - "Honest good fellows, ah, put up,"
@@ -6736,8 +6729,7 @@ expression: chunks
 - "Death, lie thou there, by a dead"
 - "there, by a dead man interr’d."
 - "[_Laying Paris in the monument."
-- "_]"
-- How oft when men are at the
+- "_]\n\nHow oft when men are at the"
 - men are at the point of death
 - Have they been merry!
 - Which their keepers call

@@ -56,7 +56,7 @@ fn split_by_rule() {
     let text = "Some text\n\n---\n\nwith a rule";
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
-    assert_eq!(["Some text\n\n", "---\n", "\nwith a rule"].to_vec(), chunks);
+    assert_eq!(["Some text\n\n", "---\n\nwith a ", "rule"].to_vec(), chunks);
 }
 
 #[cfg(feature = "markdown")]
@@ -66,7 +66,7 @@ fn split_by_rule_trim() {
     let text = "Some text\n\n---\n\nwith a rule";
     let chunks = splitter.chunks(text).collect::<Vec<_>>();
 
-    assert_eq!(["Some text", "---", "with a rule"].to_vec(), chunks);
+    assert_eq!(["Some text", "---\n\nwith a", "rule"].to_vec(), chunks);
 }
 
 #[cfg(feature = "markdown")]

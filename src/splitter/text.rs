@@ -474,7 +474,7 @@ mod tests {
             .chunks(text)
             .collect::<Vec<_>>();
         assert_eq!(
-            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too lazy."],
+            vec!["Mr. Fox jumped. ", "[...] The dog was too", " lazy."],
             chunks
         );
     }
@@ -486,7 +486,7 @@ mod tests {
             .chunks(text)
             .collect::<Vec<_>>();
         assert_eq!(
-            vec!["Mr. Fox jumped. ", "[...] ", "The dog was too ", "lazy."],
+            vec!["Mr. Fox jumped. ", "[...] The dog ", "was too lazy."],
             chunks
         );
     }

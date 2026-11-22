@@ -189,6 +189,10 @@ Splitting doesn't occur below the character level, otherwise you could get parti
 
 Splitting doesn't occur below the character level, otherwise you could get partial bytes of a char, which may not be a valid unicode str.
 
+### Note on marks
+
+A chunk made up only of marks, meaning it contains whitespace and characters that are neither letters nor digits (a lone quote, bullet, closing bracket, code fence or thematic break) and no alphanumeric character at all, is rarely useful on its own. When a different boundary within the chunk capacity avoids producing one, it is used instead: such a chunk is refilled from finer units, and a chunk that would leave only marks behind ends one section sooner. A chunk can still be marks only when the text itself holds nothing else within the capacity. Capacity is never exceeded.
+
 ### Note on sentences
 
 There are lots of methods of determining sentence breaks, all to varying degrees of accuracy, and many requiring ML models to do so. Rather than trying to find the perfect sentence breaks, we rely on unicode method of sentence boundaries, which in most cases is good enough for finding a decent semantic breaking point if a paragraph is too large, and avoids the performance penalties of many other methods.

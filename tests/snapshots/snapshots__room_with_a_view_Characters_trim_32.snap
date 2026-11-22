@@ -131,8 +131,7 @@ expression: chunks
 - Lucy felt that she had been
 - selfish.
 - "“Charlotte, you mustn’t spoil me"
-- ":"
-- "of course, you must look over"
+- ":\nof course, you must look over"
 - "the Arno, too. I meant that."
 - The first vacant room in the
 - "front—” “You must have it,” said"
@@ -268,8 +267,7 @@ expression: chunks
 - "“Eat your dinner, dear."
 - This pension is a failure.
 - To-morrow we will make a change.
-- ”
-- Hardly had she announced this
+- "”\n\nHardly had she announced this"
 - fell decision when she reversed
 - it.
 - The curtains at the end of the
@@ -449,9 +447,8 @@ expression: chunks
 - "“We are most grateful to you,”"
 - she was saying.
 - “The first evening means so much
-- "."
-- When you arrived we were in for
-- a peculiarly _mauvais quart
+- ". When you arrived we were in"
+- for a peculiarly _mauvais quart
 - d’heure_.”
 - He expressed his regret.
 - "“Do you, by any chance, know the"
@@ -571,8 +568,7 @@ expression: chunks
 - "“He is nice,” exclaimed Lucy."
 - “Just what I remember.
 - He seems to see good in everyone
-- "."
-- No one would take him for a
+- ". No one would take him for a"
 - "clergyman.”\n\n“My dear Lucia—”"
 - "“Well, you know what I mean."
 - And you know how clergymen
@@ -647,9 +643,9 @@ expression: chunks
 - “But here you are as safe as in
 - England.
 - Signora Bertolini is so English.
-- ”
-- "“Yet our rooms smell,” said poor"
-- Lucy. “We dread going to bed.”
+- "”\n\n“Yet our rooms smell,” said"
+- poor Lucy.
+- “We dread going to bed.”
 - "“Ah, then you look into the"
 - court.” She sighed. “If only Mr.
 - Emerson was more tactful!
@@ -990,9 +986,8 @@ expression: chunks
 - thought they had better spend
 - the morning settling in; unless
 - Lucy would at all like to go out
-- "?"
-- Lucy would rather like to go out
-- ", as it was her first day in"
+- "? Lucy would rather like to go"
+- "out, as it was her first day in"
 - "Florence, but,"
 - "of course, she could go alone."
 - Miss Bartlett could not allow
@@ -1019,9 +1014,8 @@ expression: chunks
 - Every one takes them for English
 - ", you see, especially if their"
 - hair is strained tightly behind.
-- ”
-- Miss Bartlett was unconvinced by
-- the safety of Contessa
+- "”\n\nMiss Bartlett was unconvinced"
+- by the safety of Contessa
 - Baroncelli’s daughters.
 - She was determined to take Lucy
 - "herself, her head not being so"
@@ -1091,8 +1085,7 @@ expression: chunks
 - Buon giorno!”
 - bowing right and left.
 - “Look at that adorable wine-cart
-- "!"
-- "How the driver stares at us,"
+- "! How the driver stares at us,"
 - "dear, simple soul!”"
 - So Miss Lavish proceeded through
 - the streets of the city of
@@ -1470,8 +1463,7 @@ expression: chunks
 - “But what are you doing here?
 - Are you doing the church?
 - Are you through with the church?
-- ”
-- "“No,” cried Lucy, remembering"
+- "”\n\n“No,” cried Lucy, remembering"
 - her grievance.
 - "“I came here with Miss Lavish,"
 - who was to explain everything;
@@ -1489,9 +1481,8 @@ expression: chunks
 - away Baedeker.”
 - “Baedeker?” said Mr. Emerson.
 - “I’m glad it’s _that_ you minded
-- "."
-- "It’s worth minding, the loss of"
-- a Baedeker.
+- ". It’s worth minding, the loss"
+- of a Baedeker.
 - _That’s_ worth minding.”
 - Lucy was puzzled.
 - She was again conscious of some
@@ -1613,9 +1604,8 @@ expression: chunks
 - cherubs; and if I got there I
 - should like my friends to lean
 - "out of it, just as they do here."
-- ”
-- "“You will never go up,” said his"
-- father.
+- "”\n\n“You will never go up,” said"
+- his father.
 - "“You and I, dear boy, will lie"
 - at peace in the earth that bore
 - "us, and our names will disappear"
@@ -1626,12 +1616,10 @@ expression: chunks
 - "It did happen like that, if it"
 - happened at all.”
 - "“Pardon me,” said a frigid voice"
-- "."
-- “The chapel is somewhat small
+- ". “The chapel is somewhat small"
 - for two parties.
 - We will incommode you no longer.
-- ”
-- "The lecturer was a clergyman,"
+- "”\n\nThe lecturer was a clergyman,"
 - and his audience must be also
 - "his flock,"
 - for they held prayer-books as
@@ -1653,10 +1641,10 @@ expression: chunks
 - the life of St. Francis.
 - "“George, I do believe that"
 - clergyman is the Brixton curate.
-- ”
-- George went into the next chapel
-- "and returned, saying “Perhaps he"
-- is. I don’t remember.”
+- "”\n\nGeorge went into the next"
+- "chapel and returned, saying “"
+- Perhaps he is.
+- I don’t remember.”
 - “Then I had better speak to him
 - and remind him who I am.
 - It’s that Mr.
@@ -1714,9 +1702,8 @@ expression: chunks
 - acorns.
 - "Healthy and muscular, he yet"
 - gave her the feeling of greyness
-- ","
-- of tragedy that might only find
-- solution in the night.
+- ",\nof tragedy that might only"
+- find solution in the night.
 - The feeling soon passed; it was
 - unlike her to have entertained
 - anything so subtle.
@@ -1741,16 +1728,14 @@ expression: chunks
 - "“Don’t let us spoil yours,” he"
 - continued to Lucy.
 - “Have you looked at those saints
-- "?”"
-- "“Yes,” said Lucy."
-- “They are lovely.
+- "?”\n\n“Yes,” said Lucy. “They are"
+- lovely.
 - Do you know which is the
 - tombstone that is praised in
 - Ruskin?”
 - "He did not know, and suggested"
 - that they should try to guess it
-- "."
-- "George, rather to her relief,"
+- ".\nGeorge, rather to her relief,"
 - "refused to move, and she and the"
 - old man wandered not
 - "unpleasantly about Santa Croce,"
@@ -1765,8 +1750,7 @@ expression: chunks
 - Mass through the groups of
 - tourists. But Mr.
 - Emerson was only half interested
-- "."
-- "He watched the lecturer, whose"
+- ". He watched the lecturer, whose"
 - success he believed he had
 - "impaired, and then he anxiously"
 - watched his son.
@@ -1822,8 +1806,7 @@ expression: chunks
 - I don’t require you to fall in
 - "love with my boy, but I do think"
 - you might try and understand him
-- "."
-- "You are nearer his age, and if"
+- ". You are nearer his age, and if"
 - you let yourself go I am sure
 - you are sensible.
 - You might help me.
@@ -1843,8 +1826,7 @@ expression: chunks
 - By understanding George you may
 - learn to understand yourself.
 - It will be good for both of you.
-- ”
-- To this extraordinary speech
+- "”\n\nTo this extraordinary speech"
 - Lucy found no answer.
 - “I only know what it is that’s
 - wrong with him; not why it is.”
@@ -1965,12 +1947,11 @@ expression: chunks
 - She was then no longer either
 - deferential or patronizing; no
 - longer either a rebel or a slave
-- "."
-- The kingdom of music is not the
-- kingdom of this world; it will
-- accept those whom breeding and
-- intellect and culture have alike
-- rejected.
+- ".\nThe kingdom of music is not"
+- the kingdom of this world; it
+- will accept those whom breeding
+- and intellect and culture have
+- alike rejected.
 - The commonplace person begins to
 - "play, and shoots into the"
 - "empyrean without effort, whilst"
@@ -1999,11 +1980,10 @@ expression: chunks
 - slipped between love and hatred
 - "and jealousy, and all the"
 - furniture of the pictorial style
-- "."
-- And she was tragical only in the
-- "sense that she was great, for"
-- she loved to play on the side of
-- Victory.
+- ". And she was tragical only in"
+- "the sense that she was great,"
+- for she loved to play on the
+- side of Victory.
 - Victory of what and over what—
 - that is more than the words of
 - daily life can tell us.
@@ -2199,8 +2179,7 @@ expression: chunks
 - “They do say so.”
 - “What is it about?”
 - "“It will be a novel,” replied Mr"
-- "."
-- "Beebe, “dealing with modern"
+- ". Beebe, “dealing with modern"
 - Italy.
 - Let me refer you for an account
 - "to Miss Catharine Alan, who uses"
@@ -2216,9 +2195,8 @@ expression: chunks
 - "finding me practically alone,"
 - and so I couldn’t help being a
 - little annoyed with Miss Lavish.
-- ”
-- "“The two ladies, at all events,"
-- have made it up.”
+- "”\n\n“The two ladies, at all"
+- "events, have made it up.”"
 - He was interested in the sudden
 - friendship between women so
 - apparently dissimilar as Miss
@@ -2240,9 +2218,8 @@ expression: chunks
 - "his specialty, and his"
 - profession had provided him with
 - ample opportunities for the work
-- "."
-- Girls like Lucy were charming to
-- "look at,"
+- ". Girls like Lucy were charming"
+- "to look at,"
 - but Mr.
 - "Beebe was, from rather profound"
 - "reasons, somewhat chilly in his"
@@ -2318,8 +2295,7 @@ expression: chunks
 - "day: ‘Ho, Mr."
 - "Beebe, if you knew what I suffer"
 - over the children’s edjucaishion
-- "."
-- _Hi_ won’t ’ave my little
+- ". _Hi_ won’t ’ave my little"
 - Victorier taught by a hignorant
 - Italian what can’t explain
 - nothink!’”
@@ -2353,8 +2329,7 @@ expression: chunks
 - "“Indeed, though it is dreadful"
 - "for her to smoke, it is not"
 - quite as dreadful as you suppose
-- "."
-- "She took to it, practically in"
+- ". She took to it, practically in"
 - "despair, after her life’s work"
 - was carried away in a landslip.
 - Surely that makes it more
@@ -2369,8 +2344,7 @@ expression: chunks
 - It is so sad when people who
 - "have abilities misuse them, and"
 - I must say they nearly always do
-- "."
-- "Anyhow, she left it almost"
+- ". Anyhow, she left it almost"
 - finished in the Grotto of the
 - Calvary at the Capuccini Hotel
 - at Amalfi while she went for a
@@ -2446,8 +2420,7 @@ expression: chunks
 - He warned Miss Pole of her
 - "stomach-acidity, he called it—"
 - and he may have meant to be kind
-- "."
-- I must say I forgot myself and
+- ". I must say I forgot myself and"
 - laughed;
 - it was so sudden.
 - "As Teresa truly said, it was no"
@@ -2516,9 +2489,9 @@ expression: chunks
 - "except one who was in the army,"
 - who always made a point of
 - talking to commercial travellers
-- ".”"
-- "“Let me finish the story,” said"
-- "Mr. Beebe, who had returned."
+- ".”\n\n“Let me finish the story,”"
+- said Mr.
+- "Beebe, who had returned."
 - "“Miss Lavish tried Miss Pole,"
 - "myself, everyone, and finally"
 - "said: ‘I shall go alone.’"
@@ -2551,10 +2524,9 @@ expression: chunks
 - Mr.
 - "Beebe, whom the conversation"
 - "amused, stirred her up by saying"
-- ":"
-- “I consider that you are bound
-- "to class him as nice, Miss Alan,"
-- after that business of the
+- ":\n\n“I consider that you are"
+- "bound to class him as nice, Miss"
+- "Alan, after that business of the"
 - violets.”
 - "“Violets? Oh, dear!"
 - Who told you about the violets?
@@ -2650,9 +2622,8 @@ expression: chunks
 - "the earth, and then the dripping"
 - façade of San Miniato shone
 - brilliantly in the declining sun
-- "."
-- "“Too late to go out,” said Miss"
-- Alan in a voice of relief.
+- ".\n\n“Too late to go out,” said"
+- Miss Alan in a voice of relief.
 - “All the galleries are shut.”
 - "“I think I shall go out,” said"
 - Lucy.
@@ -2668,13 +2639,11 @@ expression: chunks
 - Unluckily I have letters.
 - "If you do want to go out alone,"
 - won’t you be better on your feet
-- "?”"
-- "“Italians, dear, you know,” said"
-- Miss Alan.
+- "?”\n\n“Italians, dear, you know,”"
+- said Miss Alan.
 - “Perhaps I shall meet someone
 - who reads me through and through
-- "!”"
-- But they still looked
+- "!”\n\nBut they still looked"
 - "disapproval, and she so far"
 - conceded to Mr.
 - Beebe as to say that she would
@@ -2763,8 +2732,7 @@ expression: chunks
 - lift her eyes when feeling
 - serious.
 - Nor has she any system of revolt
-- "."
-- Here and there a restriction
+- ". Here and there a restriction"
 - "annoyed her particularly, and"
 - "she would transgress it, and"
 - perhaps be sorry that she had
@@ -2909,12 +2877,11 @@ expression: chunks
 - “How are you now?”
 - “Perfectly well—absolutely well.
 - ” And she began to nod and smile
-- "."
-- “Then let us come home.
+- ".\n\n“Then let us come home."
 - There’s no point in our stopping
-- ".”"
-- He held out his hand to pull her
-- up. She pretended not to see it.
+- ".”\n\nHe held out his hand to pull"
+- her up.
+- She pretended not to see it.
 - The cries from the fountain—they
 - had never ceased—rang emptily.
 - The whole world seemed pale and
@@ -2958,8 +2925,7 @@ expression: chunks
 - "She was bewildered, and obeyed"
 - him.
 - “And don’t move till I come back
-- ".”"
-- In the distance she saw
+- ".”\n\nIn the distance she saw"
 - "creatures with black hoods, such"
 - as appear in dreams.
 - The palace tower had lost the
@@ -3050,10 +3016,9 @@ expression: chunks
 - “I want to ask you something
 - before we go in.”
 - They were close to their pension
-- "."
-- She stopped and leant her elbows
-- against the parapet of the
-- embankment. He did likewise.
+- ". She stopped and leant her"
+- elbows against the parapet of
+- the embankment. He did likewise.
 - There is at times a magic in
 - identity of position; it is one
 - of the things that have
@@ -3385,10 +3350,9 @@ expression: chunks
 - her on trial for an _ingenué_.
 - "“She is emancipated, but only in"
 - "the very best sense of the word,"
-- ”
-- continued Miss Bartlett slowly.
-- “None but the superficial would
-- be shocked at her.
+- "”\ncontinued Miss Bartlett slowly"
+- ". “None but the superficial"
+- would be shocked at her.
 - We had a long talk yesterday.
 - She believes in justice and
 - truth and human interest.
@@ -3420,8 +3384,7 @@ expression: chunks
 - There is a point on that road
 - where we could get down and have
 - an hour’s ramble on the hillside
-- "."
-- The view thence of Florence is
+- ". The view thence of Florence is"
 - most beautiful—far better than
 - the hackneyed view of Fiesole.
 - It is the view that Alessio
@@ -3431,9 +3394,8 @@ expression: chunks
 - for landscape. Decidedly.
 - But who looks at it to-day?
 - "Ah, the world is too much for us"
-- ".”"
-- Miss Bartlett had not heard of
-- "Alessio Baldovinetti, but she"
+- ".”\n\nMiss Bartlett had not heard"
+- "of Alessio Baldovinetti, but she"
 - knew that Mr.
 - Eager was no commonplace
 - chaplain.
@@ -3570,15 +3532,13 @@ expression: chunks
 - youth.
 - He had suddenly extended his
 - book before Miss Bartlett and Mr
-- "."
-- "Eager, binding their hands"
+- ". Eager, binding their hands"
 - together by a long glossy ribbon
 - "of churches, pictures, and views"
-- "."
-- “This is too much!”
-- "cried the chaplain, striking"
-- petulantly at one of Fra
-- Angelico’s angels. She tore.
+- ".\n\n“This is too much!” cried the"
+- "chaplain, striking petulantly at"
+- one of Fra Angelico’s angels.
+- She tore.
 - A shrill cry rose from the
 - vendor.
 - "The book it seemed, was more"
@@ -3603,8 +3563,7 @@ expression: chunks
 - family—the tax on bread.
 - "He waited, he gibbered, he was"
 - "recompensed, he was dissatisfied"
-- ","
-- he did not leave them until he
+- ",\nhe did not leave them until he"
 - had swept their minds clean of
 - all thoughts whether pleasant or
 - unpleasant.
@@ -3774,8 +3733,7 @@ expression: chunks
 - For that man has murdered his
 - wife in the sight of God.”
 - The addition of God was striking
-- "."
-- But the chaplain was really
+- ". But the chaplain was really"
 - trying to qualify a rash remark.
 - A silence followed which might
 - "have been impressive, but was"
@@ -3806,11 +3764,10 @@ expression: chunks
 - absurd manner?
 - We might as well invite him.
 - We are each paying for ourselves
-- ".”"
-- "Miss Bartlett, who had intended"
-- "to lament over the Emersons, was"
-- launched by this remark into
-- unexpected thoughts.
+- ".”\n\nMiss Bartlett, who had"
+- intended to lament over the
+- "Emersons, was launched by this"
+- remark into unexpected thoughts.
 - "“If that is so, dear—if the"
 - drive we and Mr.
 - Beebe are going with Mr.
@@ -3822,9 +3779,8 @@ expression: chunks
 - Beebe has asked Eleanor Lavish
 - "to come, too.”"
 - “That will mean another carriage
-- ".”"
-- “Far worse. Mr.
-- Eager does not like Eleanor.
+- ".”\n\n“Far worse. Mr. Eager does"
+- not like Eleanor.
 - She knows it herself.
 - The truth must be told; she is
 - too unconventional for him.”
@@ -4067,9 +4023,8 @@ expression: chunks
 - was now impossible.
 - Lucy and Miss Bartlett had a
 - "certain style about them, and Mr"
-- "."
-- "Beebe, though unreliable, was a"
-- man of parts.
+- ". Beebe, though unreliable, was"
+- a man of parts.
 - But a shoddy lady writer and a
 - journalist who had murdered his
 - wife in the sight of God—they
@@ -4202,9 +4157,8 @@ expression: chunks
 - garden was the scene of The
 - "Decameron, which lends it an"
 - "additional interest, does it not"
-- "?”"
-- “It does indeed!”
-- cried Miss Lavish.
+- "?”\n\n“It does indeed!” cried Miss"
+- Lavish.
 - "“Tell me, where do they place"
 - the scene of that wonderful
 - seventh day?”
@@ -4220,10 +4174,9 @@ expression: chunks
 - monographs in the series of ‘
 - Mediæval Byways’?
 - He is working at Gemistus Pletho
-- "."
-- Sometimes as I take tea in their
-- "beautiful grounds I hear, over"
-- "the wall, the electric tram"
+- ". Sometimes as I take tea in"
+- "their beautiful grounds I hear,"
+- "over the wall, the electric tram"
 - squealing up the new road with
 - "its loads of hot, dusty,"
 - unintelligent tourists who are
@@ -4283,8 +4236,7 @@ expression: chunks
 - "disentangle themselves, the boy"
 - "was to lose his _pourboire_, the"
 - girl was immediately to get down
-- "."
-- "“She is my sister,” said he,"
+- ".\n\n“She is my sister,” said he,"
 - turning round on them with
 - piteous eyes.
 - Mr.
@@ -4331,8 +4283,7 @@ expression: chunks
 - “Do we find happiness so often
 - that we should turn it off the
 - box when it happens to sit there
-- "?"
-- To be driven by lovers—A king
+- "? To be driven by lovers—A king"
 - "might envy us, and if we part"
 - them it’s more like sacrilege
 - than anything I know.”
@@ -4381,9 +4332,8 @@ expression: chunks
 - were happy.”
 - Mr. Eager shut his eyes.
 - He was obliged to sit next to Mr
-- "."
-- "Emerson, but he would not speak"
-- to him.
+- ". Emerson, but he would not"
+- speak to him.
 - The old man was refreshed by
 - "sleep, and took up the matter"
 - warmly.
@@ -4395,12 +4345,10 @@ expression: chunks
 - "He has bargained to drive us,"
 - and he is doing it.
 - We have no rights over his soul.
-- ”
-- Miss Lavish frowned.
-- It is hard when a person you
-- have classed as typically
-- British speaks out of his
-- character.
+- "”\n\nMiss Lavish frowned. It is"
+- hard when a person you have
+- classed as typically British
+- speaks out of his character.
 - "“He was not driving us well,”"
 - she said. “He jolted us.”
 - “That I deny.
@@ -4452,9 +4400,8 @@ expression: chunks
 - one and condemning the other as
 - "improper, ashamed that the same"
 - laws work eternally through both
-- ".”"
-- No one encouraged him to talk.
-- Presently Mr.
+- ".”\n\nNo one encouraged him to"
+- talk. Presently Mr.
 - Eager gave a signal for the
 - carriages to stop and marshalled
 - the party for their ramble on
@@ -4613,8 +4560,7 @@ expression: chunks
 - your white linen.”
 - She sat down heavily where the
 - ground looked particularly moist
-- "."
-- "“Here we are, all settled"
+- ". “Here we are, all settled"
 - delightfully.
 - Even if my dress is thinner it
 - "will not show so much, being"
@@ -5030,9 +4976,8 @@ expression: chunks
 - Only you can understand me.
 - You warned me to be careful.
 - And I—I thought I was developing
-- ".”"
-- "“Do not cry, dearest."
-- Take your time.”
+- ".”\n\n“Do not cry, dearest. Take"
+- your time.”
 - “I have been obstinate and silly
 - "—worse than you know, far worse."
 - "Once by the river—Oh, but he"
@@ -5176,9 +5121,8 @@ expression: chunks
 - “It has been raining for nearly
 - "four hours,” she said at last."
 - Miss Bartlett ignored the remark
-- "."
-- “How do you propose to silence
-- "him?”\n\n“The driver?”"
+- ".\n\n“How do you propose to"
+- "silence him?”\n\n“The driver?”"
 - "“My dear girl, no; Mr."
 - George Emerson.”
 - Lucy began to pace up and down
@@ -5235,9 +5179,8 @@ expression: chunks
 - genuine alarm.
 - "“You see, Charlotte, your"
 - kindness—I shall never forget it
-- "."
-- But—as you said—it is my affair.
-- Mine and his.”
+- ". But—as you said—it is my"
+- affair. Mine and his.”
 - “And you are going to _implore_
 - "him, to _beg_ him to keep"
 - silence?”
@@ -5247,8 +5190,8 @@ expression: chunks
 - yes or no; then it is over.
 - I have been frightened of him.
 - But now I am not one little bit.
-- ”
-- "“But we fear him for you, dear."
+- "”\n\n“But we fear him for you,"
+- dear.
 - You are so young and
 - "inexperienced, you have lived"
 - "among such nice people, that you"
@@ -5268,9 +5211,8 @@ expression: chunks
 - “What would have happened if I
 - hadn’t arrived?”
 - "“I can’t think,” said Lucy again"
-- "."
-- "“When he insulted you, how would"
-- you have replied?”
+- ".\n\n“When he insulted you, how"
+- would you have replied?”
 - “I hadn’t time to think.
 - You came.”
 - "“Yes, but won’t you tell me now"
@@ -5286,9 +5228,8 @@ expression: chunks
 - "“Come away from the window, dear"
 - ",” said Miss Bartlett."
 - “You will be seen from the road.
-- ”
-- Lucy obeyed.
-- She was in her cousin’s power.
+- "”\n\nLucy obeyed. She was in her"
+- cousin’s power.
 - She could not modulate out the
 - key of self-abasement in which
 - she had started.
@@ -5404,9 +5345,8 @@ expression: chunks
 - "“Charlotte dear, what do you"
 - mean?
 - As if I have anything to forgive
-- "!”"
-- "“You have a great deal, and I"
-- have a very great deal to
+- "!”\n\n“You have a great deal, and"
+- I have a very great deal to
 - "forgive myself,"
 - too.
 - I know well how much I vex you
@@ -5449,9 +5389,8 @@ expression: chunks
 - instead of strapping her own.
 - “Failed to make you happy;
 - failed in my duty to your mother
-- "."
-- She has been so generous to me;
-- I shall never face her again
+- ". She has been so generous to me"
+- ; I shall never face her again
 - after this disaster.”
 - “But mother will understand.
 - "It is not your fault, this"
@@ -5582,10 +5521,8 @@ expression: chunks
 - I want not to be muddled.
 - I want to grow older quickly.”
 - Miss Bartlett tapped on the wall
-- "."
-- "“Go to bed at once, dear."
-- You need all the rest you can
-- get.”
+- ".\n\n“Go to bed at once, dear. You"
+- need all the rest you can get.”
 - In the morning they left for
 - "Rome.\n\n\n\n\nPART TWO"
 - Chapter VIII Medieval
@@ -5759,9 +5696,8 @@ expression: chunks
 - I can’t help it—had to say it.
 - I had to say no.
 - He ought never to have asked me.
-- ”
-- “Ridiculous child!”
-- cried his mother.
+- "”\n\n“Ridiculous child!” cried his"
+- mother.
 - “You think you’re so holy and
 - "truthful, but really it’s only"
 - abominable conceit.
@@ -6077,9 +6013,8 @@ expression: chunks
 - "da Vinci’s, whom we love not so"
 - much for herself as for the
 - things that she will not tell us
-- "."
-- The things are assuredly not of
-- this life; no woman of
+- ".\nThe things are assuredly not"
+- of this life; no woman of
 - Leonardo’s could have anything
 - so vulgar as a “story.”
 - She did develop most wonderfully
@@ -6139,9 +6074,8 @@ expression: chunks
 - "more, and after a little"
 - "hesitation sat down elsewhere,"
 - and pencilled a note on his knee
-- "."
-- "Then he lit another cigarette,"
-- which did not seem quite as
+- ".\n\nThen he lit another cigarette"
+- ", which did not seem quite as"
 - "divine as the first, and"
 - considered what might be done to
 - make Windy Corner drawing-room
@@ -6311,11 +6245,11 @@ expression: chunks
 - inquiring effusively after Mr.
 - "Beebe’s mother, an old lady for"
 - whom he had no particular regard
-- "."
-- "Then he flattered the clergyman,"
-- "praised his liberal-mindedness,"
-- his enlightened attitude towards
-- philosophy and science.
+- ". Then he flattered the"
+- "clergyman, praised his liberal-"
+- "mindedness, his enlightened"
+- attitude towards philosophy and
+- science.
 - “Where are the others?” said Mr.
 - "Beebe at last, “I insist on"
 - extracting tea before evening
@@ -6339,9 +6273,8 @@ expression: chunks
 - “The fault of Euphemia is that
 - "she will not, simply will not,"
 - chop the suet sufficiently small
-- ".”"
-- "They both laughed, and things"
-- began to go better.
+- ".”\n\nThey both laughed, and"
+- things began to go better.
 - “The faults of Freddy—” Cecil
 - continued.
 - "“Ah, he has too many."
@@ -6423,9 +6356,8 @@ expression: chunks
 - "all the conceited, ludicrous,"
 - contemptible ways of announcing
 - an engagement this was the worst
-- "."
-- He cursed his love of metaphor;
-- had he suggested that he was a
+- ". He cursed his love of metaphor"
+- ; had he suggested that he was a
 - star and that Lucy was soaring
 - up to reach him?
 - “Broken? What do you mean?”
@@ -6467,8 +6399,7 @@ expression: chunks
 - not meet with your approval.”
 - “Not that.
 - But you ought to have stopped me
-- "."
-- I know Miss Honeychurch only a
+- ". I know Miss Honeychurch only a"
 - little as time goes.
 - Perhaps I oughtn’t to have
 - discussed her so freely with any
@@ -6592,11 +6523,10 @@ expression: chunks
 - fiance. Mrs.
 - "Honeychurch, amusing and portly,"
 - promised well as a mother-in-law
-- "."
-- "As for Lucy and Cecil, for whom"
-- "the temple had been built, they"
-- "also joined in the merry ritual,"
-- "but waited, as earnest"
+- ". As for Lucy and Cecil, for"
+- "whom the temple had been built,"
+- they also joined in the merry
+- "ritual, but waited, as earnest"
 - "worshippers should, for the"
 - disclosure of some holier shrine
 - of joy.
@@ -6631,9 +6561,8 @@ expression: chunks
 - sympathetic maid.
 - "They were gone some time, and"
 - Cecil was left with the dowagers
-- "."
-- When they returned he was not as
-- pleasant as he had been.
+- ". When they returned he was not"
+- as pleasant as he had been.
 - “Do you go to much of this sort
 - of thing?”
 - he asked when they were driving
@@ -6695,8 +6624,7 @@ expression: chunks
 - not in public.
 - The neighbourhood is deprived of
 - the romance of me being athletic
-- "."
-- Such romance as I have is that
+- ". Such romance as I have is that"
 - of the Inglese Italianato.”
 - “Inglese Italianato?”
 - “E un diavolo incarnato!
@@ -6733,9 +6661,8 @@ expression: chunks
 - “I don’t see any difference.
 - "Fences are fences, especially"
 - when they are in the same place.
-- ”
-- "“We were speaking of motives,”"
-- "said Cecil, on whom the"
+- "”\n\n“We were speaking of motives,"
+- "” said Cecil, on whom the"
 - interruption jarred.
 - "“My dear Cecil, look here.”"
 - She spread out her knees and
@@ -6844,16 +6771,14 @@ expression: chunks
 - not here lay her vocation; that
 - a woman’s power and charm reside
 - "in mystery, not in muscular rant"
-- "."
-- But possibly rant is a sign of
+- ". But possibly rant is a sign of"
 - "vitality: it mars the beautiful"
 - "creature, but shows that she is"
 - alive.
 - "After a moment, he contemplated"
 - her flushed face and excited
 - gestures with a certain approval
-- "."
-- He forebore to repress the
+- ". He forebore to repress the"
 - sources of youth.
 - "Nature—simplest of topics, he"
 - thought—lay around them.
@@ -7003,9 +6928,8 @@ expression: chunks
 - the contract was signed.
 - "Does she still live rent free,"
 - as she did in her nephew’s time?
-- ”
-- “But what can I do?”
-- He lowered his voice.
+- "”\n\n“But what can I do?” He"
+- lowered his voice.
 - "“An old lady, so very vulgar,"
 - and almost bedridden.”
 - "“Turn her out,” said Cecil"
@@ -7041,11 +6965,9 @@ expression: chunks
 - "Sir Harry hinted that a column,"
 - "if possible, should be"
 - structural as well as decorative
-- "."
-- Mr.
-- Flack replied that all the
-- "columns had been ordered, adding"
-- ", “and all the capitals"
+- ".\n\nMr. Flack replied that all"
+- "the columns had been ordered,"
+- "adding, “and all the capitals"
 - different—one with dragons in
 - "the foliage, another approaching"
 - "to the Ionian style, another"
@@ -7091,10 +7013,8 @@ expression: chunks
 - “Exactly!”
 - said Sir Harry excitedly.
 - "“That is exactly what I fear, Mr"
-- "."
-- Vyse.
-- It will attract the wrong type
-- of people.
+- ".\nVyse. It will attract the"
+- wrong type of people.
 - The train service has improved—a
 - "fatal improvement, to my mind."
 - And what are five miles from a
@@ -7127,9 +7047,8 @@ expression: chunks
 - They are quite the right people.
 - "Mr. Beebe knows them, too."
 - May I tell them to write to you?
-- ”
-- “Indeed you may!” he cried.
-- “Here we are with the difficulty
+- "”\n\n“Indeed you may!” he cried. “"
+- Here we are with the difficulty
 - solved already.
 - How delightful it is!
 - Extra facilities—please tell
@@ -7227,8 +7146,7 @@ expression: chunks
 - ". She was delighted."
 - Nature had intended her to be
 - poor and to live in such a house
-- "."
-- Domestic arrangements always
+- ". Domestic arrangements always"
 - "attracted her, especially when"
 - they were on a small scale.
 - Cecil pulled Lucy back as she
@@ -7316,12 +7234,11 @@ expression: chunks
 - "highroad.\n\n“Are there two ways?”"
 - “Perhaps the road is more
 - "sensible, as we’re got up smart."
-- ”
-- "“I’d rather go through the wood,"
-- "” said Cecil, With that subdued"
-- irritation that she had noticed
-- in him all the afternoon.
-- "“Why is it,"
+- "”\n\n“I’d rather go through the"
+- "wood,” said Cecil, With that"
+- subdued irritation that she had
+- noticed in him all the afternoon
+- ". “Why is it,"
 - "Lucy, that you always say the"
 - road?
 - Do you know that you have never
@@ -7351,8 +7268,7 @@ expression: chunks
 - Never in the real country like
 - this.”
 - "“Oh, Cecil, whatever do you mean"
-- "?"
-- I have never felt anything of
+- "? I have never felt anything of"
 - the sort.
 - You talk as if I was a kind of
 - poetess sort of person.”
@@ -7407,11 +7323,10 @@ expression: chunks
 - book.
 - "It’s only a puddle now, but you"
 - see that stream going through it
-- "?"
-- "Well, a good deal of water comes"
-- "down after heavy rains, and"
-- "can’t get away at once, and the"
-- pool becomes quite large and
+- "? Well, a good deal of water"
+- "comes down after heavy rains,"
+- "and can’t get away at once, and"
+- the pool becomes quite large and
 - beautiful.
 - Then Freddy used to bathe there.
 - He is very fond of it.”
@@ -7532,14 +7447,12 @@ expression: chunks
 - "solicitor, had built Windy"
 - "Corner, as a speculation at the"
 - time the district was opening up
-- ","
-- "and, falling in love with his"
+- ",\nand, falling in love with his"
 - "own creation, had ended by"
 - living there himself.
 - Soon after his marriage the
 - social atmosphere began to alter
-- "."
-- Other houses were built on the
+- ".\nOther houses were built on the"
 - brow of that steep southern
 - "slope and others, again, among"
 - "the pine-trees behind, and"
@@ -7932,10 +7845,10 @@ expression: chunks
 - It is all very difficult.
 - "Yes, I always connect those"
 - Florentine Emersons with violets
-- ".”"
-- "“Fiasco’s done you this time,”"
-- "remarked Freddy, not seeing that"
-- his sister’s face was very red.
+- ".”\n\n“Fiasco’s done you this time"
+- ",” remarked Freddy, not seeing"
+- that his sister’s face was very
+- red.
 - She could not recover herself.
 - Mr.
 - "Beebe saw it, and continued to"
@@ -7985,9 +7898,8 @@ expression: chunks
 - She clasped her knees for the
 - name. Something in Thackeray.
 - She struck her matronly forehead
-- "."
-- Lucy asked her brother whether
-- Cecil was in.
+- ".\n\nLucy asked her brother"
+- whether Cecil was in.
 - "“Oh, don’t go!”"
 - "he cried, and tried to catch her"
 - by the ankles.
@@ -8047,8 +7959,8 @@ expression: chunks
 - "little tiresome, and I’d rather"
 - have nice friends of yours.
 - But you oughtn’t to tease one so
-- ".”"
-- “Friends of mine?” he laughed.
+- ".”\n\n“Friends of mine?” he"
+- laughed.
 - "“But, Lucy, the whole joke is to"
 - come!
 - Come here.”
@@ -8123,8 +8035,7 @@ expression: chunks
 - "you.”\n\nShe left him."
 - “Temper!”
 - "he thought, raising his eyebrows"
-- "."
-- "No, it was worse than temper—"
+- ".\n\nNo, it was worse than temper—"
 - snobbishness.
 - As long as Lucy thought that his
 - own smart friends were
@@ -8135,8 +8046,7 @@ expression: chunks
 - educationally.
 - He would tolerate the father and
 - "draw out the son, who was silent"
-- "."
-- In the interests of the Comic
+- ". In the interests of the Comic"
 - "Muse and of Truth, he would"
 - bring them to Windy Corner.
 - Chapter XI In Mrs.
@@ -8161,8 +8071,7 @@ expression: chunks
 - responsible for the failure. Mr.
 - Beebe planned pleasant moments
 - "for the new-comers, and told Mrs"
-- "."
-- Honeychurch that Freddy must
+- ". Honeychurch that Freddy must"
 - call on them as soon as they
 - arrived.
 - "Indeed, so ample was the Muse’s"
@@ -8194,16 +8103,14 @@ expression: chunks
 - rather more dreadful than it
 - should have done.
 - She was glad that a visit to Mrs
-- "."
-- Vyse now fell due; the tenants
+- ". Vyse now fell due; the tenants"
 - moved into Cissie Villa while
 - she was safe in the London flat.
 - "“Cecil—Cecil darling,” she"
 - whispered the evening she
 - "arrived, and crept into his arms"
-- "."
-- "Cecil, too, became demonstrative"
-- "."
+- ".\n\nCecil, too, became"
+- demonstrative.
 - He saw that the needful fire had
 - been kindled in Lucy.
 - At last she longed for attention
@@ -8268,8 +8175,7 @@ expression: chunks
 - taken the house.
 - He _said_ he did not know that
 - you lived in the neighbourhood (
-- "?)."
-- He never suggested giving
+- "?). He never suggested giving"
 - Eleanor a cup of tea.
 - "Dear Lucy, I am much worried,"
 - and I advise you to make a clean
@@ -8302,8 +8208,7 @@ expression: chunks
 - being always with me.
 - "I have kept that promise,"
 - and cannot possibly tell her now
-- "."
-- I have said both to her and
+- ". I have said both to her and"
 - Cecil that I met the Emersons at
 - "Florence, and that they are"
 - respectable people—which I _do_
@@ -8335,8 +8240,7 @@ expression: chunks
 - “Miss Lavish cannot have told
 - "you much about me, for I am not"
 - "at Windy Corner at all, but here"
-- "."
-- Please do not put ‘Private’
+- ". Please do not put ‘Private’"
 - outside your envelope again.
 - No one opens my letters.
 - "“Yours affectionately,"
@@ -8431,10 +8335,9 @@ expression: chunks
 - Mrs.
 - "Vyse was a nice woman, but her"
 - "personality, like many another’s"
-- ","
-- "had been swamped by London, for"
-- it needs a strong head to live
-- among many people.
+- ",\nhad been swamped by London,"
+- for it needs a strong head to
+- live among many people.
 - The too vast orb of her fate had
 - crushed her; and she had seen
 - "too many seasons, too many"
@@ -8451,9 +8354,8 @@ expression: chunks
 - “Lucy is becoming wonderful—
 - wonderful.”
 - “Her music always was wonderful.
-- ”
-- "“Yes, but she is purging off the"
-- "Honeychurch taint, most"
+- "”\n\n“Yes, but she is purging off"
+- "the Honeychurch taint, most"
 - "excellent Honeychurches, but you"
 - know what I mean.
 - She is not always quoting
@@ -8675,8 +8577,7 @@ expression: chunks
 - “We are to raise ladies to our
 - level?” the clergyman inquired.
 - "“The Garden of Eden,” pursued Mr"
-- "."
-- "Emerson, still descending, “"
+- ". Emerson, still descending, “"
 - "which you place in the past, is"
 - really yet to come.
 - We shall enter it when we no
@@ -8698,8 +8599,7 @@ expression: chunks
 - Nature once.
 - But how can we return to Nature
 - when we have never been with her
-- "?"
-- "To-day, I believe that we must"
+- "? To-day, I believe that we must"
 - discover Nature.
 - After many conquests we shall
 - attain simplicity.
@@ -8851,8 +8751,7 @@ expression: chunks
 - friends.
 - This narrows the field
 - immeasurably we meet again in it
-- ".”"
-- "“It is Fate that I am here,”"
+- ".”\n\n“It is Fate that I am here,”"
 - persisted George.
 - “But you can call it Italy if it
 - makes you less unhappy.”
@@ -8915,8 +8814,7 @@ expression: chunks
 - “Water’s wonderful!”
 - "cried Freddy, prancing in."
 - "“Water’s water,” murmured George"
-- "."
-- Wetting his hair first—a sure
+- ". Wetting his hair first—a sure"
 - sign of apathy—he followed
 - "Freddy into the divine, as"
 - indifferent as if he were a
@@ -8955,10 +8853,9 @@ expression: chunks
 - Mr.
 - "Beebe, who was hot, and who"
 - always acquiesced where possible
-- ","
-- looked around him.
-- He could detect no parishioners
-- "except the pine-trees, rising up"
+- ",\nlooked around him. He could"
+- detect no parishioners except
+- "the pine-trees, rising up"
 - "steeply on all sides, and"
 - gesturing to each other against
 - the blue. How glorious it was!
@@ -9053,9 +8950,8 @@ expression: chunks
 - every pine-tree was a Rural Dean
 - ". “Hi! Steady on!"
 - I see people coming you fellows!
-- ”
-- "Yells, and widening circles over"
-- the dappled earth.
+- "”\n\nYells, and widening circles"
+- over the dappled earth.
 - “Hi! hi! _Ladies!_”
 - Neither George nor Freddy was
 - truly refined.
@@ -9097,8 +8993,7 @@ expression: chunks
 - parasol and evidently “minded.”
 - “I fancy Mr.
 - Beebe jumped back into the pond.
-- ”
-- "“This way, please, Mrs."
+- "”\n\n“This way, please, Mrs."
 - "Honeychurch, this way.”"
 - They followed him up the bank
 - attempting the tense yet
@@ -9133,8 +9028,7 @@ expression: chunks
 - "did float; while George, the"
 - "world-weary George, shouted to"
 - Freddy that he had hooked a fish
-- "."
-- "“And me, I’ve swallowed one,”"
+- ".\n\n“And me, I’ve swallowed one,”"
 - answered he of the bracken.
 - “I’ve swallowed a pollywog.
 - It wriggleth in my tummy.
@@ -9150,10 +9044,8 @@ expression: chunks
 - "“Mother, do come away,” said"
 - Lucy.
 - "“Oh for goodness’ sake, do come."
-- ”
-- “Hullo!”
-- "cried George, so that again the"
-- ladies stopped.
+- "”\n\n“Hullo!” cried George, so"
+- that again the ladies stopped.
 - He regarded himself as dressed.
 - "Barefoot, bare-chested, radiant"
 - and personable against the
@@ -9213,8 +9105,7 @@ expression: chunks
 - too much.
 - "“I will bow,” she had thought."
 - “I will not shake hands with him
-- "."
-- That will be just the proper
+- ".\nThat will be just the proper"
 - thing.”
 - She had bowed—but to whom?
 - "To gods, to heroes, to the"
@@ -9340,9 +9231,8 @@ expression: chunks
 - room?
 - Why sit wriggling and sneering
 - and spoiling everyone’s pleasure
-- "?”"
-- "“We mustn’t be unjust to people,"
-- ” faltered Lucy.
+- "?”\n\n“We mustn’t be unjust to"
+- "people,” faltered Lucy."
 - "Something had enfeebled her, and"
 - "the case for Cecil, which she"
 - had mastered so perfectly in
@@ -9406,8 +9296,7 @@ expression: chunks
 - "upstairs, and joined the ranks"
 - of the ill-behaved.
 - "“I say, those are topping people"
-- ".”"
-- "“My dear baby, how tiresome"
+- ".”\n\n“My dear baby, how tiresome"
 - you’ve been!
 - You have no business to take
 - them bathing in the Sacred Lake;
@@ -9481,8 +9370,7 @@ expression: chunks
 - So the grittiness went out of
 - life.
 - It generally did at Windy Corner
-- "."
-- "At the last minute, when the"
+- ".\nAt the last minute, when the"
 - social machine was clogged
 - "hopelessly, one member or other"
 - of the family poured in a drop
@@ -9496,9 +9384,9 @@ expression: chunks
 - they drew up their heavy chairs
 - and fell to.
 - "Fortunately, the men were hungry"
-- "."
-- Nothing untoward occurred until
-- "the pudding. Then Freddy said:"
+- ".\nNothing untoward occurred"
+- until the pudding.
+- "Then Freddy said:"
 - "“Lucy, what’s Emerson like?”"
 - "“I saw him in Florence,” said"
 - "Lucy, hoping that this would"
@@ -9555,9 +9443,8 @@ expression: chunks
 - "down, and the ghosts began to"
 - gather in the darkness.
 - There were too many ghosts about
-- "."
-- The original ghost—that touch of
-- lips on her cheek—had surely
+- ". The original ghost—that touch"
+- of lips on her cheek—had surely
 - been laid long ago; it could be
 - nothing to her that a man had
 - kissed her on a mountain once.
@@ -9586,8 +9473,7 @@ expression: chunks
 - upon one’s mind.
 - I would rather anything else—
 - even a misfortune with the meat.
-- ”
-- Cecil laid his hand over his
+- "”\n\nCecil laid his hand over his"
 - eyes.
 - "“So would I,” asserted Freddy,"
 - backing his mother up—backing up
@@ -9630,8 +9516,7 @@ expression: chunks
 - again laying his hand over his
 - eyes.
 - "“It’s impossible,” repeated Lucy"
-- "."
-- “I don’t want to make
+- ". “I don’t want to make"
 - "difficulties,"
 - but it really isn’t fair on the
 - maids to fill up the house so.”
@@ -9674,12 +9559,10 @@ expression: chunks
 - "I felt like such a fool, and"
 - fussed round no end to get an
 - egg boiled for my tea just right
-- ".”"
-- "“I know, dear."
-- "She is kind to everyone, and yet"
-- Lucy makes this difficulty when
-- we try to give her some little
-- return.”
+- ".”\n\n“I know, dear. She is kind"
+- "to everyone, and yet Lucy makes"
+- this difficulty when we try to
+- give her some little return.”
 - But Lucy hardened her heart.
 - It was no good being kind to
 - Miss Bartlett.
@@ -9736,9 +9619,8 @@ expression: chunks
 - Chapter XIV How Lucy Faced the
 - External Situation Bravely
 - Of course Miss Bartlett accepted
-- "."
-- "And, equally of course, she felt"
-- sure that she would prove a
+- ". And, equally of course, she"
+- felt sure that she would prove a
 - "nuisance, and begged to be given"
 - an inferior spare room—something
 - "with no view, anything."
@@ -9800,10 +9682,9 @@ expression: chunks
 - Standing between Mr.
 - "Beebe and Cecil, she had made a"
 - few temperate allusions to Italy
-- ","
-- and George had replied.
-- She was anxious to show that she
-- "was not shy,"
+- ",\nand George had replied. She"
+- was anxious to show that she was
+- "not shy,"
 - and was glad that he did not
 - seem shy either.
 - "“A nice fellow,” said Mr."
@@ -10167,11 +10048,10 @@ expression: chunks
 - Either country was spanned by a
 - "cloudless sky, and in either"
 - arose the tinkle of church bells
-- "."
-- The garden of Windy Corners was
-- "deserted except for a red book,"
-- which lay sunning itself upon
-- the gravel path.
+- ".\n\nThe garden of Windy Corners"
+- was deserted except for a red
+- "book, which lay sunning itself"
+- upon the gravel path.
 - From the house came incoherent
 - "sounds, as of females preparing"
 - for worship.
@@ -10317,8 +10197,7 @@ expression: chunks
 - "and tatters now, when should I"
 - wear them?”
 - said Miss Bartlett reproachfully
-- "."
-- She got into the victoria and
+- ". She got into the victoria and"
 - placed herself with her back to
 - the horse.
 - "The necessary roar ensued,"
@@ -10366,9 +10245,8 @@ expression: chunks
 - Emerson claimed her with much
 - "warmth, and said how glad he was"
 - that she was going to be married
-- "."
-- "She said yes, she was glad too;"
-- "and then, as Miss Bartlett and"
+- ". She said yes, she was glad too"
+- "; and then, as Miss Bartlett and"
 - Minnie were lingering behind
 - with Mr.
 - "Beebe, she turned the"
@@ -10384,9 +10262,8 @@ expression: chunks
 - "He added: “We find, though,"
 - "that the Miss Alans were coming,"
 - and that we have turned them out
-- "."
-- Women mind such a thing.
-- I am very much upset about it.”
+- ".\nWomen mind such a thing. I am"
+- very much upset about it.”
 - “I believe that there was some
 - "misunderstanding,” said Mrs."
 - Honeychurch uneasily.
@@ -10443,8 +10320,7 @@ expression: chunks
 - "Emerson, I see you’re clever!”"
 - “Eh—?”
 - “I see you’re going to be clever
-- "."
-- I hope you didn’t go behaving
+- ". I hope you didn’t go behaving"
 - like that to poor Freddy.”
 - "George’s eyes laughed, and Lucy"
 - suspected that he and her mother
@@ -10470,8 +10346,7 @@ expression: chunks
 - That’s settled. Mr.
 - "Emerson, if you could come with"
 - your son we should be so pleased
-- ".”"
-- "He thanked her, but the walk"
+- ".”\n\nHe thanked her, but the walk"
 - sounded rather far; he could
 - only potter about in these days.
 - "She turned to George: “And then"
@@ -10796,11 +10671,11 @@ expression: chunks
 - derivative works based on the
 - work as long as all references
 - to Project Gutenberg are removed
-- "."
-- "Of course, we hope that you will"
-- support the Project Gutenberg-tm
-- mission of promoting free access
-- to electronic works by freely
+- ". Of course, we hope that you"
+- will support the Project
+- Gutenberg-tm mission of
+- promoting free access to
+- electronic works by freely
 - sharing Project Gutenberg-tm
 - works in compliance with the
 - terms of this agreement for

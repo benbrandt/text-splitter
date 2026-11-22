@@ -2,8 +2,7 @@
 source: tests/snapshots.rs
 expression: chunks
 ---
-- //
-- "https://github.com/rust-lang/"
+- "// https://github.com/rust-lang/"
 - /rust-lang/hashbrown/blob/
 - 1167d19935f79320d666bf8549f05322
 - d666bf8549f053229567d778/src/
@@ -25,771 +24,673 @@ expression: chunks
 - "::{BitAnd, BitOr, BitXor, Sub};"
 - use
 - "super::map::"
-- "{self, DefaultHashBuilder,"
+- "::{self, DefaultHashBuilder,"
 - ", HashMap, Keys};"
 - use
 - "crate::raw::"
-- "{Allocator, Global, RawExtractIf"
-- ", RawExtractIf};"
+- "::{Allocator, Global,"
+- ", Global, RawExtractIf};"
 - // Future Optimization (FIXME!)
 - // =============================
-- //
-- //
-- Iteration over zero sized values
-- sized values is a noop.
+- "//\n// Iteration over zero sized"
+- over zero sized values is a noop
+- values is a noop.
 - There is no need
-- //
-- "for `bucket.val` in the case of"
+- "// for `bucket.val` in the case"
 - "` in the case of HashSet."
 - I suppose we would need HKT
 - // to get rid of it properly.
-- ///
-- "A hash set implemented as a `"
-- "as a `HashMap` where the value"
-- " where the value is `()`.\n///"
-- ///
-- "As with the [`HashMap`] type, a"
-- "`] type, a `HashSet` requires"
+- /// A hash set implemented as a
+- "implemented as a `HashMap` where"
+- "`HashMap` where the value is `()"
+- "the value is `()`.\n///"
+- "///\n/// As with the [`HashMap`]"
+- "the [`HashMap`] type, a `HashSet"
+- "type, a `HashSet` requires that"
 - "` requires that the elements"
-- ///
-- "implement the [`Eq`] and [`Hash`"
-- "Eq`] and [`Hash`] traits."
+- "/// implement the [`Eq`] and [`"
+- "[`Eq`] and [`Hash`] traits."
 - This can frequently be achieved
 - be achieved by
-- ///
-- "using `#[derive(PartialEq, Eq,"
+- "/// using `#[derive(PartialEq,"
 - "(PartialEq, Eq, Hash)]`."
 - "If you implement these yourself,"
-- ///
-- it is important that the
+- /// it is important that the
 - that the following property
 - " property holds:\n///\n/// ```text"
-- ///
-- k1 == k2 -> hash(k1) == hash(k2)
-- "/// ```\n///"
-- ///
+- /// k1 == k2 -> hash(k1) == hash
+- "hash(k1) == hash(k2)\n/// ```\n///"
+- "/// ```\n///\n/// In other words,"
 - "In other words, if two keys are"
 - "if two keys are equal, their"
 - "are equal, their hashes must be"
 - " hashes must be equal.\n///\n///"
-- ///
-- It is a logic error for an item
+- "///\n///\n/// It is a logic error"
+- is a logic error for an item to
 - for an item to be modified in
 - be modified in such a way that
 - such a way that the
-- ///
-- "item's hash, as determined by"
-- "as determined by the [`Hash`]"
+- "/// item's hash, as determined"
+- ", as determined by the [`Hash`]"
 - "by the [`Hash`] trait, or its"
 - "`] trait, or its equality, as"
-- ///
-- "determined by the [`Eq`] trait,"
-- "[`Eq`] trait, changes while it"
-- changes while it is in the set.
-- This is
-- ///
-- "normally only possible through ["
-- "through [`Cell`], [`RefCell`],"
-- "`], [`RefCell`], global state, I"
-- "global state, I/O, or"
+- "/// determined by the [`Eq`]"
+- "by the [`Eq`] trait, changes"
+- "] trait, changes while it is in"
+- while it is in the set. This is
+- /// normally only possible
+- "only possible through [`Cell`],"
+- "[`Cell`], [`RefCell`], global"
+- "`], global state, I/O, or"
 - "/// unsafe code.\n///"
-- ///
-- It is also a logic error for the
-- "error for the [`Hash`]"
+- "///\n/// It is also a logic error"
+- "a logic error for the [`Hash`]"
 - "for the [`Hash`] implementation"
 - "] implementation of a key to"
 - of a key to panic.
-- ///
-- This is generally only possible
-- only possible if the trait is
+- /// This is generally only
+- generally only possible if the
+- possible if the trait is
 - if the trait is implemented
 - is implemented manually. If a
-- ///
-- panic does occur then the
+- /// panic does occur then the
 - "occur then the contents of the `"
 - "of the `HashSet` may become"
 - "` may become corrupted and"
-- ///
-- some items may be dropped from
-- " be dropped from the table.\n///"
+- /// some items may be dropped
+- may be dropped from the table.
 - "///\n/// # Examples\n///\n/// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- // Type inference lets us omit
+- "///\n/// ```\n/// use hashbrown::"
+- "use hashbrown::HashSet;"
+- /// // Type inference lets us
 - lets us omit an explicit type
 - an explicit type signature (
 - type signature (which
-- ///
-- "// would be `HashSet<String>` in"
-- "<String>` in this example)."
-- ///
-- "let mut books = HashSet::new();"
+- "/// // would be `HashSet<String>"
+- "`HashSet<String>` in this"
+- "String>` in this example)."
+- "/// let mut books = HashSet::new"
+- " = HashSet::new();\n///"
 - "///\n/// // Add some books."
-- ///
-- "books.insert(\"A Dance With"
+- "/// books.insert(\"A Dance With"
 - "(\"A Dance With Dragons\"."
 - "With Dragons\".to_string());"
-- ///
-- "books.insert(\"To Kill a"
+- "/// books.insert(\"To Kill a"
 - "(\"To Kill a Mockingbird\"."
 - "a Mockingbird\".to_string());"
-- ///
-- "books.insert(\"The Odyssey\"."
+- "/// books.insert(\"The Odyssey\"."
 - "(\"The Odyssey\".to_string());"
-- ///
-- "books.insert(\"The Great Gatsby\"."
-- " Great Gatsby\".to_string());\n///"
-- /// // Check for a specific one.
-- ///
-- if !
+- "/// books.insert(\"The Great"
+- "(\"The Great Gatsby\".to_string())"
+- "\".to_string());\n///"
+- "///\n/// // Check for a specific"
+- for a specific one.
+- /// if !
 - "books.contains(\"The Winds of"
 - "(\"The Winds of Winter\") {"
-- ///
-- "println!(\""
+- "///     println!(\""
 - "We have {} books, but The Winds"
 - ", but The Winds of Winter ain't"
 - "of Winter ain't one.\","
 - ///              books.len());
 - "/// }\n///\n/// // Remove a book."
 - "/// books.remove(\"The Odyssey\");"
-- ///
-- /// // Iterate over everything.
+- "///\n/// // Iterate over"
+- // Iterate over everything.
 - "/// for book in &books {"
 - "///     println!(\"{}\", book);"
-- "/// }\n/// ```\n///"
-- ///
-- "The easiest way to use `HashSet`"
+- "/// }\n/// ```\n///\n/// The"
+- " ```\n///\n/// The easiest way to"
+- "easiest way to use `HashSet`"
 - "to use `HashSet` with a custom"
 - "` with a custom type is to"
 - type is to derive
-- ///
-- "[`Eq`] and [`Hash`]."
+- "/// [`Eq`] and [`Hash`]."
 - "We must also derive [`PartialEq`"
 - "[`PartialEq`]. This will in the"
 - "/// future be implied by [`Eq`]."
-- "///\n/// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "#[derive(Hash, Eq, PartialEq,"
+- "///\n/// ```\n/// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// #[derive(Hash, Eq, PartialEq"
 - ", Eq, PartialEq, Debug)]"
 - "/// struct Viking {"
 - "///     name: String,"
 - "///     power: usize,\n/// }\n///"
-- ///
-- "let mut vikings = HashSet::new()"
-- "= HashSet::new();\n///"
-- ///
-- "vikings.insert(Viking { name: \""
-- "Viking { name: \"Einar\".to_string"
-- "Einar\".to_string(), power: 9 });"
-- ///
-- "vikings.insert(Viking { name: \""
-- "Viking { name: \"Einar\".to_string"
-- "Einar\".to_string(), power: 9 });"
-- ///
-- "vikings.insert(Viking { name: \""
-- "Viking { name: \"Olaf\".to_string("
-- "Olaf\".to_string(), power: 4 });"
-- ///
-- "vikings.insert(Viking { name: \""
-- "Viking { name: \"Harald\"."
+- "/// }\n///\n/// let mut vikings ="
+- "mut vikings = HashSet::new();"
+- "///\n/// vikings.insert(Viking {"
+- "(Viking { name: \"Einar\"."
+- "{ name: \"Einar\".to_string(),"
+- "\".to_string(), power: 9 });"
+- "/// vikings.insert(Viking { name"
+- "(Viking { name: \"Einar\"."
+- "{ name: \"Einar\".to_string(),"
+- "\".to_string(), power: 9 });"
+- "/// vikings.insert(Viking { name"
+- "(Viking { name: \"Olaf\".to_string"
+- "\"Olaf\".to_string(), power: 4 });"
+- "/// vikings.insert(Viking { name"
+- "(Viking { name: \"Harald\"."
 - "name: \"Harald\".to_string(),"
 - "\".to_string(), power: 8 });\n///"
-- ///
-- // Use derived implementation to
+- "///\n/// // Use derived"
+- / // Use derived implementation
+- implementation to print the
 - to print the vikings.
 - "/// for x in &vikings {"
 - "///     println!(\"{:?}\", x);"
-- "/// }\n/// ```\n///"
-- ///
-- "A `HashSet` with fixed list of"
-- fixed list of elements can be
+- "/// }\n/// ```\n///\n/// A `HashSet"
+- "/\n/// A `HashSet` with fixed"
+- "` with fixed list of elements"
+- list of elements can be
 - elements can be initialized from
 - " initialized from an array:\n///"
-- "///\n/// ```"
-- "/// use hashbrown::HashSet;\n///"
-- ///
-- "let viking_names: HashSet<&'"
-- ": HashSet<&'static str> ="
-- ///
-- "[ \"Einar\", \"Olaf\", \"Harald\" ]."
-- "\", \"Harald\" ].into_iter()."
+- "///\n/// ```\n/// use hashbrown::"
+- " use hashbrown::HashSet;\n///"
+- "///\n/// let viking_names:"
+- "viking_names: HashSet<&'static"
+- "HashSet<&'static str> ="
+- "///     [ \"Einar\", \"Olaf\", \""
+- "\", \"Olaf\", \"Harald\" ].into_iter("
 - "\" ].into_iter().collect();"
-- ///
-- // use the values stored in the
-- " stored in the set\n/// ```\n///"
-- ///
+- /// // use the values stored in
+- values stored in the set
+- "/// ```\n///\n/// [`Cell`]: https:"
 - "[`Cell`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cell/"
 - /std/cell/struct.Cell.html
-- ///
-- "[`Eq`]: https://doc.rust-"
+- "/// [`Eq`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cmp/"
 - /std/cmp/trait.Eq.html
-- ///
-- "[`Hash`]: https://doc.rust-"
+- "/// [`Hash`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/hash/"
 - /std/hash/trait.Hash.html
-- ///
+- "/// [`HashMap`]:"
 - "[`HashMap`]: struct.HashMap.html"
-- ///
-- "[`PartialEq`]: https://doc.rust-"
-- "://doc.rust-lang.org/std/cmp/"
+- "/// [`PartialEq`]: https://"
+- "`]: https://doc.rust-lang.org/"
+- "-lang.org/std/cmp/"
 - /std/cmp/trait.PartialEq.html
-- ///
-- "[`RefCell`]: https://doc.rust-"
-- "://doc.rust-lang.org/std/cell/"
+- "/// [`RefCell`]: https://"
+- "`]: https://doc.rust-lang.org/"
+- "-lang.org/std/cell/"
 - /std/cell/struct.RefCell.html
 - pub struct HashSet
 - "<T, S = DefaultHashBuilder,"
 - ", A: Allocator = Global>"
-- "{"
-- "pub(crate) map:"
+- "{\n    pub(crate) map: HashMap<T,"
 - " map: HashMap<T, (), S, A>,\n}"
 - impl
 - "<T: Clone, S: Clone,"
 - ", S: Clone, A: Allocator + Clone"
 - "> Clone for HashSet<T, S, A>"
-- "{"
-- fn clone(&self) -> Self
-- "{"
-- HashSet
-- "{"
+- "{\n    fn clone(&self) -> Self {"
+- "{\n        HashSet {"
+- "{\n            map:"
 - "map: self.map.clone(),"
-- ",\n        }\n    }"
-- fn clone_from
+- ",\n        }\n    }\n\n    fn"
+- "}\n    }\n\n    fn clone_from(&mut"
 - "(&mut self, source: &Self)"
-- "{"
-- self.map.clone_from(&source.map)
-- ";\n    }\n}"
+- "{\n        self.map.clone_from(&"
+- "(&source.map);\n    }\n}"
 - "#[cfg(feature = \"ahash\")]"
 - impl<T>
 - "HashSet<T, DefaultHashBuilder>"
-- "{"
-- "/// Creates an empty `HashSet`."
-- ///
-- ///
+- "{\n    /// Creates an empty `"
+- " an empty `HashSet`.\n    ///"
+- "///\n    /// The hash set is"
 - The hash set is initially
 - set is initially created with a
 - "created with a capacity of 0, so"
 - "of 0, so it will not allocate"
 - not allocate until it
 - /// is first inserted into.
-- ///
-- "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// # HashDoS"
+- "/// # HashDoS resistance"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- "creating a [`HashSet`], for"
+- /// as the hasher when creating
+- "when creating a [`HashSet`], for"
 - "[`HashSet`], for example with"
-- ///
-- "[`with_hasher`](HashSet::"
+- "/// [`with_hasher`](HashSet::"
 - "`](HashSet::with_hasher) method."
-- ///
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::new();"
-- "/// ```"
-- "#["
-- cfg_attr
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::new();"
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn new() -> Self
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map: HashMap::new(),"
-- ",\n        }\n    }"
-- ///
-- "Creates an empty `HashSet` with"
-- "`HashSet` with the specified"
-- " the specified capacity.\n    ///"
-- ///
-- The hash set will be able to
-- "will be able to hold at least `"
-- "hold at least `capacity`"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Creates an"
+- "/// Creates an empty `HashSet`"
+- "empty `HashSet` with the"
+- "` with the specified capacity."
+- "///\n    /// The hash set will be"
+- hash set will be able to hold at
+- "able to hold at least `capacity`"
 - "least `capacity` elements"
 - "` elements without"
-- ///
-- reallocating.
+- /// reallocating.
 - "If `capacity` is 0, the hash set"
 - "0, the hash set will not"
 - " set will not allocate.\n    ///"
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- "creating a [`HashSet`], for"
+- /// as the hasher when creating
+- "when creating a [`HashSet`], for"
 - "[`HashSet`], for example with"
-- ///
-- "[`with_capacity_and_hasher`]("
+- "/// [`with_capacity_and_hasher`]"
 - "`](HashSet::"
 - "::with_capacity_and_hasher)"
 - ") method.\n    ///"
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::with_capacity("
-- "::with_capacity(10);"
-- ///
-- / assert!(set.capacity() >= 10);
-- "/// ```"
-- "#["
-- cfg_attr
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::"
+- "i32> = HashSet::with_capacity(10"
+- with_capacity(10);
+- /// assert!(
+- set.capacity() >= 10);
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn with_capacity
 - "with_capacity(capacity: usize)"
 - "-> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
-- "HashMap::with_capacity(capacity)"
-- ",\n        }\n    }\n}"
-- "#[cfg(feature = \"ahash\")]"
+- ": HashMap::with_capacity("
+- "::with_capacity(capacity),"
+- ",\n        }\n    }\n}\n\n#[cfg("
+- "    }\n}\n\n#[cfg(feature = \"ahash\""
+- "= \"ahash\")]"
 - "impl<T: Hash + Eq, A: Allocator>"
 - HashSet
 - "<T, DefaultHashBuilder, A>"
-- "{"
-- "/// Creates an empty `HashSet`."
-- ///
-- ///
+- "{\n    /// Creates an empty `"
+- " an empty `HashSet`.\n    ///"
+- "///\n    /// The hash set is"
 - The hash set is initially
 - set is initially created with a
 - "created with a capacity of 0, so"
 - "of 0, so it will not allocate"
 - not allocate until it
 - /// is first inserted into.
-- ///
-- "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// # HashDoS"
+- "/// # HashDoS resistance"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- "creating a [`HashSet`], for"
+- /// as the hasher when creating
+- "when creating a [`HashSet`], for"
 - "[`HashSet`], for example with"
-- ///
-- "[`with_hasher_in`](HashSet::"
+- "/// [`with_hasher_in`](HashSet::"
 - "`](HashSet::with_hasher_in)"
 - ":with_hasher_in) method.\n    ///"
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::new();"
-- "/// ```"
-- "#["
-- cfg_attr
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::new();"
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "pub fn new_in(alloc: A) -> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map: HashMap::new_in(alloc),"
-- ",\n        }\n    }"
-- ///
-- "Creates an empty `HashSet` with"
-- "`HashSet` with the specified"
-- " the specified capacity.\n    ///"
-- ///
-- The hash set will be able to
-- "will be able to hold at least `"
-- "hold at least `capacity`"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Creates an"
+- "/// Creates an empty `HashSet`"
+- "empty `HashSet` with the"
+- "` with the specified capacity."
+- "///\n    /// The hash set will be"
+- hash set will be able to hold at
+- "able to hold at least `capacity`"
 - "least `capacity` elements"
 - "` elements without"
-- ///
-- reallocating.
+- /// reallocating.
 - "If `capacity` is 0, the hash set"
 - "0, the hash set will not"
 - " set will not allocate.\n    ///"
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- "creating a [`HashSet`], for"
+- /// as the hasher when creating
+- "when creating a [`HashSet`], for"
 - "[`HashSet`], for example with"
-- ///
-- "[`with_capacity_and_hasher_in`]("
+- "/// [`"
+- "// [`with_capacity_and_hasher_in"
 - "`](HashSet::"
 - "::with_capacity_and_hasher_in)"
 - ") method.\n    ///"
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::with_capacity("
-- "::with_capacity(10);"
-- ///
-- / assert!(set.capacity() >= 10);
-- "/// ```"
-- "#["
-- cfg_attr
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::"
+- "i32> = HashSet::with_capacity(10"
+- with_capacity(10);
+- /// assert!(
+- set.capacity() >= 10);
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn with_capacity_in
 - "(capacity: usize, alloc: A) ->"
 - "-> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
-- "HashMap::with_capacity_in"
+- ": HashMap::with_capacity_in("
 - "(capacity, alloc),\n        }"
-- "}\n}"
-- "impl<T, S, A: Allocator>"
+- "}\n}\n\nimpl<T, S, A: Allocator>"
 - "HashSet<T, S, A>"
-- "{"
-- ///
-- Returns the number of elements
-- of elements the set can hold
+- "{\n    /// Returns the number of"
+- the number of elements the set
+- elements the set can hold
 - the set can hold without
 - can hold without reallocating.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::with_capacity("
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::"
+- "i32> = HashSet::with_capacity("
 - "::with_capacity(100);"
-- ///
-- assert!(set.capacity() >= 100);
-- "/// ```"
-- "#["
-- cfg_attr
+- /// assert!(
+- set.capacity() >= 100);
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn capacity(&self) -> usize
 - "{\n        self.map.capacity()"
 - "}"
-- ///
-- An iterator visiting all
+- "    }\n\n    /// An iterator"
+- /// An iterator visiting all
 - visiting all elements in
 - all elements in arbitrary order.
-- ///
-- "The iterator element type is `&'"
-- " type is `&'a T`.\n    ///"
+- /// The iterator element type is
+- "element type is `&'a T`."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "/ let mut set = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let mut set = HashSet::new()"
+- "= HashSet::new();"
 - "/// set.insert(\"a\");"
 - "    /// set.insert(\"b\");\n    ///"
-- ///
+- "    ///\n    /// // Will print in"
 - // Will print in an arbitrary
 - in an arbitrary order.
 - "/// for x in set.iter() {"
 - "///     println!(\"{}\", x);"
-- "    /// }\n    /// ```"
-- "#["
-- cfg_attr
+- "    /// }\n    /// ```\n    #["
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn iter(&self) ->
 - "iter(&self) -> Iter<'_, T>"
-- "{"
-- Iter
-- "{"
+- "{\n        Iter {"
+- "{\n            iter:"
 - "iter: self.map.keys(),"
-- ",\n        }\n    }"
-- ///
-- Returns the number of elements
-- " of elements in the set.\n    ///"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Returns the"
+- /// Returns the number of
+- the number of elements in the
+- " elements in the set.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "/// let mut v = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut v = HashSet:"
+- "mut v = HashSet::new();"
 - "/// assert_eq!(v.len(), 0);"
 - /// v.insert(1);
 - "/// assert_eq!(v.len(), 1);"
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn len(&self) -> usize
 - " {\n        self.map.len()\n    }"
-- ///
-- "Returns `true` if the set"
+- "/// Returns `true` if the set"
 - "true` if the set contains no"
 - set contains no elements.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "/// let mut v = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut v = HashSet:"
+- "mut v = HashSet::new();"
 - /// assert!(v.is_empty());
 - /// v.insert(1);
 - /// assert!(!v.is_empty());
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn is_empty(&self) -> bool
 - "{\n        self.map.is_empty()"
 - "}"
-- ///
+- "    }\n\n    /// Clears the set,"
 - "Clears the set, returning all"
 - ", returning all elements in an"
 - elements in an iterator.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<_> = [1, 2,"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
 - /// assert!(!set.is_empty());
-- ///
-- ///
+- "    ///\n    /// // print 1, 2, 3"
 - "// print 1, 2, 3 in an arbitrary"
 - in an arbitrary order
 - "/// for i in set.drain() {"
 - "///     println!(\"{}\", i);"
-- "    /// }\n    ///"
-- /// assert!(set.is_empty());
-- "/// ```"
-- "#["
-- cfg_attr
+- "    /// }\n    ///\n    /// assert"
+- "/\n    /// assert!(set.is_empty()"
+- "!(set.is_empty());\n    /// ```"
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn drain(&mut self) ->
 - "(&mut self) -> Drain<'_, T, A>"
-- "{"
-- Drain
-- "{"
+- "{\n        Drain {"
+- "{\n            iter:"
 - "iter: self.map.drain(),"
-- ",\n        }\n    }"
-- ///
-- Retains only the elements
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Retains only"
+- /// Retains only the elements
 - the elements specified by the
 - specified by the predicate.
-- ///
-- ///
+- "///\n    /// In other words,"
 - "In other words, remove all"
 - ", remove all elements `e` such"
 - "`e` such that `f(&e)` returns `"
 - "f(&e)` returns `false`.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let xs = ["
 - "/// let xs = [1,2,3,4,5,6];"
-- ///
-- "let mut set: HashSet<i32> ="
+- "/// let mut set: HashSet<i32> ="
 - ": HashSet<i32> = xs.into_iter()."
 - xs.into_iter().collect();
 - /// set.retain(|&k| k % 2 == 0);
 - "/// assert_eq!(set.len(), 3);"
-- "/// ```"
-- pub fn retain<F>
+- "    /// ```\n    pub fn retain<F>"
 - "retain<F>(&mut self, mut f: F)"
 - where
 - "F: FnMut(&T) -> bool,"
-- "{"
-- "self.map.retain(|k, _| f(k));"
-- "}"
-- ///
-- Drains elements which are true
+- "{\n        self.map.retain(|k, _|"
+- "(|k, _| f(k));\n    }"
+- /// Drains elements which are
 - which are true under the given
 - "under the given predicate,"
-- ///
-- and returns an iterator over the
-- " over the removed items.\n    ///"
-- ///
-- "In other words, move all"
+- /// and returns an iterator over
+- an iterator over the removed
+- "over the removed items.\n    ///"
+- "///\n    /// In other words, move"
 - "words, move all elements `e`"
 - "all elements `e` such that `f(&e"
 - "such that `f(&e)` returns `true`"
 - "` returns `true` out"
 - /// into another iterator.
-- ///
-- ///
+- "    ///\n    /// If the returned"
 - "If the returned `ExtractIf` is"
 - "`ExtractIf` is not exhausted,"
 - "not exhausted, e.g. because it"
 - e.g. because it is dropped
 - it is dropped without iterating
-- ///
-- "or the iteration short-circuits,"
-- "short-circuits, then the"
-- ", then the remaining elements"
+- /// or the iteration short-
+- "iteration short-circuits, then"
+- "-circuits, then the remaining"
+- the remaining elements will be
 - elements will be retained.
-- ///
-- "Use [`retain()`] with a negated"
-- "] with a negated predicate if"
+- "/// Use [`retain()`] with a"
+- "()`] with a negated predicate if"
 - predicate if you do not need the
 - do not need the returned
 - " the returned iterator.\n    ///"
-- ///
-- "/ [`retain()`]: HashSet::retain"
+- "///\n    /// [`retain()`]:"
+- "// [`retain()`]: HashSet::retain"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<i32> = (0.."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<i32> = (0..8)."
 - "<i32> = (0..8).collect();"
-- ///
-- "let drained: HashSet<i32> ="
+- "/// let drained: HashSet<i32> ="
 - ": HashSet<i32> = set.extract_if("
 - set.extract_if(|v| v % 2 == 0).
 - "|v| v % 2 == 0).collect();"
-- ///
-- ///
-- let mut evens =
+- "///\n    /// let mut evens ="
 - mut evens = drained.into_iter().
 - "().collect::<Vec<_>>();"
-- ///
-- let mut odds = set.into_iter().
-- "set.into_iter().collect::<Vec<_>"
-- "collect::<Vec<_>>();"
+- /// let mut odds = set.into_iter
+- "= set.into_iter().collect::<Vec<"
+- ").collect::<Vec<_>>();"
 - /// evens.sort();
 - "    /// odds.sort();\n    ///"
-- ///
+- "    ///\n    /// assert_eq!(evens"
 - "assert_eq!(evens, vec!["
 - "evens, vec![0, 2, 4, 6]);"
-- ///
-- "assert_eq!(odds, vec!["
+- "/// assert_eq!(odds, vec!["
 - "odds, vec![1, 3, 5, 7]);"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn extract_if<F>
@@ -797,535 +698,459 @@ expression: chunks
 - "-> ExtractIf<'_, T, F, A>"
 - where
 - "F: FnMut(&T) -> bool,"
-- "{"
-- ExtractIf
+- "{\n        ExtractIf {"
 - "{\n            f,"
-- "inner:"
-- RawExtractIf
-- "{"
+- ",\n            inner:"
+- ": RawExtractIf {"
 - "iter:"
-- "unsafe { self.map.table.iter() }"
-- ","
+- ": unsafe { self.map.table.iter()"
+- "() },\n                table: &"
 - "table: &mut self.map.table,"
 - ",\n            },\n        }\n    }"
-- ///
-- "Clears the set, removing all"
+- "        }\n    }\n\n    /// Clears"
+- "/// Clears the set, removing all"
 - ", removing all values.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "/// let mut v = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut v = HashSet:"
+- "mut v = HashSet::new();"
 - /// v.insert(1);
 - /// v.clear();
 - /// assert!(v.is_empty());
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn clear(&mut self)
 - "{\n        self.map.clear();"
 - "    }\n}"
-- "impl<T, S> HashSet<T, S, Global>"
-- "{"
-- ///
-- Creates a new empty hash set
-- empty hash set which will use
-- which will use the given hasher
-- the given hasher to hash
+- "    }\n}\n\nimpl<T, S> HashSet<T, S"
+- "S> HashSet<T, S, Global>"
+- "{\n    /// Creates a new empty"
+- a new empty hash set which will
+- set which will use the given
+- use the given hasher to hash
 - "/// keys.\n    ///"
-- ///
+- "    ///\n    /// The hash set is"
 - The hash set is initially
 - set is initially created with a
 - "created with a capacity of 0, so"
 - "of 0, so it will not"
-- ///
-- allocate until it is first
+- /// allocate until it is first
 - it is first inserted into.
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- " creating a [`HashSet`].\n    ///"
-- ///
-- "The `hash_builder` passed should"
+- /// as the hasher when creating
+- "when creating a [`HashSet`]."
+- "///\n    /// The `hash_builder`"
+- "`hash_builder` passed should"
 - "` passed should implement the [`"
 - "implement the [`BuildHasher`]"
 - "[`BuildHasher`] trait for"
-- ///
-- "the HashSet to be useful, see"
-- "be useful, see its documentation"
+- "/// the HashSet to be useful,"
+- "to be useful, see its"
+- "useful, see its documentation"
 - documentation for details.
-- ///
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
-- ///
-- "[`BuildHasher`]: https://"
+- "/// [`BuildHasher`]: https://"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/hash/"
 - /std/hash/trait.BuildHasher.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_map::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_map::"
 - "::hash_map::DefaultHashBuilder;"
-- ///
-- ///
-- "let s = DefaultHashBuilder::"
+- "///\n    /// let s ="
+- "/// let s = DefaultHashBuilder::"
 - "::default();"
-- ///
-- "let mut set = HashSet::"
+- "/// let mut set = HashSet::"
 - "set = HashSet::with_hasher(s);"
 - "/// set.insert(2);\n    /// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub const fn with_hasher
 - "fn with_hasher(hasher: S) ->"
 - "(hasher: S) -> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
 - ": HashMap::with_hasher(hasher),"
-- ",\n        }\n    }"
-- ///
-- "Creates an empty `HashSet` with"
-- "`HashSet` with the specified"
-- "the specified capacity, using"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Creates an"
+- "/// Creates an empty `HashSet`"
+- "empty `HashSet` with the"
+- "` with the specified capacity,"
+- "capacity, using"
 - "/// `hasher` to hash the keys."
-- ///
-- ///
-- The hash set will be able to
+- "    ///\n    /// The hash set"
+- /// The hash set will be able to
 - "will be able to hold at least `"
 - "hold at least `capacity`"
 - "least `capacity` elements"
 - "` elements without"
-- ///
-- reallocating.
+- /// reallocating.
 - "If `capacity` is 0, the hash set"
 - "0, the hash set will not"
 - " set will not allocate.\n    ///"
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- " creating a [`HashSet`].\n    ///"
-- ///
-- "The `hash_builder` passed should"
+- /// as the hasher when creating
+- "when creating a [`HashSet`]."
+- "///\n    /// The `hash_builder`"
+- "`hash_builder` passed should"
 - "` passed should implement the [`"
 - "implement the [`BuildHasher`]"
 - "[`BuildHasher`] trait for"
-- ///
-- "the HashSet to be useful, see"
-- "be useful, see its documentation"
+- "/// the HashSet to be useful,"
+- "to be useful, see its"
+- "useful, see its documentation"
 - documentation for details.
-- ///
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
-- ///
-- "[`BuildHasher`]: https://"
+- "/// [`BuildHasher`]: https://"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/hash/"
 - /std/hash/trait.BuildHasher.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_map::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_map::"
 - "::hash_map::DefaultHashBuilder;"
-- ///
-- ///
-- "let s = DefaultHashBuilder::"
+- "///\n    /// let s ="
+- "/// let s = DefaultHashBuilder::"
 - "::default();"
-- ///
-- "let mut set = HashSet::"
+- "/// let mut set = HashSet::"
 - "::with_capacity_and_hasher(10, s"
 - "(10, s);\n    /// set.insert(1);"
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn with_capacity_and_hasher
 - "(capacity: usize, hasher: S) ->"
 - "-> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
-- "HashMap::"
+- ": HashMap::"
 - "::with_capacity_and_hasher"
 - "(capacity, hasher),\n        }"
-- "}\n}"
-- "impl<T, S, A> HashSet<T, S, A>"
+- "}\n}\n\nimpl<T, S, A> HashSet<T, S,"
+- "A> HashSet<T, S, A>"
 - "where\n    A: Allocator,"
-- "{"
-- ///
-- Returns a reference to the
-- reference to the underlying
+- "{\n    /// Returns a reference to"
+- a reference to the underlying
 - the underlying allocator.
 - "#[inline]"
 - pub fn allocator(&self) -> &A
 - "{\n        self.map.allocator()"
 - "}"
-- ///
-- Creates a new empty hash set
+- "    }\n\n    /// Creates a new"
+- // Creates a new empty hash set
 - empty hash set which will use
 - which will use the given hasher
 - the given hasher to hash
 - "/// keys.\n    ///"
-- ///
+- "    ///\n    /// The hash set is"
 - The hash set is initially
 - set is initially created with a
 - "created with a capacity of 0, so"
 - "of 0, so it will not"
-- ///
-- allocate until it is first
+- /// allocate until it is first
 - it is first inserted into.
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- " creating a [`HashSet`].\n    ///"
-- ///
-- "The `hash_builder` passed should"
+- /// as the hasher when creating
+- "when creating a [`HashSet`]."
+- "///\n    /// The `hash_builder`"
+- "`hash_builder` passed should"
 - "` passed should implement the [`"
 - "implement the [`BuildHasher`]"
 - "[`BuildHasher`] trait for"
-- ///
-- "the HashSet to be useful, see"
-- "be useful, see its documentation"
+- "/// the HashSet to be useful,"
+- "to be useful, see its"
+- "useful, see its documentation"
 - documentation for details.
-- ///
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
-- ///
-- "[`BuildHasher`]: https://"
+- "/// [`BuildHasher`]: https://"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/hash/"
 - /std/hash/trait.BuildHasher.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_map::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_map::"
 - "::hash_map::DefaultHashBuilder;"
-- ///
-- ///
-- "let s = DefaultHashBuilder::"
+- "///\n    /// let s ="
+- "/// let s = DefaultHashBuilder::"
 - "::default();"
-- ///
-- "let mut set = HashSet::"
+- "/// let mut set = HashSet::"
 - "set = HashSet::with_hasher(s);"
 - "/// set.insert(2);\n    /// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub const fn with_hasher_in
 - "(hasher: S, alloc: A) -> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
-- "HashMap::with_hasher_in"
+- ": HashMap::with_hasher_in(hasher"
 - "(hasher, alloc),\n        }\n    }"
-- ///
-- "Creates an empty `HashSet` with"
-- "`HashSet` with the specified"
-- "the specified capacity, using"
+- "/// Creates an empty `HashSet`"
+- "empty `HashSet` with the"
+- "` with the specified capacity,"
+- "capacity, using"
 - "/// `hasher` to hash the keys."
-- ///
-- ///
-- The hash set will be able to
+- "    ///\n    /// The hash set"
+- /// The hash set will be able to
 - "will be able to hold at least `"
 - "hold at least `capacity`"
 - "least `capacity` elements"
 - "` elements without"
-- ///
-- reallocating.
+- /// reallocating.
 - "If `capacity` is 0, the hash set"
 - "0, the hash set will not"
 - " set will not allocate.\n    ///"
 - "///\n    /// # HashDoS resistance"
-- ///
-- ///
-- "The `hash_builder` normally use"
+- "    ///\n    /// The `"
+- "//\n    /// The `hash_builder`"
+- "`hash_builder` normally use a"
 - "` normally use a fixed key by"
 - a fixed key by default and that
 - default and that does
-- ///
-- "not allow the `HashSet` to be"
-- "`HashSet` to be protected"
+- "/// not allow the `HashSet` to"
+- "the `HashSet` to be protected"
 - to be protected against attacks
 - "against attacks such as [`"
 - "such as [`HashDoS`]."
-- ///
-- Users who require HashDoS
+- /// Users who require HashDoS
 - require HashDoS resistance
 - resistance should explicitly use
-- ///
-- "[`ahash::RandomState`] or [`std:"
+- "/// [`ahash::RandomState`] or [`"
 - "`] or [`std::collections::"
 - "::collections::hash_map::"
 - "::hash_map::RandomState`]"
-- ///
-- "as the hasher when creating a [`"
-- " creating a [`HashSet`].\n    ///"
-- ///
-- "The `hash_builder` passed should"
+- /// as the hasher when creating
+- "when creating a [`HashSet`]."
+- "///\n    /// The `hash_builder`"
+- "`hash_builder` passed should"
 - "` passed should implement the [`"
 - "implement the [`BuildHasher`]"
 - "[`BuildHasher`] trait for"
-- ///
-- "the HashSet to be useful, see"
-- "be useful, see its documentation"
+- "/// the HashSet to be useful,"
+- "to be useful, see its"
+- "useful, see its documentation"
 - documentation for details.
-- ///
-- ///
-- "[`HashDoS`]: https://"
+- "///\n    /// [`HashDoS`]: https:/"
 - "`]: https://en.wikipedia.org/"
 - /wiki/Collision_attack
-- ///
-- "[`std::collections::hash_map::"
+- "/// [`std::collections::hash_map"
 - "::hash_map::RandomState`]: https"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/collections/"
 - std/collections/hash_map/
 - hash_map/struct.RandomState.html
-- ///
-- "[`BuildHasher`]: https://"
+- "/// [`BuildHasher`]: https://"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/hash/"
 - /std/hash/trait.BuildHasher.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_map::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_map::"
 - "::hash_map::DefaultHashBuilder;"
-- ///
-- ///
-- "let s = DefaultHashBuilder::"
+- "///\n    /// let s ="
+- "/// let s = DefaultHashBuilder::"
 - "::default();"
-- ///
-- "let mut set = HashSet::"
+- "/// let mut set = HashSet::"
 - "::with_capacity_and_hasher(10, s"
 - "(10, s);\n    /// set.insert(1);"
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn
 - fn with_capacity_and_hasher_in
 - "(capacity: usize, hasher: S,"
 - ", hasher: S, alloc: A) -> Self"
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map:"
-- "HashMap::"
+- ": HashMap::"
 - "::with_capacity_and_hasher_in"
 - "(capacity, hasher, alloc),"
-- ",\n        }\n    }"
-- ///
-- "Returns a reference to the set's"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Returns a"
+- /// Returns a reference to the
+- "reference to the set's [`"
 - "to the set's [`BuildHasher`]."
-- ///
-- ///
+- "///\n    /// [`BuildHasher`]:"
 - "[`BuildHasher`]: https://"
 - "`]: https://doc.rust-lang.org/"
 - "-lang.org/std/hash/"
 - /std/hash/trait.BuildHasher.html
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_map::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_map::"
 - "::hash_map::DefaultHashBuilder;"
-- ///
-- ///
+- "///\n    /// let hasher ="
 - "let hasher = DefaultHashBuilder:"
 - "::default();"
-- ///
-- "let set: HashSet<i32> = HashSet:"
-- "<i32> = HashSet::with_hasher("
+- "/// let set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::"
+- "i32> = HashSet::with_hasher("
 - "::with_hasher(hasher);"
-- ///
+- "/// let hasher: &"
 - "let hasher: &DefaultHashBuilder"
 - " = set.hasher();\n    /// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn hasher(&self) -> &S
 - "{\n        self.map.hasher()"
 - "    }\n}"
-- "impl<T, S, A> HashSet<T, S, A>"
+- "    }\n}\n\nimpl<T, S, A> HashSet<T"
+- "S, A> HashSet<T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
 - "S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- ///
-- "Reserves capacity for at least `"
-- "for at least `additional` more"
-- "additional` more elements to be"
-- elements to be inserted
-- ///
-- "in the `HashSet`."
-- The collection may reserve more
-- may reserve more space to avoid
-- /// frequent reallocations.
-- "    ///\n    /// # Panics\n    ///"
-- ///
-- Panics if the new capacity
-- "the new capacity exceeds [`isize"
-- "exceeds [`isize::MAX`] bytes and"
-- ":MAX`] bytes and [`abort`] the"
-- "[`abort`] the program"
-- ///
-- in case of allocation error.
-- "Use [`try_reserve`](HashSet::"
-- "`](HashSet::try_reserve) instead"
-- ///
-- if you want to handle memory
-- to handle memory allocation
-- " allocation failure.\n    ///"
-- ///
-- "[`isize::MAX`]: https://doc.rust"
-- "https://doc.rust-lang.org/std/"
-- /std/primitive.isize.html
-- ///
-- "[`abort`]: https://doc.rust-"
-- "://doc.rust-lang.org/alloc/alloc"
-- /alloc/alloc/
-- alloc/fn.handle_alloc_error.html
-- "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let mut set: HashSet<i32> ="
-- ": HashSet<i32> = HashSet::new();"
-- /// set.reserve(10);
-- ///
-- / assert!(set.capacity() >= 10);
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
-- pub fn reserve
-- "(&mut self, additional: usize)"
-- "{"
-- self.map.reserve(additional);
-- "}"
-- ///
-- Tries to reserve capacity for at
+- "{\n    /// Reserves capacity for"
 - "capacity for at least `"
 - "for at least `additional` more"
 - "additional` more elements to be"
 - elements to be inserted
-- ///
-- "in the given `HashSet<K,V>`."
+- "/// in the `HashSet`."
+- The collection may reserve more
+- may reserve more space to avoid
+- /// frequent reallocations.
+- "    ///\n    /// # Panics\n    ///"
+- "    ///\n    /// Panics if the"
+- // Panics if the new capacity
+- "the new capacity exceeds [`isize"
+- "exceeds [`isize::MAX`] bytes and"
+- ":MAX`] bytes and [`abort`] the"
+- "[`abort`] the program"
+- /// in case of allocation error.
+- "Use [`try_reserve`](HashSet::"
+- "`](HashSet::try_reserve) instead"
+- /// if you want to handle memory
+- to handle memory allocation
+- " allocation failure.\n    ///"
+- "///\n    /// [`isize::MAX`]:"
+- "[`isize::MAX`]: https://doc.rust"
+- "https://doc.rust-lang.org/std/"
+- /std/primitive.isize.html
+- "/// [`abort`]: https://doc.rust-"
+- "://doc.rust-lang.org/alloc/alloc"
+- /alloc/alloc/
+- alloc/fn.handle_alloc_error.html
+- "///\n    /// # Examples\n    ///"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let mut set: HashSet<i32> ="
+- ": HashSet<i32> = HashSet::new();"
+- /// set.reserve(10);
+- /// assert!(
+- set.capacity() >= 10);
+- "/// ```\n    #[cfg_attr(feature ="
+- "(feature = \"inline-more\", inline"
+- ", inline)]"
+- pub fn reserve
+- "(&mut self, additional: usize)"
+- "{\n        self.map.reserve("
+- "(additional);\n    }"
+- /// Tries to reserve capacity
+- "reserve capacity for at least `"
+- "for at least `additional` more"
+- "additional` more elements to be"
+- elements to be inserted
+- "/// in the given `HashSet<K,V>`."
 - The collection may reserve more
 - may reserve more space to avoid
 - /// frequent reallocations.
 - "    ///\n    /// # Errors\n    ///"
-- ///
+- "    ///\n    /// If the capacity"
 - "If the capacity overflows, or"
 - "overflows, or the allocator"
 - or the allocator reports a
@@ -1333,497 +1158,426 @@ expression: chunks
 - "/// is returned.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let mut set: HashSet<i32> ="
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let mut set: HashSet<i32> ="
 - ": HashSet<i32> = HashSet::new();"
-- ///
-- "set.try_reserve(10).expect(\"why"
+- "/// set.try_reserve(10).expect(\""
 - "(10).expect(\"why is the test"
 - "\"why is the test harness OOMing"
 - "harness OOMing on 10 bytes?\");"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn try_reserve
 - "(&mut self, additional: usize)"
 - "-> Result<(), TryReserveError>"
-- "{"
-- self.map.try_reserve(additional)
-- "}"
-- ///
-- Shrinks the capacity of the set
-- of the set as much as possible.
+- "{\n        self.map.try_reserve("
+- "(additional)\n    }"
+- /// Shrinks the capacity of the
+- capacity of the set as much as
+- set as much as possible.
 - It will drop
-- ///
-- down as much as possible while
+- /// down as much as possible
+- much as possible while
 - possible while maintaining the
 - maintaining the internal rules
-- ///
-- and possibly leaving some space
-- some space in accordance with
-- accordance with the resize
+- /// and possibly leaving some
+- leaving some space in accordance
+- in accordance with the resize
 - " with the resize policy.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set = HashSet::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set ="
+- "// let mut set = HashSet::"
 - "set = HashSet::with_capacity(100"
 - "(100);\n    /// set.insert(1);"
 - /// set.insert(2);
-- ///
-- assert!(set.capacity() >= 100);
+- /// assert!(
+- set.capacity() >= 100);
 - /// set.shrink_to_fit();
-- ///
-- / assert!(set.capacity() >= 2);
-- "/// ```"
-- "#["
-- cfg_attr
+- /// assert!(
+- set.capacity() >= 2);
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn shrink_to_fit(&mut self)
-- "{"
-- self.map.shrink_to_fit();
-- "}"
-- ///
-- Shrinks the capacity of the set
-- of the set with a lower limit.
+- "{\n        self.map.shrink_to_fit"
+- "();\n    }\n\n    /// Shrinks the"
+- /// Shrinks the capacity of the
+- capacity of the set with a lower
+- set with a lower limit.
 - It will drop
-- ///
-- down no lower than the supplied
-- the supplied limit while
-- limit while maintaining the
+- /// down no lower than the
+- lower than the supplied limit
+- supplied limit while maintaining
 - maintaining the internal rules
-- ///
-- and possibly leaving some space
-- some space in accordance with
-- accordance with the resize
+- /// and possibly leaving some
+- leaving some space in accordance
+- in accordance with the resize
 - " with the resize policy.\n    ///"
-- ///
-- Panics if the current capacity
-- current capacity is smaller than
-- is smaller than the supplied
+- "///\n    /// Panics if the"
+- // Panics if the current
+- if the current capacity is
+- capacity is smaller than the
+- smaller than the supplied
 - "/// minimum capacity.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set = HashSet::"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set ="
+- "// let mut set = HashSet::"
 - "set = HashSet::with_capacity(100"
 - "(100);\n    /// set.insert(1);"
 - /// set.insert(2);
-- ///
-- assert!(set.capacity() >= 100);
+- /// assert!(
+- set.capacity() >= 100);
 - /// set.shrink_to(10);
-- ///
-- / assert!(set.capacity() >= 10);
+- /// assert!(
+- set.capacity() >= 10);
 - /// set.shrink_to(0);
-- ///
-- / assert!(set.capacity() >= 2);
-- "/// ```"
-- "#["
-- cfg_attr
+- /// assert!(
+- set.capacity() >= 2);
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn shrink_to
 - "(&mut self, min_capacity: usize)"
-- "{"
-- self.map.shrink_to(min_capacity)
-- ";\n    }"
-- ///
-- Visits the values representing
+- "{\n        self.map.shrink_to("
+- "(min_capacity);\n    }"
+- /// Visits the values
+- the values representing the
 - "representing the difference,"
-- ///
-- "i.e., the values that are in `"
+- "/// i.e., the values that are in"
 - "that are in `self` but not in `"
 - "` but not in `other`.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let a: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let a: HashSet<_> = [1, 2, 3"
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = [4, 2, 3, 4]"
-- "> = [4, 2, 3, 4].into_iter()."
+- "/// let b: HashSet<_> = [4, 2, 3"
+- "<_> = [4, 2, 3, 4].into_iter()."
 - "4].into_iter().collect();"
-- ///
-- "/// // Can be seen as `a - b`."
+- "///\n    /// // Can be seen as `a"
+- "be seen as `a - b`."
 - "/// for x in a.difference(&b) {"
-- ///
-- "println!(\"{}\", x); // Print 1"
-- "/// }\n    ///"
-- ///
-- "let diff: HashSet<_> ="
+- "///     println!(\"{}\", x); //"
+- "!(\"{}\", x); // Print 1\n    /// }"
+- "/// }\n    ///\n    /// let diff:"
+- "/// let diff: HashSet<_> ="
 - ": HashSet<_> = a.difference(&b)."
 - (&b).collect();
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "diff, [1].iter().collect());"
-- ///
-- ///
-- // Note that difference is not
-- "is not symmetric,"
-- ///
-- "// and `b - a` means something"
-- "means something else:"
-- ///
-- "let diff: HashSet<_> ="
+- "///\n    /// // Note that"
+- /// // Note that difference is
+- "difference is not symmetric,"
+- "/// // and `b - a` means"
+- "`b - a` means something else:"
+- "/// let diff: HashSet<_> ="
 - ": HashSet<_> = b.difference(&a)."
 - (&a).collect();
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "diff, [4].iter().collect());"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "pub fn difference<'a>"
 - "<'a>(&'a self, other: &'a Self)"
 - "-> Difference<'a, T, S, A>"
-- "{"
-- Difference
+- "{\n        Difference {"
 - "{\n            iter: self.iter(),"
 - ",\n            other,\n        }"
-- "}"
-- ///
-- Visits the values representing
+- "}\n\n    /// Visits the values"
+- the values representing the
 - representing the symmetric
 - "the symmetric difference,"
-- ///
-- "i.e., the values that are in `"
+- "/// i.e., the values that are in"
 - "that are in `self` or in `other`"
 - "` or in `other` but not in both."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let a: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let a: HashSet<_> = [1, 2, 3"
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = [4, 2, 3, 4]"
-- "> = [4, 2, 3, 4].into_iter()."
+- "/// let b: HashSet<_> = [4, 2, 3"
+- "<_> = [4, 2, 3, 4].into_iter()."
 - "4].into_iter().collect();"
-- ///
-- ///
+- "///\n    /// // Print 1, 4 in"
 - "// Print 1, 4 in arbitrary order"
 - arbitrary order.
-- ///
+- /// for x in
 - for x in a.symmetric_difference(
 - "(&b) {"
 - "///     println!(\"{}\", x);"
-- "    /// }\n    ///"
-- ///
-- "let diff1: HashSet<_> ="
+- "    /// }\n    ///\n    /// let"
+- "///\n    /// let diff1: HashSet<_"
+- "diff1: HashSet<_> ="
 - "<_> = a.symmetric_difference(&b)"
 - (&b).collect();
-- ///
-- "let diff2: HashSet<_> ="
+- "/// let diff2: HashSet<_> ="
 - "<_> = b.symmetric_difference(&a)"
 - "(&a).collect();\n    ///"
-- "/// assert_eq!(diff1, diff2);"
-- ///
-- assert_eq!(
+- "///\n    /// assert_eq!(diff1,"
+- "!(diff1, diff2);"
+- /// assert_eq!(
 - "diff1, [1, 4].iter().collect());"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "pub fn symmetric_difference<'a>"
 - "<'a>(&'a self, other: &'a Self)"
-- "->"
-- "SymmetricDifference<'a, T, S, A>"
-- "{"
-- SymmetricDifference
-- "{"
-- "iter:"
-- self.difference(other).chain
+- "-> SymmetricDifference<'a, T, S,"
+- "<'a, T, S, A>"
+- "{\n        SymmetricDifference {"
+- "{\n            iter:"
+- ": self.difference(other).chain("
 - "(other.difference(self)),"
-- ",\n        }\n    }"
-- ///
-- Visits the values representing
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Visits the"
+- /// Visits the values
+- the values representing the
 - "representing the intersection,"
-- ///
-- "i.e., the values that are both"
-- "that are both in `self` and `"
-- " in `self` and `other`.\n    ///"
+- "/// i.e., the values that are"
+- "values that are both in `self`"
+- "both in `self` and `other`."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let a: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let a: HashSet<_> = [1, 2, 3"
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = [4, 2, 3, 4]"
-- "> = [4, 2, 3, 4].into_iter()."
+- "/// let b: HashSet<_> = [4, 2, 3"
+- "<_> = [4, 2, 3, 4].into_iter()."
 - "4].into_iter().collect();"
-- ///
-- ///
+- "///\n    /// // Print 2, 3 in"
 - "// Print 2, 3 in arbitrary order"
 - arbitrary order.
-- ///
-- "/ for x in a.intersection(&b) {"
+- /// for x in a.intersection(&b)
+- "(&b) {"
 - "///     println!(\"{}\", x);"
-- "    /// }\n    ///"
-- ///
-- "let intersection: HashSet<_> ="
+- "    /// }\n    ///\n    /// let"
+- "///\n    /// let intersection:"
+- "intersection: HashSet<_> ="
 - ": HashSet<_> = a.intersection(&b"
 - (&b).collect();
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "intersection, [2, 3].iter()."
 - ", [2, 3].iter().collect());"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "pub fn intersection<'a>"
 - "<'a>(&'a self, other: &'a Self)"
 - "-> Intersection<'a, T, S, A>"
-- "{"
-- "let (smaller, larger) ="
-- if self.len() <= other.len()
-- "{\n            (self, other)"
+- "{\n        let (smaller, larger)"
+- "smaller, larger) ="
+- "= if self.len() <= other.len() {"
+- "(self, other)"
 - "(self, other)\n        }"
 - else
 - "{\n            (other, self)"
 - "(other, self)\n        };"
 - Intersection
-- "{"
-- "iter: smaller.iter(),"
+- "{\n            iter: smaller.iter"
+- ": smaller.iter(),"
 - ",\n            other: larger,"
 - "other: larger,\n        }\n    }"
-- ///
-- Visits the values representing
+- /// Visits the values
+- the values representing the
 - "representing the union,"
-- ///
-- "i.e., all the values in `self`"
-- "values in `self` or `other`,"
+- "/// i.e., all the values in `"
+- "the values in `self` or `other`,"
 - "` or `other`, without duplicates"
 - " duplicates.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "let a: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let a: HashSet<_> = [1, 2, 3"
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = [4, 2, 3, 4]"
-- "> = [4, 2, 3, 4].into_iter()."
+- "/// let b: HashSet<_> = [4, 2, 3"
+- "<_> = [4, 2, 3, 4].into_iter()."
 - "4].into_iter().collect();"
-- ///
-- ///
-- "// Print 1, 2, 3, 4 in arbitrary"
+- "///\n    /// // Print 1, 2, 3, 4"
+- "Print 1, 2, 3, 4 in arbitrary"
 - ", 4 in arbitrary order."
 - "/// for x in a.union(&b) {"
 - "///     println!(\"{}\", x);"
-- "    /// }\n    ///"
-- ///
-- "let union: HashSet<_> = a.union("
-- "<_> = a.union(&b).collect();"
-- ///
-- assert_eq!(
+- "    /// }\n    ///\n    /// let"
+- "///\n    /// let union: HashSet<_"
+- "union: HashSet<_> = a.union(&b)."
+- "> = a.union(&b).collect();"
+- /// assert_eq!(
 - "union, [1, 2, 3, 4].iter()."
 - "2, 3, 4].iter().collect());"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "pub fn union<'a>"
 - "<'a>(&'a self, other: &'a Self)"
 - "-> Union<'a, T, S, A>"
-- "{"
-- //
-- "We'll iterate one set in full,"
-- "one set in full, and only the"
+- "{\n        // We'll iterate one"
+- "iterate one set in full, and"
+- "set in full, and only the"
 - ", and only the remaining"
 - the remaining difference from
 - difference from the other.
-- //
-- Use the smaller set for the
+- // Use the smaller set for the
 - set for the difference in order
 - in order to reduce hash lookups.
 - "let (smaller, larger) ="
-- if self.len() <= other.len()
-- "{\n            (self, other)"
+- "= if self.len() <= other.len() {"
+- "(self, other)"
 - "(self, other)\n        }"
 - else
 - "{\n            (other, self)"
 - "(other, self)\n        };"
 - Union
-- "{"
-- "iter:"
-- larger.iter().chain
+- "{\n            iter: larger.iter("
+- ": larger.iter().chain("
 - "(smaller.difference(larger)),"
-- ",\n        }\n    }"
-- ///
-- "Returns `true` if the set"
+- ",\n        }\n    }\n\n    ///"
+- "}\n    }\n\n    /// Returns `true`"
+- "/ Returns `true` if the set"
 - "true` if the set contains a"
 - " set contains a value.\n    ///"
-- ///
-- The value may be any borrowed
-- be any borrowed form of the
-- "form of the set's value type,"
-- "value type, but"
-- ///
-- "[`Hash`] and [`Eq`] on the"
+- "///\n    /// The value may be any"
+- value may be any borrowed form
+- "borrowed form of the set's value"
+- "the set's value type, but"
+- "/// [`Hash`] and [`Eq`] on the"
 - "[`Eq`] on the borrowed form *"
 - borrowed form *must* match those
 - "* match those for"
 - "/// the value type.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let set: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let set: HashSet<_>"
+- "set: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.contains(&1), true);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.contains(&4), false);"
-- "/// ```\n    ///"
-- ///
-- "[`Eq`]: https://doc.rust-"
+- "/// ```\n    ///\n    /// [`Eq`]:"
+- "/// [`Eq`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cmp/"
 - /std/cmp/trait.Eq.html
-- ///
-- "[`Hash`]: https://doc.rust-"
+- "/// [`Hash`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/hash/"
 - /std/hash/trait.Hash.html
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "pub fn contains<Q: ?Sized>"
 - "<Q: ?Sized>(&self, value: &Q) ->"
 - "-> bool"
 - where
 - "Q: Hash + Equivalent<T>,"
-- "{"
-- self.map.contains_key(value)
-- "}"
-- ///
-- Returns a reference to the value
-- "to the value in the set, if any,"
+- "{\n        self.map.contains_key("
+- "(value)\n    }"
+- /// Returns a reference to the
+- reference to the value in the
+- "the value in the set, if any,"
 - "the set, if any, that is equal"
 - ", that is equal to the given"
 - " to the given value.\n    ///"
-- ///
-- The value may be any borrowed
-- be any borrowed form of the
-- "form of the set's value type,"
-- "value type, but"
-- ///
-- "[`Hash`] and [`Eq`] on the"
+- "///\n    /// The value may be any"
+- value may be any borrowed form
+- "borrowed form of the set's value"
+- "the set's value type, but"
+- "/// [`Hash`] and [`Eq`] on the"
 - "[`Eq`] on the borrowed form *"
 - borrowed form *must* match those
 - "* match those for"
 - "/// the value type.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let set: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let set: HashSet<_>"
+- "set: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.get(&2), Some(&2));"
-- ///
-- "/ assert_eq!(set.get(&4), None);"
-- "/// ```\n    ///"
-- ///
-- "[`Eq`]: https://doc.rust-"
+- /// assert_eq!(
+- "set.get(&4), None);\n    /// ```"
+- "/// ```\n    ///\n    /// [`Eq`]:"
+- "/// [`Eq`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cmp/"
 - /std/cmp/trait.Eq.html
-- ///
-- "[`Hash`]: https://doc.rust-"
+- "/// [`Hash`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/hash/"
 - /std/hash/trait.Hash.html
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "pub fn get<Q: ?Sized>"
 - "get<Q: ?Sized>(&self, value: &Q)"
 - "-> Option<&T>"
 - where
 - "Q: Hash + Equivalent<T>,"
-- "{"
-- //
-- "Avoid `Option::map` because it"
-- ":map` because it bloats LLVM IR."
+- "{\n        // Avoid `Option::map`"
+- "`Option::map` because it bloats"
+- it bloats LLVM IR.
 - match
 - self.map.get_key_value(value)
-- "{"
+- "{\n            Some((k, _)) =>"
 - "Some((k, _)) => Some(k),"
 - "None => None,"
 - "None => None,\n        }\n    }"
-- ///
-- "Inserts the given `value` into"
-- "`value` into the set if it is"
+- "/// Inserts the given `value`"
+- "given `value` into the set if it"
 - "the set if it is not present,"
 - "is not present, then"
-- ///
-- returns a reference to the value
-- to the value in the set.
+- /// returns a reference to the
+- reference to the value in the
+- " the value in the set.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<_> = [1, 2,"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
 - "/// assert_eq!(set.len(), 3);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.get_or_insert(2), &2);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.get_or_insert(100), &100);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.len(), 4); // 100 was"
 - ", 4); // 100 was inserted"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn get_or_insert
 - "(&mut self, value: T) -> &T"
-- "{"
-- //
+- "{\n        // Although the raw"
 - Although the raw entry gives us
 - "entry gives us `&mut T`, we only"
 - "&mut T`, we only return `&T` to"
 - "return `&T` to be consistent"
 - to be consistent with
-- //
-- "`get`."
+- "// `get`."
 - "Key mutation is \"raw\" because"
 - "is \"raw\" because you're not"
 - "you're not supposed to affect `"
@@ -1833,40 +1587,34 @@ expression: chunks
 - ".from_key(&value)\n            ."
 - ".or_insert(value, ())"
 - ".0\n    }"
-- ///
-- Inserts an owned copy of the
+- /// Inserts an owned copy of the
 - "copy of the given `value` into"
 - "`value` into the set if it is"
 - the set if it is not
-- ///
-- "present, then returns a"
+- "/// present, then returns a"
 - ", then returns a reference to"
 - a reference to the value in the
 - "the value in the set.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<String> = ["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<String> = [\"cat"
 - "<String> = [\"cat\", \"dog\", \"horse"
 - "\", \"dog\", \"horse\"]"
-- ///
-- ".iter().map(|&pet| pet.to_owned("
-- "| pet.to_owned()).collect();"
-- ///
-- "/// assert_eq!(set.len(), 3);"
-- ///
-- "for &pet in &[\"cat\", \"dog\", \""
-- "[\"cat\", \"dog\", \"fish\"] {"
-- ///
-- let value =
+- ///     .iter().map(|&pet|
+- ().map(|&pet| pet.to_owned()).
+- pet.to_owned()).collect();
+- "///\n    /// assert_eq!(set.len()"
+- "!(set.len(), 3);"
+- "/// for &pet in &[\"cat\", \"dog\","
+- "&[\"cat\", \"dog\", \"fish\"] {"
+- ///     let value =
 - value = set.get_or_insert_owned(
 - (pet);
 - "///     assert_eq!(value, pet);"
-- "/// }"
-- ///
-- assert_eq!(
+- "    /// }\n    /// assert_eq!("
 - "set.len(), 4); // a new \"fish\""
 - "// a new \"fish\" was inserted"
 - "/// ```\n    #[inline]"
@@ -1877,15 +1625,13 @@ expression: chunks
 - Q
 - ": Hash + Equivalent<T> +"
 - "+ ToOwned<Owned = T>,"
-- "{"
-- //
+- "{\n        // Although the raw"
 - Although the raw entry gives us
 - "entry gives us `&mut T`, we only"
 - "&mut T`, we only return `&T` to"
 - "return `&T` to be consistent"
 - to be consistent with
-- //
-- "`get`."
+- "// `get`."
 - "Key mutation is \"raw\" because"
 - "is \"raw\" because you're not"
 - "you're not supposed to affect `"
@@ -1896,45 +1642,37 @@ expression: chunks
 - ".or_insert_with"
 - "(|| (value.to_owned(), ()))"
 - ".0\n    }"
-- ///
-- "Inserts a value computed from `f"
-- "computed from `f` into the set"
-- "`f` into the set if the given `"
-- "if the given `value` is"
-- ///
-- "not present, then returns a"
+- /// Inserts a value computed
+- "a value computed from `f` into"
+- "from `f` into the set if the"
+- "the set if the given `value` is"
+- "/// not present, then returns a"
 - ", then returns a reference to"
 - a reference to the value in the
 - "the value in the set.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<String> = ["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<String> = [\"cat"
 - "<String> = [\"cat\", \"dog\", \"horse"
 - "\", \"dog\", \"horse\"]"
-- ///
-- ".iter().map(|&pet| pet.to_owned("
-- "| pet.to_owned()).collect();"
-- ///
-- "/// assert_eq!(set.len(), 3);"
-- ///
-- "for &pet in &[\"cat\", \"dog\", \""
-- "[\"cat\", \"dog\", \"fish\"] {"
-- ///
-- let value =
+- ///     .iter().map(|&pet|
+- ().map(|&pet| pet.to_owned()).
+- pet.to_owned()).collect();
+- "///\n    /// assert_eq!(set.len()"
+- "!(set.len(), 3);"
+- "/// for &pet in &[\"cat\", \"dog\","
+- "&[\"cat\", \"dog\", \"fish\"] {"
+- ///     let value =
 - value = set.get_or_insert_with(
 - "(pet, str::to_owned);"
 - "///     assert_eq!(value, pet);"
-- "/// }"
-- ///
-- assert_eq!(
+- "    /// }\n    /// assert_eq!("
 - "set.len(), 4); // a new \"fish\""
 - "// a new \"fish\" was inserted"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn get_or_insert_with
@@ -1944,15 +1682,13 @@ expression: chunks
 - where
 - "Q: Hash + Equivalent<T>,"
 - ",\n        F: FnOnce(&Q) -> T,"
-- "{"
-- //
+- "{\n        // Although the raw"
 - Although the raw entry gives us
 - "entry gives us `&mut T`, we only"
 - "&mut T`, we only return `&T` to"
 - "return `&T` to be consistent"
 - to be consistent with
-- //
-- "`get`."
+- "// `get`."
 - "Key mutation is \"raw\" because"
 - "is \"raw\" because you're not"
 - "you're not supposed to affect `"
@@ -1963,49 +1699,44 @@ expression: chunks
 - ".or_insert_with"
 - "(|| (f(value), ()))"
 - ".0\n    }"
-- ///
-- "Gets the given value's"
+- "/// Gets the given value's"
 - "given value's corresponding"
 - corresponding entry in the set
 - entry in the set for in-place
 - set for in-place manipulation.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_set::Entry::"
-- "::Entry::*;\n    ///"
-- ///
-- "let mut singles = HashSet::new()"
-- "= HashSet::new();"
-- ///
-- "let mut dupes = HashSet::new();"
-- ///
-- ///
-- "for ch in \"a short treatise on"
-- "treatise on fungi\".chars() {"
-- ///
-- if let Vacant(dupe_entry) =
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_set::"
+- "::hash_set::Entry::*;\n    ///"
+- "///\n    /// let mut singles ="
+- "mut singles = HashSet::new();"
+- "/// let mut dupes = HashSet::new"
+- " = HashSet::new();\n    ///"
+- "///\n    /// for ch in \"a short"
+- "ch in \"a short treatise on fungi"
+- "on fungi\".chars() {"
+- ///     if let Vacant(dupe_entry
 - "(dupe_entry) = dupes.entry(ch) {"
-- ///
+- "///         // We haven't"
 - "// We haven't already seen a"
 - "already seen a duplicate, so"
-- ///
-- "// check if we've at least seen"
-- at least seen it once.
-- ///
-- "match singles.entry(ch) {"
-- ///
+- "///         // check if we've at"
+- "if we've at least seen it once."
+- ///         match singles.entry(
+- "singles.entry(ch) {"
+- ///             Vacant(
 - "Vacant(single_entry) => {"
-- ///
+- ///                 // We found
 - // We found a new character for
 - character for the first time.
 - ///
 - single_entry.insert();
-- "///             }"
-- ///
+- "///             }\n    ///"
+- "}\n    ///             Occupied("
 - "Occupied(single_entry) => {"
-- ///
+- "///                 // We've"
 - "// We've already seen this once,"
 - "seen this once, \"move\" it to"
 - ", \"move\" it to dupes."
@@ -2013,149 +1744,125 @@ expression: chunks
 - single_entry.remove();
 - ///
 - dupe_entry.insert();
-- "///             }"
-- "    ///         }\n    ///     }"
-- "    ///     }\n    /// }\n    ///"
-- ///
-- assert!(!
+- "///             }\n    ///"
+- "}\n    ///         }\n    ///"
+- "}\n    ///     }\n    /// }\n    //"
+- "    /// }\n    ///\n    /// assert"
+- "/\n    /// assert!(!"
 - "singles.contains(&'t') &&"
 - "(&'t') && dupes.contains(&'t'));"
-- ///
-- assert!(
+- /// assert!(
 - "singles.contains(&'u') && !"
 - "dupes.contains(&'u'));"
-- ///
-- assert!(!
+- /// assert!(!
 - "singles.contains(&'v') && !"
 - "dupes.contains(&'v'));"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn entry
 - "fn entry(&mut self, value: T) ->"
 - "-> Entry<'_, T, S, A>"
-- "{"
-- match self.map.entry(value)
-- "{"
+- "{\n        match self.map.entry("
+- self.map.entry(value)
+- "{\n            map::Entry::"
 - "map::Entry::Occupied(entry) =>"
-- "Entry::Occupied"
+- "=> Entry::Occupied(OccupiedEntry"
 - "(OccupiedEntry { inner: entry })"
-- ","
-- "map::Entry::Vacant(entry) =>"
-- "Entry::Vacant"
+- ",\n            map::Entry::Vacant"
+- "::Entry::Vacant(entry) =>"
+- "=> Entry::Vacant(VacantEntry {"
 - "(VacantEntry { inner: entry }),"
-- "}\n    }"
-- ///
-- "Returns `true` if `self` has no"
-- "if `self` has no elements in"
+- "}\n    }\n\n    /// Returns `true`"
+- "/ Returns `true` if `self` has"
+- "` if `self` has no elements in"
 - "no elements in common with `"
 - "in common with `other`."
-- ///
-- This is equivalent to checking
-- to checking for an empty
+- /// This is equivalent to
+- is equivalent to checking for an
+- checking for an empty
 - for an empty intersection.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let a: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let a: HashSet<_> ="
+- "a: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
 - "/// let mut b = HashSet::new();"
-- ///
-- ///
-- assert_eq!(
+- "    ///\n    /// assert_eq!("
 - "a.is_disjoint(&b), true);"
 - /// b.insert(4);
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "a.is_disjoint(&b), true);"
 - /// b.insert(1);
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "a.is_disjoint(&b), false);"
-- "/// ```"
-- pub fn is_disjoint
+- "/// ```\n    pub fn is_disjoint(&"
 - "is_disjoint(&self, other: &Self)"
 - "-> bool"
-- "{"
-- self.iter().all
-- "(|v| !other.contains(v))\n    }"
-- ///
-- "Returns `true` if the set is a"
-- if the set is a subset of
+- "{\n        self.iter().all(|v| !"
+- ().all(|v| !other.contains(v))
+- "}\n\n    /// Returns `true` if the"
+- "`true` if the set is a subset of"
 - "is a subset of another,"
-- ///
-- "i.e., `other` contains at least"
+- "/// i.e., `other` contains at"
+- "` contains at least all the"
 - "at least all the values in `self"
 - " values in `self`.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let sup: HashSet<_> = [1, 2, 3]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let sup: HashSet<_>"
+- "sup: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- "/ let mut set = HashSet::new();"
-- ///
-- ///
-- assert_eq!(
+- "/// let mut set = HashSet::new()"
+- "= HashSet::new();\n    ///"
+- "///\n    /// assert_eq!("
 - "set.is_subset(&sup), true);"
 - /// set.insert(2);
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.is_subset(&sup), true);"
 - /// set.insert(4);
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.is_subset(&sup), false);"
-- "/// ```"
-- pub fn is_subset
+- "/// ```\n    pub fn is_subset(&"
 - "is_subset(&self, other: &Self)"
 - "-> bool"
-- "{"
+- "{\n        self.len() <="
 - self.len() <= other.len() &&
-- self.iter().all
-- "(|v| other.contains(v))\n    }"
-- ///
-- "Returns `true` if the set is a"
-- if the set is a superset of
+- "&& self.iter().all(|v|"
+- ().all(|v| other.contains(v))
+- "}\n\n    /// Returns `true` if the"
+- "`true` if the set is a superset"
 - "is a superset of another,"
-- ///
-- "i.e., `self` contains at least"
+- "/// i.e., `self` contains at"
+- "` contains at least all the"
 - "at least all the values in `"
 - " the values in `other`.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let sub: HashSet<_> = [1, 2]."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let sub: HashSet<_>"
+- "sub: HashSet<_> = [1, 2]."
 - "<_> = [1, 2].into_iter().collect"
 - ().collect();
-- ///
-- "/ let mut set = HashSet::new();"
-- ///
-- ///
-- assert_eq!(
+- "/// let mut set = HashSet::new()"
+- "= HashSet::new();\n    ///"
+- "///\n    /// assert_eq!("
 - "set.is_superset(&sub), false);"
 - "///\n    /// set.insert(0);"
 - /// set.insert(1);
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.is_superset(&sub), false);"
 - "///\n    /// set.insert(2);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.is_superset(&sub), true);"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn is_superset
@@ -2163,384 +1870,325 @@ expression: chunks
 - "-> bool"
 - "{\n        other.is_subset(self)"
 - "}"
-- /// Adds a value to the set.
-- ///
-- ///
-- If the set did not have this
-- "not have this value present, `"
-- "value present, `true` is"
-- ", `true` is returned.\n    ///"
-- ///
-- If the set did have this value
+- "    }\n\n    /// Adds a value to"
+- Adds a value to the set.
+- "///\n    /// If the set did not"
+- the set did not have this value
+- "have this value present, `true`"
+- "present, `true` is returned."
+- "///\n    /// If the set did have"
+- the set did have this value
 - "have this value present, `false`"
 - "present, `false` is returned."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "/ let mut set = HashSet::new();"
-- ///
-- ///
-- "assert_eq!(set.insert(2), true);"
-- ///
-- assert_eq!(
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set ="
+- "// let mut set = HashSet::new();"
+- "///\n    /// assert_eq!("
+- "set.insert(2), true);"
+- /// assert_eq!(
 - "set.insert(2), false);"
 - "/// assert_eq!(set.len(), 1);"
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn insert
 - "fn insert(&mut self, value: T)"
 - "-> bool"
-- "{"
-- "self.map.insert(value, ())."
-- ".is_none()\n    }"
-- ///
-- Insert a value the set without
-- the set without checking if the
-- checking if the value already
-- value already exists in the set.
-- ///
-- ///
-- Returns a reference to the value
-- to the value just inserted.
-- ///
-- ///
-- This operation is safe if a
-- is safe if a value does not
-- a value does not exist in the
-- "not exist in the set.\n    ///"
-- ///
-- "However, if a value exists in"
-- "value exists in the set already,"
-- "the set already, the behavior is"
-- "the behavior is unspecified:"
-- ///
-- "this operation may panic, loop"
+- "{\n        self.map.insert(value,"
+- "(value, ()).is_none()\n    }"
+- /// Insert a value the set
+- a value the set without checking
+- without checking if the value
+- if the value already exists in
+- " exists in the set.\n    ///"
+- "///\n    /// Returns a reference"
+- a reference to the value just
+- the value just inserted.
+- "///\n    /// This operation is"
+- operation is safe if a value
+- safe if a value does not exist
+- does not exist in the set.
+- "///\n    /// However, if a value"
+- ", if a value exists in the set"
+- "in the set already, the behavior"
+- ", the behavior is unspecified:"
+- "/// this operation may panic,"
 - "may panic, loop forever, or any"
 - "forever, or any following"
 - or any following operation with
 - operation with the set
-- ///
-- "may panic, loop forever or"
+- "/// may panic, loop forever or"
 - loop forever or return arbitrary
 - return arbitrary result.
-- ///
-- ///
+- "///\n    /// That said, this"
 - "That said, this operation (and"
 - operation (and following
 - (and following operations) are
 - operations) are guaranteed to
 - /// not violate memory safety.
-- ///
-- ///
-- This operation is faster than
+- "    ///\n    /// This operation"
+- / This operation is faster than
 - "is faster than regular insert,"
 - "regular insert, because it does"
 - because it does not perform
 - /// lookup before insertion.
-- ///
-- ///
-- This operation is useful during
+- "    ///\n    /// This operation"
+- / This operation is useful
 - is useful during initial
 - during initial population of the
 - of the set.
-- ///
-- "For example, when constructing a"
-- constructing a set from another
-- "set from another set, we know"
+- "/// For example, when"
+- "example, when constructing a set"
+- "a set from another set, we know"
 - /// that values are unique.
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn insert_unique_unchecked
 - "(&mut self, value: T) -> &T"
 - "{"
 - self.map.insert_unique_unchecked
 - "(value, ()).0\n    }"
-- ///
-- "Adds a value to the set,"
+- "/// Adds a value to the set,"
 - "to the set, replacing the"
 - ", replacing the existing value,"
 - "existing value, if any, that is"
 - "if any, that is equal to the"
 - is equal to the given
-- ///
-- one. Returns the replaced value.
+- /// one.
+- Returns the replaced value.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "/ let mut set = HashSet::new();"
-- ///
-- "/ set.insert(Vec::<i32>::new());"
-- ///
-- ///
-- assert_eq!(
-- "set.get(&[][..]).unwrap()."
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set ="
+- "// let mut set = HashSet::new();"
+- "/// set.insert(Vec::<i32>::new()"
+- "::<i32>::new());\n    ///"
+- "///\n    /// assert_eq!(set.get(&"
+- "!(set.get(&[][..]).unwrap()."
 - "][..]).unwrap().capacity(), 0);"
-- ///
-- "set.replace(Vec::with_capacity("
-- "::with_capacity(10));"
-- ///
-- assert_eq!(
+- "/// set.replace(Vec::"
+- "(Vec::with_capacity(10));"
+- /// assert_eq!(
 - "set.get(&[][..]).unwrap()."
 - "][..]).unwrap().capacity(), 10);"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn replace
 - "fn replace(&mut self, value: T)"
 - "-> Option<T>"
-- "{"
-- match self.map.entry(value)
-- "{"
+- "{\n        match self.map.entry("
+- self.map.entry(value)
+- "{\n            map::Entry::"
 - "map::Entry::Occupied(occupied)"
 - "=> Some(occupied.replace_key()),"
 - "map::Entry::Vacant(vacant) =>"
-- "{"
+- "=> {"
+- "{\n                vacant.insert("
 - vacant.insert(());
 - None
 - "None\n            }\n        }"
-- "}"
-- ///
-- Removes a value from the set.
+- "}\n\n    /// Removes a value from"
+- a value from the set.
 - Returns whether the value was
 - "/// present in the set.\n    ///"
-- ///
+- "    ///\n    /// The value may be"
 - The value may be any borrowed
 - be any borrowed form of the
 - "form of the set's value type,"
 - "value type, but"
-- ///
-- "[`Hash`] and [`Eq`] on the"
+- "/// [`Hash`] and [`Eq`] on the"
 - "[`Eq`] on the borrowed form *"
 - borrowed form *must* match those
 - "* match those for"
 - "/// the value type.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "/ let mut set = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set ="
+- "// let mut set = HashSet::new();"
 - "///\n    /// set.insert(2);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.remove(&2), true);"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.remove(&2), false);"
-- "/// ```\n    ///"
-- ///
-- "[`Eq`]: https://doc.rust-"
+- "/// ```\n    ///\n    /// [`Eq`]:"
+- "/// [`Eq`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cmp/"
 - /std/cmp/trait.Eq.html
-- ///
-- "[`Hash`]: https://doc.rust-"
+- "/// [`Hash`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/hash/"
 - /std/hash/trait.Hash.html
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "pub fn remove<Q: ?Sized>"
 - "(&mut self, value: &Q) -> bool"
 - where
 - "Q: Hash + Equivalent<T>,"
-- "{"
-- self.map.remove(value).is_some()
-- "}"
-- ///
-- Removes and returns the value in
-- "the value in the set, if any,"
-- "the set, if any, that is equal"
-- ", that is equal to the given one"
-- " to the given one.\n    ///"
-- ///
-- The value may be any borrowed
-- be any borrowed form of the
-- "form of the set's value type,"
-- "value type, but"
-- ///
-- "[`Hash`] and [`Eq`] on the"
+- "{\n        self.map.remove(value)"
+- "(value).is_some()\n    }"
+- /// Removes and returns the
+- and returns the value in the set
+- "value in the set, if any, that"
+- ", if any, that is equal to the"
+- is equal to the given one.
+- "///\n    /// The value may be any"
+- value may be any borrowed form
+- "borrowed form of the set's value"
+- "the set's value type, but"
+- "/// [`Hash`] and [`Eq`] on the"
 - "[`Eq`] on the borrowed form *"
 - borrowed form *must* match those
 - "* match those for"
 - "/// the value type.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<_> = [1, 2,"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<_> = [1, 2, 3]."
 - "<_> = [1, 2, 3].into_iter()."
 - "3].into_iter().collect();"
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.take(&2), Some(2));"
-- ///
-- "assert_eq!(set.take(&2), None);"
-- "/// ```\n    ///"
-- ///
-- "[`Eq`]: https://doc.rust-"
+- /// assert_eq!(
+- "set.take(&2), None);\n    /// ```"
+- "/// ```\n    ///\n    /// [`Eq`]:"
+- "/// [`Eq`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/cmp/"
 - /std/cmp/trait.Eq.html
-- ///
-- "[`Hash`]: https://doc.rust-"
+- "/// [`Hash`]: https://doc.rust-"
 - "://doc.rust-lang.org/std/hash/"
 - /std/hash/trait.Hash.html
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "pub fn take<Q: ?Sized>"
 - "(&mut self, value: &Q) ->"
 - "-> Option<T>"
 - where
 - "Q: Hash + Equivalent<T>,"
-- "{"
-- //
-- "Avoid `Option::map` because it"
-- ":map` because it bloats LLVM IR."
+- "{\n        // Avoid `Option::map`"
+- "`Option::map` because it bloats"
+- it bloats LLVM IR.
 - match
 - self.map.remove_entry(value)
-- "{"
+- "{\n            Some((k, _)) =>"
 - "Some((k, _)) => Some(k),"
 - "None => None,"
 - "None => None,\n        }\n    }\n}"
 - "impl<T, S, A: Allocator>"
 - "HashSet<T, S, A>"
-- "{"
-- ///
-- "Returns a reference to the [`"
-- "to the [`RawTable`] used"
-- "`RawTable`] used underneath [`"
-- "underneath [`HashSet`]."
-- ///
-- This function is only available
-- "only available if the `raw`"
-- "if the `raw` feature of the"
-- "` feature of the crate is"
+- "{\n    /// Returns a reference to"
+- "a reference to the [`RawTable`]"
+- "the [`RawTable`] used underneath"
+- "used underneath [`HashSet`]."
+- /// This function is only
+- function is only available if
+- "available if the `raw` feature"
+- "`raw` feature of the crate is"
 - of the crate is enabled.
 - "///\n    /// # Note\n    ///"
-- ///
-- "Calling this function is safe,"
-- "is safe, but using the raw hash"
+- "    ///\n    /// Calling this"
+- /// Calling this function is
+- "this function is safe, but using"
+- "safe, but using the raw hash"
 - the raw hash table API may
 - table API may require
 - /// unsafe functions or blocks.
-- ///
-- ///
-- "`RawTable` API gives the lowest"
-- gives the lowest level of
+- "    ///\n    /// `RawTable` API"
+- "/ `RawTable` API gives the"
+- "` API gives the lowest level of"
 - lowest level of control under
 - of control under the set that
 - the set that can be useful
-- ///
-- "for extending the HashSet's API,"
-- "HashSet's API, but may lead to *"
-- "may lead to *[undefined behavior"
-- " behavior]*.\n    ///"
-- ///
+- "/// for extending the HashSet's"
+- "the HashSet's API, but may lead"
+- ", but may lead to *[undefined"
+- "to *[undefined behavior]*."
+- "///\n    /// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`RawTable`]: crate::raw::"
+- "/// [`RawTable`]: crate::raw::"
 - "`]: crate::raw::RawTable"
-- ///
-- "[undefined behavior]: https://"
+- "/// [undefined behavior]: https:"
 - "]: https://doc.rust-lang.org/"
 - "-lang.org/reference/behavior-"
 - /behavior-considered-
 - "-considered-undefined.html"
 - "#[cfg(feature = \"raw\")]"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn raw_table(&self) ->
 - "(&self) -> &RawTable<(T, ()), A>"
 - "{\n        self.map.raw_table()"
 - "}"
-- ///
-- Returns a mutable reference to
-- "reference to the [`RawTable`]"
-- "the [`RawTable`] used underneath"
-- "used underneath [`HashSet`]."
-- ///
-- This function is only available
-- "only available if the `raw`"
-- "if the `raw` feature of the"
-- "` feature of the crate is"
+- "    }\n\n    /// Returns a mutable"
+- "a mutable reference to the [`"
+- "to the [`RawTable`] used"
+- "`RawTable`] used underneath [`"
+- "underneath [`HashSet`]."
+- /// This function is only
+- function is only available if
+- "available if the `raw` feature"
+- "`raw` feature of the crate is"
 - of the crate is enabled.
 - "///\n    /// # Note\n    ///"
-- ///
-- "Calling this function is safe,"
-- "is safe, but using the raw hash"
+- "    ///\n    /// Calling this"
+- /// Calling this function is
+- "this function is safe, but using"
+- "safe, but using the raw hash"
 - the raw hash table API may
 - table API may require
 - /// unsafe functions or blocks.
-- ///
-- ///
-- "`RawTable` API gives the lowest"
-- gives the lowest level of
+- "    ///\n    /// `RawTable` API"
+- "/ `RawTable` API gives the"
+- "` API gives the lowest level of"
 - lowest level of control under
 - of control under the set that
 - the set that can be useful
-- ///
-- "for extending the HashSet's API,"
-- "HashSet's API, but may lead to *"
-- "may lead to *[undefined behavior"
-- " behavior]*.\n    ///"
-- ///
+- "/// for extending the HashSet's"
+- "the HashSet's API, but may lead"
+- ", but may lead to *[undefined"
+- "to *[undefined behavior]*."
+- "///\n    /// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`RawTable`]: crate::raw::"
+- "/// [`RawTable`]: crate::raw::"
 - "`]: crate::raw::RawTable"
-- ///
-- "[undefined behavior]: https://"
+- "/// [undefined behavior]: https:"
 - "]: https://doc.rust-lang.org/"
 - "-lang.org/reference/behavior-"
 - /behavior-considered-
 - "-considered-undefined.html"
 - "#[cfg(feature = \"raw\")]"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn raw_table_mut(&mut self)
 - (&mut self) ->
 - "-> &mut RawTable<(T, ()), A>"
-- "{"
-- self.map.raw_table_mut()
-- "    }\n}"
-- "impl<T, S, A> PartialEq for"
+- "{\n        self.map.raw_table_mut"
+- "()\n    }\n}\n\nimpl<T, S, A>"
+- "}\n\nimpl<T, S, A> PartialEq for"
 - "PartialEq for HashSet<T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
 - "S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- "fn eq(&self, other: &Self) ->"
-- "-> bool"
-- "{"
+- "{\n    fn eq(&self, other: &Self)"
+- ", other: &Self) -> bool"
+- "{\n        if self.len() !="
 - if self.len() != other.len()
 - "{\n            return false;"
 - "return false;\n        }"
 - self.iter().all
 - (|key| other.contains(key))
-- "}\n}"
-- "impl<T, S, A> Eq for"
+- "}\n}\n\nimpl<T, S, A> Eq for"
 - "Eq for HashSet<T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -2551,22 +2199,17 @@ expression: chunks
 - "fmt::Debug for HashSet<T, S, A>"
 - "where\n    T: fmt::Debug,"
 - "T: fmt::Debug,\n    A: Allocator,"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_set().entries
-- "(self.iter()).finish()\n    }\n}"
-- "impl<T, S, A>"
-- "From<HashMap<T, (), S, A>> for"
+- "{\n        f.debug_set().entries("
+- ().entries(self.iter()).finish()
+- "}\n}\n\nimpl<T, S, A> From<HashMap<"
+- "A> From<HashMap<T, (), S, A>>"
 - "for HashSet<T, S, A>"
 - "where\n    A: Allocator,"
-- "{"
-- fn from
-- "from(map: HashMap<T, (), S, A>)"
-- "-> Self"
+- "{\n    fn from(map: HashMap<T, ()"
+- ": HashMap<T, (), S, A>) -> Self"
 - " {\n        Self { map }\n    }\n}"
 - "impl<T, S, A> FromIterator<T>"
 - FromIterator<T> for
@@ -2574,23 +2217,19 @@ expression: chunks
 - "where\n    T: Eq + Hash,"
 - ",\n    S: BuildHasher + Default,"
 - ",\n    A: Default + Allocator,"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn from_iter
 - "<I: IntoIterator<Item = T>>"
 - "(iter: I) -> Self"
-- "{"
-- let mut set =
-- "Self::with_hasher_in"
+- "{\n        let mut set = Self::"
+- "= Self::with_hasher_in(Default::"
 - "(Default::default(),"
 - ", Default::default());"
 - "set.extend(iter);\n        set"
 - "        set\n    }\n}"
-- //
-- The default hasher is used to
+- // The default hasher is used to
 - is used to match the std
 - to match the std implementation
 - implementation signature
@@ -2602,219 +2241,190 @@ expression: chunks
 - "where\n    T: Eq + Hash,"
 - ",\n    A: Default + Allocator,"
 - "{\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let set1 = HashSet::from([1, 2,"
-- "::from([1, 2, 3, 4]);"
-- ///
-- "let set2: HashSet<_> = [1, 2, 3,"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let set1 = HashSet::"
+- "set1 = HashSet::from([1, 2, 3, 4"
+- "from([1, 2, 3, 4]);"
+- "/// let set2: HashSet<_> = [1, 2"
 - "<_> = [1, 2, 3, 4].into();"
 - "/// assert_eq!(set1, set2);"
-- "/// ```"
+- "    /// ```\n    fn from(arr: [T;"
 - "fn from(arr: [T; N]) -> Self"
-- "{"
-- arr.into_iter().collect()
-- "    }\n}"
-- "impl<T, S, A> Extend<T> for"
+- "{\n        arr.into_iter()."
+- "arr.into_iter().collect()\n    }"
+- "}\n\nimpl<T, S, A> Extend<T> for"
 - "Extend<T> for HashSet<T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
 - "S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn extend
 - "<I: IntoIterator<Item = T>>"
 - "(&mut self, iter: I)"
-- "{"
-- self.map.extend
-- (
-- iter.into_iter().map
-- "(|k| (k, ())));\n    }"
+- "{\n        self.map.extend("
+- "(iter.into_iter().map(|k| (k, ()"
+- ").map(|k| (k, ())));\n    }"
 - "#[inline]"
 - "#[cfg(feature = \"nightly\")]"
 - "fn extend_one(&mut self, k: T)"
-- "{"
-- "self.map.insert(k, ());"
-- "    }\n\n    #[inline]"
+- "{\n        self.map.insert(k, ())"
+- "(k, ());\n    }\n\n    #[inline]"
 - "#[cfg(feature = \"nightly\")]"
 - fn extend_reserve
 - "(&mut self, additional: usize)"
-- "{"
-- "Extend::<(T, ())>::"
-- "::extend_reserve"
+- "{\n        Extend::<(T, ())>::"
+- "::<(T, ())>::extend_reserve"
 - "(&mut self.map, additional);"
-- "}\n}"
-- "impl<'a, T, S, A> Extend<&'a T>"
-- "Extend<&'a T> for"
+- "}\n}\n\nimpl<'a, T, S, A> Extend<&'"
+- "S, A> Extend<&'a T> for"
 - "for HashSet<T, S, A>"
 - where
 - "T: 'a + Eq + Hash + Copy,"
 - ",\n    S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn extend
 - "<I: IntoIterator<Item = &'a T>>"
 - "(&mut self, iter: I)"
-- "{"
-- self.extend
+- "{\n        self.extend("
 - (iter.into_iter().copied());
 - "}\n\n    #[inline]"
 - "#[cfg(feature = \"nightly\")]"
 - fn extend_one
 - "extend_one(&mut self, k: &'a T)"
-- "{"
-- "self.map.insert(*k, ());"
-- "    }\n\n    #[inline]"
+- "{\n        self.map.insert(*k, ()"
+- "(*k, ());\n    }\n\n    #[inline]"
 - "#[cfg(feature = \"nightly\")]"
 - fn extend_reserve
 - "(&mut self, additional: usize)"
-- "{"
-- "Extend::<(T, ())>::"
-- "::extend_reserve"
+- "{\n        Extend::<(T, ())>::"
+- "::<(T, ())>::extend_reserve"
 - "(&mut self.map, additional);"
-- "}\n}"
-- "impl<T, S, A> Default for"
+- "}\n}\n\nimpl<T, S, A> Default for"
 - "Default for HashSet<T, S, A>"
 - "where\n    S: Default,"
 - ",\n    A: Default + Allocator,"
-- "{"
-- ///
-- "Creates an empty `HashSet<T, S>`"
-- "`HashSet<T, S>` with the `"
-- ", S>` with the `Default` value"
+- "{\n    /// Creates an empty `"
+- "an empty `HashSet<T, S>` with"
+- "<T, S>` with the `Default` value"
 - "`Default` value for the hasher."
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn default() -> Self
-- "{"
-- Self
-- "{"
+- "{\n        Self {\n            map"
 - "map: HashMap::default(),"
-- ",\n        }\n    }\n}"
-- "impl<T, S, A>"
+- ",\n        }\n    }\n}\n\nimpl<T, S,"
+- "}\n}\n\nimpl<T, S, A> BitOr<&"
 - "BitOr<&HashSet<T, S, A>> for"
 - "for &HashSet<T, S, A>"
 - "where\n    T: Eq + Hash + Clone,"
 - ",\n    S: BuildHasher + Default,"
 - ",\n    A: Allocator,"
-- "{"
-- "type Output = HashSet<T, S>;"
-- ///
-- "Returns the union of `self` and"
-- "of `self` and `rhs` as a new `"
-- "`rhs` as a new `HashSet<T, S>`."
+- "{\n    type Output = HashSet<T, S"
+- "= HashSet<T, S>;"
+- "/// Returns the union of `self`"
+- "union of `self` and `rhs` as a"
+- "` and `rhs` as a new `HashSet<T,"
+- " new `HashSet<T, S>`.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let a: HashSet<_> = vec!["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let a: HashSet<_> ="
+- "a: HashSet<_> = vec!["
 - "1, 2, 3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = vec!["
+- "/// let b: HashSet<_> = vec!["
 - "3, 4, 5].into_iter().collect();"
 - "///\n    /// let set = &a | &b;"
 - "    ///\n    /// let mut i = 0;"
-- ///
-- "let expected = [1, 2, 3, 4, 5];"
+- "/// let expected = [1, 2, 3, 4,"
+- "= [1, 2, 3, 4, 5];"
 - "/// for x in &set {"
-- ///
-- assert!(expected.contains(x));
+- ///     assert!(
+- expected.contains(x));
 - "///     i += 1;\n    /// }"
-- ///
-- "/ assert_eq!(i, expected.len());"
-- "/// ```"
-- fn bitor
+- "    /// }\n    /// assert_eq!(i,"
+- "i, expected.len());\n    /// ```"
+- "/// ```\n    fn bitor(self, rhs:"
 - "(self, rhs: &HashSet<T, S, A>)"
 - "-> HashSet<T, S>"
-- "{"
-- self.union(rhs).cloned().collect
-- "()\n    }\n}"
+- "{\n        self.union(rhs).cloned"
+- "(rhs).cloned().collect()\n    }\n}"
 - "impl<T, S, A>"
 - "BitAnd<&HashSet<T, S, A>> for"
 - "for &HashSet<T, S, A>"
 - "where\n    T: Eq + Hash + Clone,"
 - ",\n    S: BuildHasher + Default,"
 - ",\n    A: Allocator,"
-- "{"
-- "type Output = HashSet<T, S>;"
-- ///
-- "Returns the intersection of `"
-- "of `self` and `rhs` as a new `"
+- "{\n    type Output = HashSet<T, S"
+- "= HashSet<T, S>;"
+- /// Returns the intersection of
+- "intersection of `self` and `rhs`"
+- "`self` and `rhs` as a new `"
 - "`rhs` as a new `HashSet<T, S>`."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let a: HashSet<_> = vec!["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let a: HashSet<_> ="
+- "a: HashSet<_> = vec!["
 - "1, 2, 3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = vec!["
+- "/// let b: HashSet<_> = vec!["
 - "2, 3, 4].into_iter().collect();"
 - "///\n    /// let set = &a & &b;"
 - "    ///\n    /// let mut i = 0;"
 - "/// let expected = [2, 3];"
 - "/// for x in &set {"
-- ///
-- assert!(expected.contains(x));
+- ///     assert!(
+- expected.contains(x));
 - "///     i += 1;\n    /// }"
-- ///
-- "/ assert_eq!(i, expected.len());"
-- "/// ```"
-- fn bitand
+- "    /// }\n    /// assert_eq!(i,"
+- "i, expected.len());\n    /// ```"
+- "/// ```\n    fn bitand(self, rhs:"
 - "(self, rhs: &HashSet<T, S, A>)"
 - "-> HashSet<T, S>"
-- "{"
-- self.intersection(rhs).cloned().
-- ".collect()\n    }\n}"
+- "{\n        self.intersection(rhs)"
+- "(rhs).cloned().collect()\n    }\n}"
 - "impl<T, S>"
 - "<T, S> BitXor<&HashSet<T, S>>"
 - "for &HashSet<T, S>"
 - "where\n    T: Eq + Hash + Clone,"
 - ",\n    S: BuildHasher + Default,"
-- "{"
-- "type Output = HashSet<T, S>;"
-- ///
-- Returns the symmetric difference
+- "{\n    type Output = HashSet<T, S"
+- "= HashSet<T, S>;"
+- /// Returns the symmetric
+- "the symmetric difference of `"
 - "difference of `self` and `rhs`"
 - "`self` and `rhs` as a new `"
 - "`rhs` as a new `HashSet<T, S>`."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let a: HashSet<_> = vec!["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let a: HashSet<_> ="
+- "a: HashSet<_> = vec!["
 - "1, 2, 3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = vec!["
+- "/// let b: HashSet<_> = vec!["
 - "3, 4, 5].into_iter().collect();"
 - "///\n    /// let set = &a ^ &b;"
 - "    ///\n    /// let mut i = 0;"
 - "/// let expected = [1, 2, 4, 5];"
 - "/// for x in &set {"
-- ///
-- assert!(expected.contains(x));
+- ///     assert!(
+- expected.contains(x));
 - "///     i += 1;\n    /// }"
-- ///
-- "/ assert_eq!(i, expected.len());"
-- "/// ```"
-- fn bitxor
+- "    /// }\n    /// assert_eq!(i,"
+- "i, expected.len());\n    /// ```"
+- "/// ```\n    fn bitxor(self, rhs:"
 - "(self, rhs: &HashSet<T, S>) ->"
 - "-> HashSet<T, S>"
 - "{"
@@ -2824,251 +2434,202 @@ expression: chunks
 - "for &HashSet<T, S>"
 - "where\n    T: Eq + Hash + Clone,"
 - ",\n    S: BuildHasher + Default,"
-- "{"
-- "type Output = HashSet<T, S>;"
-- ///
-- "Returns the difference of `self`"
-- "of `self` and `rhs` as a new `"
+- "{\n    type Output = HashSet<T, S"
+- "= HashSet<T, S>;"
+- "/// Returns the difference of `"
+- "difference of `self` and `rhs`"
+- "`self` and `rhs` as a new `"
 - "`rhs` as a new `HashSet<T, S>`."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let a: HashSet<_> = vec!["
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let a: HashSet<_> ="
+- "a: HashSet<_> = vec!["
 - "1, 2, 3].into_iter().collect();"
-- ///
-- "let b: HashSet<_> = vec!["
+- "/// let b: HashSet<_> = vec!["
 - "3, 4, 5].into_iter().collect();"
 - "///\n    /// let set = &a - &b;"
 - "    ///\n    /// let mut i = 0;"
 - "/// let expected = [1, 2];"
 - "/// for x in &set {"
-- ///
-- assert!(expected.contains(x));
+- ///     assert!(
+- expected.contains(x));
 - "///     i += 1;\n    /// }"
-- ///
-- "/ assert_eq!(i, expected.len());"
-- "/// ```"
-- fn sub
+- "    /// }\n    /// assert_eq!(i,"
+- "i, expected.len());\n    /// ```"
+- "/// ```\n    fn sub(self, rhs: &"
 - "sub(self, rhs: &HashSet<T, S>)"
 - "-> HashSet<T, S>"
-- "{"
-- self.difference(rhs).cloned().
-- ".collect()\n    }\n}"
-- ///
-- An iterator over the items of a
-- " the items of a `HashSet`.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`iter`] method"
-- "[`iter`] method on [`HashSet`]."
-- ///
-- See its documentation for more.
-- ///
-- ///
+- "{\n        self.difference(rhs)."
+- "(rhs).cloned().collect()\n    }\n}"
+- /// An iterator over the items
+- "over the items of a `HashSet`."
+- "///\n/// This `struct` is created"
+- "` is created by the [`iter`]"
+- "by the [`iter`] method on [`"
+- "`] method on [`HashSet`]."
+- /// See its documentation for
+- " for more.\n///"
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`iter`]: struct.HashSet.html#"
+- "/// [`iter`]:"
+- "// [`iter`]: struct.HashSet.html"
 - "#method.iter"
 - "pub struct Iter<'a, K>"
 - " {\n    iter: Keys<'a, K, ()>,\n}"
-- ///
-- An owning iterator over the
+- /// An owning iterator over the
 - "over the items of a `HashSet`."
-- ///
-- ///
-- "This `struct` is created by the"
-- "created by the [`into_iter`]"
-- "[`into_iter`] method on [`"
+- "///\n/// This `struct` is created"
+- "` is created by the [`into_iter`"
+- "the [`into_iter`] method on [`"
 - "`] method on [`HashSet`]"
-- ///
-- "(provided by the `IntoIterator`"
-- "`IntoIterator` trait)."
+- "/// (provided by the `"
+- "by the `IntoIterator` trait)."
 - See its documentation for more.
-- ///
-- ///
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`into_iter`]:"
+- "/// [`into_iter`]:"
 - "into_iter`]: struct.HashSet.html"
 - "#method.into_iter"
 - pub struct IntoIter
 - "<K, A: Allocator = Global>"
-- "{"
-- "iter: map::IntoIter<K, (), A>,"
-- ",\n}"
-- ///
-- A draining iterator over the
+- "{\n    iter: map::IntoIter<K, (),"
+- ":IntoIter<K, (), A>,\n}"
+- /// A draining iterator over the
 - "over the items of a `HashSet`."
-- ///
-- ///
-- "This `struct` is created by the"
-- "created by the [`drain`] method"
-- "[`drain`] method on [`HashSet`]."
-- ///
-- See its documentation for more.
-- ///
-- ///
+- "///\n/// This `struct` is created"
+- "` is created by the [`drain`]"
+- "by the [`drain`] method on [`"
+- "`] method on [`HashSet`]."
+- /// See its documentation for
+- " for more.\n///"
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`drain`]: struct.HashSet.html#"
+- "/// [`drain`]:"
+- "/ [`drain`]: struct.HashSet.html"
 - "#method.drain"
 - pub struct Drain
 - "<'a, K, A: Allocator = Global>"
-- "{"
-- "iter: map::Drain<'a, K, (), A>,"
-- ",\n}"
-- ///
-- A draining iterator over entries
-- "over entries of a `HashSet`"
-- "of a `HashSet` which don't"
-- "` which don't satisfy the"
-- " satisfy the predicate `f`.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`extract_if`]"
-- "[`extract_if`] method on [`"
+- "{\n    iter: map::Drain<'a, K, ()"
+- ":Drain<'a, K, (), A>,\n}"
+- /// A draining iterator over
+- "iterator over entries of a `"
+- "entries of a `HashSet` which"
+- "`HashSet` which don't satisfy"
+- "don't satisfy the predicate `f`."
+- "///\n/// This `struct` is created"
+- "` is created by the [`extract_if"
+- "the [`extract_if`] method on [`"
 - "`] method on [`HashSet`]."
 - See its
 - "/// documentation for more.\n///"
-- ///
-- "[`extract_if`]:"
+- "///\n/// [`extract_if`]:"
 - "`]: struct.HashSet.html#"
 - "#method.extract_if"
-- ///
+- "/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- "#["
-- must_use =
-- "\""
-- Iterators are lazy unless
+- "#[must_use = \"Iterators are lazy"
 - "are lazy unless consumed\"]"
 - pub struct ExtractIf
 - "<'a, K, F, A: Allocator = Global"
-- ">"
-- "where\n    F: FnMut(&K) -> bool,"
+- ">\nwhere\n    F: FnMut(&K) -> bool"
+- "(&K) -> bool,"
 - "{\n    f: F,"
-- "inner:"
-- ": RawExtractIf<'a, (K, ()), A>,"
-- ",\n}"
-- ///
-- A lazy iterator producing
+- ",\n    inner: RawExtractIf<'a, (K"
+- "<'a, (K, ()), A>,\n}"
+- /// A lazy iterator producing
 - producing elements in the
 - elements in the intersection of
 - " intersection of `HashSet`s.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`intersection`]"
-- "[`intersection`] method on [`"
+- "///\n/// This `struct` is created"
+- "` is created by the [`"
+- "by the [`intersection`] method"
 - "`] method on [`HashSet`]."
-- ///
-- See its documentation for more.
-- ///
-- ///
+- /// See its documentation for
+- " for more.\n///"
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`intersection`]:"
+- "/// [`intersection`]:"
 - "`]: struct.HashSet.html#"
 - "#method.intersection"
 - pub struct Intersection
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- // iterator of the first set
+- "> {\n    // iterator of the first"
+- of the first set
 - "iter: Iter<'a, T>,"
 - ",\n    // the second set"
 - "other: &'a HashSet<T, S, A>,"
-- ",\n}"
-- ///
+- ",\n}\n\n/// A lazy iterator"
 - A lazy iterator producing
 - producing elements in the
 - "elements in the difference of `"
 - " difference of `HashSet`s.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`difference`]"
-- "[`difference`] method on [`"
+- "///\n/// This `struct` is created"
+- "` is created by the [`difference"
+- "the [`difference`] method on [`"
 - "`] method on [`HashSet`]."
-- ///
-- See its documentation for more.
-- ///
-- ///
+- /// See its documentation for
+- " for more.\n///"
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`difference`]:"
+- "/// [`difference`]:"
 - "`]: struct.HashSet.html#"
 - "#method.difference"
 - pub struct Difference
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- // iterator of the first set
+- "> {\n    // iterator of the first"
+- of the first set
 - "iter: Iter<'a, T>,"
 - ",\n    // the second set"
 - "other: &'a HashSet<T, S, A>,"
-- ",\n}"
-- ///
+- ",\n}\n\n/// A lazy iterator"
 - A lazy iterator producing
 - producing elements in the
 - elements in the symmetric
 - "in the symmetric difference of `"
 - " difference of `HashSet`s.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`"
+- "///\n/// This `struct` is created"
+- "` is created by the [`"
 - "by the [`symmetric_difference`]"
 - "`] method on"
-- ///
-- "[`HashSet`]."
+- "/// [`HashSet`]."
 - See its documentation for more.
-- ///
-- ///
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`symmetric_difference`]:"
+- "/// [`symmetric_difference`]:"
 - "`]: struct.HashSet.html#"
 - "#method.symmetric_difference"
 - pub struct SymmetricDifference
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- "iter:"
-- Chain
+- "> {\n    iter: Chain<Difference<'"
 - "<Difference<'a, T, S, A>,"
 - ", Difference<'a, T, S, A>>,\n}"
-- ///
-- A lazy iterator producing
+- /// A lazy iterator producing
 - producing elements in the union
 - " in the union of `HashSet`s.\n///"
-- ///
-- "This `struct` is created by the"
-- "created by the [`union`] method"
-- "[`union`] method on [`HashSet`]."
-- ///
-- See its documentation for more.
-- ///
-- ///
+- "///\n/// This `struct` is created"
+- "` is created by the [`union`]"
+- "by the [`union`] method on [`"
+- "`] method on [`HashSet`]."
+- /// See its documentation for
+- " for more.\n///"
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`union`]: struct.HashSet.html#"
+- "/// [`union`]:"
+- "/ [`union`]: struct.HashSet.html"
 - "#method.union"
 - pub struct Union
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- "iter:"
-- Chain
-- "<Iter<'a, T>,"
+- "> {\n    iter: Chain<Iter<'a, T>,"
 - ", Difference<'a, T, S, A>>,\n}"
 - "impl<'a, T, S, A: Allocator>"
 - IntoIterator for
 - "for &'a HashSet<T, S, A>"
 - "{\n    type Item = &'a T;"
 - "type IntoIter = Iter<'a, T>;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn into_iter(self) ->
 - "(self) -> Iter<'a, T>"
 - " {\n        self.iter()\n    }\n}"
@@ -3077,246 +2638,205 @@ expression: chunks
 - "for HashSet<T, S, A>"
 - "{\n    type Item = T;"
 - "type IntoIter = IntoIter<T, A>;"
-- ///
-- "Creates a consuming iterator,"
+- /// Creates a consuming iterator
 - "iterator, that is, one that"
 - "is, one that moves each value"
 - moves each value out
-- ///
-- of the set in arbitrary order.
+- /// of the set in arbitrary
+- set in arbitrary order.
 - The set cannot be used after
 - be used after calling
 - "/// this.\n    ///"
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "/ let mut set = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// let mut set = HashSet::new()"
+- "= HashSet::new();"
 - "/// set.insert(\"a\".to_string());"
 - "/// set.insert(\"b\".to_string());"
-- ///
-- ///
+- "    ///\n    /// // Not possible"
 - // Not possible to collect to a
 - to collect to a Vec<String> with
 - "Vec<String> with a regular `."
 - "a regular `.iter()`."
-- ///
-- "let v: Vec<String> ="
+- "/// let v: Vec<String> ="
 - "v: Vec<String> = set.into_iter()"
 - set.into_iter().collect();
-- ///
-- ///
-- // Will print in an arbitrary
-- in an arbitrary order.
+- "///\n    /// // Will print in an"
+- Will print in an arbitrary order
+- arbitrary order.
 - "/// for x in &v {"
 - "///     println!(\"{}\", x);"
-- "    /// }\n    /// ```"
-- "#["
-- cfg_attr
+- "    /// }\n    /// ```\n    #["
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn into_iter(self) ->
 - "(self) -> IntoIter<T, A>"
-- "{"
-- IntoIter
-- "{"
+- "{\n        IntoIter {"
+- "{\n            iter:"
 - "iter: self.map.into_iter(),"
-- ",\n        }\n    }\n}"
-- "impl<K> Clone for Iter<'_, K>"
-- "{"
-- "#["
-- cfg_attr
+- ",\n        }\n    }\n}\n\nimpl<K>"
+- "    }\n}\n\nimpl<K> Clone for Iter<"
+- "Clone for Iter<'_, K>"
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn clone(&self) -> Self
-- "{"
-- Iter
-- "{"
+- "{\n        Iter {"
+- "{\n            iter:"
 - "iter: self.iter.clone(),"
-- ",\n        }\n    }\n}"
-- "impl<'a, K> Iterator for"
-- "Iterator for Iter<'a, K>"
+- ",\n        }\n    }\n}\nimpl<'a, K>"
+- "}\n}\nimpl<'a, K> Iterator for"
+- "K> Iterator for Iter<'a, K>"
 - "{\n    type Item = &'a K;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "(&mut self) -> Option<&'a K>"
 - "{\n        self.iter.next()\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
 - "{\n        self.iter.size_hint()"
 - "}"
-- "#["
-- cfg_attr
+- "    }\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "fn fold<B, F>"
 - "fold<B, F>(self, init: B, f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- "self.iter.fold(init, f)"
-- "    }\n}"
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, f"
+- "(init, f)\n    }\n}"
 - "impl<'a, K> ExactSizeIterator"
 - "for Iter<'a, K>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn len(&self) -> usize
 - " {\n        self.iter.len()\n    }"
-- "}"
-- impl<K> FusedIterator for
+- "}\nimpl<K> FusedIterator for Iter"
 - "for Iter<'_, K> {}"
 - "impl<K: fmt::Debug> fmt::Debug"
 - "fmt::Debug for Iter<'_, K>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_list().entries
-- "(self.clone()).finish()\n    }\n}"
-- "impl<K, A: Allocator> Iterator"
+- "{\n        f.debug_list().entries"
+- ().entries(self.clone()).finish
+- "()\n    }\n}\n\nimpl<K, A: Allocator"
+- "<K, A: Allocator> Iterator for"
 - "Iterator for IntoIter<K, A>"
 - "{\n    type Item = K;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) -> Option<K>
-- "{"
-- //
-- "Avoid `Option::map` because it"
-- ":map` because it bloats LLVM IR."
+- "{\n        // Avoid `Option::map`"
+- "`Option::map` because it bloats"
+- it bloats LLVM IR.
 - match self.iter.next()
-- "{"
+- "{\n            Some((k, _)) =>"
 - "Some((k, _)) => Some(k),"
 - "None => None,"
 - "None => None,\n        }\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
 - "{\n        self.iter.size_hint()"
 - "}"
-- "#["
-- cfg_attr
+- "    }\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "fn fold<B, F>"
 - "<B, F>(self, init: B, mut f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- self.iter.fold
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, |"
 - "(init, |acc, (k, ())| f(acc, k))"
-- "}\n}"
-- "impl<K, A: Allocator>"
+- "}\n}\nimpl<K, A: Allocator>"
 - ExactSizeIterator for
 - "for IntoIter<K, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn len(&self) -> usize
 - " {\n        self.iter.len()\n    }"
-- "}"
-- "impl<K, A: Allocator>"
+- "}\nimpl<K, A: Allocator>"
+- "K, A: Allocator> FusedIterator"
 - "FusedIterator for IntoIter<K, A>"
 - "IntoIter<K, A> {}"
 - impl
 - "<K: fmt::Debug, A: Allocator>"
 - "fmt::Debug for IntoIter<K, A>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- let entries_iter =
-- "self.iter.iter().map(|(k, _)| k)"
-- ;
+- "{\n        let entries_iter ="
+- "= self.iter.iter().map(|(k, _)|"
+- "().map(|(k, _)| k);"
 - f.debug_list().entries
 - "(entries_iter).finish()\n    }\n}"
 - "impl<K, A: Allocator> Iterator"
 - "Iterator for Drain<'_, K, A>"
 - "{\n    type Item = K;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) -> Option<K>
-- "{"
-- //
-- "Avoid `Option::map` because it"
-- ":map` because it bloats LLVM IR."
+- "{\n        // Avoid `Option::map`"
+- "`Option::map` because it bloats"
+- it bloats LLVM IR.
 - match self.iter.next()
-- "{"
+- "{\n            Some((k, _)) =>"
 - "Some((k, _)) => Some(k),"
 - "None => None,"
 - "None => None,\n        }\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
 - "{\n        self.iter.size_hint()"
 - "}"
-- "#["
-- cfg_attr
+- "    }\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "fn fold<B, F>"
 - "<B, F>(self, init: B, mut f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- self.iter.fold
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, |"
 - "(init, |acc, (k, ())| f(acc, k))"
-- "}\n}"
-- "impl<K, A: Allocator>"
+- "}\n}\nimpl<K, A: Allocator>"
 - ExactSizeIterator for
 - "for Drain<'_, K, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn len(&self) -> usize
 - " {\n        self.iter.len()\n    }"
-- "}"
-- "impl<K, A: Allocator>"
+- "}\nimpl<K, A: Allocator>"
+- "K, A: Allocator> FusedIterator"
 - FusedIterator for
 - "for Drain<'_, K, A> {}"
 - impl
 - "<K: fmt::Debug, A: Allocator>"
 - "fmt::Debug for Drain<'_, K, A>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- let entries_iter =
-- "self.iter.iter().map(|(k, _)| k)"
-- ;
+- "{\n        let entries_iter ="
+- "= self.iter.iter().map(|(k, _)|"
+- "().map(|(k, _)| k);"
 - f.debug_list().entries
 - "(entries_iter).finish()\n    }\n}"
 - "impl<K, F, A: Allocator>"
@@ -3324,43 +2844,38 @@ expression: chunks
 - "for ExtractIf<'_, K, F, A>"
 - "where\n    F: FnMut(&K) -> bool,"
 - "{\n    type Item = K;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "-> Option<Self::Item>"
-- "{"
+- "{\n        self.inner"
 - "self.inner\n            .next"
 - "(|&mut (ref k, ())| (self.f)(k))"
 - ".map(|(k, ())| k)\n    }"
 - "#[inline]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
-- "{"
-- "(0,"
+- "{\n        (0,"
 - "0, self.inner.iter.size_hint().1"
-- ")\n    }\n}"
-- "impl<K, F, A: Allocator>"
+- ")\n    }\n}\n\nimpl<K, F, A:"
+- "}\n\nimpl<K, F, A: Allocator>"
+- "F, A: Allocator> FusedIterator"
 - FusedIterator for
 - "for ExtractIf<'_, K, F, A>"
 - "where F: FnMut(&K) -> bool {}"
 - "impl<T, S, A: Allocator> Clone"
 - Clone for
 - "for Intersection<'_, T, S, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn clone(&self) -> Self
-- "{"
-- Intersection
-- "{"
+- "{\n        Intersection {"
+- "{\n            iter:"
 - "iter: self.iter.clone(),"
 - ",\n            ..*self\n        }"
-- "}\n}"
-- "impl<'a, T, S, A> Iterator for"
+- "}\n}\n\nimpl<'a, T, S, A> Iterator"
+- ", S, A> Iterator for"
 - "for Intersection<'a, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3368,67 +2883,56 @@ expression: chunks
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
 - "{\n    type Item = &'a T;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "(&mut self) -> Option<&'a T>"
-- "{"
-- loop
-- "{"
+- "{\n        loop {\n            let"
 - let elt = self.iter.next()?;
 - if self.other.contains(elt)
-- "{"
+- "{\n                return Some("
 - return Some(elt);
 - "            }\n        }\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "        }\n    }\n\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
-- "{"
-- "let (_, upper) ="
+- "{\n        let (_, upper) ="
 - "= self.iter.size_hint();"
 - "(0, upper)\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "fn fold<B, F>"
 - "<B, F>(self, init: B, mut f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- self.iter.fold
-- "(init,"
-- "|acc, elt|"
-- "{"
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, |"
+- ", |acc, elt| {"
 - if self.other.contains(elt)
 - "{\n                f(acc, elt)"
 - "f(acc, elt)\n            }"
 - else
 - "{\n                acc"
 - "acc\n            }\n        })"
-- "}\n}"
-- "impl<T, S, A> fmt::Debug for"
+- "}\n}\n\nimpl<T, S, A> fmt::Debug"
+- "S, A> fmt::Debug for"
 - "for Intersection<'_, T, S, A>"
 - where
 - "T: fmt::Debug + Eq + Hash,"
 - ",\n    S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_list().entries
-- "(self.clone()).finish()\n    }\n}"
-- "impl<T, S, A> FusedIterator for"
+- "{\n        f.debug_list().entries"
+- ().entries(self.clone()).finish
+- "()\n    }\n}\n\nimpl<T, S, A>"
+- "}\n\nimpl<T, S, A> FusedIterator"
+- A> FusedIterator for
 - "for Intersection<'_, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3438,19 +2942,16 @@ expression: chunks
 - "impl<T, S, A: Allocator> Clone"
 - Clone for
 - "for Difference<'_, T, S, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn clone(&self) -> Self
-- "{"
-- Difference
-- "{"
+- "{\n        Difference {"
+- "{\n            iter:"
 - "iter: self.iter.clone(),"
 - ",\n            ..*self\n        }"
-- "}\n}"
-- "impl<'a, T, S, A> Iterator for"
+- "}\n}\n\nimpl<'a, T, S, A> Iterator"
+- ", S, A> Iterator for"
 - "for Difference<'a, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3458,52 +2959,43 @@ expression: chunks
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
 - "{\n    type Item = &'a T;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "(&mut self) -> Option<&'a T>"
-- "{"
-- loop
-- "{"
+- "{\n        loop {\n            let"
 - let elt = self.iter.next()?;
 - if !self.other.contains(elt)
-- "{"
+- "{\n                return Some("
 - return Some(elt);
 - "            }\n        }\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "        }\n    }\n\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
-- "{"
-- "let (_, upper) ="
+- "{\n        let (_, upper) ="
 - "= self.iter.size_hint();"
 - "(0, upper)\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - "fn fold<B, F>"
 - "<B, F>(self, init: B, mut f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- self.iter.fold
-- "(init,"
-- "|acc, elt|"
-- "{"
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, |"
+- ", |acc, elt| {"
 - if self.other.contains(elt)
 - "{\n                acc"
 - "acc\n            }"
 - else
 - "{\n                f(acc, elt)"
 - "f(acc, elt)\n            }"
-- "})\n    }\n}"
-- "impl<T, S, A> FusedIterator for"
+- "})\n    }\n}\n\nimpl<T, S, A>"
+- "}\n\nimpl<T, S, A> FusedIterator"
+- A> FusedIterator for
 - "for Difference<'_, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3517,29 +3009,25 @@ expression: chunks
 - ",\n    S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_list().entries
-- "(self.clone()).finish()\n    }\n}"
-- "impl<T, S, A: Allocator> Clone"
-- Clone for
+- "{\n        f.debug_list().entries"
+- ().entries(self.clone()).finish
+- "()\n    }\n}\n\nimpl<T, S, A:"
+- "}\n\nimpl<T, S, A: Allocator>"
+- "S, A: Allocator> Clone for"
 - "SymmetricDifference<'_, T, S, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn clone(&self) -> Self
-- "{"
-- SymmetricDifference
-- "{"
+- "{\n        SymmetricDifference {"
+- "{\n            iter:"
 - "iter: self.iter.clone(),"
-- ",\n        }\n    }\n}"
-- "impl<'a, T, S, A> Iterator for"
+- ",\n        }\n    }\n}\n\nimpl<'a, T,"
+- "}\n}\n\nimpl<'a, T, S, A> Iterator"
+- ", S, A> Iterator for"
 - "SymmetricDifference<'a, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3547,33 +3035,28 @@ expression: chunks
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
 - "{\n    type Item = &'a T;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "(&mut self) -> Option<&'a T>"
 - "{\n        self.iter.next()\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
 - "{\n        self.iter.size_hint()"
 - "}"
-- "#["
-- cfg_attr
+- "    }\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "fn fold<B, F>"
 - "fold<B, F>(self, init: B, f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- "self.iter.fold(init, f)"
-- "    }\n}"
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, f"
+- "(init, f)\n    }\n}"
 - "impl<T, S, A> FusedIterator for"
 - "SymmetricDifference<'_, T, S, A>"
 - "where\n    T: Eq + Hash,"
@@ -3588,28 +3071,25 @@ expression: chunks
 - ",\n    S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_list().entries
-- "(self.clone()).finish()\n    }\n}"
-- "impl<T, S, A: Allocator> Clone"
+- "{\n        f.debug_list().entries"
+- ().entries(self.clone()).finish
+- "()\n    }\n}\n\nimpl<T, S, A:"
+- "}\n\nimpl<T, S, A: Allocator>"
+- "S, A: Allocator> Clone for"
 - "Clone for Union<'_, T, S, A>"
-- "{"
-- "#["
-- cfg_attr
+- "{\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - fn clone(&self) -> Self
-- "{"
-- Union
-- "{"
+- "{\n        Union {"
+- "{\n            iter:"
 - "iter: self.iter.clone(),"
-- ",\n        }\n    }\n}"
-- "impl<T, S, A> FusedIterator for"
+- ",\n        }\n    }\n}\n\nimpl<T, S,"
+- "}\n}\n\nimpl<T, S, A> FusedIterator"
+- A> FusedIterator for
 - "for Union<'_, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3623,15 +3103,13 @@ expression: chunks
 - ",\n    S: BuildHasher,"
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- f.debug_list().entries
-- "(self.clone()).finish()\n    }\n}"
-- "impl<'a, T, S, A> Iterator for"
+- "{\n        f.debug_list().entries"
+- ().entries(self.clone()).finish
+- "()\n    }\n}\n\nimpl<'a, T, S, A>"
+- "<'a, T, S, A> Iterator for"
 - "Iterator for Union<'a, T, S, A>"
 - "where\n    T: Eq + Hash,"
 - "T: Eq + Hash,\n    S: BuildHasher"
@@ -3639,583 +3117,493 @@ expression: chunks
 - "S: BuildHasher,\n    A: Allocator"
 - "A: Allocator,"
 - "{\n    type Item = &'a T;"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn next(&mut self) ->
 - "(&mut self) -> Option<&'a T>"
 - "{\n        self.iter.next()\n    }"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - fn size_hint(&self) ->
 - "-> (usize, Option<usize>)"
 - "{\n        self.iter.size_hint()"
 - "}"
-- "#["
-- cfg_attr
+- "    }\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - "fn fold<B, F>"
 - "fold<B, F>(self, init: B, f: F)"
 - "-> B"
 - "where\n        Self: Sized,"
-- "F: FnMut(B, Self::Item) -> B,"
-- "{"
-- "self.iter.fold(init, f)"
-- "    }\n}"
-- ///
-- A view into a single entry in a
-- "entry in a set, which may either"
-- which may either be vacant or
-- " be vacant or occupied.\n///"
-- ///
-- "This `enum` is constructed from"
-- "constructed from the [`entry`]"
-- "the [`entry`] method on [`"
+- ",\n        F: FnMut(B, Self::Item"
+- "(B, Self::Item) -> B,"
+- "{\n        self.iter.fold(init, f"
+- "(init, f)\n    }\n}"
+- /// A view into a single entry
+- "a single entry in a set, which"
+- "in a set, which may either be"
+- may either be vacant or occupied
+- " or occupied.\n///"
+- "///\n/// This `enum` is"
+- "/ This `enum` is constructed"
+- "` is constructed from the [`"
+- "from the [`entry`] method on [`"
 - "`] method on [`HashSet`].\n///"
-- ///
+- "///\n/// [`HashSet`]:"
 - "[`HashSet`]: struct.HashSet.html"
-- ///
-- "[`entry`]: struct.HashSet.html#"
+- "/// [`entry`]:"
+- "/ [`entry`]: struct.HashSet.html"
 - "#method.entry\n///\n/// # Examples"
 - "/// # Examples\n///\n/// ```"
-- ///
+- "///\n/// ```\n/// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet, OccupiedEntry"
 - ", OccupiedEntry};\n///"
-- ///
-- "/ let mut set = HashSet::new();"
+- "///\n/// let mut set = HashSet::"
+- "set = HashSet::new();"
 - "/// set.extend([\"a\", \"b\", \"c\"]);"
 - "/// assert_eq!(set.len(), 3);"
-- ///
-- /// // Existing value (insert)
-- ///
-- "let entry: Entry<_, _> ="
+- "///\n/// // Existing value ("
+- Existing value (insert)
+- "/// let entry: Entry<_, _> ="
 - ": Entry<_, _> = set.entry(\"a\");"
-- ///
-- "let _raw_o: OccupiedEntry<_, _>"
+- "/// let _raw_o: OccupiedEntry<_,"
+- "OccupiedEntry<_, _> ="
 - "<_, _> = entry.insert();"
 - "/// assert_eq!(set.len(), 3);"
-- ///
-- / // Nonexistent value (insert)
+- /// // Nonexistent value (insert
+- value (insert)
 - "/// set.entry(\"d\").insert();\n///"
-- ///
-- / // Existing value (or_insert)
+- "///\n/// // Existing value ("
+- Existing value (or_insert)
 - "/// set.entry(\"b\").or_insert();"
-- ///
-- // Nonexistent value (or_insert)
+- /// // Nonexistent value (
+- value (or_insert)
 - "/// set.entry(\"e\").or_insert();"
-- ///
-- ///
-- "println!(\""
-- "Our HashSet: {:?}\", set);\n///"
-- ///
-- "let mut vec: Vec<_> = set.iter()"
-- "<_> = set.iter().copied()."
+- "///\n/// println!(\"Our HashSet: {"
+- "(\"Our HashSet: {:?}\", set);\n///"
+- "///\n/// let mut vec: Vec<_> ="
+- "vec: Vec<_> = set.iter().copied("
 - ().copied().collect();
-- ///
-- "// The `Iter` iterator produces"
+- "/// // The `Iter` iterator"
+- "`Iter` iterator produces items"
 - produces items in arbitrary
 - "in arbitrary order, so the"
-- ///
-- // items must be sorted to test
-- sorted to test them against a
+- /// // items must be sorted to
+- be sorted to test them against a
 - them against a sorted array.
 - /// vec.sort_unstable();
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "vec, [\"a\", \"b\", \"c\", \"d\", \"e\"]);"
-- "/// ```"
-- pub enum Entry
-- "enum Entry<'a, T, S, A = Global>"
+- "/// ```\npub enum Entry<'a, T, S,"
+- "Entry<'a, T, S, A = Global>"
 - "where\n    A: Allocator,"
 - "{\n    /// An occupied entry."
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- ///
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet};"
-- ///
-- "let mut set: HashSet<_> = [\"a\","
-- "<_> = [\"a\", \"b\"].into();\n    ///"
-- "/// match set.entry(\"a\") {"
-- ///
-- "Entry::Vacant(_) => unreachable!"
-- "=> unreachable!(),"
-- ///
-- "/     Entry::Occupied(_) => { }"
-- "/// }\n    /// ```"
-- Occupied
-- "(OccupiedEntry<'a, T, S, A>),"
+- "/// let mut set: HashSet<_> = [\""
+- "HashSet<_> = [\"a\", \"b\"].into();"
+- "///\n    /// match set.entry(\"a\")"
+- "set.entry(\"a\") {"
+- "///     Entry::Vacant(_) =>"
+- "::Vacant(_) => unreachable!(),"
+- "///     Entry::Occupied(_) => {"
+- "Occupied(_) => { }\n    /// }"
+- "/// }\n    /// ```\n    Occupied("
+- "``\n    Occupied(OccupiedEntry<'a"
+- "OccupiedEntry<'a, T, S, A>),"
 - ",\n\n    /// A vacant entry."
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- ///
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet};"
-- ///
-- "let mut set: HashSet<&str> ="
+- "/// let mut set: HashSet<&str> ="
 - "HashSet<&str> = HashSet::new();"
-- ///
-- "/// match set.entry(\"a\") {"
-- ///
-- "Entry::Occupied(_) =>"
+- "///\n    /// match set.entry(\"a\")"
+- "set.entry(\"a\") {"
+- "///     Entry::Occupied(_) =>"
 - "::Occupied(_) => unreachable!(),"
 - "///     Entry::Vacant(_) => { }"
-- "    /// }\n    /// ```"
-- "Vacant(VacantEntry<'a, T, S, A>)"
-- ",\n}"
+- "    /// }\n    /// ```\n    Vacant"
+- "/ ```\n    Vacant(VacantEntry<'a,"
+- "(VacantEntry<'a, T, S, A>),\n}"
 - impl
 - "<T: fmt::Debug, S, A: Allocator>"
 - "fmt::Debug for"
 - "for Entry<'_, T, S, A>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
-- match *self
-- "{"
-- "Entry::Vacant(ref v) =>"
-- "f.debug_tuple(\"Entry\").field(v)."
-- ".finish(),"
+- "{\n        match *self {"
+- "{\n            Entry::Vacant(ref"
+- "::Vacant(ref v) =>"
+- "=> f.debug_tuple(\"Entry\").field("
+- "(\"Entry\").field(v).finish(),"
 - "Entry::Occupied(ref o) =>"
-- "f.debug_tuple(\"Entry\").field(o)."
-- ".finish(),\n        }\n    }\n}"
-- ///
-- A view into an occupied entry in
-- "entry in a `HashSet`."
-- ///
-- "It is part of the [`Entry`] enum"
-- " [`Entry`] enum.\n///"
-- "/// [`Entry`]: enum.Entry.html"
+- "=> f.debug_tuple(\"Entry\").field("
+- "(\"Entry\").field(o).finish(),"
+- "}\n    }\n}\n\n/// A view into an"
+- / A view into an occupied entry
+- "occupied entry in a `HashSet`."
+- "/// It is part of the [`Entry`]"
+- " of the [`Entry`] enum.\n///"
+- "///\n/// [`Entry`]:"
+- "/\n/// [`Entry`]: enum.Entry.html"
 - "///\n/// # Examples\n///\n/// ```"
-- ///
+- "///\n/// ```\n/// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet, OccupiedEntry"
 - ", OccupiedEntry};\n///"
-- ///
-- "/ let mut set = HashSet::new();"
+- "///\n/// let mut set = HashSet::"
+- "set = HashSet::new();"
 - "/// set.extend([\"a\", \"b\", \"c\"]);"
-- ///
-- ///
-- "let _entry_o: OccupiedEntry<_, _"
-- "<_, _> = set.entry(\"a\").insert()"
-- "(\"a\").insert();"
+- "///\n/// let _entry_o:"
+- "// let _entry_o: OccupiedEntry<_"
+- "OccupiedEntry<_, _> = set.entry("
+- "_> = set.entry(\"a\").insert();"
 - "/// assert_eq!(set.len(), 3);"
 - "///\n/// // Existing key"
 - "/// match set.entry(\"a\") {"
-- ///
-- "Entry::Vacant(_) => unreachable!"
-- "=> unreachable!(),"
-- ///
-- "/     Entry::Occupied(view) => {"
-- ///
-- "assert_eq!(view.get(), &\"a\");"
-- "///     }\n/// }\n///"
+- "///     Entry::Vacant(_) =>"
+- "::Vacant(_) => unreachable!(),"
+- "///     Entry::Occupied(view) =>"
+- "(view) => {"
+- ///         assert_eq!(
+- "view.get(), &\"a\");\n///     }"
+- "///     }\n/// }\n///\n///"
+- "}\n/// }\n///\n/// assert_eq!("
 - "/// assert_eq!(set.len(), 3);"
 - "///\n/// // Existing key (take)"
 - "/// match set.entry(\"c\") {"
-- ///
-- "Entry::Vacant(_) => unreachable!"
-- "=> unreachable!(),"
-- ///
-- "/     Entry::Occupied(view) => {"
-- ///
-- "assert_eq!(view.remove(), \"c\");"
-- "///     }\n/// }"
-- ///
-- "assert_eq!(set.get(&\"c\"), None);"
+- "///     Entry::Vacant(_) =>"
+- "::Vacant(_) => unreachable!(),"
+- "///     Entry::Occupied(view) =>"
+- "(view) => {"
+- ///         assert_eq!(
+- "view.remove(), \"c\");\n///     }"
+- "///     }\n/// }\n/// assert_eq!("
+- "set.get(&\"c\"), None);"
 - "/// assert_eq!(set.len(), 2);"
-- "/// ```"
-- pub struct OccupiedEntry
+- "/// ```\npub struct OccupiedEntry"
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- "inner:"
-- "map::OccupiedEntry"
+- "> {\n    inner: map::"
+- ": map::OccupiedEntry<'a, T, (),"
 - "<'a, T, (), S, A>,\n}"
 - impl
 - "<T: fmt::Debug, S, A: Allocator>"
 - "fmt::Debug for"
 - "for OccupiedEntry<'_, T, S, A>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
+- "{\n        f.debug_struct(\""
 - "f.debug_struct(\"OccupiedEntry\")"
 - ".field(\"value\", self.get())"
 - ".finish()\n    }\n}"
-- ///
-- A view into a vacant entry in a
-- "entry in a `HashSet`."
-- ///
-- "It is part of the [`Entry`] enum"
-- " [`Entry`] enum.\n///"
-- "/// [`Entry`]: enum.Entry.html"
+- /// A view into a vacant entry
+- "a vacant entry in a `HashSet`."
+- "/// It is part of the [`Entry`]"
+- " of the [`Entry`] enum.\n///"
+- "///\n/// [`Entry`]:"
+- "/\n/// [`Entry`]: enum.Entry.html"
 - "///\n/// # Examples\n///\n/// ```"
-- ///
+- "///\n/// ```\n/// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet, VacantEntry};"
-- ///
-- ///
-- "let mut set = HashSet::<&str>::"
-- "::<&str>::new();\n///"
-- ///
-- "let entry_v: VacantEntry<_, _> ="
+- "///\n/// let mut set = HashSet::<"
+- "set = HashSet::<&str>::new();"
+- "///\n/// let entry_v: VacantEntry"
+- ": VacantEntry<_, _> = match"
 - "<_, _> = match set.entry(\"a\") {"
-- ///
-- "Entry::Vacant(view) => view,"
-- ///
-- "Entry::Occupied(_) =>"
+- "///     Entry::Vacant(view) =>"
+- ":Vacant(view) => view,"
+- "///     Entry::Occupied(_) =>"
 - "::Occupied(_) => unreachable!(),"
 - "/// };\n/// entry_v.insert();"
-- ///
-- assert!(
+- /// assert!(
 - "set.contains(\"a\") && set.len() ="
 - ") && set.len() == 1);\n///"
-- /// // Nonexistent key (insert)
+- "///\n/// // Nonexistent key ("
+- key (insert)
 - "/// match set.entry(\"b\") {"
-- ///
-- "Entry::Vacant(view) => {"
+- "///     Entry::Vacant(view) => {"
 - "(view) => { view.insert(); },"
-- ///
-- "Entry::Occupied(_) =>"
+- "///     Entry::Occupied(_) =>"
 - "::Occupied(_) => unreachable!(),"
-- "/// }"
-- ///
-- assert!(
-- "set.contains(\"b\") && set.len() ="
-- ") && set.len() == 2);\n/// ```"
-- pub struct VacantEntry
+- "/// }\n/// assert!(set.contains(\""
+- "!(set.contains(\"b\") && set.len()"
+- "b\") && set.len() == 2);\n/// ```"
+- "/// ```\npub struct VacantEntry<'"
 - "<'a, T, S, A: Allocator = Global"
-- ">"
-- "{"
-- "inner:"
-- "map::VacantEntry"
-- "<'a, T, (), S, A>,\n}"
-- impl
-- "<T: fmt::Debug, S, A: Allocator>"
+- "> {\n    inner: map::VacantEntry<"
+- "::VacantEntry<'a, T, (), S, A>,"
+- ",\n}\n\nimpl<T: fmt::Debug, S, A:"
+- "::Debug, S, A: Allocator>"
 - "fmt::Debug for"
 - "for VacantEntry<'_, T, S, A>"
-- "{"
-- fn fmt
-- "(&self,"
+- "{\n    fn fmt(&self, f: &mut fmt:"
 - ", f: &mut fmt::Formatter<'_>) ->"
 - "-> fmt::Result"
-- "{"
+- "{\n        f.debug_tuple(\""
 - "f.debug_tuple(\"VacantEntry\")."
 - ".field(self.get()).finish()"
-- "}\n}"
-- "impl<'a, T, S, A: Allocator>"
+- "}\n}\n\nimpl<'a, T, S, A: Allocator"
+- "S, A: Allocator>"
 - "Entry<'a, T, S, A>"
-- "{"
-- ///
-- "Sets the value of the entry, and"
+- "{\n    /// Sets the value of the"
+- "the value of the entry, and"
 - "the entry, and returns an"
 - ", and returns an OccupiedEntry."
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- "let entry = set.entry(\""
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();"
+- "/// let entry = set.entry(\""
 - "= set.entry(\"horseyland\").insert"
 - "\").insert();\n    ///"
-- ///
-- assert_eq!(
-- "entry.get(), &\"horseyland\");"
-- "/// ```"
-- "#["
-- cfg_attr
+- "///\n    /// assert_eq!(entry.get"
+- "!(entry.get(), &\"horseyland\");"
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn insert(self) ->
 - "-> OccupiedEntry<'a, T, S, A>"
 - "where\n        T: Hash,"
 - "T: Hash,\n        S: BuildHasher,"
-- "{"
-- match self
-- "{"
+- "{\n        match self {"
+- "{\n            Entry::Occupied("
 - "Entry::Occupied(entry) => entry,"
 - "Entry::Vacant(entry) =>"
 - " => entry.insert(),\n        }"
-- "}"
-- ///
-- Ensures a value is in the entry
-- is in the entry by inserting if
-- by inserting if it was vacant.
+- "}\n\n    /// Ensures a value is in"
+- a value is in the entry by
+- in the entry by inserting if it
+- inserting if it was vacant.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();\n    ///"
 - "///\n    /// // nonexistent key"
-- ///
-- "set.entry(\"poneyland\").or_insert"
-- "\").or_insert();"
-- ///
-- assert!(
+- "/// set.entry(\"poneyland\")."
+- "(\"poneyland\").or_insert();"
+- /// assert!(
 - "set.contains(\"poneyland\"));"
 - "///\n    /// // existing key"
-- ///
-- "set.entry(\"poneyland\").or_insert"
-- "\").or_insert();"
-- ///
-- assert!(
+- "/// set.entry(\"poneyland\")."
+- "(\"poneyland\").or_insert();"
+- /// assert!(
 - "set.contains(\"poneyland\"));"
 - "/// assert_eq!(set.len(), 1);"
-- "/// ```"
-- "#["
-- cfg_attr
-- "(feature = \"inline-more\", inline"
-- ", inline)]"
+- "    /// ```\n    #[cfg_attr("
+- "#[cfg_attr(feature = \"inline-"
+- "= \"inline-more\", inline)]"
 - pub fn or_insert(self)
 - "where\n        T: Hash,"
 - "T: Hash,\n        S: BuildHasher,"
-- "{"
-- if
-- "let Entry::Vacant(entry) = self"
+- "{\n        if let Entry::Vacant("
+- "Entry::Vacant(entry) = self"
 - "{\n            entry.insert();"
 - "entry.insert();\n        }\n    }"
-- ///
-- Returns a reference to this
+- /// Returns a reference to this
 - " to this entry's value.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- "set.entry(\"poneyland\").or_insert"
-- "\").or_insert();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();"
+- "/// set.entry(\"poneyland\")."
+- "(\"poneyland\").or_insert();"
 - /// // existing key
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.entry(\"poneyland\").get(), &\""
 - "\").get(), &\"poneyland\");"
 - /// // nonexistent key
-- ///
-- assert_eq!(
+- /// assert_eq!(
 - "set.entry(\"horseland\").get(), &\""
 - "\").get(), &\"horseland\");"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn get(&self) -> &T
-- "{"
-- match *self
-- "{"
+- "{\n        match *self {"
+- "{\n            Entry::Occupied("
 - "Entry::Occupied(ref entry) =>"
 - "=> entry.get(),"
 - "Entry::Vacant(ref entry) =>"
 - " => entry.get(),\n        }\n    }"
-- "}"
-- "impl<T, S, A: Allocator>"
+- "}\n\nimpl<T, S, A: Allocator>"
 - "OccupiedEntry<'_, T, S, A>"
-- "{"
-- ///
-- Gets a reference to the value in
-- to the value in the entry.
+- "{\n    /// Gets a reference to"
+- a reference to the value in the
+- "the value in the entry.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- ///
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet};\n    ///"
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- "set.entry(\"poneyland\").or_insert"
-- "\").or_insert();\n    ///"
-- ///
-- "/ match set.entry(\"poneyland\") {"
-- ///
-- "Entry::Vacant(_) => panic!(),"
-- ///
-- "Entry::Occupied(entry) =>"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();"
+- "/// set.entry(\"poneyland\")."
+- "(\"poneyland\").or_insert();"
+- "///\n    /// match set.entry(\""
+- "set.entry(\"poneyland\") {"
+- "///     Entry::Vacant(_) =>"
+- "::Vacant(_) => panic!(),"
+- "///     Entry::Occupied(entry) ="
 - (entry) => assert_eq!(
 - "entry.get(), &\"poneyland\"),"
-- "/// }\n    /// ```"
-- "#["
-- cfg_attr
+- "/// }\n    /// ```\n    #[cfg_attr"
+- "`\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn get(&self) -> &T
 - "{\n        self.inner.key()\n    }"
-- ///
-- Takes the value out of the entry
-- "out of the entry, and returns it"
-- ", and returns it."
-- ///
-- Keeps the allocated memory for
-- " memory for reuse.\n    ///"
+- /// Takes the value out of the
+- "value out of the entry, and"
+- "the entry, and returns it."
+- /// Keeps the allocated memory
+- allocated memory for reuse.
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_set::Entry;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_set::"
+- "::hash_set::Entry;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();"
 - /// // The set is empty
-- ///
-- assert!(
+- /// assert!(
 - set.is_empty() && set.capacity()
 - "& set.capacity() == 0);\n    ///"
-- ///
-- "set.entry(\"poneyland\").or_insert"
-- "\").or_insert();"
-- ///
-- let capacity_before_remove =
+- "///\n    /// set.entry(\"poneyland"
+- "(\"poneyland\").or_insert();"
+- /// let capacity_before_remove =
 - " = set.capacity();\n    ///"
-- ///
-- "if let Entry::Occupied(o) ="
+- "///\n    /// if let Entry::"
+- "/ if let Entry::Occupied(o) ="
 - "::Occupied(o) = set.entry(\""
 - "o) = set.entry(\"poneyland\") {"
-- ///
-- assert_eq!(
+- ///     assert_eq!(
 - "o.remove(), \"poneyland\");"
-- "/// }\n    ///"
-- ///
-- assert_eq!(
+- "/// }\n    ///\n    /// assert_eq!"
+- /// assert_eq!(
 - "set.contains(\"poneyland\"), false"
 - "\"), false);"
-- ///
-- // Now set hold none elements
-- none elements but capacity is
-- but capacity is equal to the old
-- equal to the old one
-- ///
-- assert!(
+- /// // Now set hold none
+- set hold none elements but
+- elements but capacity is equal
+- is equal to the old one
+- /// assert!(
 - set.len() == 0 && set.capacity()
 - "& set.capacity() =="
 - () == capacity_before_remove);
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn remove(self) -> T
 - "{"
 - self.inner.remove_entry().0
 - "}"
-- ///
-- "Replaces the entry, returning"
-- "entry, returning the old value."
+- "    }\n\n    /// Replaces the"
+- "/// Replaces the entry,"
+- "the entry, returning the old"
+- the old value.
 - The new value in the hash map
 - in the hash map will be
-- ///
-- the value used to create this
-- " to create this entry.\n    ///"
+- /// the value used to create
+- used to create this entry.
 - "///\n    /// # Panics\n    ///"
-- ///
-- Will panic if this OccupiedEntry
-- OccupiedEntry was created
+- "    ///\n    /// Will panic if"
+- // Will panic if this
+- panic if this OccupiedEntry was
 - "was created through [`Entry::"
 - " [`Entry::insert`].\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- ///
+- "    ///\n    /// ```\n    ///  use"
+- "```\n    ///  use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet};"
 - "///  use std::rc::Rc;\n    ///"
-- ///
-- "let mut set: HashSet<Rc<String>>"
+- "    ///\n    ///  let mut set:"
+- "//  let mut set: HashSet<Rc<"
+- "set: HashSet<Rc<String>> ="
 - "<Rc<String>> = HashSet::new();"
-- ///
-- "let key_one = Rc::new(\""
+- "///  let key_one = Rc::new(\""
 - "= Rc::new(\"Stringthing\"."
 - "(\"Stringthing\".to_string());"
-- ///
-- "let key_two = Rc::new(\""
+- "///  let key_two = Rc::new(\""
 - "= Rc::new(\"Stringthing\"."
 - "(\"Stringthing\".to_string());"
-- ///
-- ///
-- /  set.insert(key_one.clone());
-- ///
-- assert!(
+- "///\n    ///  set.insert("
+- ///  set.insert(key_one.clone())
+- key_one.clone());
+- ///  assert!(
 - "Rc::strong_count(&key_one) == 2"
 - "(&key_one) == 2 && Rc::"
 - ") == 2 && Rc::strong_count(&"
 - "::strong_count(&key_two) == 1);"
-- ///
-- ///
+- "///\n    ///  match set.entry("
 - match set.entry(key_two.clone())
 - "key_two.clone()) {"
-- ///
-- "Entry::Occupied(entry) => {"
-- ///
+- "///      Entry::Occupied(entry)"
+- ":Occupied(entry) => {"
+- "///          let old_key: Rc<"
 - "let old_key: Rc<String> ="
 - ": Rc<String> = entry.replace();"
-- ///
-- assert!(
+- ///          assert!(
 - "Rc::ptr_eq(&key_one, &old_key));"
-- "///      }"
-- ///
-- "Entry::Vacant(_) => panic!(),"
-- "///  }\n    ///"
-- ///
-- assert!(
+- "///      }\n    ///      Entry::"
+- "///      Entry::Vacant(_) =>"
+- "::Vacant(_) => panic!(),"
+- "///  }\n    ///\n    ///  assert!("
 - "Rc::strong_count(&key_one) == 1"
 - "(&key_one) == 1 && Rc::"
 - ") == 1 && Rc::strong_count(&"
 - "::strong_count(&key_two) == 2);"
-- ///
-- assert!(
+- ///  assert!(
 - "set.contains(&\"Stringthing\"."
 - "(&\"Stringthing\".to_owned()));"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn replace(self) -> T
-- "{"
-- self.inner.replace_key()
-- "    }\n}"
-- "impl<'a, T, S, A: Allocator>"
+- "{\n        self.inner.replace_key"
+- "()\n    }\n}\n\nimpl<'a, T, S, A:"
+- "<'a, T, S, A: Allocator>"
 - "VacantEntry<'a, T, S, A>"
-- "{"
-- ///
-- Gets a reference to the value
-- to the value that would be used
+- "{\n    /// Gets a reference to"
+- a reference to the value that
+- the value that would be used
 - would be used when inserting
 - "/// through the `VacantEntry`."
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- assert_eq!(
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- " use hashbrown::HashSet;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();"
+- /// assert_eq!(
 - "set.entry(\"poneyland\").get(), &\""
 - "\").get(), &\"poneyland\");"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn get(&self) -> &T
@@ -4223,71 +3611,61 @@ expression: chunks
 - /// Take ownership of the value.
 - "    ///\n    /// # Examples"
 - "    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- ///
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
 - "use hashbrown::hash_set::{Entry,"
 - "::{Entry, HashSet};\n    ///"
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- ///
-- "/ match set.entry(\"poneyland\") {"
-- ///
-- "Entry::Occupied(_) => panic!(),"
-- ///
-- "Entry::Vacant(v) => assert_eq!("
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();\n    ///"
+- "///\n    /// match set.entry(\""
+- "set.entry(\"poneyland\") {"
+- "///     Entry::Occupied(_) =>"
+- "::Occupied(_) => panic!(),"
+- "///     Entry::Vacant(v) =>"
+- "::Vacant(v) => assert_eq!("
 - "v.into_value(), \"poneyland\"),"
-- "/// }\n    /// ```"
-- "#["
-- cfg_attr
+- "/// }\n    /// ```\n    #[cfg_attr"
+- "`\n    #[cfg_attr(feature = \""
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn into_value(self) -> T
 - "{\n        self.inner.into_key()"
 - "}"
-- ///
-- Sets the value of the entry with
-- "the entry with the VacantEntry's"
+- "    }\n\n    /// Sets the value of"
+- the value of the entry with the
+- "entry with the VacantEntry's"
 - " VacantEntry's value.\n    ///"
 - "///\n    /// # Examples\n    ///"
-- "    ///\n    /// ```"
-- "/// use hashbrown::HashSet;"
-- ///
-- "use hashbrown::hash_set::Entry;"
-- ///
-- ///
-- "let mut set: HashSet<&str> ="
-- "HashSet<&str> = HashSet::new();"
-- ///
-- ///
-- "if let Entry::Vacant(o) ="
-- "::Vacant(o) = set.entry(\""
+- "    ///\n    /// ```\n    /// use"
+- " ```\n    /// use hashbrown::"
+- "use hashbrown::HashSet;"
+- "/// use hashbrown::hash_set::"
+- "::hash_set::Entry;\n    ///"
+- "///\n    /// let mut set: HashSet"
+- "mut set: HashSet<&str> = HashSet"
+- "<&str> = HashSet::new();\n    ///"
+- "///\n    /// if let Entry::Vacant"
+- "Entry::Vacant(o) = set.entry(\""
 - "o) = set.entry(\"poneyland\") {"
 - "///     o.insert();\n    /// }"
-- ///
-- assert!(
+- "    /// }\n    /// assert!("
 - "set.contains(\"poneyland\"));"
-- "/// ```"
-- "#["
-- cfg_attr
+- "/// ```\n    #[cfg_attr(feature ="
 - "(feature = \"inline-more\", inline"
 - ", inline)]"
 - pub fn insert(self) ->
 - "-> OccupiedEntry<'a, T, S, A>"
 - "where\n        T: Hash,"
 - "T: Hash,\n        S: BuildHasher,"
-- "{"
-- OccupiedEntry
-- "{"
-- "inner:"
+- "{\n        OccupiedEntry {"
+- "{\n            inner:"
 - ": self.inner.insert_entry(()),"
-- ",\n        }\n    }\n}"
-- "#[allow(dead_code)]"
+- ",\n        }\n    }\n}\n\n#[allow("
+- "}\n}\n\n#[allow(dead_code)]"
 - fn assert_covariance()
-- "{"
-- "fn set<'new>"
-- "<'new>(v: HashSet<&'static str>)"
+- "() {\n    fn set<'new>(v: HashSet"
+- "'new>(v: HashSet<&'static str>)"
 - "-> HashSet<&'new str>"
 - " {\n        v\n    }"
 - "fn iter<'a, 'new>"
@@ -4300,85 +3678,71 @@ expression: chunks
 - " {\n        v\n    }"
 - fn difference
 - "<'a, 'new, A: Allocator>"
-- (
-- "v:"
-- Difference
+- "(\n        v: Difference<'a, &'"
 - "<'a, &'static str,"
 - "&'static str, DefaultHashBuilder"
 - ", A>,\n    ) ->"
-- Difference
-- "<'a, &'new str,"
+- "-> Difference<'a, &'new str,"
 - ", &'new str, DefaultHashBuilder,"
 - ", A> {\n        v\n    }"
 - fn symmetric_difference
 - "<'a, 'new, A: Allocator>"
-- (
-- "v:"
-- SymmetricDifference
+- "(\n        v: SymmetricDifference"
 - "<'a, &'static str,"
 - "&'static str, DefaultHashBuilder"
 - ", A>,\n    ) ->"
-- SymmetricDifference
+- "-> SymmetricDifference<'a, &'new"
 - "<'a, &'new str,"
 - ", &'new str, DefaultHashBuilder,"
 - ", A> {\n        v\n    }"
 - fn intersection
 - "<'a, 'new, A: Allocator>"
-- (
-- "v:"
-- Intersection
+- "(\n        v: Intersection<'a, &'"
 - "<'a, &'static str,"
 - "&'static str, DefaultHashBuilder"
 - ", A>,\n    ) ->"
-- Intersection
-- "<'a, &'new str,"
+- "-> Intersection<'a, &'new str,"
 - ", &'new str, DefaultHashBuilder,"
 - ", A> {\n        v\n    }"
 - "fn union<'a, 'new, A: Allocator>"
-- (
-- "v:"
-- Union
+- "(\n        v: Union<'a, &'static"
 - "<'a, &'static str,"
 - "&'static str, DefaultHashBuilder"
 - ", A>,\n    ) ->"
-- Union
-- "<'a, &'new str,"
+- "-> Union<'a, &'new str,"
 - ", &'new str, DefaultHashBuilder,"
 - ", A> {\n        v\n    }"
 - "fn drain<'new, A: Allocator>"
-- (
-- "d:"
-- "Drain<'static, &'static str, A>)"
+- "(d: Drain<'static, &'static str,"
+- ", &'static str, A>) ->"
 - "-> Drain<'new, &'new str, A>"
 - " {\n        d\n    }\n}"
 - "#[cfg(test)]"
 - mod test_set
-- "{"
-- use
-- "super::super::map::"
-- "::DefaultHashBuilder;"
-- "use super::HashSet;"
+- "{\n    use super::super::map::"
+- "::super::map::DefaultHashBuilder"
+- ";\n    use super::HashSet;"
 - "use std::vec::Vec;"
 - "#[test]"
 - fn test_zero_capacities()
-- "{"
-- type HS = HashSet<i32>;
+- "() {\n        type HS = HashSet<"
+- HS = HashSet<i32>;
 - "let s = HS::new();"
 - "assert_eq!(s.capacity(), 0);"
 - "let s = HS::default();"
 - "assert_eq!(s.capacity(), 0);"
 - let s =
-- "HS::with_hasher"
+- "= HS::with_hasher("
 - "(DefaultHashBuilder::default());"
 - "assert_eq!(s.capacity(), 0);"
 - "let s = HS::with_capacity(0);"
 - "assert_eq!(s.capacity(), 0);"
 - let s =
-- "HS::with_capacity_and_hasher"
+- "= HS::with_capacity_and_hasher(0"
 - "(0,"
 - "0, DefaultHashBuilder::default()"
-- );
-- "assert_eq!(s.capacity(), 0);"
+- ");\n        assert_eq!(s.capacity"
+- "!(s.capacity(), 0);"
 - "let mut s = HS::new();"
 - s.insert(1);
 - s.insert(2);
@@ -4391,7 +3755,7 @@ expression: chunks
 - "assert_eq!(s.capacity(), 0);"
 - "    }\n\n    #[test]"
 - fn test_disjoint()
-- "{"
+- "() {\n        let mut xs ="
 - "let mut xs = HashSet::new();"
 - "let mut ys = HashSet::new();"
 - assert!(xs.is_disjoint(&ys));
@@ -4412,8 +3776,8 @@ expression: chunks
 - assert!(!ys.is_disjoint(&xs));
 - "    }\n\n    #[test]"
 - fn test_subset_and_superset()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - assert!(a.insert(0));
 - assert!(a.insert(5));
 - assert!(a.insert(11));
@@ -4436,23 +3800,21 @@ expression: chunks
 - assert!(b.is_superset(&a));
 - "    }\n\n    #[test]"
 - fn test_iterate()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - for i in 0..32
-- "{"
-- assert!(a.insert(i));
-- "}"
+- "{\n            assert!(a.insert(i"
+- "!(a.insert(i));\n        }"
 - "let mut observed: u32 = 0;"
 - for k in &a
-- "{"
-- observed |= 1 << *k;
-- "}"
+- "{\n            observed |= 1 << *"
+- " |= 1 << *k;\n        }"
 - assert_eq!
 - "!(observed, 0xFFFF_FFFF);\n    }"
 - "#[test]"
 - fn test_intersection()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - "let mut b = HashSet::new();"
 - assert!(a.insert(11));
 - assert!(a.insert(1));
@@ -4471,14 +3833,14 @@ expression: chunks
 - let mut i = 0;
 - "let expected = [3, 5, 11, 77];"
 - for x in a.intersection(&b)
-- "{"
+- "{\n            assert!("
 - assert!(expected.contains(x));
 - "            i += 1;\n        }"
 - "assert_eq!(i, expected.len());"
 - "    }\n\n    #[test]"
 - fn test_difference()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - "let mut b = HashSet::new();"
 - assert!(a.insert(1));
 - assert!(a.insert(3));
@@ -4490,14 +3852,14 @@ expression: chunks
 - let mut i = 0;
 - "let expected = [1, 5, 11];"
 - for x in a.difference(&b)
-- "{"
+- "{\n            assert!("
 - assert!(expected.contains(x));
 - "            i += 1;\n        }"
 - "assert_eq!(i, expected.len());"
 - "    }\n\n    #[test]"
 - fn test_symmetric_difference()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - "let mut b = HashSet::new();"
 - assert!(a.insert(1));
 - assert!(a.insert(3));
@@ -4514,14 +3876,14 @@ expression: chunks
 - "= [-2, 1, 5, 11, 14, 22];"
 - for x in
 - x in a.symmetric_difference(&b)
-- "{"
+- "{\n            assert!("
 - assert!(expected.contains(x));
 - "            i += 1;\n        }"
 - "assert_eq!(i, expected.len());"
 - "    }\n\n    #[test]"
 - fn test_union()
-- "{"
-- "let mut a = HashSet::new();"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - "let mut b = HashSet::new();"
 - assert!(a.insert(1));
 - assert!(a.insert(3));
@@ -4539,17 +3901,16 @@ expression: chunks
 - assert!(b.insert(19));
 - let mut i = 0;
 - let expected =
-- "[-2, 1, 3, 5, 9, 11, 13, 16, 19,"
-- "11, 13, 16, 19, 24];"
+- "= [-2, 1, 3, 5, 9, 11, 13, 16,"
+- ", 9, 11, 13, 16, 19, 24];"
 - for x in a.union(&b)
-- "{"
+- "{\n            assert!("
 - assert!(expected.contains(x));
 - "            i += 1;\n        }"
 - "assert_eq!(i, expected.len());"
 - "    }\n\n    #[test]"
 - fn test_from_map()
-- "{"
-- let mut a =
+- "() {\n        let mut a = crate::"
 - "mut a = crate::HashMap::new();"
 - "a.insert(1, ());"
 - "a.insert(2, ());"
@@ -4563,43 +3924,38 @@ expression: chunks
 - assert!(a.contains(&4));
 - "    }\n\n    #[test]"
 - fn test_from_iter()
-- "{"
-- let xs =
+- "() {\n        let xs = [1, 2, 2,"
 - "= [1, 2, 2, 3, 4, 5, 6, 7, 8, 9]"
-- ;
-- "let set: HashSet<_> ="
+- ";\n\n        let set: HashSet<_> ="
 - "= xs.iter().copied().collect();"
 - for x in &xs
-- "{"
+- "{\n            assert!("
 - assert!(set.contains(x));
-- "}"
-- assert_eq!
-- "(set.iter().len(), xs.len() - 1)"
-- ";\n    }\n\n    #[test]"
+- "        }\n\n        assert_eq!("
+- "!(set.iter().len(), xs.len() - 1"
+- "(), xs.len() - 1);\n    }"
+- "#[test]"
 - fn test_move_iter()
-- "{"
-- let hs =
-- "{"
+- "() {\n        let hs = {"
+- " = {\n            let mut hs ="
 - "let mut hs = HashSet::new();"
 - "hs.insert('a');"
 - "hs.insert('b');"
 - "hs.insert('b');\n\n            hs"
 - "            hs\n        };"
 - let v =
-- "hs.into_iter().collect::"
-- "::<Vec<char>>();"
+- "= hs.into_iter().collect::<Vec<"
+- ").collect::<Vec<char>>();"
 - assert!
-- "(v == ['a', 'b'] || v =="
-- " || v == ['b', 'a']);\n    }"
+- "!(v == ['a', 'b'] || v == ['b',"
+- "'] || v == ['b', 'a']);\n    }"
 - "#[test]"
 - fn test_eq()
-- "{"
-- //
+- "() {\n        // These constants"
 - These constants once happened to
 - once happened to expose a bug in
 - expose a bug in insert().
-- //
-- "I'm keeping them around to"
+- "// I'm keeping them around to"
 - them around to prevent a
 - to prevent a regression.
 - "let mut s1 = HashSet::new();"
@@ -4614,23 +3970,21 @@ expression: chunks
 - "assert_eq!(s1, s2);"
 - "    }\n\n    #[test]"
 - fn test_show()
-- "{"
+- "() {\n        let mut set ="
 - "let mut set = HashSet::new();"
 - let empty =
 - "empty = HashSet::<i32>::new();"
 - set.insert(1);
 - set.insert(2);
 - "let set_str = format!(\"{set:?}\")"
-- ;
-- assert!
-- "(set_str == \"{1, 2}\" || set_str"
-- "|| set_str == \"{2, 1}\");"
+- ";\n\n        assert!(set_str == \"{"
+- "!(set_str == \"{1, 2}\" || set_str"
+- ", 2}\" || set_str == \"{2, 1}\");"
 - assert_eq!
 - "!(format!(\"{empty:?}\"), \"{}\");"
 - "}\n\n    #[test]"
 - fn test_trivial_drain()
-- "{"
-- let mut s =
+- "() {\n        let mut s = HashSet"
 - "mut s = HashSet::<i32>::new();"
 - "for _ in s.drain() {}"
 - assert!(s.is_empty());
@@ -4641,75 +3995,75 @@ expression: chunks
 - assert!(s.is_empty());
 - "    }\n\n    #[test]"
 - fn test_drain()
-- "{"
-- "let mut s: HashSet<_> ="
+- "() {\n        let mut s: HashSet<"
+- "mut s: HashSet<_> ="
 - HashSet<_> = (1..100).collect();
-- //
-- try this a bunch of times to
+- // try this a bunch of times to
 - "of times to make sure we don't"
 - "sure we don't screw up internal"
 - up internal state.
 - for _ in 0..20
-- "{"
-- "assert_eq!(s.len(), 99);"
-- "{"
+- "{\n            assert_eq!(s.len()"
+- "!(s.len(), 99);"
+- "{\n                let mut last_i"
 - let mut last_i = 0;
 - let mut d = s.drain();
 - "for (i, x) in"
 - d.by_ref().take(50).enumerate()
-- "{"
+- "{\n                    last_i = i"
 - last_i = i;
 - assert!(x != 0);
 - "}"
+- "}\n                assert_eq!("
 - "assert_eq!(last_i, 49);"
-- "}"
+- "            }\n\n            if !"
 - if !s.is_empty()
-- "{"
+- "{\n                panic!(\"s"
 - "panic!(\"s should be empty!\");"
 - "}"
+- "            }\n\n            //"
 - // reset to try again.
 - s.extend(1..100);
 - "        }\n    }\n\n    #[test]"
 - fn test_replace()
-- "{\n        use core::hash;"
+- "() {\n        use core::hash;"
 - "#[derive(Debug)]"
 - "#[allow(dead_code)]"
 - "struct Foo(&'static str, i32);"
 - impl PartialEq for Foo
-- "{"
-- "fn eq(&self, other: &Self) ->"
-- "-> bool"
-- "{"
+- "{\n            fn eq(&self, other"
+- "eq(&self, other: &Self) -> bool"
+- "{\n                self.0 =="
 - self.0 == other.0
 - "            }\n        }"
+- "        }\n\n        impl Eq for"
 - "impl Eq for Foo {}"
 - "impl hash::Hash for Foo"
-- "{"
-- "fn hash<H: hash::Hasher>"
+- "{\n            fn hash<H: hash::"
+- "hash<H: hash::Hasher>"
 - "(&self, h: &mut H)"
-- "{"
+- "{\n                self.0.hash(h)"
 - self.0.hash(h);
 - "self.0.hash(h);\n            }"
-- "}"
-- "let mut s = HashSet::new();"
+- "}\n\n        let mut s = HashSet::"
+- "s = HashSet::new();"
 - assert_eq!
 - "!(s.replace(Foo(\"a\", 1)), None);"
 - "assert_eq!(s.len(), 1);"
 - assert_eq!
-- "(s.replace(Foo(\"a\", 2)), Some"
-- ", Some(Foo(\"a\", 1)));"
+- "!(s.replace(Foo(\"a\", 2)), Some("
+- "(\"a\", 2)), Some(Foo(\"a\", 1)));"
 - "assert_eq!(s.len(), 1);"
 - let mut it = s.iter();
 - assert_eq!
 - "!(it.next(), Some(&Foo(\"a\", 2)))"
-- ;
-- "assert_eq!(it.next(), None);"
-- "    }\n\n    #[test]"
+- ";\n        assert_eq!(it.next(),"
+- "!(it.next(), None);\n    }"
+- "#[test]"
 - "#[allow(clippy::needless_borrow)"
-- "]"
-- fn test_extend_ref()
-- "{"
-- "let mut a = HashSet::new();"
+- "]\n    fn test_extend_ref() {"
+- "() {\n        let mut a = HashSet"
+- "mut a = HashSet::new();"
 - a.insert(1);
 - "a.extend([2, 3, 4]);"
 - "assert_eq!(a.len(), 4);"
@@ -4730,8 +4084,8 @@ expression: chunks
 - assert!(a.contains(&6));
 - "    }\n\n    #[test]"
 - fn test_retain()
-- "{"
-- "let xs = [1, 2, 3, 4, 5, 6];"
+- "() {\n        let xs = [1, 2, 3,"
+- "xs = [1, 2, 3, 4, 5, 6];"
 - "let mut set: HashSet<i32> ="
 - "= xs.iter().copied().collect();"
 - set.retain(|&k| k % 2 == 0);
@@ -4741,32 +4095,31 @@ expression: chunks
 - assert!(set.contains(&6));
 - "    }\n\n    #[test]"
 - fn test_extract_if()
-- "{"
-- "{"
+- "() {\n        {\n            let"
 - "let mut set: HashSet<i32> ="
 - HashSet<i32> = (0..8).collect();
 - let drained =
-- set.extract_if(|&k| k % 2 == 0);
+- "= set.extract_if(|&k| k % 2 == 0"
+- (|&k| k % 2 == 0);
 - let mut out =
 - "= drained.collect::<Vec<_>>();"
 - out.sort_unstable();
 - assert_eq!
 - "!(vec![0, 2, 4, 6], out);"
 - "assert_eq!(set.len(), 4);"
-- "}"
-- "{"
+- "        }\n        {"
+- "{\n            let mut set:"
 - "let mut set: HashSet<i32> ="
 - HashSet<i32> = (0..8).collect();
 - set.extract_if(|&k| k % 2 == 0).
 - ".for_each(drop);"
 - assert_eq!
-- "(set.len(), 4,"
-- "\""
-- Removes non-matching items on
+- "!(set.len(), 4, \"Removes non-"
+- ", \"Removes non-matching items on"
 - " items on drop\");\n        }"
 - "}\n\n    #[test]"
 - fn test_const_with_hasher()
-- "{"
+- "() {\n        use core::hash::"
 - "use core::hash::BuildHasher;"
 - use
 - "std::collections::hash_map::"
@@ -4774,52 +4127,50 @@ expression: chunks
 - "#[derive(Clone)]"
 - struct MyHasher;
 - impl BuildHasher for MyHasher
-- "{"
+- "{\n            type Hasher ="
 - type Hasher = DefaultHasher;
 - fn build_hasher(&self) ->
 - (&self) -> DefaultHasher
-- "{"
+- "{\n                DefaultHasher:"
 - "DefaultHasher::new()"
 - "            }\n        }"
-- "const EMPTY_SET:"
+- "        }\n\n        const"
+- "}\n\n        const EMPTY_SET:"
 - ": HashSet<u32, MyHasher> ="
 - "= HashSet::with_hasher(MyHasher)"
-- ;
+- ";\n\n        let mut set ="
 - let mut set = EMPTY_SET;
 - set.insert(19);
 - assert!(set.contains(&19));
 - "    }\n\n    #[test]"
 - fn rehash_in_place()
-- "{"
+- "() {\n        let mut set ="
 - "let mut set = HashSet::new();"
 - for i in 0..224
 - "{\n            set.insert(i);"
 - "set.insert(i);\n        }"
 - assert_eq!
-- "(\n            set.capacity(),"
+- "!(\n            set.capacity(),"
 - "set.capacity(),\n            224,"
-- "\""
-- The set must be at or close to
+- ",\n            \"The set must be"
+- "\"The set must be at or close to"
 - at or close to capacity to
 - to capacity to trigger a re
 - "to trigger a re hashing\""
-- );
-- for i in 100..1400
-- "{"
+- ");\n\n        for i in 100..1400 {"
+- "{\n            set.remove(&(i -"
 - set.remove(&(i - 100));
 - set.insert(i);
 - "set.insert(i);\n        }\n    }"
 - "#[test]"
 - fn collect()
-- "{"
-- //
-- "At the time of writing, this"
+- "() {\n        // At the time of"
+- "/ At the time of writing, this"
 - "of writing, this hits the ZST"
 - hits the ZST case in
 - the ZST case in from_base_index
-- //
-- "(and without the `map`, it does"
-- "`map`, it does not)."
+- "// (and without the `map`, it"
+- "the `map`, it does not)."
 - "let mut _set: HashSet<_> ="
 - "= (0..3).map(|_| ()).collect();"
 - "}\n}"
