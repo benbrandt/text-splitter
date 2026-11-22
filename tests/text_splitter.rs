@@ -228,7 +228,7 @@ fn distant_fallback_separator_does_not_size_the_whole_section() {
     );
 }
 
-#[cfg(feature = "tokenizers")]
+#[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
 #[test]
 fn huggingface_small_chunk_behavior() {
     let tokenizer =
@@ -241,7 +241,7 @@ fn huggingface_small_chunk_behavior() {
     assert_eq!(chunks, ["notokenexistsforth", "isword"]);
 }
 
-#[cfg(feature = "tokenizers")]
+#[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
 #[test]
 fn huggingface_tokenizer_with_padding() {
     let tokenizer = tokenizers::Tokenizer::from_pretrained("thenlper/gte-small", None).unwrap();

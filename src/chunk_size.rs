@@ -14,7 +14,7 @@ use itertools::Itertools;
 use thiserror::Error;
 
 mod characters;
-#[cfg(feature = "tokenizers")]
+#[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
 mod huggingface;
 #[cfg(feature = "tiktoken-rs")]
 mod tiktoken;

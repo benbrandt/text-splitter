@@ -152,7 +152,7 @@ mod text {
         });
     }
 
-    #[cfg(feature = "tokenizers")]
+    #[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
     #[divan::bench(args = TEXT_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
@@ -209,7 +209,7 @@ mod markdown {
         });
     }
 
-    #[cfg(feature = "tokenizers")]
+    #[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
     #[divan::bench(args = MARKDOWN_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {
@@ -286,7 +286,7 @@ mod code {
         });
     }
 
-    #[cfg(feature = "tokenizers")]
+    #[cfg(any(feature = "tokenizers-onig", feature = "tokenizers-fancy-regex"))]
     #[divan::bench(args = CODE_FILENAMES, consts = CHUNK_SIZES)]
     fn tokenizers<const N: usize>(bencher: Bencher<'_, '_>, filename: &str) {
         bench(bencher, filename, || {

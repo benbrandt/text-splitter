@@ -82,7 +82,7 @@ insta = { version = "1.47", features = ["glob", "yaml"] }
 more-asserts = "0.3"
 rayon = "1.11"
 tokenizers = { version = "0.23", default-features = false, features = [
-    "onig",
+    "fancy-regex",
     "http",
 ] }
 tree-sitter-rust = "0.24"
@@ -95,7 +95,9 @@ harness = false
 code = ["dep:tree-sitter"]
 markdown = ["dep:pulldown-cmark"]
 tiktoken-rs = ["dep:tiktoken-rs"]
-tokenizers = ["dep:tokenizers", "tokenizers/onig"]
+tokenizers = ["tokenizers-onig"]
+tokenizers-onig = ["dep:tokenizers", "tokenizers?/onig"]
+tokenizers-fancy-regex = ["dep:tokenizers", "tokenizers?/fancy-regex"]
 
 [lints]
 workspace = true
