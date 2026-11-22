@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+## [0.33.6](https://github.com/benbrandt/text-splitter/compare/v0.33.5...v0.33.6) - 2026-11-22
+
+### Added
+
+- allow choosing the tokenizers regex backend
+
+### Fixed
+
+- verify and document the fancy-regex backend selection
+- honor chunk capacity for sizers that exceed UTF-8 byte length
+
+### Performance
+
+- keep the ICU iterator on word probe misses
+- reuse the first word probed across a run without word breaks
+
 ## [0.33.5](https://github.com/benbrandt/text-splitter/compare/v0.33.4...v0.33.5) - 2026-11-21
 
 ### Performance
