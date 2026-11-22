@@ -1,13 +1,10 @@
-use std::{
-    cell::Cell, cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once,
-    ops::Range,
-};
+use std::{cmp::Ordering, collections::BTreeMap, convert::Infallible, fmt, iter::once, ops::Range};
 
 use either::Either;
 use itertools::Itertools;
 use strum::IntoEnumIterator;
 
-use self::fallback::{FallbackLevel, SentenceProbe};
+use self::fallback::{FallbackLevel, SentenceProbe, WordProbe};
 use crate::{
     chunk_size::MemoizedChunkSizer, trim::Trim, ChunkCapacity, ChunkConfig, TryChunkSizer,
 };
@@ -297,6 +294,8 @@ where
     semantic_split: SemanticSplitRanges<Level>,
     /// Avoid searching for the same distant fallback sentence boundary on every chunk.
     sentence_probe: SentenceProbe,
+    /// Avoid segmenting the same long run without word breaks on every chunk.
+    word_probe: WordProbe,
     /// Original text to iterate over and generate chunks from
     text: &'text str,
     /// The trimming method to apply
@@ -337,6 +336,7 @@ where
             prev_item_end: 0,
             semantic_split: SemanticSplitRanges::new(offsets),
             sentence_probe: SentenceProbe::default(),
+            word_probe: WordProbe::default(),
             text,
             trim,
             finished: false,
@@ -552,15 +552,15 @@ where
                 semantic_level,
             ))
         } else {
-            // Finding the first dictionary word can segment the whole run. Hand the
-            // peeked iterator to the next word consumer at this cursor, still at its start.
-            let peeked_words = Cell::new(None);
-            let sections_for = |level: FallbackLevel| {
-                let fresh = || level.sections(remaining_text).peekable();
-                match level {
-                    FallbackLevel::Word => peeked_words.take().unwrap_or_else(fresh),
-                    _ => fresh(),
-                }
+            // Finding the first word can segment a whole run without word breaks, so
+            // it comes from the probe. Later words are only segmented when asked for.
+            let first_word = self.word_probe.first(self.text, self.cursor);
+            let sections_for = |level: FallbackLevel| match (level, first_word) {
+                (FallbackLevel::Word, Some(first)) => Either::Left(
+                    once((0, first))
+                        .chain(once(()).flat_map(move |()| level.sections(remaining_text).skip(1))),
+                ),
+                _ => Either::Right(level.sections(remaining_text)),
             };
             let (semantic_level, fallback_max_offset) = self.chunk_sizer.find_correct_level(
                 self.cursor,
@@ -570,12 +570,7 @@ where
                         FallbackLevel::Sentence => {
                             self.sentence_probe.first(self.text, self.cursor)
                         }
-                        FallbackLevel::Word => {
-                            let mut words = level.sections(remaining_text).peekable();
-                            let first = words.peek().map(|&(_, s)| s);
-                            peeked_words.set(Some(words));
-                            first
-                        }
+                        FallbackLevel::Word => first_word,
                         _ => level.sections(remaining_text).next().map(|(_, s)| s),
                     };
                     first.map(|s| (level, s, level.boundary_level_for_probe()))
