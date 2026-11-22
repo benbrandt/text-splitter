@@ -47,13 +47,13 @@ enum ChunkCapacityErrorRepr {
 /// adding the next piece of text may have made it larger than the `desired`
 /// capacity.
 ///
-/// The `max` size is the maximum possible chunk size that can be generated.
+/// The `max` size is the upper limit for a chunk, in the sizer's units.
 /// By setting this to a larger value than `desired`, it means that the chunk
 /// should be as close to `desired` as possible, but can be larger if it means
 /// staying at a larger semantic level.
 ///
-/// The splitter will consume text until at maxumum somewhere between `desired`
-/// and `max`, if they differ, but never above `max`.
+/// If a single Unicode scalar (`char`) already exceeds `max`, the splitter
+/// can return it on its own: it cannot split that scalar into smaller strings.
 ///
 /// If you need to ensure a fixed size, set `desired` and `max` to the same
 /// value. For example, if you are trying to maximize the context window for an
@@ -89,7 +89,7 @@ impl ChunkCapacity {
         self.desired
     }
 
-    /// The `max` size is the maximum possible chunk size that can be generated.
+    /// The upper limit for a chunk, except for a single oversized `char`.
     /// By setting this to a larger value than `desired`, it means that the chunk
     /// should be as close to `desired` as possible, but can be larger if it means
     /// staying at a larger semantic level.
@@ -194,7 +194,8 @@ impl From<RangeToInclusive<usize>> for ChunkCapacity {
 
 /// Determines the size of a given chunk.
 pub trait ChunkSizer {
-    /// Determine the size of a given chunk to use for validation
+    /// Determine the size of a chunk in this sizer's units. The size need not
+    /// be bounded by the UTF-8 byte length.
     fn size(&self, chunk: &str) -> usize;
 }
 
@@ -457,6 +458,9 @@ where
     size_cache: AHashMap<Range<usize>, usize>,
     /// The sizer used for caluclating chunk sizes
     sizer: &'sizer Sizer,
+    /// A short section failed the actual size check. Measure even byte-short
+    /// candidates for the rest of this document instead of guessing again.
+    measure_short_sections: bool,
 }
 
 impl<'sizer, Sizer> MemoizedChunkSizer<'sizer, Sizer>
@@ -468,7 +472,12 @@ where
         Self {
             size_cache: AHashMap::new(),
             sizer,
+            measure_short_sections: false,
         }
+    }
+
+    pub(crate) fn require_measured_levels(&mut self) {
+        self.measure_short_sections = true;
     }
 
     /// Determine the size of a given chunk to use for validation,
@@ -521,9 +530,10 @@ where
         );
 
         for (level, str, lower_level) in levels_with_first_chunk {
-            // Skip tokenizing levels that we know are too small anyway.
+            // Byte length is a cheap estimate for choosing a level, not a
+            // guarantee that the chunk can be emitted. Chunk selection checks it.
             let len = str.len();
-            if len > capacity.max {
+            if self.measure_short_sections || len > capacity.max {
                 let mut lower_boundaries = lower_boundaries_for(lower_level, offset + len);
                 let fits = self.chunk_fits_with_boundaries(
                     offset,

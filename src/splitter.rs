@@ -347,8 +347,16 @@ where
     /// Returns final byte offset and str.
     fn next_chunk(&mut self) -> Result<(usize, &'text str), Sizer::Error> {
         self.semantic_split.update_cursor(self.cursor);
-        let low = self.update_next_sections()?;
-        let (start, end) = self.binary_search_next_chunk(low)?;
+        let start = self.cursor;
+        let end = if let Some(end) = self.find_chunk_end()? {
+            end
+        } else {
+            // The sizer disproved the byte-length estimate. Keep cached sizes
+            // and retry at the same cursor, measuring levels from now on.
+            self.chunk_sizer.require_measured_levels();
+            self.find_chunk_end()?
+                .expect("a measured first section fits or is one character")
+        };
         // Chunk selection uses offsets from slices of this same text, so both
         // endpoints are valid UTF-8 boundaries.
         let chunk = &self.text[start..end];
@@ -363,14 +371,15 @@ where
         Ok(self.trim.trim(start, chunk))
     }
 
-    /// Use binary search to find the next chunk that fits within the chunk size
-    fn binary_search_next_chunk(&mut self, mut low: usize) -> Result<(usize, usize), Sizer::Error> {
+    /// Select a level and search for a fitting chunk end. `None` means the first
+    /// section needs to be subdivided instead of emitted over capacity.
+    fn find_chunk_end(&mut self) -> Result<Option<usize>, Sizer::Error> {
+        let mut low = self.update_next_sections()?;
         let start = self.cursor;
         let mut end = self.cursor;
         let mut equals_found = false;
         let mut high = self.next_sections.len().saturating_sub(1);
-        let mut successful_index = None;
-        let mut successful_chunk_size = None;
+        let mut lookahead_from = None;
 
         while low <= high {
             let mid = low + (high - low) / 2;
@@ -385,25 +394,22 @@ where
                     // We got further than the last one, so update end
                     if text_end > end {
                         end = text_end;
-                        successful_index = Some(mid);
-                        successful_chunk_size = Some(chunk_size);
+                        lookahead_from = Some((mid, chunk_size));
                     }
                 }
                 Ordering::Equal => {
                     // If we found a smaller equals use it. Or if this is the first equals we found
                     if text_end < end || !equals_found {
                         end = text_end;
-                        successful_index = Some(mid);
-                        successful_chunk_size = Some(chunk_size);
+                        lookahead_from = Some((mid, chunk_size));
                     }
                     equals_found = true;
                 }
                 Ordering::Greater => {
-                    // If we're too big on our smallest run, we must return at least one section
                     if mid == 0 && start == end {
-                        end = text_end;
-                        successful_index = Some(mid);
-                        successful_chunk_size = Some(chunk_size);
+                        // Don't accept this prefix. A longer one can still
+                        // tokenize to a smaller size in the lookahead below.
+                        lookahead_from = Some((mid, chunk_size));
                     }
                 }
             }
@@ -419,20 +425,13 @@ where
             }
         }
 
-        if let (Some(successful_index), Some(chunk_size)) =
-            (successful_index, successful_chunk_size)
-        {
-            let mut range = successful_index..self.next_sections.len();
-            // We've already checked the successful index
-            range.next();
-
-            for index in range {
-                let (offset, str) = self.next_sections[index];
+        if let Some((index, chunk_size)) = lookahead_from {
+            for &(offset, str) in &self.next_sections[index + 1..] {
                 let text_end = offset + str.len();
                 let chunk = &self.text[start..text_end];
                 let size = self.chunk_sizer.chunk_size(start, chunk, self.trim)?;
                 if size <= chunk_size {
-                    if text_end > end {
+                    if size <= self.capacity.max && text_end > end {
                         end = text_end;
                     }
                 } else {
@@ -441,7 +440,17 @@ where
             }
         }
 
-        Ok((start, end))
+        if end > start {
+            return Ok(Some(end));
+        }
+        // Only a single Unicode scalar is indivisible, even if the sizer
+        // charges the same (over-budget) amount for several scalars.
+        let (offset, first) = self.next_sections[0];
+        Ok(first
+            .chars()
+            .nth(1)
+            .is_none()
+            .then_some(offset + first.len()))
     }
 
     /// Use binary search to find the sections that fit within the overlap size.
