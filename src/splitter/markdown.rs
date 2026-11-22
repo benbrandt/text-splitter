@@ -179,6 +179,7 @@ where
     type Level = Element;
 
     const TRIM: Trim = Trim::PreserveIndentation;
+    const ATTACH_PUNCTUATION: bool = true;
 
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config

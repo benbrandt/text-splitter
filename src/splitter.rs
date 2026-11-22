@@ -17,6 +17,7 @@ mod code;
 mod fallback;
 #[cfg(feature = "markdown")]
 mod markdown;
+mod punctuation;
 mod text;
 
 #[cfg(feature = "code")]
@@ -43,6 +44,9 @@ where
     /// Trimming behavior to use when trimming chunks
     const TRIM: Trim = Trim::All;
 
+    /// Prose splitters can repair stray punctuation. Syntax-only chunks may be intentional.
+    const ATTACH_PUNCTUATION: bool = false;
+
     /// Retrieve the splitter chunk configuration
     fn chunk_config(&self) -> &ChunkConfig<Sizer>;
 
@@ -58,12 +62,17 @@ where
     where
         Sizer: 'splitter,
     {
-        TextChunks::<Sizer, Self::Level>::new(
+        let chunks = TextChunks::<Sizer, Self::Level>::new(
             self.chunk_config(),
             text,
             self.parse(text),
             Self::TRIM,
-        )
+        );
+        if Self::ATTACH_PUNCTUATION {
+            Either::Left(chunks.attach_punctuation())
+        } else {
+            Either::Right(chunks)
+        }
     }
 
     /// Returns an iterator over chunks of the text and their byte and character offsets.
@@ -79,12 +88,18 @@ where
     where
         Sizer: 'splitter,
     {
-        TextChunksWithCharIndices::<Sizer, Self::Level>::new(
-            self.chunk_config(),
-            text,
-            self.parse(text),
-            Self::TRIM,
-        )
+        let (mut byte_offset, mut char_offset) = (0, 0);
+        self.try_chunk_indices(text).map(move |result| {
+            result.map(|(start, chunk)| {
+                char_offset += text[byte_offset..start].chars().count();
+                byte_offset = start;
+                ChunkCharIndex {
+                    chunk,
+                    byte_offset,
+                    char_offset,
+                }
+            })
+        })
     }
 
     /// Generate a list of chunks from a given text.
@@ -231,6 +246,16 @@ where
     /// Return the distinct levels with a range at or after the cursor, in ascending order.
     fn levels_in_remaining_text(&self) -> impl Iterator<Item = Level> + '_ {
         self.next_range_by_level.keys().copied()
+    }
+
+    /// A local punctuation repair may divide an already-partial section, but
+    /// must not introduce a break inside a parsed element that fit intact.
+    fn bisects_intact_section(&self, chunk: Range<usize>, cut: usize) -> bool {
+        let start = self.ranges.partition_point(|(_, r)| r.start < chunk.start);
+        self.ranges[start..]
+            .iter()
+            .take_while(|(_, r)| r.start < cut)
+            .any(|(_, r)| cut < r.end && r.end <= chunk.end)
     }
 
     /// Split the suffix beginning at the byte offset last passed to `update_cursor`.
@@ -727,71 +752,6 @@ pub struct ChunkCharIndex<'text> {
     pub byte_offset: usize,
     /// The character offset of the chunk within the original text.
     pub char_offset: usize,
-}
-
-/// Returns chunks of text with their byte and character offsets as an iterator.
-#[derive(Debug)]
-struct TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
-where
-    Sizer: TryChunkSizer,
-    Level: SemanticLevel,
-{
-    /// The text being chunked.
-    text: &'text str,
-    /// The main iterator over chunks of text.
-    text_chunks: TextChunks<'text, 'sizer, Sizer, Level>,
-    /// The byte offset of the previous chunk within the original text.
-    byte_offset: usize,
-    /// The character offset of the previous chunk within the original text.
-    char_offset: usize,
-}
-
-impl<'sizer, 'text: 'sizer, Sizer, Level> TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
-where
-    Sizer: TryChunkSizer,
-    Level: SemanticLevel,
-{
-    /// Generate new [`TextChunksWithCharIndices`] iterator for a given text.
-    /// Starts with an offset of 0
-    fn new(
-        chunk_config: &'sizer ChunkConfig<Sizer>,
-        text: &'text str,
-        offsets: Vec<(Level, Range<usize>)>,
-        trim: Trim,
-    ) -> Self {
-        Self {
-            text,
-            text_chunks: TextChunks::new(chunk_config, text, offsets, trim),
-            byte_offset: 0,
-            char_offset: 0,
-        }
-    }
-}
-
-impl<'sizer, 'text: 'sizer, Sizer, Level> Iterator
-    for TextChunksWithCharIndices<'text, 'sizer, Sizer, Level>
-where
-    Sizer: TryChunkSizer,
-    Level: SemanticLevel,
-{
-    type Item = Result<ChunkCharIndex<'text>, Sizer::Error>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.text_chunks.next().map(|result| {
-            let (byte_offset, chunk) = result?;
-            let preceding_text = self
-                .text
-                .get(self.byte_offset..byte_offset)
-                .expect("Invalid byte sequence");
-            self.byte_offset = byte_offset;
-            self.char_offset += preceding_text.chars().count();
-            Ok(ChunkCharIndex {
-                chunk,
-                byte_offset,
-                char_offset: self.char_offset,
-            })
-        })
-    }
 }
 
 /// Keeps track of the average size of chunks as we go

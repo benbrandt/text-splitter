@@ -26,8 +26,8 @@ expression: chunks
 - "Emphasis, aka italics, with *"
 - asterisks* or _underscores_.
 - "Strong emphasis, aka bold, with"
-- "**asterisks** or __underscores__"
-- "."
+- "**asterisks** or"
+- __underscores__.
 - Combined emphasis with **
 - asterisks and _underscores_**.
 - Strikethrough uses two tildes.
@@ -40,8 +40,8 @@ expression: chunks
 - "Emphasis, aka italics, with"
 - "*asterisks* or _underscores_."
 - "Strong emphasis, aka bold, with"
-- "**asterisks** or __underscores__"
-- "."
+- "**asterisks** or"
+- __underscores__.
 - Combined emphasis with
 - "**asterisks and _underscores_**."
 - Strikethrough uses two tildes.
@@ -217,8 +217,8 @@ expression: chunks
 - "example.com (but not on Github,"
 - for example).
 - Some text to show that the
-- reference links can follow later
-- "."
+- reference links can follow
+- later.
 - "[arbitrary case-insensitive"
 - "reference text]: https://"
 - www.mozilla.org
@@ -250,8 +250,8 @@ expression: chunks
 - "example.com (but not on Github,"
 - for example).
 - Some text to show that the
-- reference links can follow later
-- "."
+- reference links can follow
+- later.
 - "[arbitrary case-insensitive"
 - "reference text]: https://"
 - www.mozilla.org
@@ -262,8 +262,7 @@ expression: chunks
 - "```"
 - "Here's our logo (hover to see"
 - "the title text):\n\nInline-style:"
-- "!["
-- "alt text](https://github.com/"
+- "![alt text](https://github.com/"
 - adam-p/markdown-here/raw/master/
 - "src/common/images/icon48.png \""
 - "Logo Title Text 1\")"
@@ -293,8 +292,7 @@ expression: chunks
 - s our logo (hover to see the
 - "title text):"
 - "Inline-style:"
-- "!["
-- alt text
+- "![alt text"
 - "](https://github.com/adam-p/"
 - markdown-here/raw/master/src/
 - "common/images/icon48.png \"Logo"
@@ -305,12 +303,10 @@ expression: chunks
 - p/markdown-here/raw/master/src/
 - "common/images/icon48.png \"Logo"
 - "Title Text 2\""
-- "!["
-- Minion
+- "![Minion"
 - "](https://octodex.github.com/"
 - images/minion.png)
-- "!["
-- Stormtroopocat
+- "![Stormtroopocat"
 - "](https://octodex.github.com/"
 - "images/stormtroopocat.jpg \"The"
 - "Stormtroopocat\")"
@@ -325,8 +321,8 @@ expression: chunks
 - "Dojocat\"\n\n------"
 - "#"
 - "[Footnotes](https://github.com/"
-- markdown-it/markdown-it-footnote
-- )
+- markdown-it/markdown-it-
+- footnote)
 - "```"
 - "Footnote 1 link[^first]."
 - "Footnote 2 link[^second]."
@@ -365,8 +361,8 @@ expression: chunks
 - "{"
 - public static List<int> JustDoIt
 - "(int count)\n        {"
-- "Console.WriteLine($\"Hello {Name}"
-- "!\");"
+- "Console.WriteLine($\"Hello"
+- "{Name}!\");"
 - "return new List<int>(new int[] {"
 - "1, 2, 3 })\n        }\n    }\n}\n```"
 - "```css"
@@ -374,8 +370,8 @@ expression: chunks
 - "font-family: Chunkfive; src: url"
 - "('Chunkfive.otf');\n}"
 - "body, .usertext {"
-- "color: #F0F0F0; background: #600"
-- ;
+- "color: #F0F0F0; background:"
+- "#600;"
 - "font-family: Chunkfive, sans;"
 - "}\n\n@import url(print.css);"
 - "@media print {"
@@ -567,8 +563,8 @@ expression: chunks
 - actually wrap for everyone.
 - "Oh, you can *put* **Markdown**"
 - into a blockquote.
-- "> Blockquotes can also be nested"
-- "..."
+- "> Blockquotes can also be"
+- nested...
 - ">> ...by using additional"
 - greater-than signs right next to
 - each other...
@@ -644,14 +640,12 @@ expression: chunks
 - "\"240\" height=\"180\" border=\"10\">"
 - "</a>"
 - "```"
-- "[!["
-- "IMAGE ALT TEXT HERE](http://"
+- "[![IMAGE ALT TEXT HERE](http://"
 - img.youtube.com/vi/
 - "YOUTUBE_VIDEO_ID_HERE/0.jpg)]("
 - "http://www.youtube.com/watch?"
 - "v=YOUTUBE_VIDEO_ID_HERE)\n```"
-- "[!["
-- IMAGE ALT TEXT HERE
+- "[![IMAGE ALT TEXT HERE"
 - "](https://upload.wikimedia.org/"
 - wikipedia/commons/thumb/e/ef/
 - YouTube_logo_2015.svg/1200px-
