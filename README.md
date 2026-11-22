@@ -37,11 +37,18 @@ let chunks = splitter.chunks("your document text");
 
 ### With Hugging Face Tokenizer
 
-Requires the `tokenizers` feature to be activated and adding `tokenizers` to dependencies. The example below, using `from_pretrained()`, also requires tokenizers `http` feature to be enabled.
+For the Oniguruma backend, add the following dependencies. The `http` feature is needed here because the example downloads a tokenizer with `from_pretrained()`.
 
 ```sh
 cargo add text-splitter --features tokenizers
-cargo add tokenizers --features http
+cargo add tokenizers@0.23 --features http
+```
+
+For the pure-Rust `fancy-regex` backend, use these commands **instead**. Disable the `tokenizers` crate's default features so it does not re-enable Oniguruma:
+
+```sh
+cargo add text-splitter --features tokenizers-fancy-regex
+cargo add tokenizers@0.23 --no-default-features --features http
 ```
 
 ```rust
@@ -209,9 +216,11 @@ There are lots of methods of determining sentence breaks, all to varying degrees
 | `tiktoken-rs`      | `^0.12.0`         | Enables `(Text/Markdown)Splitter::new` to take `tiktoken_rs::CoreBPE` as an argument. This is useful for splitting text for `OpenAI` models.                                   |
 | `tokenizers`       | `^0.23.0`         | Enables `(Text/Markdown)Splitter::new` to take `tokenizers::Tokenizer` as an argument. This is useful for splitting text models that have a Hugging Face-compatible tokenizer. |
 | `tokenizers-onig`  | `^0.23.0`         | Same as `tokenizers`, using the Oniguruma regex backend (`tokenizers/onig`). `tokenizers` is an alias for this feature, so existing setups are unchanged.                       |
-| `tokenizers-fancy-regex` | `^0.23.0`   | Same as `tokenizers`, using the pure-Rust `fancy-regex` backend (`tokenizers/fancy-regex`) so no C code is compiled.                                                           |
+| `tokenizers-fancy-regex` | `^0.23.0`   | Same tokenizer support, using the pure-Rust `fancy-regex` backend (`tokenizers/fancy-regex`).                                                                                   |
 
-The `tokenizers` crate needs exactly one regex backend and prefers Oniguruma when both are enabled. `tokenizers-fancy-regex` therefore only takes effect when `tokenizers` and `tokenizers-onig` are not enabled anywhere in your dependency graph. Because the crate has no default features, the integration is only available once you enable one of these three features.
+`text-splitter` has no default features. Cargo combines features requested for the same version of `tokenizers`, and `tokenizers` uses Oniguruma if both regex backends are enabled. To use `fancy-regex`, no dependency may enable `tokenizers/onig`, whether through the upstream crate's defaults or through `text-splitter`'s `tokenizers` or `tokenizers-onig` features.
+
+Using `fancy-regex` avoids compiling Oniguruma, not necessarily all C code: for example, the `http` feature's TLS dependencies can still compile C.
 
 ## Inspiration
 
