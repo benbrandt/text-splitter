@@ -105,6 +105,8 @@ To preserve as much semantic meaning within a chunk as possible, each chunk is c
 2. Check the first item for each level and select the highest level whose first item still fits within the chunk size.
 3. Merge as many of these neighboring sections of this level or above into a chunk to maximize chunk length. Boundaries of higher semantic levels are always included when merging, so that the chunk doesn't inadvertantly cross semantic boundaries.
 
+For text and Markdown, if a chunk contains only punctuation attached to a word in the source, the splitter tries to keep them together. For example, at 8 characters, `one last.` splits into `one` and `last.` rather than `one last` and `.`. It only changes neighboring chunks on the same line when the replacements fit. Punctuation can still stand alone, for example when moving it would split an intact word or inline code span. This rule does not apply to `CodeSplitter`.
+
 The boundaries used to split the text if using the `chunks` method, in ascending order:
 
 ### `TextSplitter` Semantic Levels

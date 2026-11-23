@@ -363,8 +363,7 @@ expression: chunks
 - "s our logo (hover to see the "
 - " to see the title text):\n\n"
 - "Inline-style:\n"
-- "!["
-- alt text
+- "![alt text"
 - "](https://github.com/adam-p/"
 - /adam-p/markdown-here/raw/master
 - "-here/raw/master/src/common/"
@@ -380,12 +379,10 @@ expression: chunks
 - /raw/master/src/common/images/
 - "/common/images/icon48.png \"Logo "
 - ".png \"Logo Title Text 2\"\n\n"
-- "!["
-- Minion
+- "![Minion"
 - "](https://octodex.github.com/"
 - "/images/minion.png)\n"
-- "!["
-- Stormtroopocat
+- "![Stormtroopocat"
 - "](https://octodex.github.com/"
 - "/images/stormtroopocat.jpg \"The "
 - " \"The Stormtroopocat\")\n\n"
@@ -793,15 +790,13 @@ expression: chunks
 - "\" height=\"180\" border=\"10\">\n"
 - "</a>\n"
 - "\n```\n"
-- "[!["
-- "IMAGE ALT TEXT HERE](http://"
+- "[![IMAGE ALT TEXT HERE](http://"
 - " HERE](http://img.youtube.com/vi"
 - /vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)
 - "/0.jpg)](http://www.youtube.com/"
 - www.youtube.com/watch?
 - "v=YOUTUBE_VIDEO_ID_HERE)\n```\n\n"
-- "[!["
-- IMAGE ALT TEXT HERE
+- "[![IMAGE ALT TEXT HERE"
 - "](https://upload.wikimedia.org/"
 - /wikipedia/commons/thumb/e/ef/
 - /thumb/e/ef/YouTube_logo_2015.

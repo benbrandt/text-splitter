@@ -13,8 +13,8 @@ expression: chunks
 - "# Introduction"
 - "## What is Markdown?"
 - Markdown is a plain text format
-- for writing structured documents
-- ","
+- for writing structured
+- "documents,"
 - based on conventions for
 - indicating formatting in email
 - and usenet posts.
@@ -132,8 +132,7 @@ expression: chunks
 - processed document.
 - "## Why is a spec needed?"
 - "John Gruber's"
-- "["
-- canonical description of
+- "[canonical description of"
 - "Markdown's\nsyntax"
 - "](https://daringfireball.net/"
 - projects/markdown/syntax)
@@ -177,8 +176,8 @@ expression: chunks
 - also to ambiguities in parsing (
 - note that some implementations
 - put the heading inside the
-- "blockquote, while others do not)"
-- "."
+- "blockquote, while others do"
+- not).
 - (John Gruber has also spoken
 - "[in favor of requiring the blank"
 - lines
@@ -283,8 +282,8 @@ expression: chunks
 - "headings?  (`Markdown.pl`"
 - does not
 - "allow this, but does allow"
-- blockquotes to include headings.
-- )
+- blockquotes to include
+- headings.)
 - "``` markdown\n    - # Heading"
 - "```"
 - 12. Can list items be empty?
@@ -619,8 +618,8 @@ expression: chunks
 - entity</p>
 - "````````````````````````````````"
 - If a backslash is itself escaped
-- ", the following character is not"
-- ":"
+- ", the following character is"
+- "not:"
 - "````````````````````````````````"
 - example
 - "\\\\*emphasis*\n."
@@ -1033,8 +1032,8 @@ expression: chunks
 - It is required that all of the
 - characters other than spaces or
 - tabs be the same.
-- "So, this is not a thematic break"
-- ":"
+- "So, this is not a thematic"
+- "break:"
 - "````````````````````````````````"
 - "example\n *-*\n.\n<p><em>-</em></p>"
 - "````````````````````````````````"
@@ -1267,8 +1266,7 @@ expression: chunks
 - first line does not
 - have more than 3 spaces of
 - "indentation, followed by\na ["
-- "setext heading underline]"
-- "."
+- "setext heading underline]."
 - The lines of text must be such
 - "that, were they not followed by"
 - "the setext heading underline,"
@@ -1543,8 +1541,8 @@ expression: chunks
 - "indented chunks]"
 - " separated by blank lines.\nAn"
 - "[indented chunk](@)"
-- is a sequence of non-blank lines
-- ","
+- is a sequence of non-blank
+- "lines,"
 - each preceded by four or more
 - spaces of indentation.
 - The contents of the code
@@ -1679,8 +1677,7 @@ expression: chunks
 - "A [code fence](@) is a sequence"
 - of at least three consecutive
 - "backtick characters (`` ` ``) or"
-- "tildes (`~`"
-- ).
+- "tildes (`~`)."
 - (Tildes and backticks cannot be
 - "mixed.)\nA [fenced code block](@)"
 - "begins with a code fence,"
@@ -1702,8 +1699,8 @@ expression: chunks
 - is that otherwise
 - some inline code would be
 - incorrectly interpreted as the
-- beginning of a fenced code block
-- ".)"
+- beginning of a fenced code
+- block.)
 - The content of the code block
 - consists of all subsequent lines
 - ", until\na closing [code fence]"
@@ -1849,8 +1846,8 @@ expression: chunks
 - "<pre><code></code></pre>"
 - "````````````````````````````````"
 - Fences can be indented.
-- If the opening fence is indented
-- ","
+- If the opening fence is
+- "indented,"
 - content lines will have
 - equivalent opening indentation
 - "removed,\nif present:"
@@ -2441,8 +2438,8 @@ expression: chunks
 - "<!-- Foo\n\nbar\n   baz -->"
 - "<p>okay</p>"
 - "````````````````````````````````"
-- A processing instruction (type 3
-- "):"
+- A processing instruction (type
+- "3):"
 - "````````````````````````````````"
 - example
 - "<?php\n\n  echo '>';\n\n?>\nokay\n.\n<?"
@@ -2583,8 +2580,7 @@ expression: chunks
 - have adopted a convention of
 - interpreting content inside tags
 - as text if the open tag has
-- "the attribute `markdown=1`"
-- "."
+- "the attribute `markdown=1`."
 - The rule given above seems a
 - simpler and
 - more elegant way of achieving
@@ -2766,8 +2762,8 @@ expression: chunks
 - "````````````````````````````````"
 - "As noted in the section on ["
 - "Links], matching of labels is"
-- "case-insensitive (see [matches]"
-- ).
+- case-insensitive (see
+- "[matches])."
 - "````````````````````````````````"
 - example
 - "[FOO]: /url\n\n[Foo]\n."
@@ -3002,8 +2998,8 @@ expression: chunks
 - "then the result of\n>"
 - transforming X in such-and-such
 - "a way is a container of type Y\n>"
-- with these blocks as its content
-- "."
+- with these blocks as its
+- content.
 - "So, we explain what counts as a"
 - block quote or list item by
 - "explaining\nhow these can be"
@@ -3454,8 +3450,8 @@ expression: chunks
 - character other than
 - a space or tab after the list
 - marker.
-- "However, that is not quite right"
-- "."
+- "However, that is not quite"
+- right.
 - The spaces of indentation after
 - the list marker determine how
 - much relative
@@ -3555,8 +3551,8 @@ expression: chunks
 - "1234567890. not ok\n."
 - "<p>1234567890. not ok</p>"
 - "````````````````````````````````"
-- A start number may begin with 0s
-- ":"
+- A start number may begin with
+- "0s:"
 - "````````````````````````````````"
 - example
 - "0. ok\n.\n<ol start=\"0\">"
@@ -3617,8 +3613,8 @@ expression: chunks
 - "<p>foo</p>\n<pre><code>bar"
 - "</code></pre>\n</li>\n</ul>"
 - "````````````````````````````````"
-- And in this case it is 11 spaces
-- ":"
+- And in this case it is 11
+- "spaces:"
 - "````````````````````````````````"
 - example
 - "  10.  foo\n\n           bar\n."
@@ -3942,8 +3938,7 @@ expression: chunks
 - "[list item](#list-items)."
 - The rules for sublists follow
 - "from the general rules\n[above]["
-- "List items]"
-- "."
+- "List items]."
 - A sublist must be indented the
 - same number
 - of spaces of indentation a
@@ -4300,8 +4295,8 @@ expression: chunks
 - "tags, while paragraphs in a"
 - tight list are not.)
 - Changing the bullet or ordered
-- list delimiter starts a new list
-- ":"
+- list delimiter starts a new
+- "list:"
 - "````````````````````````````````"
 - example
 - "- foo\n- bar\n+ baz\n.\n<ul>"
@@ -4588,8 +4583,8 @@ expression: chunks
 - "````````````````````````````````"
 - "This list is tight, because the"
 - consecutive block elements
-- are not separated by blank lines
-- ":"
+- are not separated by blank
+- "lines:"
 - "````````````````````````````````"
 - example
 - "- a\n  > b\n  ```\n  c\n  ```\n- d\n."
@@ -4598,8 +4593,8 @@ expression: chunks
 - "</code></pre>\n</li>\n<li>d</li>"
 - "</ul>"
 - "````````````````````````````````"
-- A single-paragraph list is tight
-- ":"
+- A single-paragraph list is
+- "tight:"
 - "````````````````````````````````"
 - example
 - "- a\n.\n<ul>\n<li>a</li>\n</ul>"
@@ -4804,8 +4799,8 @@ expression: chunks
 - "*foo`*`\n."
 - "<p>*foo<code>*</code></p>"
 - "````````````````````````````````"
-- And this is not parsed as a link
-- ":"
+- And this is not parsed as a
+- "link:"
 - "````````````````````````````````"
 - example
 - "[not a `link](/foo`)\n."
@@ -5075,8 +5070,7 @@ expression: chunks
 - ) as the opening delimiter.  The
 - opening and closing delimiters
 - "must belong to separate\n    ["
-- "delimiter runs]"
-- "."
+- "delimiter runs]."
 - If one of the delimiters can
 - both
 - "open and close emphasis, then"
@@ -5097,8 +5091,7 @@ expression: chunks
 - ) as the opening delimiter.  The
 - opening and closing delimiters
 - "must belong to separate\n    ["
-- "delimiter runs]"
-- "."
+- "delimiter runs]."
 - If one of the delimiters can
 - both open
 - "and close strong emphasis, then"
@@ -5346,8 +5339,8 @@ expression: chunks
 - "````````````````````````````````"
 - "example\n_(_foo)\n.\n<p>_(_foo)</p>"
 - "````````````````````````````````"
-- This is emphasis within emphasis
-- ":"
+- This is emphasis within
+- "emphasis:"
 - "````````````````````````````````"
 - example
 - "_(_foo_)_\n."
@@ -6608,8 +6601,8 @@ expression: chunks
 - These cases illustrate the
 - "precedence of HTML tags, code"
 - "spans,"
-- and autolinks over link grouping
-- ":"
+- and autolinks over link
+- "grouping:"
 - "````````````````````````````````"
 - example
 - "[foo <bar attr=\"](baz)\">\n."
@@ -6770,8 +6763,8 @@ expression: chunks
 - These cases illustrate the
 - "precedence of HTML tags, code"
 - "spans,"
-- and autolinks over link grouping
-- ":"
+- and autolinks over link
+- "grouping:"
 - "````````````````````````````````"
 - example
 - "[foo <bar attr=\"][ref]\">"
@@ -6810,8 +6803,8 @@ expression: chunks
 - "Consecutive internal spaces,"
 - "tabs, and line endings are"
 - treated as one space for
-- purposes of determining matching
-- ":"
+- purposes of determining
+- "matching:"
 - "````````````````````````````````"
 - example
 - "[Foo\n  bar]: /url"
@@ -6852,8 +6845,7 @@ expression: chunks
 - "importantly, it prevents"
 - inadvertent capture of
 - "consecutive\n["
-- "shortcut reference links]"
-- "."
+- "shortcut reference links]."
 - If whitespace is allowed between
 - the
 - "link text and the link label,"
@@ -7278,8 +7270,8 @@ expression: chunks
 - "As with reference links, spaces,"
 - "tabs, and line endings, are not"
 - allowed
-- between the two sets of brackets
-- ":"
+- between the two sets of
+- "brackets:"
 - "````````````````````````````````"
 - example
 - "![foo] \n[]\n\n[foo]: /url \"title\""
@@ -7464,8 +7456,7 @@ expression: chunks
 - "An [email address](@),"
 - "for these purposes, is anything"
 - "that matches\nthe"
-- "["
-- non-normative regex from the
+- "[non-normative regex from the"
 - "HTML5\nspec"
 - "](https://html.spec.whatwg.org/"
 - "multipage/forms.html#e-mail-"
@@ -7794,8 +7785,8 @@ expression: chunks
 - example
 - "foo\\\nbaz\n.\n<p>foo<br />\nbaz</p>"
 - "````````````````````````````````"
-- More than two spaces can be used
-- ":"
+- More than two spaces can be
+- "used:"
 - "````````````````````````````````"
 - example
 - "foo       \nbaz\n.\n<p>foo<br />"
@@ -7875,8 +7866,7 @@ expression: chunks
 - not
 - preceded by two or more spaces
 - or a backslash is parsed as a
-- "[softbreak](@)"
-- "."
+- "[softbreak](@)."
 - (A soft line break may be
 - "rendered in HTML either as a\n["
 - "line ending]"
@@ -8093,8 +8083,7 @@ expression: chunks
 - "of our\nopen `document`"
 - "block, and a `paragraph`"
 - " block as a child of\nthe"
-- "`block_quote`"
-- "."
+- "`block_quote`."
 - Then the text is added to the
 - "last open\nblock, the `paragraph`"
 - ":"
@@ -8172,8 +8161,8 @@ expression: chunks
 - At this
 - point we have seen all the link
 - "reference definitions, so we can"
-- resolve reference links as we go
-- "."
+- resolve reference links as we
+- go.
 - "``` tree"
 - "document\n  block_quote"
 - paragraph
@@ -8358,8 +8347,8 @@ expression: chunks
 - of the delimiter stack.
 - "If the closing node is removed,"
 - "reset\n    `current_position`"
-- to the next element in the stack
-- "."
+- to the next element in the
+- stack.
 - "- If none is found:"
 - "+ Set `openers_bottom`"
 - to the element before
@@ -8377,8 +8366,8 @@ expression: chunks
 - "stack (since we know it can't"
 - be a closer either).
 - "+ Advance `current_position`"
-- to the next element in the stack
-- "."
+- to the next element in the
+- stack.
 - "After we'"
 - "re done, we remove all"
 - "delimiters above `stack_bottom`"

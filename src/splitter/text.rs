@@ -173,6 +173,8 @@ where
 {
     type Level = LineBreaks;
 
+    const ATTACH_PUNCTUATION: bool = true;
+
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
     }

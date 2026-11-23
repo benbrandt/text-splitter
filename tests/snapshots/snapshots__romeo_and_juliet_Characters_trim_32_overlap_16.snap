@@ -2974,8 +2974,8 @@ expression: chunks
 - "Farewell, ancient lady; farewell"
 - "lady; farewell, lady, lady, lady"
 - "lady, lady, lady."
-- "[_Exeunt Mercutio and Benvolio."
-- "_]"
+- "[_Exeunt Mercutio and"
+- "Benvolio._]"
 - NURSE.
 - "I pray you, sir, what saucy"
 - "sir, what saucy merchant was"
@@ -3704,8 +3704,8 @@ expression: chunks
 - ’ meat of me.
 - "I have it, and soundly too."
 - Your houses!
-- "[_Exeunt Mercutio and Benvolio."
-- "_]"
+- "[_Exeunt Mercutio and"
+- "Benvolio._]"
 - ROMEO.
 - "This gentleman, the Prince’s"
 - ", the Prince’s near ally,"
@@ -5744,8 +5744,8 @@ expression: chunks
 - "LADY CAPULET.\nGood night."
 - "Get thee to bed and rest, for"
 - "and rest, for thou hast need."
-- "[_Exeunt Lady Capulet and Nurse."
-- "_]"
+- "[_Exeunt Lady Capulet and"
+- "Nurse._]"
 - JULIET.
 - Farewell.
 - God knows when we shall meet
@@ -5876,8 +5876,8 @@ expression: chunks
 - a mouse-hunt in your time;
 - But I will watch you from such
 - you from such watching now.
-- "[_Exeunt Lady Capulet and Nurse."
-- "_]"
+- "[_Exeunt Lady Capulet and"
+- "Nurse._]"
 - CAPULET.
 - "A jealous-hood, a jealous-hood!"
 - "Enter Servants, with spits, logs"
@@ -6137,8 +6137,8 @@ expression: chunks
 - more by crossing their high will
 - their high will.
 - "[_Exeunt Capulet, Lady Capulet,"
-- ", Lady Capulet, Paris and Friar."
-- "_]"
+- ", Lady Capulet, Paris and"
+- "Friar._]"
 - FIRST MUSICIAN.
 - "Faith, we may put up our pipes"
 - put up our pipes and be gone.
@@ -6735,8 +6735,8 @@ expression: chunks
 - presence full of light.
 - "Death, lie thou there, by a dead"
 - "there, by a dead man interr’d."
-- "[_Laying Paris in the monument."
-- "_]"
+- "[_Laying Paris in the"
+- "monument._]"
 - How oft when men are at the
 - men are at the point of death
 - Have they been merry!

@@ -164,8 +164,7 @@ expression: chunks
 - in the processed document.
 - "## Why is a spec needed?"
 - "John Gruber's"
-- "["
-- canonical description of
+- "[canonical description of"
 - "description of Markdown's"
 - "'s\nsyntax"
 - "](https://daringfireball.net/"
@@ -244,8 +243,7 @@ expression: chunks
 - "wrapped in `<p>`"
 - "tags?  Can a list be partially \""
 - "\"loose\" and partially\n    \"tight"
-- "\"tight\""
-- "?"
+- "\"tight\"?"
 - What should we do with a list
 - do with a list like this?
 - "``` markdown\n    1. one"
@@ -1514,8 +1512,7 @@ expression: chunks
 - have more than 3 spaces of
 - "than 3 spaces of indentation,"
 - " of indentation, followed by\na ["
-- "a [setext heading underline]"
-- "."
+- "a [setext heading underline]."
 - The lines of text must be such
 - "that, were they not followed by"
 - not followed by the setext
@@ -3080,8 +3077,7 @@ expression: chunks
 - interpreting content inside tags
 - inside tags as text if the open
 - text if the open tag has
-- "the attribute `markdown=1`"
-- "."
+- "the attribute `markdown=1`."
 - The rule given above seems a
 - above seems a simpler and
 - more elegant way of achieving
@@ -3580,8 +3576,8 @@ expression: chunks
 - (A recipe is provided below in
 - below in the section entitled
 - "[A parsing strategy](#appendix-a"
-- "](#appendix-a-parsing-strategy)"
-- ".)"
+- "](#appendix-a-parsing-"
+- strategy).)
 - "## Block quotes"
 - "A [block quote marker](@),"
 - optionally preceded by up to
@@ -4660,8 +4656,7 @@ expression: chunks
 - The rules for sublists follow
 - sublists follow from the general
 - "from the general rules\n[above]["
-- "[above][List items]"
-- "."
+- "[above][List items]."
 - A sublist must be indented the
 - be indented the same number
 - of spaces of indentation a
@@ -6023,8 +6018,7 @@ expression: chunks
 - opening and closing delimiters
 - delimiters must belong to
 - " must belong to separate\n    ["
-- "[delimiter runs]"
-- "."
+- "[delimiter runs]."
 - If one of the delimiters can
 - delimiters can both
 - "open and close emphasis, then"
@@ -6051,8 +6045,7 @@ expression: chunks
 - opening and closing delimiters
 - delimiters must belong to
 - " must belong to separate\n    ["
-- "[delimiter runs]"
-- "."
+- "[delimiter runs]."
 - If one of the delimiters can
 - delimiters can both open
 - "and close strong emphasis, then"
@@ -8010,8 +8003,7 @@ expression: chunks
 - ", it prevents inadvertent"
 - inadvertent capture of
 - " capture of consecutive\n["
-- "[shortcut reference links]"
-- "."
+- "[shortcut reference links]."
 - If whitespace is allowed between
 - allowed between the
 - "link text and the link label,"
@@ -8541,8 +8533,7 @@ expression: chunks
 - "[Autolink](@)"
 - s are absolute URIs and email
 - URIs and email addresses inside
-- "`<` and `>`"
-- "."
+- "`<` and `>`."
 - "They are parsed as links, with"
 - "as links, with the URL or email"
 - the URL or email address
@@ -8684,8 +8675,7 @@ expression: chunks
 - "An [email address](@),"
 - "for these purposes, is anything"
 - ", is anything that matches\nthe"
-- "["
-- non-normative regex from the
+- "[non-normative regex from the"
 - " regex from the HTML5\nspec"
 - "](https://html.spec.whatwg.org/"
 - "/multipage/forms.html#e-mail-"
@@ -8852,8 +8842,8 @@ expression: chunks
 - "[HTML spec](https://"
 - "](https://html.spec.whatwg.org/"
 - "/multipage/parsing.html#markup-"
-- "#markup-declaration-open-state)"
-- ).
+- "#markup-declaration-open-"
+- state)).
 - "A [processing instruction](@)"
 - "consists of the string `<?`"
 - "`<?`, a string"
@@ -9140,8 +9130,7 @@ expression: chunks
 - preceded by two or more spaces
 - or more spaces or a backslash is
 - a backslash is parsed as a
-- "[softbreak](@)"
-- "."
+- "[softbreak](@)."
 - (A soft line break may be
 - break may be rendered in HTML
 - " rendered in HTML either as a\n["
@@ -9399,8 +9388,7 @@ expression: chunks
 - "open `document` block, and a"
 - "block, and a `paragraph`"
 - "`paragraph` block as a child of"
-- "the `block_quote`"
-- "."
+- "the `block_quote`."
 - Then the text is added to the
 - is added to the last open
 - "block, the `paragraph`:"
@@ -9430,8 +9418,7 @@ expression: chunks
 - " is also\nadded as a child of the"
 - "`list`, and a `paragraph`"
 - "`paragraph` as a child of\nthe"
-- "the `list_item`"
-- "."
+- "the `list_item`."
 - The text is then added to the
 - "added to the new `paragraph`:"
 - "``` tree"
