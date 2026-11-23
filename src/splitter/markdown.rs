@@ -29,6 +29,7 @@ where
 {
     /// Method of determining chunk sizes.
     chunk_config: ChunkConfig<Sizer>,
+    balanced: bool,
 }
 
 impl<Sizer> MarkdownSplitter<Sizer>
@@ -47,7 +48,18 @@ where
     pub fn new(chunk_config: impl Into<ChunkConfig<Sizer>>) -> Self {
         Self {
             chunk_config: chunk_config.into(),
+            balanced: false,
         }
+    }
+
+    /// Try to balance a short chunk with its neighbor without splitting an intact
+    /// Markdown element. Greedy splitting is the default. See
+    /// [`TextSplitter::with_balanced`](crate::TextSplitter::with_balanced) for the
+    /// chunk-count, overlap, and capacity guarantees.
+    #[must_use]
+    pub fn with_balanced(mut self, balanced: bool) -> Self {
+        self.balanced = balanced;
+        self
     }
 }
 
@@ -182,6 +194,10 @@ where
 
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
+    }
+
+    fn balanced(&self) -> bool {
+        self.balanced
     }
 
     fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {

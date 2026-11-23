@@ -150,6 +150,21 @@ let splitter = CodeSplitter::new(tree_sitter_rust::LANGUAGE, max_characters).exp
 let chunks = splitter.chunks("your code file");
 ```
 
+### Balancing short chunks (opt-in)
+
+`TextSplitter` and `MarkdownSplitter` can look ahead one chunk and move a boundary to make a short chunk more useful, without adding or removing chunks:
+
+```rust
+use text_splitter::TextSplitter;
+
+let splitter = TextSplitter::new(36).with_balanced(true);
+let text = "Sentence 1. Sentence 2. Sentence 3. Sentence 4.";
+assert_eq!(splitter.chunks(text).collect::<Vec<_>>(),
+           ["Sentence 1. Sentence 2.", "Sentence 3. Sentence 4."]);
+```
+
+Balancing keeps actual overlaps and line breaks in place. For a capacity range, it uses the desired size to identify short chunks and the maximum to check both replacements. A short heading or an indivisible word may still stand alone. Greedy splitting remains the default.
+
 ## Method
 
 To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:

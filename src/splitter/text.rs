@@ -24,6 +24,7 @@ where
 {
     /// Method of determining chunk sizes.
     chunk_config: ChunkConfig<Sizer>,
+    balanced: bool,
 }
 
 impl<Sizer> TextSplitter<Sizer>
@@ -42,7 +43,27 @@ where
     pub fn new(chunk_config: impl Into<ChunkConfig<Sizer>>) -> Self {
         Self {
             chunk_config: chunk_config.into(),
+            balanced: false,
         }
+    }
+
+    /// Try to balance a short chunk with its neighbor without adding or removing chunks.
+    /// Greedy splitting is the default. Balancing looks ahead by one chunk, keeps
+    /// actual overlaps and line breaks in place, and does not guarantee a minimum size.
+    /// With a capacity range, the lower bound is the target and the upper bound is the limit.
+    ///
+    /// ```
+    /// use text_splitter::TextSplitter;
+    ///
+    /// let splitter = TextSplitter::new(36).with_balanced(true);
+    /// let text = "Sentence 1. Sentence 2. Sentence 3. Sentence 4.";
+    /// assert_eq!(splitter.chunks(text).collect::<Vec<_>>(),
+    ///            ["Sentence 1. Sentence 2.", "Sentence 3. Sentence 4."]);
+    /// ```
+    #[must_use]
+    pub fn with_balanced(mut self, balanced: bool) -> Self {
+        self.balanced = balanced;
+        self
     }
 }
 
@@ -175,6 +196,10 @@ where
 
     fn chunk_config(&self) -> &ChunkConfig<Sizer> {
         &self.chunk_config
+    }
+
+    fn balanced(&self) -> bool {
+        self.balanced
     }
 
     fn parse(&self, text: &str) -> Vec<(Self::Level, Range<usize>)> {

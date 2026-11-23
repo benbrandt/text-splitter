@@ -21,12 +21,12 @@ def check_api(language: object) -> None:
         assert_type(splitter.chunk_all(["hello"]), list[list[str]])
         assert_type(splitter.chunk_all_indices(["hello"]), list[list[tuple[int, str]]])
 
-    assert_type(TextSplitter.from_callback(len, 20), TextSplitter)
+    assert_type(TextSplitter.from_callback(len, 20, balanced=True), TextSplitter)
     assert_type(MarkdownSplitter.from_callback(len, 20), MarkdownSplitter)
     assert_type(CodeSplitter.from_callback(language, len, 20), CodeSplitter)
     assert_type(TextSplitter.from_tiktoken_model("gpt-3.5-turbo", 20), TextSplitter)
     assert_type(
-        MarkdownSplitter.from_huggingface_tokenizer_str("{}", 20), MarkdownSplitter
+        MarkdownSplitter.from_huggingface_tokenizer_str("{}", 20, balanced=True), MarkdownSplitter
     )
     assert_type(
         CodeSplitter.from_huggingface_tokenizer_file(language, "tokenizer.json", 20),

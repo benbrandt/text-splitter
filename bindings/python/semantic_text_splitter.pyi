@@ -99,6 +99,20 @@ splitter = MarkdownSplitter(max_characters)
 chunks = splitter.chunks("# Header\\n\\nyour document text")
 ```
 
+### Balancing short chunks (opt-in)
+
+Pass `balanced=True` to `TextSplitter` or `MarkdownSplitter`, including their tokenizer and callback constructors:
+
+```python
+from semantic_text_splitter import TextSplitter
+
+splitter = TextSplitter(36, balanced=True)
+text = "Sentence 1. Sentence 2. Sentence 3. Sentence 4."
+assert splitter.chunks(text) == ["Sentence 1. Sentence 2.", "Sentence 3. Sentence 4."]
+```
+
+Balancing looks ahead one chunk. It can move a boundary without adding or removing chunks or changing actual overlaps. With a capacity range, the lower value is the target and the upper value is the limit for both chunks. Short chunks are still possible; greedy splitting is the default.
+
 ## Method
 
 To preserve as much semantic meaning within a chunk as possible, each chunk is composed of the largest semantic units that can fit in the next given chunk. For each splitter type, there is a defined set of semantic levels. Here is an example of the steps used:
@@ -563,8 +577,10 @@ class MarkdownSplitter:
         trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
+        balanced (bool, optional): Look ahead one chunk to even out short neighbors.
+            Preserves chunk count, actual overlaps and intact Markdown elements. Defaults to False.
     """
-    def __new__(cls, /, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter: ...
+    def __new__(cls, /, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter: ...
     def chunk_all(self, /, texts: SupportsGetItem[int, str]) -> "list[list[str]]":
         """
 
@@ -652,7 +668,7 @@ class MarkdownSplitter:
 
         """
     @staticmethod
-    def from_callback(callback: Callable[[str], SupportsIndex], capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter:
+    def from_callback(callback: Callable[[str], SupportsIndex], capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter:
         """
 
             Instantiate a markdown text splitter based on a custom callback.
@@ -676,7 +692,7 @@ class MarkdownSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer(tokenizer: Any, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter:
+    def from_huggingface_tokenizer(tokenizer: Any, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter:
         """
 
             Instantiate a new markdown splitter from a Hugging Face Tokenizer instance.
@@ -701,7 +717,7 @@ class MarkdownSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer_file(path: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter:
+    def from_huggingface_tokenizer_file(path: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter:
         """
 
             Instantiate a new markdown splitter from the Hugging Face tokenizer file at the given path.
@@ -725,7 +741,7 @@ class MarkdownSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer_str(json: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter:
+    def from_huggingface_tokenizer_str(json: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter:
         """
 
             Instantiate a new markdown splitter from the given Hugging Face Tokenizer JSON string.
@@ -749,7 +765,7 @@ class MarkdownSplitter:
 
         """
     @staticmethod
-    def from_tiktoken_model(model: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> MarkdownSplitter:
+    def from_tiktoken_model(model: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> MarkdownSplitter:
         """
 
             Instantiate a new markdown splitter based on an OpenAI Tiktoken tokenizer.
@@ -863,8 +879,10 @@ class TextSplitter:
         trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
             beginning and end or not. If False, joining all chunks will return the original
             string. Defaults to True.
+        balanced (bool, optional): Look ahead one chunk to even out short neighbors.
+            Preserves chunk count and actual overlaps. Defaults to False.
     """
-    def __new__(cls, /, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter: ...
+    def __new__(cls, /, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter: ...
     def chunk_all(self, /, texts: SupportsGetItem[int, str]) -> "list[list[str]]":
         """
 
@@ -949,7 +967,7 @@ class TextSplitter:
 
         """
     @staticmethod
-    def from_callback(callback: Callable[[str], SupportsIndex], capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter:
+    def from_callback(callback: Callable[[str], SupportsIndex], capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter:
         """
 
             Instantiate a new text splitter based on a custom callback.
@@ -973,7 +991,7 @@ class TextSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer(tokenizer: Any, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter:
+    def from_huggingface_tokenizer(tokenizer: Any, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter:
         """
 
             Instantiate a new text splitter from a Hugging Face Tokenizer instance.
@@ -998,7 +1016,7 @@ class TextSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer_file(path: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter:
+    def from_huggingface_tokenizer_file(path: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter:
         """
 
             Instantiate a new text splitter from the Hugging Face tokenizer file at the given path.
@@ -1022,7 +1040,7 @@ class TextSplitter:
 
         """
     @staticmethod
-    def from_huggingface_tokenizer_str(json: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter:
+    def from_huggingface_tokenizer_str(json: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter:
         """
 
             Instantiate a new text splitter from the given Hugging Face Tokenizer JSON string.
@@ -1046,7 +1064,7 @@ class TextSplitter:
 
         """
     @staticmethod
-    def from_tiktoken_model(model: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True) -> TextSplitter:
+    def from_tiktoken_model(model: str, capacity: SupportsIndex | tuple[SupportsIndex, SupportsIndex], overlap: SupportsIndex = 0, trim: bool = True, *, balanced: bool = False) -> TextSplitter:
         """
 
             Instantiate a new text splitter based on an OpenAI Tiktoken tokenizer.

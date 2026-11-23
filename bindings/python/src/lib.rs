@@ -299,6 +299,8 @@ Args:
     trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
         beginning and end or not. If False, joining all chunks will return the original
         string. Defaults to True.
+    balanced (bool, optional): Look ahead one chunk to even out short neighbors.
+        Preserves chunk count and actual overlaps. Defaults to False.
 */
 #[pyclass(frozen, name = "TextSplitter")]
 struct PyTextSplitter {
@@ -309,15 +311,21 @@ struct PyTextSplitter {
 #[pymethods]
 impl PyTextSplitter {
     #[new]
-    #[pyo3(signature = (capacity, overlap=0, trim=true))]
-    fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
+    #[pyo3(signature = (capacity, overlap=0, trim=true, *, balanced=false))]
+    fn new(
+        capacity: PyChunkCapacity,
+        overlap: usize,
+        trim: bool,
+        balanced: bool,
+    ) -> PyResult<Self> {
         Ok(Self {
             splitter: TextSplitter::new(chunk_config(
                 capacity,
                 overlap,
                 trim,
                 Sizer::new(Characters),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -344,13 +352,14 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (tokenizer, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (tokenizer, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer(
         py: Python<'_>,
         tokenizer: &Bound<'_, PyAny>,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
         let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
@@ -362,7 +371,8 @@ impl PyTextSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -388,13 +398,14 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (json, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (json, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer_str(
         py: Python<'_>,
         json: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
@@ -404,7 +415,8 @@ impl PyTextSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -430,13 +442,14 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (path, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (path, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer_file(
         py: Python<'_>,
         path: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = huggingface_tokenizer_from_file(py, path)?;
 
@@ -446,7 +459,8 @@ impl PyTextSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -471,13 +485,14 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (model, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (model, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_tiktoken_model(
         py: Python<'_>,
         model: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = tiktoken_model(py, model)?;
 
@@ -487,7 +502,8 @@ impl PyTextSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -513,12 +529,13 @@ impl PyTextSplitter {
         The new text splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (callback, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_callback(
         callback: CustomCallback,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         Ok(Self {
             splitter: TextSplitter::new(chunk_config(
@@ -526,7 +543,8 @@ impl PyTextSplitter {
                 overlap,
                 trim,
                 Sizer::Callback(callback),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: false,
         })
     }
@@ -773,6 +791,8 @@ Args:
     trim (bool, optional): Specify whether chunks should have whitespace trimmed from the
         beginning and end or not. If False, joining all chunks will return the original
         string. Defaults to True.
+    balanced (bool, optional): Look ahead one chunk to even out short neighbors.
+        Preserves chunk count, actual overlaps and intact Markdown elements. Defaults to False.
 */
 #[pyclass(frozen, name = "MarkdownSplitter")]
 struct PyMarkdownSplitter {
@@ -783,15 +803,21 @@ struct PyMarkdownSplitter {
 #[pymethods]
 impl PyMarkdownSplitter {
     #[new]
-    #[pyo3(signature = (capacity, overlap=0, trim=true))]
-    fn new(capacity: PyChunkCapacity, overlap: usize, trim: bool) -> PyResult<Self> {
+    #[pyo3(signature = (capacity, overlap=0, trim=true, *, balanced=false))]
+    fn new(
+        capacity: PyChunkCapacity,
+        overlap: usize,
+        trim: bool,
+        balanced: bool,
+    ) -> PyResult<Self> {
         Ok(Self {
             splitter: MarkdownSplitter::new(chunk_config(
                 capacity,
                 overlap,
                 trim,
                 Sizer::new(Characters),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -818,13 +844,14 @@ impl PyMarkdownSplitter {
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (tokenizer, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (tokenizer, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer(
         py: Python<'_>,
         tokenizer: &Bound<'_, PyAny>,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         // Get the json out so we can reconstruct the tokenizer on the Rust side
         let json = tokenizer.call_method0("to_str")?.extract::<PyBackedStr>()?;
@@ -836,7 +863,8 @@ impl PyMarkdownSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -862,13 +890,14 @@ impl PyMarkdownSplitter {
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (json, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (json, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer_str(
         py: Python<'_>,
         json: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = huggingface_tokenizer_from_json(py, json)?;
 
@@ -878,7 +907,8 @@ impl PyMarkdownSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -904,13 +934,14 @@ impl PyMarkdownSplitter {
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (path, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (path, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_huggingface_tokenizer_file(
         py: Python<'_>,
         path: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = huggingface_tokenizer_from_file(py, path)?;
 
@@ -920,7 +951,8 @@ impl PyMarkdownSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -945,13 +977,14 @@ impl PyMarkdownSplitter {
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (model, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (model, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_tiktoken_model(
         py: Python<'_>,
         model: PyBackedStr,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         let tokenizer = tiktoken_model(py, model)?;
 
@@ -961,7 +994,8 @@ impl PyMarkdownSplitter {
                 overlap,
                 trim,
                 Sizer::new(tokenizer),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: true,
         })
     }
@@ -987,12 +1021,13 @@ impl PyMarkdownSplitter {
         The new markdown splitter
     */
     #[staticmethod]
-    #[pyo3(signature = (callback, capacity, overlap=0, trim=true))]
+    #[pyo3(signature = (callback, capacity, overlap=0, trim=true, *, balanced=false))]
     fn from_callback(
         callback: CustomCallback,
         capacity: PyChunkCapacity,
         overlap: usize,
         trim: bool,
+        balanced: bool,
     ) -> PyResult<Self> {
         Ok(Self {
             splitter: MarkdownSplitter::new(chunk_config(
@@ -1000,7 +1035,8 @@ impl PyMarkdownSplitter {
                 overlap,
                 trim,
                 Sizer::Callback(callback),
-            )?),
+            )?)
+            .with_balanced(balanced),
             rust_only: false,
         })
     }
